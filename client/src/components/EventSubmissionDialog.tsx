@@ -7,14 +7,16 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { PlusCircle, Loader2 } from "lucide-react";
-import { trpc } from "@/lib/trpc";
+import { submitEvent } from "@/lib/api";
+import { useMutation } from "@tanstack/react-query";
 
 export function EventSubmissionDialog({ onEventSubmitted }: { onEventSubmitted?: () => void }) {
   const [open, setOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [category, setCategory] = useState<string>("");
 
-  const submitEvent = trpc.events.submit.useMutation({
+  const submitEventMutation = useMutation({
+    mutationFn: submitEvent,
     onSuccess: () => {
       setOpen(false);
       toast.success("Event submitted successfully!", {
@@ -22,7 +24,7 @@ export function EventSubmissionDialog({ onEventSubmitted }: { onEventSubmitted?:
       });
       onEventSubmitted?.();
     },
-    onError: (error) => {
+    onError: (error: Error) => {
       toast.error("Failed to submit event", {
         description: error.message || "Please try again later."
       });
@@ -36,7 +38,7 @@ export function EventSubmissionDialog({ onEventSubmitted }: { onEventSubmitted?:
     const formData = new FormData(e.currentTarget);
     
     try {
-      await submitEvent.mutateAsync({
+      await submitEventMutation.mutateAsync({
         title: formData.get("title") as string,
         date: formData.get("date") as string,
         time: formData.get("time") as string,

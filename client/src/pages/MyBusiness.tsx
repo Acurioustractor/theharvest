@@ -9,10 +9,11 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Building2, MapPin, Phone, Mail, Globe, Facebook, Instagram, Loader2, LogIn, Save, CheckCircle, Image, Search } from "lucide-react";
-import { trpc } from "@/lib/trpc";
+import { claimBusiness, fetchMyBusiness, listUnclaimedBusinesses, updateBusinessProfile } from "@/lib/api";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { getLoginUrl } from "@/const";
 import { toast } from "sonner";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 export default function MyBusiness() {
   const { user, isAuthenticated, loading: authLoading } = useAuth();
@@ -22,12 +23,23 @@ export default function MyBusiness() {
   const [searchTerm, setSearchTerm] = useState("");
 
   // Fetch user's business
-  const { data: myBusiness, isLoading: businessLoading, refetch } = trpc.businesses.myBusiness.useQuery(undefined, {
-    enabled: isAuthenticated,
+  const {
+    data: myBusiness,
+    isLoading: businessLoading,
+    refetch,
+  } = useQuery({
+    queryKey: ["business", "mine", user?.openId],
+    queryFn: () => fetchMyBusiness(user!.openId),
+    enabled: isAuthenticated && Boolean(user?.openId),
   });
 
   // Fetch unclaimed businesses for claiming
-  const { data: unclaimedBusinesses, isLoading: unclaimedLoading } = trpc.businesses.unclaimed.useQuery(undefined, {
+  const {
+    data: unclaimedBusinesses,
+    isLoading: unclaimedLoading,
+  } = useQuery({
+    queryKey: ["businesses", "unclaimed"],
+    queryFn: listUnclaimedBusinesses,
     enabled: isAuthenticated && !myBusiness,
   });
 
@@ -62,26 +74,28 @@ export default function MyBusiness() {
   };
 
   // Mutations
-  const updateProfile = trpc.businesses.updateProfile.useMutation({
+  const updateProfile = useMutation({
+    mutationFn: updateBusinessProfile,
     onSuccess: () => {
       toast.success("Business profile updated successfully!");
       setIsEditing(false);
       setIsSaving(false);
       refetch();
     },
-    onError: (error) => {
+    onError: (error: Error) => {
       toast.error("Failed to update profile", { description: error.message });
       setIsSaving(false);
     },
   });
 
-  const claimBusiness = trpc.businesses.claim.useMutation({
+  const claimBusinessMutation = useMutation({
+    mutationFn: claimBusiness,
     onSuccess: () => {
       toast.success("Business claimed successfully! You can now manage your profile.");
       setClaimDialogOpen(false);
       refetch();
     },
-    onError: (error) => {
+    onError: (error: Error) => {
       toast.error("Failed to claim business", { description: error.message });
     },
   });
@@ -96,7 +110,7 @@ export default function MyBusiness() {
   };
 
   const handleClaim = async (businessId: number) => {
-    await claimBusiness.mutateAsync({ businessId });
+    await claimBusinessMutation.mutateAsync(businessId);
   };
 
   const filteredUnclaimed = unclaimedBusinesses?.filter(b => 

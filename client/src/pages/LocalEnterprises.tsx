@@ -10,7 +10,8 @@ import enterpriseData from "@/data/enterprises.json";
 import staticEventsData from "@/data/events.json";
 import { EventSubmissionDialog } from "@/components/EventSubmissionDialog";
 import BusinessRegistrationDialog from "@/components/BusinessRegistrationDialog";
-import { trpc } from "@/lib/trpc";
+import { listApprovedEvents } from "@/lib/api";
+import { useQuery } from "@tanstack/react-query";
 
 // Category images mapping
 const categoryImages: Record<string, string> = {
@@ -36,7 +37,10 @@ export default function LocalEnterprises() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   // Fetch approved events from API
-  const { data: apiEvents, isLoading: eventsLoading, refetch: refetchEvents } = trpc.events.list.useQuery();
+  const { data: apiEvents, isLoading: eventsLoading, refetch: refetchEvents } = useQuery({
+    queryKey: ["events", "approved"],
+    queryFn: listApprovedEvents,
+  });
 
   const categories = Array.from(new Set(enterpriseData.enterprises.map(e => e.category)));
 

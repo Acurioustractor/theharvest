@@ -1,9 +1,9 @@
 import { getLoginUrl } from "@/const";
+import { fetchAppUser, syncAppUser } from "@/lib/api";
 import { supabase } from "@/lib/supabase";
-import { trpc } from "@/lib/trpc";
-import { TRPCClientError } from "@trpc/client";
-import { useCallback, useEffect, useMemo, useState } from "react";
 import type { Session } from "@supabase/supabase-js";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 type UseAuthOptions = {
   redirectOnUnauthenticated?: boolean;
@@ -13,7 +13,7 @@ type UseAuthOptions = {
 export function useAuth(options?: UseAuthOptions) {
   const { redirectOnUnauthenticated = false, redirectPath = getLoginUrl() } =
     options ?? {};
-  const utils = trpc.useUtils();
+  const queryClient = useQueryClient();
   const [session, setSession] = useState<Session | null>(null);
   const [sessionLoading, setSessionLoading] = useState(true);
 
@@ -31,80 +31,61 @@ export function useAuth(options?: UseAuthOptions) {
     } = supabase.auth.onAuthStateChange((_event, nextSession) => {
       setSession(nextSession ?? null);
       setSessionLoading(false);
-      utils.auth.me.invalidate();
+      queryClient.invalidateQueries({ queryKey: ["app-user"] });
     });
 
     return () => {
       active = false;
       subscription?.unsubscribe();
     };
-  }, [utils.auth.me]);
+  }, [queryClient]);
 
-  const meQuery = trpc.auth.me.useQuery(undefined, {
+  const meQuery = useQuery({
+    queryKey: ["app-user", session?.user?.id],
+    enabled: Boolean(session?.access_token && session?.user?.id),
+    queryFn: async () => {
+      try {
+        await syncAppUser();
+      } catch {
+        // Edge function may not be deployed yet; continue with best-effort lookup.
+      }
+      return fetchAppUser(session!.user.id);
+    },
     retry: false,
     refetchOnWindowFocus: false,
-    enabled: Boolean(session?.access_token),
-  });
-
-  useEffect(() => {
-    if (!session?.access_token) {
-      utils.auth.me.setData(undefined, null);
-    }
-  }, [session?.access_token, utils.auth.me]);
-
-  const logoutMutation = trpc.auth.logout.useMutation({
-    onSuccess: () => {
-      utils.auth.me.setData(undefined, null);
-    },
   });
 
   const logout = useCallback(async () => {
-    try {
-      await supabase.auth.signOut();
-      await logoutMutation.mutateAsync();
-    } catch (error: unknown) {
-      if (
-        error instanceof TRPCClientError &&
-        error.data?.code === "UNAUTHORIZED"
-      ) {
-        return;
-      }
-      throw error;
-    } finally {
-      utils.auth.me.setData(undefined, null);
-      await utils.auth.me.invalidate();
-    }
-  }, [logoutMutation, utils]);
+    await supabase.auth.signOut();
+    queryClient.setQueryData(["app-user"], null);
+  }, [queryClient]);
 
   const state = useMemo(() => {
     return {
       user: meQuery.data ?? null,
-      loading: sessionLoading || meQuery.isLoading || logoutMutation.isPending,
-      error: meQuery.error ?? logoutMutation.error ?? null,
+      loading: sessionLoading || meQuery.isLoading,
+      error: meQuery.error ?? null,
       isAuthenticated: Boolean(session?.access_token && meQuery.data),
     };
   }, [
     meQuery.data,
     meQuery.error,
     meQuery.isLoading,
-    logoutMutation.error,
-    logoutMutation.isPending,
     session?.access_token,
     sessionLoading,
   ]);
 
   useEffect(() => {
     if (!redirectOnUnauthenticated) return;
-    if (sessionLoading || meQuery.isLoading || logoutMutation.isPending) return;
+    if (sessionLoading || meQuery.isLoading) return;
     if (state.user) return;
     if (typeof window === "undefined") return;
     if (window.location.pathname === redirectPath) return;
 
-    window.location.href = redirectPath
+    window.location.href = redirectPath;
   }, [
     redirectOnUnauthenticated,
     redirectPath,
-    logoutMutation.isPending,
     meQuery.isLoading,
     sessionLoading,
     state.user,

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { trpc } from "@/lib/trpc";
+import { subscribeNewsletter } from "@/lib/api";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { InterestSelector, type Interest } from "@/components/InterestSelector";
@@ -19,6 +19,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { Link } from "wouter";
+import { useMutation } from "@tanstack/react-query";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
@@ -74,12 +75,12 @@ const collaborators = [
   {
     name: "Local Producers",
     description: "Fresh produce from farms across the hinterland",
-    link: "/local-enterprises",
+    link: "/enterprises",
   },
   {
     name: "Maleny Co-ops",
     description: "Part of the region's cooperative ecosystem",
-    link: "/local-enterprises",
+    link: "/enterprises",
   },
   {
     name: "Community Groups",
@@ -93,7 +94,8 @@ export default function About() {
   const [interests, setInterests] = useState<Interest[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const newsletterMutation = trpc.newsletter.subscribe.useMutation({
+  const newsletterMutation = useMutation({
+    mutationFn: subscribeNewsletter,
     onSuccess: () => {
       toast.success("Welcome to The Harvest!", {
         description: "You've been added to our mailing list.",
@@ -102,7 +104,7 @@ export default function About() {
       setInterests([]);
       setIsSubmitting(false);
     },
-    onError: (error) => {
+    onError: (error: Error) => {
       toast.error("Subscription failed", {
         description: error.message || "Please try again later.",
       });

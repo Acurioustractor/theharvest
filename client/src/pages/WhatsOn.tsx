@@ -16,9 +16,10 @@ import {
   Music,
   Filter,
 } from "lucide-react";
-import { trpc } from "@/lib/trpc";
+import { listApprovedEvents } from "@/lib/api";
 import { EventSubmissionDialog } from "@/components/EventSubmissionDialog";
 import eventsData from "@/data/events.json";
+import { useQuery } from "@tanstack/react-query";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
@@ -78,7 +79,7 @@ interface StaticEvent {
 interface DBEvent {
   id: number;
   title: string;
-  date: Date;
+  date: string;
   time: string | null;
   location: string;
   category: string;
@@ -89,7 +90,10 @@ export default function WhatsOn() {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
 
   // Fetch approved events from database
-  const { data: dbEvents, refetch } = trpc.events.list.useQuery();
+  const { data: dbEvents, refetch } = useQuery({
+    queryKey: ["events", "approved"],
+    queryFn: listApprovedEvents,
+  });
 
   // Combine static and database events
   const allEvents = useMemo(() => {

@@ -6,10 +6,11 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Calendar, Clock, MapPin, Mail, User, CheckCircle, XCircle, Loader2, ShieldAlert, LogIn, Building2, Phone, Globe, Facebook, Instagram } from "lucide-react";
-import { trpc } from "@/lib/trpc";
+import { listPendingEvents, listPendingBusinesses, updateEventStatus, updateBusinessStatus } from "@/lib/api";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { getLoginUrl } from "@/const";
 import { toast } from "sonner";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 export default function AdminDashboard() {
   const { user, isAuthenticated, loading: authLoading } = useAuth();
@@ -17,36 +18,52 @@ export default function AdminDashboard() {
   const [processingBusinessId, setProcessingBusinessId] = useState<number | null>(null);
 
   // Fetch pending events
-  const { data: pendingEvents, isLoading: eventsLoading, refetch: refetchEvents } = trpc.events.pending.useQuery(undefined, {
+  const {
+    data: pendingEvents,
+    isLoading: eventsLoading,
+    refetch: refetchEvents,
+  } = useQuery({
+    queryKey: ["admin-events", "pending"],
+    queryFn: listPendingEvents,
     enabled: isAuthenticated && user?.role === "admin",
   });
 
   // Fetch pending businesses
-  const { data: pendingBusinesses, isLoading: businessesLoading, refetch: refetchBusinesses } = trpc.businesses.pending.useQuery(undefined, {
+  const {
+    data: pendingBusinesses,
+    isLoading: businessesLoading,
+    refetch: refetchBusinesses,
+  } = useQuery({
+    queryKey: ["admin-businesses", "pending"],
+    queryFn: listPendingBusinesses,
     enabled: isAuthenticated && user?.role === "admin",
   });
 
   // Mutation for updating event status
-  const updateEventStatus = trpc.events.updateStatus.useMutation({
+  const updateEventStatusMutation = useMutation({
+    mutationFn: ({ eventId, status }: { eventId: number; status: "approved" | "rejected" }) =>
+      updateEventStatus(eventId, status),
     onSuccess: (_, variables) => {
       toast.success(`Event ${variables.status === "approved" ? "approved" : "rejected"} successfully`);
       refetchEvents();
       setProcessingEventId(null);
     },
-    onError: (error) => {
+    onError: (error: Error) => {
       toast.error("Failed to update event", { description: error.message });
       setProcessingEventId(null);
     },
   });
 
   // Mutation for updating business status
-  const updateBusinessStatus = trpc.businesses.updateStatus.useMutation({
+  const updateBusinessStatusMutation = useMutation({
+    mutationFn: ({ businessId, status }: { businessId: number; status: "approved" | "rejected" }) =>
+      updateBusinessStatus(businessId, status),
     onSuccess: (_, variables) => {
       toast.success(`Business ${variables.status === "approved" ? "approved" : "rejected"} successfully`);
       refetchBusinesses();
       setProcessingBusinessId(null);
     },
-    onError: (error) => {
+    onError: (error: Error) => {
       toast.error("Failed to update business", { description: error.message });
       setProcessingBusinessId(null);
     },
@@ -54,22 +71,22 @@ export default function AdminDashboard() {
 
   const handleApproveEvent = async (eventId: number) => {
     setProcessingEventId(eventId);
-    await updateEventStatus.mutateAsync({ eventId, status: "approved" });
+    await updateEventStatusMutation.mutateAsync({ eventId, status: "approved" });
   };
 
   const handleRejectEvent = async (eventId: number) => {
     setProcessingEventId(eventId);
-    await updateEventStatus.mutateAsync({ eventId, status: "rejected" });
+    await updateEventStatusMutation.mutateAsync({ eventId, status: "rejected" });
   };
 
   const handleApproveBusiness = async (businessId: number) => {
     setProcessingBusinessId(businessId);
-    await updateBusinessStatus.mutateAsync({ businessId, status: "approved" });
+    await updateBusinessStatusMutation.mutateAsync({ businessId, status: "approved" });
   };
 
   const handleRejectBusiness = async (businessId: number) => {
     setProcessingBusinessId(businessId);
-    await updateBusinessStatus.mutateAsync({ businessId, status: "rejected" });
+    await updateBusinessStatusMutation.mutateAsync({ businessId, status: "rejected" });
   };
 
   // Loading state
