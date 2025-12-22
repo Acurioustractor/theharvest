@@ -1,0 +1,64 @@
+{
+  "events": [
+    {
+      "id": "witta-market-dec",
+      "title": "Witta Market",
+      "date": "2025-12-20",
+      "time": "7:00 AM - 12:00 PM",
+      "location": "316 Witta Rd, Witta",
+      "description": "The monthly Witta Market features fresh local produce, handmade crafts, and delicious food. Come explore all that Witta has to offer!",
+      "category": "Market",
+      "image": "/assets/images/category-market.jpg"
+    },
+    {
+      "id": "sunrises-brunch-market",
+      "title": "Sunday Brunch Market",
+      "date": "2025-12-21",
+      "time": "7:00 AM - 3:00 PM",
+      "location": "Witta Barracks",
+      "description": "Join us for a Sunday brunch market featuring a diverse range of food stalls, coffee, and local vendors.",
+      "category": "Market",
+      "image": "/assets/images/category-market.jpg"
+    },
+    {
+      "id": "witta-community-carols",
+      "title": "Witta Community Carols",
+      "date": "2025-12-22",
+      "time": "6:00 PM - 9:00 PM",
+      "location": "Good Shepherd Lutheran Church, 295 Witta Road",
+      "description": "Celebrate the festive season with carols, community, and joy. A family-friendly event for all ages.",
+      "category": "Community",
+      "image": "/assets/images/category-community.jpg"
+    },
+    {
+      "id": "witta-wunderland",
+      "title": "Witta Wunderland Christmas Celebration",
+      "date": "2025-12-23",
+      "time": "3:00 PM - 7:00 PM",
+      "location": "Witta Recreational Club",
+      "description": "A magical afternoon of live music, food, petting zoo, pony rides, face painting, and family-friendly fun.",
+      "category": "Community",
+      "image": "/assets/images/category-community.jpg"
+    },
+    {
+      "id": "maleny-farm-fest",
+      "title": "Maleny Farm Fest",
+      "date": "2025-11-22",
+      "time": "9:00 AM - 4:00 PM",
+      "location": "Maleny Showgrounds",
+      "description": "A community-driven event celebrating small-scale farming and local agriculture. (Past Event - included for reference)",
+      "category": "Community",
+      "image": "/assets/images/category-community.jpg"
+    },
+    {
+      "id": "transformations-art",
+      "title": "Transformations: Old Made New",
+      "date": "2025-11-27",
+      "time": "10:00 AM - 4:00 PM",
+      "location": "Maleny Community Centre",
+      "description": "An art exhibition showcasing creative transformations of recycled materials. (Past Event - included for reference)",
+      "category": "Arts",
+      "image": "/assets/images/category-arts.jpg"
+    }
+  ]
+}

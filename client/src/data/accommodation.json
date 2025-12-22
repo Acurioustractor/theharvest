@@ -1,0 +1,58 @@
+[
+  {
+    "id": "whispering-valley",
+    "name": "Whispering Valley Cottage Retreat",
+    "description": "Secluded self-contained cottages set on 46 acres of tranquil nature. Perfect for romantic getaways with log fireplaces and private decks.",
+    "type": "Cottages",
+    "priceRange": "$$$",
+    "features": ["Log Fireplaces", "Double Spa Baths", "Private Decks", "Nature Trails", "Direct Check-in"],
+    "audience": "Couples, Nature Lovers",
+    "contact": {
+      "phone": "+61 7 5494 4367",
+      "email": "stay@whisperingvalley.com.au",
+      "website": "https://whisperingvalleymalenyaccommodation.com.au/"
+    },
+    "image": "/images/accommodation/whispering-valley.jpg"
+  },
+  {
+    "id": "blue-summit",
+    "name": "Blue Summit Cottages",
+    "description": "Luxury 4.5-star adults-only cottages perched high in Witta with magnificent views, sunsets, and premium amenities.",
+    "type": "Luxury Cottages",
+    "priceRange": "$$$$",
+    "features": ["Adults Only", "Panoramic Views", "Massaging Spa Baths", "Gas Log Fires", "Luxury Linen"],
+    "audience": "Adults, Luxury Travellers",
+    "contact": {
+      "phone": "+61 7 5435 8410",
+      "website": "https://bluesummitcottages.com.au/"
+    },
+    "image": "/images/accommodation/blue-summit.jpg"
+  },
+  {
+    "id": "jacaranda-cottages",
+    "name": "Jacaranda Cottages",
+    "description": "Family and pet-friendly holiday homes on 6.5 acres of lush dairy farm country. Great for groups and reunions.",
+    "type": "Holiday Homes",
+    "priceRange": "$$",
+    "features": ["Pet Friendly", "Child Friendly", "Swimming Pool", "Large Groups (up to 26)", "Fire Pits"],
+    "audience": "Families, Groups, Pet Owners",
+    "contact": {
+      "phone": "+61 7 5435 8183",
+      "website": "https://www.jacarandacottages.com.au/"
+    },
+    "image": "/images/accommodation/jacaranda.jpg"
+  },
+  {
+    "id": "witta-country-escape",
+    "name": "Witta Country Escape",
+    "description": "Spacious 3-bedroom holiday home offering a private and comfortable stay for families or small groups.",
+    "type": "Holiday Home",
+    "priceRange": "$$",
+    "features": ["3 Bedrooms", "2 Bathrooms", "Full Kitchen", "Living Room", "Private Garden"],
+    "audience": "Families, Small Groups",
+    "contact": {
+      "website": "https://www.booking.com/hotel/au/witta-country-escape.html"
+    },
+    "image": "/images/accommodation/witta-escape.jpg"
+  }
+]

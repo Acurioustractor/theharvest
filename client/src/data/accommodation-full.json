@@ -1,0 +1,301 @@
+{
+  "featured": [
+    {
+      "id": "whispering-valley",
+      "name": "Whispering Valley Cottage Retreat",
+      "description": "Secluded self-contained cottages set on 46 acres of tranquil nature. Perfect for romantic getaways with log fireplaces and private decks.",
+      "type": "Cottages",
+      "priceRange": "$$$",
+      "features": [
+        "Log Fireplaces",
+        "Double Spa Baths",
+        "Private Decks",
+        "Nature Trails",
+        "Direct Check-in"
+      ],
+      "audience": "Couples, Nature Lovers",
+      "contact": {
+        "phone": "+61 7 5494 4367",
+        "email": "stay@whisperingvalley.com.au",
+        "website": "https://whisperingvalleymalenyaccommodation.com.au/"
+      },
+      "image": "/images/accommodation/whispering-valley.jpg",
+      "coordinates": {
+        "lat": -26.7166,
+        "lng": 152.8333
+      },
+      "images": [
+        "https://whisperingvalleymalenyaccommodation.com.au/wp-content/uploads/hideaway-cottage-maleny-witta-accommodation-3.jpg",
+        "https://whisperingvalleymalenyaccommodation.com.au/wp-content/uploads/sunshine-coast-hinterland-cabin-accommodation.jpg",
+        "https://whisperingvalleymalenyaccommodation.com.au/wp-content/uploads/maleny-secluded-cottage-accommodation.jpg",
+        "https://whisperingvalleymalenyaccommodation.com.au/wp-content/uploads/treehaven-witta-cottages-2-bed-2-bath.jpg",
+        "https://whisperingvalleymalenyaccommodation.com.au/wp-content/uploads/bush-pavillion-2-bed-1-bathroom.jpg"
+      ]
+    },
+    {
+      "id": "blue-summit",
+      "name": "Blue Summit Cottages",
+      "description": "Luxury 4.5-star adults-only cottages perched high in Witta with magnificent views, sunsets, and premium amenities.",
+      "type": "Luxury Cottages",
+      "priceRange": "$$$$",
+      "features": [
+        "Adults Only",
+        "Panoramic Views",
+        "Massaging Spa Baths",
+        "Gas Log Fires",
+        "Luxury Linen"
+      ],
+      "audience": "Adults, Luxury Travellers",
+      "contact": {
+        "phone": "+61 7 5435 8410",
+        "website": "https://bluesummitcottages.com.au/"
+      },
+      "image": "/images/accommodation/blue-summit.jpg",
+      "coordinates": {
+        "lat": -26.7025,
+        "lng": 152.8258
+      },
+      "images": [
+        "https://bluesummitcottages.com.au/wp-content/uploads/2024/10/TripAdvisor-CoE-500x500-1-e1729481063960.jpg"
+      ]
+    },
+    {
+      "id": "jacaranda-cottages",
+      "name": "Jacaranda Cottages",
+      "description": "Family and pet-friendly holiday homes on 6.5 acres of lush dairy farm country. Great for groups and reunions.",
+      "type": "Holiday Homes",
+      "priceRange": "$$",
+      "features": [
+        "Pet Friendly",
+        "Child Friendly",
+        "Swimming Pool",
+        "Large Groups (up to 26)",
+        "Fire Pits"
+      ],
+      "audience": "Families, Groups, Pet Owners",
+      "contact": {
+        "phone": "+61 7 5435 8183",
+        "website": "https://www.jacarandacottages.com.au/"
+      },
+      "image": "/images/accommodation/jacaranda.jpg",
+      "coordinates": {
+        "lat": -26.7083,
+        "lng": 152.8417
+      },
+      "images": [
+        "https://static.wixstatic.com/media/748fd0_af6ddf6c8d954a1b961cae28e586b521~mv2.jpg/v1/fill/w_1617,h_842,al_c,q_85,enc_avif,quality_auto/748fd0_af6ddf6c8d954a1b961cae28e586b521~mv2.jpg",
+        "https://static.wixstatic.com/media/8b506b_51efb34f154f41e18fa7f3f1b9514e4c~mv2.jpg/v1/fill/w_960,h_514,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/8b506b_51efb34f154f41e18fa7f3f1b9514e4c~mv2.jpg",
+        "https://static.wixstatic.com/media/8b506b_c78a017daf3141369db40eb6b3af738d~mv2.jpg/v1/fill/w_960,h_514,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/8b506b_c78a017daf3141369db40eb6b3af738d~mv2.jpg",
+        "https://static.wixstatic.com/media/748fd0_b896f15c83c6476eb0746c2006bdccb9~mv2.jpg/v1/fill/w_960,h_514,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/748fd0_b896f15c83c6476eb0746c2006bdccb9~mv2.jpg"
+      ]
+    },
+    {
+      "id": "zarina-cabins",
+      "name": "Zarina Country Cabins",
+      "description": "Modern luxury cabins offering panoramic mountain views and majestic sunsets. A true deluxe getaway for couples.",
+      "type": "Luxury Cabins",
+      "priceRange": "$$$",
+      "features": [
+        "Mountain Views",
+        "King Beds",
+        "Fireplaces",
+        "Standalone Baths",
+        "Modern Design"
+      ],
+      "audience": "Couples, Adults Only",
+      "contact": {
+        "phone": "0417 714 687",
+        "email": "info@zarinacountrycabins.com.au",
+        "website": "https://zarinacountrycabins.com.au/"
+      },
+      "image": "/images/accommodation/zarina.jpg",
+      "coordinates": {
+        "lat": -26.6958,
+        "lng": 152.8306
+      },
+      "images": [
+        "https://zarinacountrycabins.com.au/wp-content/uploads/2021/09/20220809_173617-1024x768.jpg",
+        "https://zarinacountrycabins.com.au/wp-content/uploads/2021/09/133131800_176524504219116_4769359074754416455_n-1-300x225.jpg",
+        "https://zarinacountrycabins.com.au/wp-content/uploads/2021/09/kevs-entrance-300x225.jpg"
+      ]
+    }
+  ],
+  "directory": [
+    {
+      "id": "maleny-retreat",
+      "name": "Maleny Retreat",
+      "type": "Retreat / Guest House",
+      "location": "Booroobin",
+      "description": "Retreat destination dedicated to peace and nature, featuring a guest house and tent village.",
+      "contact": {
+        "phone": "+61 490 843 648",
+        "website": "http://www.malenyretreat.com/"
+      },
+      "coordinates": {
+        "lat": -26.8323,
+        "lng": 152.7626
+      },
+      "images": [
+        "https://www.malenyretreatweddings.com/uploads/8/5/7/3/8573606/guesthouse-accommodation_orig.jpg",
+        "https://www.malenyretreatweddings.com/uploads/8/5/7/3/8573606/guesthouse-livingroom-mbrm-29_orig.jpg",
+        "https://www.malenyretreatweddings.com/uploads/8/5/7/3/8573606/commercial-kitchen_3.jpg"
+      ]
+    },
+    {
+      "id": "harmonic-haven",
+      "name": "Harmonic Haven",
+      "type": "Guesthouse",
+      "location": "Witta",
+      "description": "Peaceful accommodation featuring a garden and terrace. 30 Gumland Dr, Witta.",
+      "contact": {
+        "website": "https://www.harmonichaven.net/"
+      },
+      "coordinates": {
+        "lat": -26.708,
+        "lng": 152.835
+      }
+    },
+    {
+      "id": "maleny-hinterland-escape",
+      "name": "Maleny Hinterland Escape",
+      "type": "Holiday Home",
+      "location": "Witta",
+      "description": "Private retreat in the hinterland region with views over lush green pastures. 32 Sidney Lane, Witta.",
+      "contact": {
+        "website": "https://www.malenyhinterlandescape.com.au/"
+      },
+      "coordinates": {
+        "lat": -26.715,
+        "lng": 152.84
+      },
+      "images": [
+        "https://www.malenyhinterlandescape.com.au/image/section/maleny-kookaburra.jpg",
+        "https://www.malenyhinterlandescape.com.au/image/section/slide-1.jpg",
+        "https://www.malenyhinterlandescape.com.au/image/section/slide-2.jpg",
+        "https://www.malenyhinterlandescape.com.au/image/section/slide-3.jpg"
+      ]
+    },
+    {
+      "id": "wattle-gully",
+      "name": "Wattle Gully Retreat",
+      "type": "Retreat / Farm Stay",
+      "location": "Witta",
+      "description": "50 acres of native bushland and rainforest with a mountain creek.",
+      "contact": {
+        "phone": "+61 7 5494 4426",
+        "website": "http://www.wattlegully.com"
+      },
+      "coordinates": {
+        "lat": -26.7125,
+        "lng": 152.8389
+      },
+      "images": [
+        "https://images.toopa.com/306934_dsc0442.JPG",
+        "https://images.toopa.com/574363_20151001074948.jpg",
+        "https://images.toopa.com/374280_dsc0512.JPG"
+      ]
+    },
+    {
+      "id": "parkland-guesthouse",
+      "name": "Parkland Guesthouse Retreat",
+      "type": "Guesthouse",
+      "location": "Witta",
+      "description": "Stylishly decorated queen bedrooms with large lounge and outdoor areas.",
+      "contact": {
+        "phone": "0417 790 610"
+      },
+      "coordinates": {
+        "lat": -26.7056,
+        "lng": 152.8458
+      },
+      "images": [
+        "http://www.weekendnotes.com/im/001/00/accomodation-gardens-nature-birds.JPG",
+        "https://images.toopa.com/570686_nature-gardens-tropical-ferns-views.JPG"
+      ]
+    },
+    {
+      "id": "witta-country-escape",
+      "name": "Witta Country Escape",
+      "type": "Holiday Home",
+      "location": "Witta",
+      "description": "Spacious 3-bedroom holiday home perfect for families.",
+      "contact": {
+        "website": "https://www.booking.com/hotel/au/witta-country-escape.html"
+      },
+      "coordinates": {
+        "lat": -26.71,
+        "lng": 152.84
+      }
+    },
+    {
+      "id": "wittaview",
+      "name": "Wittaview",
+      "type": "Holiday Rental",
+      "location": "Witta",
+      "description": "Perfect weekend getaway sleeping up to 6 guests.",
+      "contact": {
+        "website": "https://www.bookabach.co.nz/d/10039/witta"
+      },
+      "coordinates": {
+        "lat": -26.7,
+        "lng": 152.83
+      }
+    },
+    {
+      "id": "bunya-farmhouse",
+      "name": "Bunya@Maleny Farm House",
+      "type": "Farm House",
+      "location": "Witta/Maleny",
+      "description": "4-bedroom farmhouse sleeping 8, ideal for larger families.",
+      "contact": {
+        "website": "https://www.bookabach.co.nz/d/10039/witta"
+      },
+      "coordinates": {
+        "lat": -26.72,
+        "lng": 152.85
+      }
+    },
+    {
+      "id": "rosebrook-cottages",
+      "name": "Rosebrook Cottages",
+      "type": "Cottages",
+      "location": "Maleny",
+      "description": "Charming cottages with views and spa baths.",
+      "contact": {
+        "website": "https://www.rosebrookcottages.com.au"
+      },
+      "coordinates": {
+        "lat": -26.7333,
+        "lng": 152.85
+      }
+    },
+    {
+      "id": "bendles-cottages",
+      "name": "Bendles Cottages",
+      "type": "Cottages",
+      "location": "Maleny",
+      "description": "Romantic cottages set in beautiful gardens.",
+      "contact": {
+        "website": "https://www.bendles.com.au"
+      },
+      "coordinates": {
+        "lat": -26.7417,
+        "lng": 152.8583
+      }
+    },
+    {
+      "id": "tranquil-park",
+      "name": "Tranquil Park Maleny",
+      "type": "Hotel / Resort",
+      "location": "Maleny",
+      "description": "Hotel accommodation with stunning views of the Glass House Mountains.",
+      "contact": {
+        "website": "https://tranquilpark.com.au"
+      },
+      "coordinates": {
+        "lat": -26.7667,
+        "lng": 152.8667
+      }
+    }
+  ]
+}

@@ -1,0 +1,320 @@
+{
+  "enterprises": [
+    {
+      "id": "austops",
+      "name": "Austops",
+      "category": "Local Business",
+      "description": "Austops is a leading UK manufacturer of camper van elevating roofs (pop-tops) with a network of approved fitters operating throughout the UK, Ireland, Europe and beyond. While there is no direct website for 'Austops Witta Queensland', it is highly likely an Australian fitter of these roofs, operating under the name 'Nicholson W R & D A' in the nearby town of Maleny. They specialize in converting vans into campervans by adding these pop-top roofs.",
+      "address": "25 Gumland Dr, Witta Queensland 4552",
+      "contact": {
+        "phone": "07 5494 3460",
+        "email": null,
+        "website": null,
+        "facebook": "https://www.facebook.com/austopsroofs/",
+        "instagram": "https://www.instagram.com/austopsroofs/?hl=en"
+      },
+      "image": "https://files.manuscdn.com/user_upload_by_module/session_file/310519663259238950/APTJodhIABroLfHu.jpg"
+    },
+    {
+      "id": "cool-as-patios",
+      "name": "Cool As Patios",
+      "category": "Services & Trades",
+      "description": "Cool As Patios is a locally owned and operated business in the Sunshine Coast Hinterland, specializing in building high-quality, affordable, and unique patios, decks, carports, and pergolas. With over 20 years of experience, they offer customized designs to suit each client's home and lifestyle. They are fully licensed and insured, and they guarantee the best prices. Their services include the design, manufacture, and installation of outdoor living spaces, using Australian-made products.",
+      "address": "Witta, Queensland, 4552, Australia",
+      "contact": {
+        "phone": "07 5435 8379",
+        "email": null,
+        "website": "https://coolaspatios.com.au/",
+        "facebook": "https://www.facebook.com/coolaspatios",
+        "instagram": "https://www.instagram.com/coolaspatios/"
+      },
+      "image": "https://files.manuscdn.com/user_upload_by_module/session_file/310519663259238950/zKHSzepUSnmfUzvL.jpg"
+    },
+    {
+      "id": "gary-muscat---functional-maleny-art",
+      "name": "Gary Muscat - Functional Maleny Art",
+      "category": "Arts & Crafts",
+      "description": "Local enterprise located in Witta, 4552, Queensland.",
+      "address": "Witta, 4552, Queensland",
+      "contact": {
+        "phone": "0401 697 074",
+        "email": "functionalmalenyart@gmail.com",
+        "website": null
+      },
+      "image": "/images/placeholder-enterprise.jpg"
+    },
+    {
+      "id": "jacky-lowry-artist",
+      "name": "Jacky Lowry Artist",
+      "category": "Arts & Crafts",
+      "description": "Jacky Lowry is a printmaker and artist who lives in rural Witta, near Maleny, Queensland, Australia. She was born in Holland and immigrated to Western Australia in 1951. She trained to teach High School Science and Biology before finding art later in life. She graduated from art school in South Australia and Brisbane in 1998 and 1999, where she was introduced to printmaking. Nature is a strong inspiration for her artwork, and she uses real plants to make collagraph printmaking plates, capturing the essence of the plants she prints with. Her art is a form of admiration of the Creator.",
+      "address": "75 Curramore Rd, Witta, QLD 4552",
+      "contact": {
+        "phone": "0417 616 817",
+        "email": null,
+        "website": "https://www.jackylowry.com.au/",
+        "facebook": "https://www.facebook.com/JackyLowryArtist/",
+        "instagram": "https://www.instagram.com/jacobalowry/?hl=en"
+      },
+      "image": "https://images.squarespace-cdn.com/content/v1/5e8f8f8f8f8f8f8f8f8f8f8f/1607999027897-Y8Y8Y8Y8Y8Y8Y8Y8/Jacky+Lowry+Artist+Printmaker.jpg?format=1500w"
+    },
+    {
+      "id": "krysalis-eco-dyeing",
+      "name": "Krysalis Eco-Dyeing",
+      "category": "Arts & Crafts",
+      "description": "Krysalis Eco-Dyeing is a fashion collection of original design clothing, homewares, and gifts. They specialize in using eco-dyeing techniques with natural dyes sourced from local foliage on the Sunshine Coast. Their products, which include silk scarves, dresses, tops, pillowcases, and merino wool wraps, are unique as each garment has a one-of-a-kind pattern.",
+      "address": "Witta Market vendor - 316 Witta Road, Witta 4552 (3rd Saturday)",
+      "contact": {
+        "phone": null,
+        "email": "krismorri@hotmail.com",
+        "website": "https://krysalisecodyeing.com.au/",
+        "facebook": "https://www.facebook.com/KrysalisEcoDyeing/",
+        "instagram": "https://www.instagram.com/krysalisecodyeing/"
+      },
+      "image": "https://files.manuscdn.com/user_upload_by_module/session_file/310519663259238950/TjLKALZckTdLgRXY.jpg"
+    },
+    {
+      "id": "lm-marsh-pet-portraits",
+      "name": "LM Marsh Pet Portraits",
+      "category": "Local Business",
+      "description": "LM Marsh Pet Portraits and Animal Paintings is a Queensland based pet portrait and animal portrait artist located in the beautiful Sunshine Coast Hinterland town of Maleny. The artist is experienced and started working initially producing pet portraits for family and friends but more recently has taken commissions from clients across Australia and beyond. The pet portraits are of dogs, cats, horses, geese, parrots and drawn or painted from client\u2019s photographs and are reproduced in acrylic, water colour or graphite/pencil.",
+      "address": "42 Sternberg Road, Witta, Queensland 4552",
+      "contact": {
+        "phone": "0428 148 678",
+        "email": "lmmarsh.animalportraits@gmail.com",
+        "website": "https://www.animal-portraits.com.au/",
+        "facebook": "https://www.facebook.com/LMarshAnimalPortraits/",
+        "instagram": "https://www.instagram.com/marsh.lm/?hl=en"
+      },
+      "image": "https://www.animal-portraits.com.au/gallery"
+    },
+    {
+      "id": "maleny-buffalo",
+      "name": "Maleny Buffalo",
+      "category": "Local Business",
+      "description": "Maleny Buffalo is a family-owned dairy farm located in Witta, Queensland, near Maleny. The farm, run by Michael Thompson and his mother, made the switch from traditional cattle to buffalo in 2006. They specialize in producing a range of buffalo products, including milk, meat, and cheese. Their buffalo are raised on the lush pastures of the Sunshine Coast, and their products are known for being a healthy and versatile alternative to traditional dairy and meat.",
+      "address": "99 Cooke Road, Witta, QLD 4552",
+      "contact": {
+        "phone": null,
+        "email": "malenybuffalo99@gmail.com",
+        "website": "https://www.facebook.com/malenybuffalo",
+        "facebook": "https://www.facebook.com/malenybuffalo/",
+        "instagram": "https://www.instagram.com/malenybuffalo/?hl=en"
+      },
+      "image": "https://files.manuscdn.com/user_upload_by_module/session_file/310519663259238950/qAnOAKnMMVByNYJT.jpg"
+    },
+    {
+      "id": "maleny-coffee-stop",
+      "name": "Maleny Coffee Stop",
+      "category": "Local Business",
+      "description": "Maleny Coffee is an artisan coffee roaster based at Maleny in the Sunshine Coast Hinterland. We are a boutique roastery providing freshly roasted wholesale coffee, with a focus on working closely with our clients to create a first class coffee experience. Their signature blend is \"1891\", a tribute to the year Maleny was proclaimed a town. They also offer a seasonal single-origin coffee and a decaffeinated option from Mexico.",
+      "address": "128 Schultz Rd, Witta Queensland 4552",
+      "contact": {
+        "phone": "0487 328 600",
+        "email": null,
+        "website": null,
+        "facebook": "https://www.facebook.com/MalenyCoffee/",
+        "instagram": "https://www.instagram.com/MalenyCoffee/"
+      },
+      "image": "https://files.manuscdn.com/user_upload_by_module/session_file/310519663259238950/ztMLOLjkDeUFfHDa.jpg"
+    },
+    {
+      "id": "maleny-plumbing-service",
+      "name": "Maleny Plumbing Service",
+      "category": "Services & Trades",
+      "description": "Maleny Plumbing Service is a licensed plumber and gasfitting specialist servicing Witta and the surrounding areas. They are an owner-operated business with over years of experience. They offer a wide range of services including annual testing, backflow prevention, drain cleaning and repairs, heating, jet blasting, leak fixing, line location, maintenance, pipe relining and testing, plumbing repairs, water filtering, water lines, and water mains. They also offer a variety of products such as air gaps, backflow prevention devices, break tanks, chokes, double check valves, drains, guttering, pipe sleeving, pumps, tanks, valves, and water connectors. They cater to architects, bathroom renovations, bathrooms, engineers, extensions, interior designers, kitchen renovations, laundries, new homes, and roofing.",
+      "address": "66 Tesch Rd, Witta QLD 4552",
+      "contact": {
+        "phone": "07 5494 4131",
+        "email": "malplumb@bigpond.net.au",
+        "website": null
+      },
+      "image": "https://files.manuscdn.com/user_upload_by_module/session_file/310519663259238950/pLQyRnyhXRfNyOSF.webp"
+    },
+    {
+      "id": "nest-in-witta",
+      "name": "Nest in Witta",
+      "category": "Local Business",
+      "description": "For the past three years, Sue and Trevor Young have turned Nest in Witta Caf\u00e9 into more than just a place for coffee. With sweeping views down the range, a welcoming atmosphere and strong community ties, it has become a hub for locals and a destination for visitors. They aim to provide a space where people can gather, relax, and feel at home. It's a community hub with beautiful views, easy parking, and picnic areas. Their popular menu items include their coffee, house-made carrot cake, gluten-free apple yoghurt slice, and sausage rolls. They prioritize supporting local suppliers by using products from Maleny Dairies, Walter\u2019s Artisan Bread, and Maleny Butcher.",
+      "address": "Gumland Drive, Witta QLD 4552",
+      "contact": {
+        "phone": "07 5435 8765",
+        "email": "nestinwitta@gmail.com",
+        "website": null,
+        "facebook": "https://www.facebook.com/p/Nest-in-Witta-100086463102492/",
+        "instagram": "https://www.instagram.com/nest_in_witta/?hl=en"
+      },
+      "image": "https://files.manuscdn.com/user_upload_by_module/session_file/310519663259238950/VurpFdSHrxaYHeap.webp"
+    },
+    {
+      "id": "obi-pasture-co.",
+      "name": "Obi Pasture Co.",
+      "category": "Local Business",
+      "description": "Obi Pasture Co. is a farm in Witta, Queensland, that specializes in homegrown, pasture-raised Maleny beef. They offer various beef boxes for sale, which can be picked up at their farm shop or delivered for free on orders over $250 to the Sunshine Coast, Brisbane, Toowoomba, and Gold Coast.",
+      "address": "314 Tesch Rd, Witta QLD 4552",
+      "contact": {
+        "phone": null,
+        "email": null,
+        "website": "https://www.obipastureco.com/",
+        "facebook": "https://www.facebook.com/people/obi-pasture-co/61573924705409/",
+        "instagram": "https://www.instagram.com/obipastureco/"
+      },
+      "image": "https://files.manuscdn.com/user_upload_by_module/session_file/310519663259238950/RMdiGJZmglyRLzae.webp"
+    },
+    {
+      "id": "pattie-murray---witta-road-pottery",
+      "name": "Pattie Murray - Witta Road Pottery",
+      "category": "Arts & Crafts",
+      "description": "Local enterprise located in 311 Witta Road, Witta QLD 4552.",
+      "address": "311 Witta Road, Witta QLD 4552",
+      "contact": {
+        "phone": null,
+        "email": null,
+        "website": "https://pattiemurray.squarespace.com/"
+      },
+      "image": "/images/placeholder-enterprise.jpg"
+    },
+    {
+      "id": "shannon-yeardley-art---maleny-art-studio",
+      "name": "Shannon Yeardley Art - Maleny Art Studio",
+      "category": "Arts & Crafts",
+      "description": "Local enterprise located in Witta (near Maleny), Sunshine Coast, Queensland (studio visits by appointment).",
+      "address": "Witta (near Maleny), Sunshine Coast, Queensland (studio visits by appointment)",
+      "contact": {
+        "phone": null,
+        "email": null,
+        "website": "https://www.artnaturelight.com"
+      },
+      "image": "/images/placeholder-enterprise.jpg"
+    },
+    {
+      "id": "susan-haddock-studio",
+      "name": "Susan Haddock Studio",
+      "category": "Arts & Crafts",
+      "description": "Susan Haddock is a painter and printmaker based in Witta, on the Sunshine Coast hinterland. She has exhibited internationally and her work is held in private and public collections. Susan has been awarded art residencies in Australia and overseas. Her work straddles painting and printmaking. She teaches small groups and individuals from her studio overlooking a wildlife corridor.",
+      "address": "56 Gumland Drive, Witta, QLD 4552",
+      "contact": {
+        "phone": "0411 259 239",
+        "email": "suziehaddock2@gmail.com",
+        "website": "https://susanhaddock.com.au/",
+        "facebook": "https://www.facebook.com/susanhaddockartist/",
+        "instagram": "https://www.instagram.com/suziehaddockart/"
+      },
+      "image": "https://openstudiossunshinecoast.com.au/wp-content/uploads/2022/03/Susan-Haddock-2-847x900.jpg"
+    },
+    {
+      "id": "wattle-gully-retreat",
+      "name": "Wattle Gully Retreat",
+      "category": "Accommodation",
+      "description": "Wattle Gully Retreat is a haven of 50 acres of native bush land and rainforest with a beautiful mountain creek winding through the property. Located in the picturesque Blackall Ranges with the Glasshouse Mountains as its neighbour, this private retreat boasts a beautiful waterfall, cascading rock pools, a bush haven for native animals with wallabies and koalas a regular sighting, and abundant birdlife for the avid birdwatcher. From couples to small families or large groups, they invite you to enjoy their beautiful property. Misty mountain mornings are stirred by the morning calls of the local bird life. Spirals of smoke rise from the chimneys on cold winter mornings. Enjoy a beautiful rainforest walk or relax with a picnic beside the rock pools along the mountain creek. For a farmstay experience there are animal feeding and other activities. Fishing in the creek makes for a relaxing afternoon. You can enjoy privacy at your cabins or join in the activities - the choice is yours. They are pet friendly.",
+      "address": "94 Ansell Rd, Witta, QLD 4552",
+      "contact": {
+        "phone": "07 5494 4426",
+        "email": null,
+        "website": "http://www.wattlegully.com"
+      },
+      "image": "https://files.manuscdn.com/user_upload_by_module/session_file/310519663259238950/wDUetFJDpBuHzqhZ.jpg"
+    },
+    {
+      "id": "whispering-valley-cottage-retreat",
+      "name": "Whispering Valley Cottage Retreat",
+      "category": "Accommodation",
+      "description": "Whispering Valley Cottage Retreat offers secluded and romantic accommodation in the Sunshine Coast Hinterland. It is set on 46 acres of tranquil nature and features six unique, spacious, self-contained cottages. Each cottage has a log fireplace, spa bath, and a king-sized bed. The retreat aims to provide a peaceful and relaxing experience, allowing guests to connect with nature. They offer direct check-in service for convenience and flexibility. While they offer special packages, their base rates are for accommodation only, providing flexibility for guests to plan their own getaways.",
+      "address": "35 Rose Gum Lane, Witta, QLD 4552",
+      "contact": {
+        "phone": "07 5494 4367",
+        "email": null,
+        "website": "https://whisperingvalleymalenyaccommodation.com.au/",
+        "facebook": "https://www.facebook.com/whisperingvalleycabins/",
+        "instagram": "https://www.instagram.com/whispering_valley/"
+      },
+      "image": "https://files.manuscdn.com/user_upload_by_module/session_file/310519663259238950/GmmTWfwuuKIOSDhu.jpg"
+    },
+    {
+      "id": "witta-general-store-and-cafe",
+      "name": "Witta General Store and Cafe",
+      "category": "Markets & Retail",
+      "description": "Established in 2004, Witta General Store Licensed Caf\u00e9 and Functions is a must-visit in the Maleny region. Located in the township of Witta, this caf\u00e9 is an ideal place for visitors to stop in for a tasty meal en route to the Sunshine Coast\u2019s Blackall Ranges. Sit back, relax and soak up a tranquil country atmosphere on the verandah, or be seated indoors with elbows resting on a thick, blue gum timber table. Offering Modern Australian, fusion cuisine, choose from a menu of tapas-inspired dishes created to share, like the Peking duck spring rolls with hoisin sauce or perhaps rare roasted beef with caramelised onion marmalade and French mustard; or a chicken, onion and aioli taco, asking the knowledgeable staff for recommendations on local and imported wines to match any dish. The general store also provides day-to-day staples and local produce, including takeaway food, local organic coffee, newspapers, bread, eggs, milk, and butter. It is open 7 days a week from 6:30 am to 8:00 pm.",
+      "address": "466 Maleny-Kenilworth Rd, Witta QLD 4552",
+      "contact": {
+        "phone": "07 5494 4411",
+        "email": null,
+        "website": "https://www.wittageneralstore.com/",
+        "instagram": "https://www.instagram.com/wittageneralstore/"
+      },
+      "image": "https://files.manuscdn.com/user_upload_by_module/session_file/310519663259238950/PfGGQwQxJdElyewd.jpeg"
+    },
+    {
+      "id": "witta-market",
+      "name": "Witta Market",
+      "category": "Markets & Retail",
+      "description": "Witta Market is a vibrant and welcoming community market located in the heart of Witta, on the Sunshine Coast Hinterland. For over 15 years, it has been a local staple, held on the third Saturday of every month from 7am to 12pm. The market offers a diverse range of products, including fresh, locally grown produce, handmade crafts, and artisanal goods. It's a place where locals and visitors alike can enjoy a festive atmosphere, grab a coffee, and explore the unique offerings of the region.",
+      "address": "316 Witta Rd, Witta QLD 4552",
+      "contact": {
+        "phone": null,
+        "email": null,
+        "website": "https://www.wittamarket.com/",
+        "facebook": "https://www.facebook.com/wittamarket/",
+        "instagram": "https://www.instagram.com/wittamarket/?hl=en"
+      },
+      "image": "https://files.manuscdn.com/user_upload_by_module/session_file/310519663259238950/AryGoFuIHmEgoEsA.jpg"
+    },
+    {
+      "id": "witta-recreational-club",
+      "name": "Witta Recreational Club",
+      "category": "Community & Sports",
+      "description": "The WRC is established to \u201cpossess, improve and maintain the Witta Sports Ground and facilities and any other business beneficial to the district approved by the members\u201d. Our grounds are part of the community and as such are used for varied events such as Sport, Fundraisers, Private Parties and other types of functions.",
+      "address": "351 Witta Rd, Witta QLD 4552",
+      "contact": {
+        "phone": "0409 266 507",
+        "email": null,
+        "website": null,
+        "facebook": "https://www.facebook.com/wittarecclub/"
+      },
+      "image": "https://scontent-sin11-2.xx.fbcdn.net/v/t39.30808-6/476823959_1112689010892551_7581693109928641046_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=cc71e4&_nc_ohc=ZBUpcnXPqFEQ7kNvwFL8XMg&_nc_oc=AdlYr5RVd9RxcJc3m5BlzsZm8AQsInY0gbFq6OYgp18Kaq-9z0ssoV8wTT8yKyxFxvw&_nc_zt=23&_nc_ht=scontent-sin11-2.xx&_nc_gid=AZfjXXboezKr-to3c2a_yA&oh=00_AflL4tBUs9sdHwYUpN8zmpOAxRI9KZbVu8_oX9gIl7KAqg&oe=694E7B84"
+    },
+    {
+      "id": "witta-tennis-club",
+      "name": "Witta Tennis Club",
+      "category": "Community & Sports",
+      "description": "Witta Tennis Club is dedicated to providing a safe, pleasant and friendly environment for the whole community to enjoy tennis. We have active organized social tennis during the week and on the weekends. There is coaching available for adults and children as well as School Holiday Clinics for children. We have several adult fixtures teams playing all over the Sunshine Coast. Our courts are available for hire day and night at reasonable rates. Witta Tennis Club has one synthetic grass and two flexi-pave courts, a comfortable well appointed club house, ample parking, toilet and shower facilities. We welcome players of all ages and abilities to come down and have a hit.",
+      "address": "351 Witta Road, Witta Queensland 4552",
+      "contact": {
+        "phone": "0438 295 501",
+        "email": "wittatennis@gmail.com",
+        "website": "https://www.wittatennis.com.au/",
+        "facebook": "https://www.facebook.com/wittasportgrounds/"
+      },
+      "image": "https://files.manuscdn.com/user_upload_by_module/session_file/310519663259238950/CIhWYMWyCpPOwQvU.jpeg"
+    },
+    {
+      "id": "wittacork-dairy-cottages",
+      "name": "Wittacork Dairy Cottages",
+      "category": "Accommodation",
+      "description": "Wittacork is a modern working dairy farm on 700 acres, containing over 150 acres of pristine rainforest. The farm adjoins Lake Baroon and Kondalilla National Park and is a Land for Wildlife registered property. They offer self-contained cottages set on a ridge overlooking Lake Baroon and the Kondalilla National Park, surrounded by rainforest. They welcome children, small groups, and couples, and have 5.5 kilometers of walking tracks in their rainforest.",
+      "address": "286 Tesch Road, Witta, QLD 4552",
+      "contact": {
+        "phone": "07 5494 4369",
+        "email": "info@wittacork.com.au",
+        "website": "https://wittacork.com.au/",
+        "facebook": "https://www.facebook.com/p/Wittacork-Dairy-Cottages-100064318764645/",
+        "instagram": "https://www.instagram.com/wittacorkdairycottages/?hl=en"
+      },
+      "image": "https://files.manuscdn.com/user_upload_by_module/session_file/310519663259238950/HnuwgZWOaxRUidKf.jpg"
+    },
+    {
+      "id": "zarina-country-cabins",
+      "name": "Zarina Country Cabins",
+      "category": "Accommodation",
+      "description": "Zarina Country Cabins offers modern, self-contained cabins for couples, located 10 minutes from Maleny in the Sunshine Coast hinterland. The cabins are strategically positioned to offer panoramic mountain views and majestic sunsets over the Blackall Range. Each cabin is fully self-contained and luxuriously appointed, with amenities such as a king-sized bed, a fireplace, and a bath with a view. The property also features fruit trees, a creek, and regular sightings of wildlife, including cattle. It is an adults-only escape designed for a deluxe and romantic getaway.",
+      "address": "139 Curramore Road, Witta, QLD 4552",
+      "contact": {
+        "phone": "0417 714 687",
+        "email": "info@zarinacountrycabins.com.au",
+        "website": "https://zarinacountrycabins.com.au/",
+        "instagram": "https://www.instagram.com/zarinacountrycabins/?hl=en"
+      },
+      "image": "https://files.manuscdn.com/user_upload_by_module/session_file/310519663259238950/cNsBBxzxWIFeLike.webp"
+    }
+  ]
+}
