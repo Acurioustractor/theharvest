@@ -11,7 +11,7 @@ function jsonResponse(body: Record<string, unknown>, status = 200) {
 Deno.serve(async req => {
   if (req.method !== "POST") return new Response("Method not allowed", { status: 405 });
 
-  const apiKey = Deno.env.get("GHL_API_KEY");
+  const apiKey = Deno.env.get("GHL_API_KEY") ?? Deno.env.get("GHL_TOKEN");
   const locationId = Deno.env.get("GHL_LOCATION_ID");
   if (!apiKey || !locationId) {
     return jsonResponse({

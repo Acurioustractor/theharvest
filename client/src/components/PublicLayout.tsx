@@ -12,6 +12,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { getLoginUrl } from "@/const";
 import { cn } from "@/lib/utils";
+import UnifiedFooter from "@/components/shared/UnifiedFooter";
 
 interface PublicLayoutProps {
   children: React.ReactNode;
@@ -309,117 +310,19 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
 
       <main>{children}</main>
 
-      {/* Footer */}
-      <footer className="bg-stone-900 text-white py-16">
-        <div className="container">
-          <div className="grid md:grid-cols-4 gap-12">
-            {/* Brand */}
-            <div className="md:col-span-1">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="h-10 w-10 rounded-full bg-amber-500 flex items-center justify-center">
-                  <Leaf className="h-5 w-5 text-black" />
-                </div>
-                <div>
-                  <span className="font-serif font-bold text-xl block leading-tight">
-                    The Harvest
-                  </span>
-                  <span className="text-xs tracking-wider uppercase text-stone-400">
-                    Witta
-                  </span>
-                </div>
-              </div>
-              <p className="text-stone-400 text-sm leading-relaxed">
-                A place to gather, grow, and share in the heart of the Sunshine Coast Hinterland.
-              </p>
-            </div>
-
-            {/* Visit */}
-            <div>
-              <h4 className="font-semibold mb-4 text-sm uppercase tracking-wider text-stone-400">
-                Visit
-              </h4>
-              <ul className="space-y-3 text-stone-300">
-                <li>
-                  <Link href="/visit">
-                    <span className="hover:text-amber-400 transition-colors">Plan Your Visit</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/whats-on">
-                    <span className="hover:text-amber-400 transition-colors">What's On</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/venue-hire">
-                    <span className="hover:text-amber-400 transition-colors">Venue Hire</span>
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            {/* Explore */}
-            <div>
-              <h4 className="font-semibold mb-4 text-sm uppercase tracking-wider text-stone-400">
-                Explore
-              </h4>
-              <ul className="space-y-3 text-stone-300">
-                <li>
-                  <Link href="/accommodation">
-                    <span className="hover:text-amber-400 transition-colors">Accommodation</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/enterprises">
-                    <span className="hover:text-amber-400 transition-colors">Local Enterprises</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/about">
-                    <span className="hover:text-amber-400 transition-colors">About Us</span>
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            {/* Contact */}
-            <div>
-              <h4 className="font-semibold mb-4 text-sm uppercase tracking-wider text-stone-400">
-                Contact
-              </h4>
-              <ul className="space-y-3 text-stone-300 text-sm">
-                <li>123 Witta Road, Witta QLD 4552</li>
-                <li>
-                  <a
-                    href="mailto:hello@theharvestwitta.com.au"
-                    className="hover:text-amber-400 transition-colors"
-                  >
-                    hello@theharvestwitta.com.au
-                  </a>
-                </li>
-                <li>
-                  <a href="tel:+61754941234" className="hover:text-amber-400 transition-colors">
-                    (07) 5494 1234
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="border-t border-stone-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-stone-500 text-sm">
-              © 2025 The Harvest Witta. All rights reserved.
-            </p>
-            <div className="flex gap-6 text-stone-500 text-sm">
-              <Link href="/admin">
-                <span className="hover:text-stone-300 transition-colors">Admin</span>
-              </Link>
-              <Link href="/my-business">
-                <span className="hover:text-stone-300 transition-colors">My Business</span>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </footer>
+      {/* Unified Footer */}
+      <UnifiedFooter
+        currentProject="The Harvest"
+        showProjects={true}
+        customLinks={[
+          { label: "Visit", href: "/visit" },
+          { label: "What's On", href: "/whats-on" },
+          { label: "Venue Hire", href: "/venue-hire" },
+          { label: "About", href: "/about" },
+          { label: "Contact", href: "/contact" },
+        ]}
+        contactEmail="hello@theharvestwitta.com.au"
+      />
     </div>
   );
 }

@@ -51,19 +51,27 @@ alter table app_users enable row level security;
 alter table events enable row level security;
 alter table businesses enable row level security;
 
+-- Ensure UUID column types if tables already existed with text
+alter table if exists app_users
+  alter column "openId" type uuid using "openId"::uuid;
+alter table if exists businesses
+  add column if not exists "userOpenId" uuid;
+alter table if exists businesses
+  alter column "userOpenId" type uuid using "userOpenId"::uuid;
+
 -- app_users policies
 create policy "app_users_select_own" on app_users
   for select
-  using (auth.uid() = "openId");
+  using (auth.uid() = "openId"::uuid);
 
 create policy "app_users_insert_own" on app_users
   for insert
-  with check (auth.uid() = "openId" and role = 'user');
+  with check (auth.uid() = "openId"::uuid and role = 'user');
 
 create policy "app_users_update_own" on app_users
   for update
-  using (auth.uid() = "openId")
-  with check (auth.uid() = "openId" and role = 'user');
+  using (auth.uid() = "openId"::uuid)
+  with check (auth.uid() = "openId"::uuid and role = 'user');
 
 -- events policies (public read of approved, public submit pending)
 create policy "events_select_approved" on events
@@ -81,7 +89,7 @@ create policy "businesses_select_approved" on businesses
 
 create policy "businesses_select_own" on businesses
   for select
-  using (auth.uid() = "userOpenId");
+  using (auth.uid() = "userOpenId"::uuid);
 
 create policy "businesses_insert_pending" on businesses
   for insert

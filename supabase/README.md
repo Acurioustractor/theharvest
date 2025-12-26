@@ -28,11 +28,11 @@ supabase functions deploy newsletter-subscribe
 These are required for the functions to run:
 
 ```
-supabase secrets set SUPABASE_URL=https://YOUR_PROJECT.supabase.co
-supabase secrets set SUPABASE_SERVICE_ROLE_KEY=YOUR_SERVICE_ROLE_KEY
+supabase secrets set SERVICE_ROLE_KEY=YOUR_SERVICE_ROLE_KEY
 supabase secrets set OWNER_OPEN_ID=YOUR_SUPABASE_USER_ID
 supabase secrets set ADMIN_OPEN_IDS=COMMA_SEPARATED_USER_IDS
 supabase secrets set GHL_API_KEY=YOUR_GHL_KEY
+supabase secrets set GHL_TOKEN=YOUR_PRIVATE_INTEGRATION_TOKEN
 supabase secrets set GHL_LOCATION_ID=YOUR_GHL_LOCATION_ID
 ```
 
