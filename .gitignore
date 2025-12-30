@@ -106,3 +106,16 @@ temp/
 *.sqlite
 *.sqlite3
 .vercel
+
+# Claude/Cursor IDE files
+.claude/
+
+# Backup files
+.env.local.backup*
+*.backup-*
+
+# GitHub workflows (if added here)
+.github/
+
+# Global scripts symlink
+scripts-global
