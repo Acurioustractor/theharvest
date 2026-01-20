@@ -287,7 +287,7 @@ export default function Witta() {
             </p>
           </motion.div>
 
-          <HarvestGallery tag="witta" />
+          <HarvestGallery />
         </div>
       </section>
 

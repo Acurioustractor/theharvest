@@ -321,7 +321,7 @@ export default function Journey() {
             </p>
           </motion.div>
 
-          <HarvestGallery tag="journey" />
+          <HarvestGallery />
         </div>
       </section>
 

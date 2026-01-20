@@ -535,7 +535,7 @@ export default function Explore() {
             </p>
           </motion.div>
 
-          <HarvestGallery tag="space" />
+          <HarvestGallery />
         </div>
       </section>
 
