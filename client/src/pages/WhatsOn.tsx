@@ -180,8 +180,8 @@ export default function WhatsOn() {
               What's On
             </h1>
             <p className="text-xl text-stone-600 leading-relaxed mb-8">
-              Markets, workshops, community gatherings, and more. There's always something happening
-              at The Harvest – and you're always welcome.
+              Markets, workshops, community gatherings, and more. As we build The Harvest,
+              we're hosting events that bring the community together.
             </p>
             <EventSubmissionDialog onEventSubmitted={() => refetch()} />
           </motion.div>
@@ -365,7 +365,7 @@ export default function WhatsOn() {
             </h2>
             <p className="text-stone-300 mb-8">
               Whether it's a workshop you want to run, a community gathering, or a skill you want to
-              teach – we'd love to hear from you. The Harvest is built by the community, for the
+              teach – we'd love to hear from you. We're building The Harvest with the community, for the
               community.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">

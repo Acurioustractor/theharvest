@@ -1,7 +1,15 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
-import { Menu, X, ChevronDown, Leaf } from "lucide-react";
+import { Menu, X, ChevronDown, Leaf, Heart, MapPin, Calendar, Home as HomeIcon, Users, Bed, Building, Store, UserPlus, BookOpen, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "@/components/ui/navigation-menu";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,10 +26,47 @@ interface PublicLayoutProps {
   children: React.ReactNode;
 }
 
+// Navigation structure with grouped categories
+const navGroups = {
+  about: {
+    label: "About",
+    items: [
+      { label: "About The Harvest", href: "/about", icon: Heart, description: "Our story and values" },
+      { label: "Our Journey", href: "/journey", icon: MapPin, description: "From nursery to community hub" },
+      { label: "Stories", href: "/stories", icon: Users, description: "Voices from our community" },
+    ],
+  },
+  visit: {
+    label: "Visit",
+    items: [
+      { label: "Plan Your Visit", href: "/visit", icon: MapPin, description: "Hours, directions & what to expect" },
+      { label: "What's On", href: "/whats-on", icon: Calendar, description: "Events, workshops & markets" },
+      { label: "Explore", href: "/explore", icon: HomeIcon, description: "Discover our spaces" },
+    ],
+  },
+  stay: {
+    label: "Stay",
+    items: [
+      { label: "Accommodation", href: "/accommodation", icon: Bed, description: "Places to stay nearby" },
+      { label: "Venue Hire", href: "/venue-hire", icon: Building, description: "Host your event with us" },
+      { label: "Local Enterprises", href: "/enterprises", icon: Store, description: "Our community partners" },
+    ],
+  },
+  join: {
+    label: "Join",
+    items: [
+      { label: "Membership", href: "/membership", icon: UserPlus, description: "Become part of our community", badge: "Coming Soon" },
+      { label: "Journal", href: "/blog", icon: BookOpen, description: "News, recipes & reflections" },
+      { label: "Contact", href: "/contact", icon: Mail, description: "Get in touch" },
+    ],
+  },
+};
+
 export default function PublicLayout({ children }: PublicLayoutProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [location, setLocation] = useLocation();
+  const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
+  const [location] = useLocation();
   const { user, isAuthenticated, loading, logout } = useAuth();
 
   useEffect(() => {
@@ -35,20 +80,8 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
   // Close mobile menu on route change
   useEffect(() => {
     setIsMobileMenuOpen(false);
+    setExpandedGroup(null);
   }, [location]);
-
-  const mainNavItems = [
-    { label: "Overview", href: "/" },
-    { label: "Vision", href: "/about" },
-    { label: "Events & Programming", href: "/whats-on" },
-    { label: "Contact", href: "/contact" },
-  ];
-
-  const exploreItems = [
-    { label: "Accommodation", href: "/accommodation" },
-    { label: "Local Enterprises", href: "/enterprises" },
-    { label: "Venue Hire", href: "/venue-hire" },
-  ];
 
   const isHomePage = location === "/";
   const showTransparentNav = isHomePage && !isScrolled;
@@ -102,58 +135,93 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
             </div>
           </Link>
 
-          {/* Desktop Nav */}
+          {/* Desktop Nav - Mega Menu */}
           <nav className="hidden lg:flex items-center gap-1">
-            {mainNavItems.map((item) => (
-              <Link key={item.label} href={item.href}>
-                <span
-                  className={cn(
-                    "px-4 py-2 text-sm font-medium rounded-full transition-colors",
-                    location === item.href
-                      ? showTransparentNav
-                        ? "bg-white/20 text-white"
-                        : "bg-stone-100 text-stone-900"
-                      : showTransparentNav
-                      ? "text-white/90 hover:text-white hover:bg-white/10"
-                      : "text-stone-600 hover:text-stone-900 hover:bg-stone-50"
-                  )}
-                >
-                  {item.label}
-                </span>
-              </Link>
-            ))}
+            {/* Home Link */}
+            <Link href="/">
+              <span
+                className={cn(
+                  "px-4 py-2 text-sm font-medium rounded-full transition-colors",
+                  location === "/"
+                    ? showTransparentNav
+                      ? "bg-white/20 text-white"
+                      : "bg-stone-100 text-stone-900"
+                    : showTransparentNav
+                    ? "text-white/90 hover:text-white hover:bg-white/10"
+                    : "text-stone-600 hover:text-stone-900 hover:bg-stone-50"
+                )}
+              >
+                Home
+              </span>
+            </Link>
 
-            {/* Explore Dropdown */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button
-                  className={cn(
-                    "px-4 py-2 text-sm font-medium rounded-full transition-colors flex items-center gap-1",
-                    showTransparentNav
-                      ? "text-white/90 hover:text-white hover:bg-white/10"
-                      : "text-stone-600 hover:text-stone-900 hover:bg-stone-50"
-                  )}
-                >
-                  Explore
-                  <ChevronDown className="h-4 w-4" />
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48">
-                {exploreItems.map((item) => (
-                  <DropdownMenuItem key={item.label} asChild>
-                    <Link href={item.href}>
-                      <span className="w-full">{item.label}</span>
-                    </Link>
-                  </DropdownMenuItem>
+            {/* Mega Menu Groups */}
+            <NavigationMenu>
+              <NavigationMenuList>
+                {Object.entries(navGroups).map(([key, group]) => (
+                  <NavigationMenuItem key={key}>
+                    <NavigationMenuTrigger
+                      className={cn(
+                        "px-4 py-2 text-sm font-medium rounded-full transition-colors bg-transparent",
+                        showTransparentNav
+                          ? "text-white/90 hover:text-white hover:bg-white/10 data-[state=open]:bg-white/20"
+                          : "text-stone-600 hover:text-stone-900 hover:bg-stone-50 data-[state=open]:bg-stone-100"
+                      )}
+                    >
+                      {group.label}
+                    </NavigationMenuTrigger>
+                    <NavigationMenuContent>
+                      <ul className="grid w-[400px] gap-1 p-4">
+                        {group.items.map((item) => {
+                          const Icon = item.icon;
+                          return (
+                            <li key={item.href}>
+                              <NavigationMenuLink asChild>
+                                <Link href={item.href}>
+                                  <span
+                                    className={cn(
+                                      "flex items-start gap-3 rounded-lg p-3 transition-colors hover:bg-stone-50 cursor-pointer group",
+                                      location === item.href && "bg-amber-50"
+                                    )}
+                                  >
+                                    <div className={cn(
+                                      "h-9 w-9 rounded-lg flex items-center justify-center shrink-0 transition-colors",
+                                      location === item.href
+                                        ? "bg-amber-500 text-white"
+                                        : "bg-stone-100 text-stone-600 group-hover:bg-amber-100 group-hover:text-amber-700"
+                                    )}>
+                                      <Icon className="h-4 w-4" />
+                                    </div>
+                                    <div className="flex-1">
+                                      <div className={cn(
+                                        "text-sm font-medium flex items-center gap-2",
+                                        location === item.href ? "text-amber-700" : "text-stone-900"
+                                      )}>
+                                        {item.label}
+                                        {"badge" in item && item.badge && (
+                                          <span className="px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide bg-amber-100 text-amber-700 rounded">
+                                            {item.badge}
+                                          </span>
+                                        )}
+                                      </div>
+                                      <div className="text-xs text-stone-500 mt-0.5">
+                                        {item.description}
+                                      </div>
+                                    </div>
+                                  </span>
+                                </Link>
+                              </NavigationMenuLink>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </NavigationMenuContent>
+                  </NavigationMenuItem>
                 ))}
-                <DropdownMenuItem asChild>
-                  <Link href="/strategic-analysis">
-                    <span className="w-full text-stone-500">Strategic Analysis</span>
-                  </Link>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+              </NavigationMenuList>
+            </NavigationMenu>
 
+            {/* CTA Button */}
             <Button
               className={cn(
                 "ml-4 font-medium",
@@ -163,9 +231,10 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
               )}
               asChild
             >
-              <Link href="/whats-on">See What's On</Link>
+              <Link href="/whats-on">What's On</Link>
             </Button>
 
+            {/* User Menu */}
             {loading ? null : isAuthenticated ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -236,57 +305,88 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
 
       {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && (
-        <div className="fixed inset-0 z-40 bg-white pt-20 px-6 lg:hidden animate-in slide-in-from-top-5 fade-in">
-          <nav className="flex flex-col gap-2 py-6">
-            {mainNavItems.map((item) => (
-              <Link key={item.label} href={item.href}>
-                <span
-                  className={cn(
-                    "block text-lg font-medium py-3 px-4 rounded-lg transition-colors",
-                    location === item.href
-                      ? "bg-amber-50 text-amber-700"
-                      : "text-stone-700 hover:bg-stone-50"
-                  )}
+        <div className="fixed inset-0 z-40 bg-white pt-20 px-4 lg:hidden animate-in slide-in-from-top-5 fade-in overflow-y-auto">
+          <nav className="flex flex-col gap-2 py-4 pb-32">
+            {/* Home */}
+            <Link href="/">
+              <span
+                className={cn(
+                  "flex items-center gap-3 text-base font-medium py-3 px-4 rounded-lg transition-colors",
+                  location === "/"
+                    ? "bg-amber-50 text-amber-700"
+                    : "text-stone-700 hover:bg-stone-50"
+                )}
+              >
+                <HomeIcon className="h-5 w-5" />
+                Home
+              </span>
+            </Link>
+
+            {/* Grouped Sections */}
+            {Object.entries(navGroups).map(([key, group]) => (
+              <div key={key} className="border-t border-stone-100 pt-2 mt-2">
+                <button
+                  onClick={() => setExpandedGroup(expandedGroup === key ? null : key)}
+                  className="flex items-center justify-between w-full text-xs uppercase tracking-wider text-stone-400 px-4 py-2"
                 >
-                  {item.label}
-                </span>
-              </Link>
+                  {group.label}
+                  <ChevronDown className={cn(
+                    "h-4 w-4 transition-transform",
+                    expandedGroup === key && "rotate-180"
+                  )} />
+                </button>
+                <div className={cn(
+                  "overflow-hidden transition-all",
+                  expandedGroup === key ? "max-h-96" : "max-h-0"
+                )}>
+                  {group.items.map((item) => {
+                    const Icon = item.icon;
+                    return (
+                      <Link key={item.href} href={item.href}>
+                        <span
+                          className={cn(
+                            "flex items-center gap-3 text-base font-medium py-3 px-4 rounded-lg transition-colors",
+                            location === item.href
+                              ? "bg-amber-50 text-amber-700"
+                              : "text-stone-700 hover:bg-stone-50"
+                          )}
+                        >
+                          <Icon className="h-5 w-5" />
+                          {item.label}
+                          {"badge" in item && item.badge && (
+                            <span className="ml-auto px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide bg-amber-100 text-amber-700 rounded">
+                              {item.badge}
+                            </span>
+                          )}
+                        </span>
+                      </Link>
+                    );
+                  })}
+                </div>
+              </div>
             ))}
 
-            <div className="border-t border-stone-200 my-4 pt-4">
-              <span className="text-xs uppercase tracking-wider text-stone-400 px-4">
-                Explore
-              </span>
-              {exploreItems.map((item) => (
-                <Link key={item.label} href={item.href}>
-                  <span className="block text-lg font-medium py-3 px-4 text-stone-700 hover:bg-stone-50 rounded-lg">
-                    {item.label}
-                  </span>
-                </Link>
-              ))}
-              <Link href="/strategic-analysis">
-                <span className="block text-lg font-medium py-3 px-4 text-stone-500 hover:bg-stone-50 rounded-lg">
-                  Strategic Analysis
-                </span>
-              </Link>
+            {/* CTA */}
+            <div className="border-t border-stone-100 pt-4 mt-4">
+              <Button
+                className="w-full bg-amber-500 text-black hover:bg-amber-600"
+                size="lg"
+                asChild
+              >
+                <Link href="/whats-on">What's On</Link>
+              </Button>
             </div>
 
-            <Button
-              className="mt-4 w-full bg-amber-500 text-black hover:bg-amber-600"
-              size="lg"
-              asChild
-            >
-              <Link href="/whats-on">See What's On</Link>
-            </Button>
+            {/* Auth */}
             {loading ? null : isAuthenticated ? (
-              <div className="pt-3">
+              <div className="pt-3 space-y-1">
                 <Link href="/account">
-                  <span className="block text-lg font-medium py-3 px-4 rounded-lg transition-colors text-stone-800 hover:bg-stone-50">
+                  <span className="block text-base font-medium py-3 px-4 rounded-lg transition-colors text-stone-800 hover:bg-stone-50">
                     Account
                   </span>
                 </Link>
                 <Link href="/partner-portal">
-                  <span className="block text-lg font-medium py-3 px-4 rounded-lg transition-colors text-stone-800 hover:bg-stone-50">
+                  <span className="block text-base font-medium py-3 px-4 rounded-lg transition-colors text-stone-800 hover:bg-stone-50">
                     Partner Portal
                   </span>
                 </Link>
@@ -297,6 +397,7 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
             ) : (
               <Button
                 className="w-full mt-2"
+                variant="outline"
                 onClick={() => {
                   window.location.href = getLoginUrl();
                 }}
@@ -310,15 +411,16 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
 
       <main>{children}</main>
 
-      {/* Unified Footer */}
+      {/* Footer */}
       <UnifiedFooter
         currentProject="The Harvest"
         showProjects={true}
         customLinks={[
+          { label: "About", href: "/about" },
+          { label: "Our Journey", href: "/journey" },
           { label: "Visit", href: "/visit" },
           { label: "What's On", href: "/whats-on" },
-          { label: "Venue Hire", href: "/venue-hire" },
-          { label: "About", href: "/about" },
+          { label: "Membership", href: "/membership" },
           { label: "Contact", href: "/contact" },
         ]}
         contactEmail="hello@theharvestwitta.com.au"

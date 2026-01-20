@@ -19,10 +19,17 @@ import {
   TreeDeciduous,
   Mail,
   ChevronRight,
+  Compass,
+  BookOpen,
+  Newspaper,
 } from "lucide-react";
 import { toast } from "sonner";
 import { InterestSelector, type Interest } from "@/components/InterestSelector";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useSeason } from "@/contexts/SeasonalContext";
+import { trpc } from "@/lib/trpc";
+import BlogCard, { type ELArticle } from "@/components/BlogCard";
+import { EditableImage } from "@/components/EditableImage";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
@@ -44,8 +51,8 @@ const offers = [
     title: "Eat",
     tagline: "Seasonal, simple, generous.",
     description:
-      "A community kitchen serving honest food made with local produce. Come for breakfast, stay for the conversation.",
-    image: "/images/harvest-eat.jpg",
+      "We're building a community kitchen to serve honest food made with local produce. A place for breakfast, conversation, and connection.",
+    slot: "card-1" as const,
     color: "from-amber-500/20 to-orange-500/20",
   },
   {
@@ -53,8 +60,8 @@ const offers = [
     title: "Grow",
     tagline: "Seedlings, soil, skills.",
     description:
-      "A garden centre and outdoor learning space where you can get your hands dirty and take something home to plant.",
-    image: "/images/harvest-grow.jpg",
+      "We're developing a garden centre and outdoor learning space where you'll be able to get your hands dirty and take something home to plant.",
+    slot: "card-2" as const,
     color: "from-green-500/20 to-emerald-500/20",
   },
   {
@@ -62,8 +69,8 @@ const offers = [
     title: "Gather",
     tagline: "A venue with warmth and room to breathe.",
     description:
-      "Host your celebration, workshop, or community event in a space designed for connection, not performance.",
-    image: "/images/harvest-gather.jpg",
+      "We're creating flexible spaces for celebrations, workshops, and community events – designed for connection, not performance.",
+    slot: "card-3" as const,
     color: "from-blue-500/20 to-indigo-500/20",
   },
   {
@@ -71,8 +78,8 @@ const offers = [
     title: "Make",
     tagline: "Workshops and maker days with locals.",
     description:
-      "Learn new skills from neighbours who know their craft. Pottery, preserving, woodwork, and whatever else the community brings.",
-    image: "/images/harvest-make.jpg",
+      "We're planning workshops where you can learn new skills from neighbours who know their craft. Pottery, preserving, woodwork, and more.",
+    slot: "card-4" as const,
     color: "from-purple-500/20 to-pink-500/20",
   },
 ];
@@ -100,28 +107,18 @@ const values = [
   },
 ];
 
-const testimonials = [
-  {
-    quote: "Finally, a place in the hills where you can just show up and belong.",
-    author: "Sarah M.",
-    role: "Witta local",
-  },
-  {
-    quote: "The workshops here have connected me with skills and people I never knew I needed.",
-    author: "Tom K.",
-    role: "Maleny resident",
-  },
-  {
-    quote: "It's not trying to be fancy. It's trying to be real. And that's exactly what we needed.",
-    author: "Jenny L.",
-    role: "Community member",
-  },
-];
 
 export default function HarvestHome() {
   const [email, setEmail] = useState("");
   const [interests, setInterests] = useState<Interest[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { data: seasonalData } = useSeason();
+
+  // Fetch recent blog posts
+  const { data: recentPosts = [] } = useQuery({
+    queryKey: ["blog", "recent"],
+    queryFn: () => trpc.blog.recent.query({ limit: 3 }),
+  });
 
   const newsletterMutation = useMutation({
     mutationFn: subscribeNewsletter,
@@ -157,14 +154,20 @@ export default function HarvestHome() {
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
       <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
-        {/* Background Image */}
+        {/* Background - editable hero image */}
         <div className="absolute inset-0">
-          <img
-            src="/images/harvest-hero.jpg"
+          <EditableImage
+            page="home"
+            slot="hero"
             alt="The Harvest community gathering"
-            className="w-full h-full object-cover"
+            className="h-full w-full"
+            aspectRatio=""
+            imageClassName="object-cover"
+            placeholder={
+              <div className="w-full h-full bg-gradient-to-br from-stone-700 via-stone-800 to-stone-900" />
+            }
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black/60" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black/60 pointer-events-none" />
         </div>
 
         {/* Hero Content */}
@@ -176,18 +179,17 @@ export default function HarvestHome() {
             className="max-w-4xl mx-auto"
           >
             <span className="inline-block px-4 py-2 mb-6 text-sm font-medium bg-white/10 backdrop-blur-sm rounded-full border border-white/20">
-              A regenerative gathering place in Witta
+              {seasonalData.emoji} {seasonalData.content.tagline} in Witta
             </span>
 
             <h1 className="text-5xl md:text-7xl font-serif font-bold mb-6 leading-tight">
-              A place to gather,
+              We're creating a place
               <br />
-              <span className="text-amber-300">grow, and share.</span>
+              <span className="text-amber-300">to gather, grow, and share.</span>
             </h1>
 
             <p className="text-xl md:text-2xl text-white/90 mb-10 max-w-2xl mx-auto font-light">
-              Come for the food. Stay for the community.
-              <br />A kitchen, garden centre, and creative hub in the Sunshine Coast hinterland.
+              {seasonalData.content.welcomeMessage}
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -242,7 +244,7 @@ export default function HarvestHome() {
               variants={fadeInUp}
               className="text-amber-600 font-medium tracking-wide uppercase text-sm"
             >
-              What We Offer
+              What We're Building
             </motion.span>
             <motion.h2
               variants={fadeInUp}
@@ -252,9 +254,19 @@ export default function HarvestHome() {
             </motion.h2>
             <motion.p
               variants={fadeInUp}
-              className="text-lg text-stone-600 max-w-2xl mx-auto"
+              className="text-lg text-stone-600 max-w-3xl mx-auto mb-4"
             >
-              Four ways to connect with your community and the land. Start with one, stay for all.
+              This is the starting point of a new vision for this site. Right now, we're focused on
+              engaging the community – hearing your ideas, testing concepts, hosting events, and
+              working with local artists and makers.
+            </motion.p>
+            <motion.p
+              variants={fadeInUp}
+              className="text-lg text-stone-600 max-w-3xl mx-auto"
+            >
+              We're doing everything we can to celebrate Witta and welcome new friends. This is about
+              regenerative ideas, food, art, and connection – a place where everyone belongs and
+              good ideas grow.
             </motion.p>
           </motion.div>
 
@@ -265,19 +277,25 @@ export default function HarvestHome() {
             variants={staggerContainer}
             className="grid md:grid-cols-2 gap-8"
           >
-            {offers.map((offer, index) => (
+            {offers.map((offer) => (
               <motion.div key={offer.title} variants={fadeInUp}>
                 <Card className="group overflow-hidden border-0 shadow-lg hover:shadow-xl transition-all duration-500 bg-white">
                   <div className="relative h-64 overflow-hidden">
-                    <img
-                      src={offer.image}
+                    <EditableImage
+                      page="home"
+                      slot={offer.slot}
                       alt={offer.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                      className="h-full w-full"
+                      aspectRatio=""
+                      imageClassName="object-cover group-hover:scale-105 transition-transform duration-700"
+                      placeholder={
+                        <div className={`w-full h-full bg-gradient-to-br ${offer.color}`} />
+                      }
                     />
                     <div
-                      className={`absolute inset-0 bg-gradient-to-t ${offer.color} opacity-60`}
+                      className={`absolute inset-0 bg-gradient-to-t ${offer.color} opacity-60 pointer-events-none`}
                     />
-                    <div className="absolute bottom-4 left-4 flex items-center gap-3">
+                    <div className="absolute bottom-4 left-4 flex items-center gap-3 pointer-events-none">
                       <div className="w-12 h-12 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center">
                         <offer.icon className="h-6 w-6 text-stone-700" />
                       </div>
@@ -321,7 +339,7 @@ export default function HarvestHome() {
             className="max-w-4xl mx-auto text-center"
           >
             <h2 className="text-4xl md:text-5xl font-serif font-bold mb-8 leading-tight">
-              This is a place for{" "}
+              We're building this for{" "}
               <span className="text-amber-400">people who want to belong</span> without having to
               perform.
             </h2>
@@ -369,8 +387,7 @@ export default function HarvestHome() {
               Values as behaviour
             </motion.h2>
             <motion.p variants={fadeInUp} className="text-lg text-stone-600 max-w-2xl mx-auto">
-              Not just words on a wall. This is what you'll experience when you walk through our
-              door.
+              Not just words on a wall. These principles guide everything we're building.
             </motion.p>
           </motion.div>
 
@@ -400,66 +417,68 @@ export default function HarvestHome() {
         </div>
       </section>
 
-      {/* Testimonials Section */}
-      <section className="py-24 bg-gradient-to-b from-amber-50 to-white">
-        <div className="container">
-          <motion.div
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true }}
-            variants={staggerContainer}
-            className="text-center mb-16"
-          >
-            <motion.span
-              variants={fadeInUp}
-              className="text-amber-600 font-medium tracking-wide uppercase text-sm"
+      {/* Blog Preview Section */}
+      {recentPosts.length > 0 && (
+        <section className="py-24 bg-white">
+          <div className="container">
+            <motion.div
+              initial="initial"
+              whileInView="animate"
+              viewport={{ once: true }}
+              variants={staggerContainer}
+              className="text-center mb-16"
             >
-              Community Voices
-            </motion.span>
-            <motion.h2
-              variants={fadeInUp}
-              className="text-4xl md:text-5xl font-serif font-bold text-stone-800 mt-3"
-            >
-              What neighbours say
-            </motion.h2>
-          </motion.div>
+              <motion.span
+                variants={fadeInUp}
+                className="text-amber-600 font-medium tracking-wide uppercase text-sm"
+              >
+                From the Journal
+              </motion.span>
+              <motion.h2
+                variants={fadeInUp}
+                className="text-4xl md:text-5xl font-serif font-bold text-stone-800 mt-3 mb-6"
+              >
+                Latest stories
+              </motion.h2>
+              <motion.p variants={fadeInUp} className="text-lg text-stone-600 max-w-2xl mx-auto">
+                Seasonal rhythms, kitchen tales, and community moments from The Harvest.
+              </motion.p>
+            </motion.div>
 
-          <motion.div
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true }}
-            variants={staggerContainer}
-            className="grid md:grid-cols-3 gap-8"
-          >
-            {testimonials.map((testimonial, index) => (
-              <motion.div key={index} variants={fadeInUp}>
-                <Card className="h-full border-0 shadow-md bg-white">
-                  <CardContent className="p-8">
-                    <div className="text-5xl text-amber-300 font-serif mb-4">"</div>
-                    <p className="text-lg text-stone-700 italic mb-6 leading-relaxed">
-                      {testimonial.quote}
-                    </p>
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-stone-200 flex items-center justify-center">
-                        <span className="text-stone-600 font-medium">
-                          {testimonial.author.charAt(0)}
-                        </span>
-                      </div>
-                      <div>
-                        <p className="font-semibold text-stone-800">{testimonial.author}</p>
-                        <p className="text-sm text-stone-500">{testimonial.role}</p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
+            <motion.div
+              initial="initial"
+              whileInView="animate"
+              viewport={{ once: true }}
+              variants={staggerContainer}
+              className="grid md:grid-cols-3 gap-8"
+            >
+              {recentPosts.map((article: ELArticle) => (
+                <motion.div key={article.id} variants={fadeInUp}>
+                  <BlogCard article={article} />
+                </motion.div>
+              ))}
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.3 }}
+              className="text-center mt-12"
+            >
+              <Button variant="outline" size="lg" asChild>
+                <Link href="/blog">
+                  <Newspaper className="mr-2 h-5 w-5" />
+                  Read More Stories
+                </Link>
+              </Button>
+            </motion.div>
+          </div>
+        </section>
+      )}
 
       {/* Newsletter / Join Section */}
-      <section className="py-24 bg-stone-900 text-white">
+      <section id="newsletter" className="py-24 bg-stone-900 text-white">
         <div className="container">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -508,7 +527,7 @@ export default function HarvestHome() {
       {/* Quick Links / CTA Section */}
       <section className="py-16 bg-white border-t border-stone-200">
         <div className="container">
-          <div className="grid sm:grid-cols-3 gap-6">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <Link href="/whats-on">
               <Card className="group cursor-pointer border-0 shadow-md hover:shadow-lg transition-all bg-gradient-to-br from-amber-50 to-orange-50">
                 <CardContent className="p-6 flex items-center justify-between">
@@ -521,14 +540,26 @@ export default function HarvestHome() {
               </Card>
             </Link>
 
-            <Link href="/venue-hire">
+            <Link href="/explore">
               <Card className="group cursor-pointer border-0 shadow-md hover:shadow-lg transition-all bg-gradient-to-br from-green-50 to-emerald-50">
                 <CardContent className="p-6 flex items-center justify-between">
                   <div>
-                    <h3 className="font-serif font-bold text-lg text-stone-800">Book the Space</h3>
-                    <p className="text-stone-600 text-sm">Venue hire enquiries</p>
+                    <h3 className="font-serif font-bold text-lg text-stone-800">Explore the Site</h3>
+                    <p className="text-stone-600 text-sm">Interactive map & zones</p>
                   </div>
-                  <ArrowRight className="h-5 w-5 text-green-600 group-hover:translate-x-1 transition-transform" />
+                  <Compass className="h-5 w-5 text-green-600 group-hover:translate-x-1 transition-transform" />
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link href="/journey">
+              <Card className="group cursor-pointer border-0 shadow-md hover:shadow-lg transition-all bg-gradient-to-br from-purple-50 to-pink-50">
+                <CardContent className="p-6 flex items-center justify-between">
+                  <div>
+                    <h3 className="font-serif font-bold text-lg text-stone-800">Our Journey</h3>
+                    <p className="text-stone-600 text-sm">Transformation timeline</p>
+                  </div>
+                  <BookOpen className="h-5 w-5 text-purple-600 group-hover:translate-x-1 transition-transform" />
                 </CardContent>
               </Card>
             </Link>

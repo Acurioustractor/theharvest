@@ -18,6 +18,7 @@ import {
   Umbrella,
 } from "lucide-react";
 import { MapView } from "@/components/Map";
+import { EditableImage } from "@/components/EditableImage";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
@@ -108,33 +109,40 @@ export default function Visit() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Hero Section */}
-      <section className="relative py-24 bg-gradient-to-b from-stone-100 to-white overflow-hidden">
-        <div className="absolute inset-0 opacity-5">
-          <div
-            className="absolute inset-0"
-            style={{
-              backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23000000' fill-opacity='1' fill-rule='evenodd'/%3E%3C/svg%3E")`,
-            }}
+      {/* Hero Section with Editable Image */}
+      <section className="relative min-h-[60vh] flex items-center overflow-hidden">
+        {/* Background Image */}
+        <div className="absolute inset-0">
+          <EditableImage
+            page="visit"
+            slot="hero"
+            alt="The Harvest entrance and grounds"
+            className="h-full w-full"
+            aspectRatio=""
+            imageClassName="object-cover"
+            placeholder={
+              <div className="w-full h-full bg-gradient-to-br from-stone-600 via-stone-700 to-stone-800" />
+            }
           />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent" />
         </div>
 
-        <div className="container relative">
+        <div className="container relative z-10 py-24">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="max-w-3xl"
+            className="max-w-2xl"
           >
-            <span className="text-amber-600 font-medium tracking-wide uppercase text-sm">
+            <span className="text-amber-400 font-medium tracking-wide uppercase text-sm">
               Plan Your Visit
             </span>
-            <h1 className="text-5xl md:text-6xl font-serif font-bold text-stone-800 mt-3 mb-6">
+            <h1 className="text-5xl md:text-6xl font-serif font-bold text-white mt-3 mb-6">
               Come find us in the hills
             </h1>
-            <p className="text-xl text-stone-600 leading-relaxed">
-              We're tucked away in Witta, just 10 minutes from Maleny. Whether you're here for
-              breakfast, the market, or just a wander – you're welcome.
+            <p className="text-xl text-white/90 leading-relaxed">
+              We're tucked away in Witta, just 10 minutes from Maleny. As we develop the site,
+              we're opening our doors for markets, events, and community gatherings.
             </p>
           </motion.div>
         </div>
@@ -239,11 +247,11 @@ export default function Visit() {
                 </div>
                 <div className="pl-13 ml-[52px] space-y-2">
                   <a
-                    href="tel:+61754941234"
+                    href="tel:+61422883943"
                     className="flex items-center gap-2 text-stone-600 hover:text-amber-600 transition-colors"
                   >
                     <Phone className="h-4 w-4" />
-                    (07) 5494 1234
+                    0422 883 943
                   </a>
                   <a
                     href="mailto:hello@theharvestwitta.com.au"
@@ -288,11 +296,19 @@ export default function Visit() {
             className="grid md:grid-cols-3 gap-8"
           >
             <motion.div variants={fadeInUp}>
-              <Card className="h-full border-0 shadow-md bg-white">
-                <CardContent className="p-8 text-center">
-                  <div className="w-16 h-16 rounded-full bg-amber-100 flex items-center justify-center mx-auto mb-6">
-                    <Sun className="h-8 w-8 text-amber-600" />
-                  </div>
+              <Card className="h-full border-0 shadow-md bg-white overflow-hidden">
+                <EditableImage
+                  page="visit"
+                  slot="card-1"
+                  alt="Misty morning at The Harvest"
+                  aspectRatio="aspect-[4/3]"
+                  placeholder={
+                    <div className="w-full h-full bg-gradient-to-br from-amber-100 to-amber-200 flex items-center justify-center">
+                      <Sun className="h-12 w-12 text-amber-400" />
+                    </div>
+                  }
+                />
+                <CardContent className="p-6 text-center">
                   <h3 className="text-xl font-serif font-bold text-stone-800 mb-3">
                     Dress for the hills
                   </h3>
@@ -305,11 +321,19 @@ export default function Visit() {
             </motion.div>
 
             <motion.div variants={fadeInUp}>
-              <Card className="h-full border-0 shadow-md bg-white">
-                <CardContent className="p-8 text-center">
-                  <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-6">
-                    <Umbrella className="h-8 w-8 text-green-600" />
-                  </div>
+              <Card className="h-full border-0 shadow-md bg-white overflow-hidden">
+                <EditableImage
+                  page="visit"
+                  slot="card-2"
+                  alt="Rainy day at The Harvest"
+                  aspectRatio="aspect-[4/3]"
+                  placeholder={
+                    <div className="w-full h-full bg-gradient-to-br from-green-100 to-green-200 flex items-center justify-center">
+                      <Umbrella className="h-12 w-12 text-green-400" />
+                    </div>
+                  }
+                />
+                <CardContent className="p-6 text-center">
                   <h3 className="text-xl font-serif font-bold text-stone-800 mb-3">
                     Rain or shine
                   </h3>
@@ -322,11 +346,19 @@ export default function Visit() {
             </motion.div>
 
             <motion.div variants={fadeInUp}>
-              <Card className="h-full border-0 shadow-md bg-white">
-                <CardContent className="p-8 text-center">
-                  <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mx-auto mb-6">
-                    <Cloud className="h-8 w-8 text-blue-600" />
-                  </div>
+              <Card className="h-full border-0 shadow-md bg-white overflow-hidden">
+                <EditableImage
+                  page="visit"
+                  slot="card-3"
+                  alt="Relaxing at The Harvest"
+                  aspectRatio="aspect-[4/3]"
+                  placeholder={
+                    <div className="w-full h-full bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center">
+                      <Cloud className="h-12 w-12 text-blue-400" />
+                    </div>
+                  }
+                />
+                <CardContent className="p-6 text-center">
                   <h3 className="text-xl font-serif font-bold text-stone-800 mb-3">
                     Take your time
                   </h3>

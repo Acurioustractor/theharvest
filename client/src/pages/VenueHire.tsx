@@ -43,8 +43,8 @@ const spaces = [
     name: "The Main Hall",
     capacity: "Up to 80 seated / 120 standing",
     description:
-      "Our largest space with exposed timber beams, natural light, and flexible seating. Perfect for workshops, markets, and celebrations.",
-    features: ["Natural lighting", "Sound system", "Flexible layout", "Kitchen access"],
+      "Our largest space is taking shape with exposed timber beams, natural light, and flexible seating. Perfect for workshops, markets, and celebrations.",
+    features: ["Natural lighting", "Sound system planned", "Flexible layout", "Kitchen access coming"],
     ideal: ["Workshops", "Markets", "Private events", "Community gatherings"],
     image: "/images/venue-main-hall.jpg",
   },
@@ -52,8 +52,8 @@ const spaces = [
     name: "The Garden Pavilion",
     capacity: "Up to 40 seated",
     description:
-      "A covered outdoor space surrounded by native gardens. Ideal for intimate gatherings, small workshops, or casual dining events.",
-    features: ["Covered outdoor", "Garden views", "Power outlets", "BBQ access"],
+      "A covered outdoor space we're developing surrounded by native gardens. Ideal for intimate gatherings, small workshops, or casual dining events.",
+    features: ["Covered outdoor", "Garden views", "Power outlets", "BBQ access planned"],
     ideal: ["Small workshops", "Garden parties", "Pop-up dining", "Meetings"],
     image: "/images/venue-pavilion.jpg",
   },
@@ -61,7 +61,7 @@ const spaces = [
     name: "The Kitchen",
     capacity: "Up to 12 participants",
     description:
-      "A fully equipped commercial kitchen for cooking classes, food prep, or catering support for larger events.",
+      "We're fitting out a commercial kitchen for cooking classes, food prep, and catering support for larger events.",
     features: ["Commercial appliances", "Prep stations", "Storage", "Dishwashing"],
     ideal: ["Cooking classes", "Food prep", "Catering base", "Preserving workshops"],
     image: "/images/venue-kitchen.jpg",
@@ -126,9 +126,9 @@ export default function VenueHire() {
               Venue Hire
             </h1>
             <p className="text-xl text-stone-600 leading-relaxed">
-              Looking for a space with character? The Harvest offers flexible venues for workshops,
+              Looking for a space with character? We're developing flexible venues for workshops,
               celebrations, community events, and more – all surrounded by the beauty of the
-              hinterland.
+              hinterland. Get in touch to discuss availability.
             </p>
           </motion.div>
         </div>
@@ -451,11 +451,11 @@ export default function VenueHire() {
                   <h4 className="font-semibold text-stone-800 mb-4">Prefer to chat?</h4>
                   <div className="space-y-3">
                     <a
-                      href="tel:+61754941234"
+                      href="tel:+61422883943"
                       className="flex items-center gap-3 text-stone-600 hover:text-green-600 transition-colors"
                     >
                       <Phone className="h-5 w-5" />
-                      (07) 5494 1234
+                      0422 883 943
                     </a>
                     <a
                       href="mailto:venues@theharvestwitta.com.au"

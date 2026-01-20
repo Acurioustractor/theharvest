@@ -4,6 +4,7 @@ import NotFound from "@/pages/NotFound";
 import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
+import { SeasonalProvider } from "./contexts/SeasonalContext";
 import PublicLayout from "./components/PublicLayout";
 import HarvestHome from "./pages/HarvestHome";
 import Visit from "./pages/Visit";
@@ -23,6 +24,14 @@ import Proposal from "./pages/Proposal";
 import LeaseDraft from "./pages/LeaseDraft";
 import Financials from "./pages/Financials";
 import Contact from "./pages/Contact";
+import Journey from "./pages/Journey";
+import Explore from "./pages/Explore";
+import Stories from "./pages/Stories";
+import Membership from "./pages/Membership";
+import Blog from "./pages/Blog";
+import BlogPost from "./pages/BlogPost";
+import PhotoManager from "./pages/admin/PhotoManager";
+// Blog admin removed - using Empathy Ledger Content Hub admin
 
 function Router() {
   return (
@@ -40,6 +49,16 @@ function Router() {
         <Route path="/accommodation" component={Accommodation} />
         <Route path="/accommodation/directory" component={AccommodationDirectory} />
         <Route path="/enterprises" component={LocalEnterprises} />
+
+        {/* New Experience pages */}
+        <Route path="/journey" component={Journey} />
+        <Route path="/explore" component={Explore} />
+        <Route path="/stories" component={Stories} />
+        <Route path="/membership" component={Membership} />
+
+        {/* Blog pages */}
+        <Route path="/blog" component={Blog} />
+        <Route path="/blog/:slug" component={BlogPost} />
         
         {/* Strategic / Partner pages */}
         <Route path="/strategic-analysis" component={StrategicAnalysis} />
@@ -54,6 +73,8 @@ function Router() {
         
         {/* Admin / Business pages */}
         <Route path="/admin" component={AdminDashboard} />
+        <Route path="/admin/photos" component={PhotoManager} />
+        {/* Blog admin removed - using Empathy Ledger Content Hub admin */}
         <Route path="/my-business" component={MyBusiness} />
         
         {/* Fallback */}
@@ -76,10 +97,12 @@ function App() {
         defaultTheme="light"
         // switchable
       >
-        <TooltipProvider>
-          <Toaster />
-          <Router />
-        </TooltipProvider>
+        <SeasonalProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Router />
+          </TooltipProvider>
+        </SeasonalProvider>
       </ThemeProvider>
     </ErrorBoundary>
   );

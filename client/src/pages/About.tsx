@@ -14,12 +14,11 @@ import {
   Mail,
   MapPin,
   Phone,
-  Instagram,
-  Facebook,
   ArrowRight,
 } from "lucide-react";
 import { Link } from "wouter";
 import { useMutation } from "@tanstack/react-query";
+import { EditableImage } from "@/components/EditableImage";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
@@ -149,8 +148,7 @@ export default function About() {
               About The Harvest
             </h1>
             <p className="text-xl text-stone-600 leading-relaxed">
-              A regenerative gathering place in Witta. A place to eat, learn, grow, make, and
-              belong.
+              We're transforming an old nursery into a regenerative gathering place. A place to eat, learn, grow, make, and belong.
             </p>
           </motion.div>
         </div>
@@ -167,7 +165,7 @@ export default function About() {
               transition={{ duration: 0.6 }}
             >
               <h2 className="text-3xl md:text-4xl font-serif font-bold text-stone-800 mb-6">
-                A place that grew from the ground up
+                A place growing from the ground up
               </h2>
               <div className="prose prose-lg text-stone-600">
                 <p>
@@ -182,8 +180,8 @@ export default function About() {
                   differently.
                 </p>
                 <p>
-                  We're not a closed club. We're not a glossy wellness brand. We're not
-                  profit-at-all-costs. We're a place where locals shape what happens, where everyone
+                  We're not building a closed club. We're not creating a glossy wellness brand. We're not
+                  chasing profit-at-all-costs. We're creating a place where locals shape what happens, where everyone
                   deserves a seat at the table, and where we're building something that lasts.
                 </p>
               </div>
@@ -196,16 +194,27 @@ export default function About() {
               transition={{ duration: 0.6 }}
               className="relative"
             >
-              <div className="aspect-[4/3] rounded-2xl overflow-hidden shadow-xl bg-gradient-to-br from-amber-100 to-green-100 flex items-center justify-center">
-                <div className="text-center p-8">
-                  <Leaf className="h-20 w-20 text-green-600 mx-auto mb-4" />
-                  <p className="text-2xl font-serif font-bold text-stone-800">
-                    Growing together since 2024
-                  </p>
-                </div>
+              <div className="rounded-2xl overflow-hidden shadow-xl">
+                <EditableImage
+                  page="about"
+                  slot="hero"
+                  alt="The Harvest community space"
+                  aspectRatio="aspect-[4/3]"
+                  imageClassName="object-cover"
+                  placeholder={
+                    <div className="w-full h-full bg-gradient-to-br from-amber-100 to-green-100 flex items-center justify-center">
+                      <div className="text-center p-8">
+                        <Leaf className="h-20 w-20 text-green-600 mx-auto mb-4" />
+                        <p className="text-2xl font-serif font-bold text-stone-800">
+                          Growing together since 2024
+                        </p>
+                      </div>
+                    </div>
+                  }
+                />
               </div>
-              <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-amber-500/20 rounded-full blur-2xl" />
-              <div className="absolute -top-6 -right-6 w-40 h-40 bg-green-500/20 rounded-full blur-2xl" />
+              <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-amber-500/20 rounded-full blur-2xl pointer-events-none" />
+              <div className="absolute -top-6 -right-6 w-40 h-40 bg-green-500/20 rounded-full blur-2xl pointer-events-none" />
             </motion.div>
           </div>
         </div>
@@ -275,7 +284,7 @@ export default function About() {
             className="max-w-3xl mx-auto text-center"
           >
             <h2 className="text-3xl md:text-4xl font-serif font-bold text-black mb-6">
-              This is a place for...
+              We're building this for...
             </h2>
             <p className="text-xl text-black/80 leading-relaxed mb-8">
               The early risers who love a good market morning. The gardeners with dirt under their
@@ -284,7 +293,7 @@ export default function About() {
               see what's growing.
             </p>
             <p className="text-2xl font-serif font-bold text-black">
-              If that sounds like you, you're already welcome here.
+              If that sounds like you, come be part of the story.
             </p>
           </motion.div>
         </div>
@@ -384,11 +393,11 @@ export default function About() {
                   hello@theharvestwitta.com.au
                 </a>
                 <a
-                  href="tel:+61754941234"
+                  href="tel:+61422883943"
                   className="flex items-center gap-3 text-stone-300 hover:text-amber-400 transition-colors"
                 >
                   <Phone className="h-5 w-5" />
-                  (07) 5494 1234
+                  0422 883 943
                 </a>
                 <div className="flex items-center gap-3 text-stone-300">
                   <MapPin className="h-5 w-5" />
@@ -396,24 +405,6 @@ export default function About() {
                 </div>
               </div>
 
-              <div className="flex gap-4 mt-8">
-                <a
-                  href="https://instagram.com/theharvestwitta"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-amber-500 transition-colors"
-                >
-                  <Instagram className="h-5 w-5" />
-                </a>
-                <a
-                  href="https://facebook.com/theharvestwitta"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-amber-500 transition-colors"
-                >
-                  <Facebook className="h-5 w-5" />
-                </a>
-              </div>
             </motion.div>
 
             <motion.div
