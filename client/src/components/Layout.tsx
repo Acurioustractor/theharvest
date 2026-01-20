@@ -122,11 +122,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => {
-                  window.location.href = getLoginUrl();
-                }}
+                onClick={() => handleNavClick("/contact")}
               >
-                Sign in
+                Contact Us
               </Button>
             )}
           </nav>
@@ -182,11 +180,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               <Button
                 className="w-full mt-2"
                 variant="outline"
-                onClick={() => {
-                  window.location.href = getLoginUrl();
-                }}
+                onClick={() => handleNavClick("/contact")}
               >
-                Sign in
+                Contact Us
               </Button>
             )}
           </nav>

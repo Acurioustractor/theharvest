@@ -16,6 +16,8 @@ import {
 import { toast } from "sonner";
 import { MapView } from "@/components/Map";
 
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
   animate: { opacity: 1, y: 0 },
@@ -43,20 +45,36 @@ export default function Contact() {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate form submission - in production this would go to the API
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    try {
+      const response = await fetch(`${supabaseUrl}/functions/v1/contact-form`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
 
-    toast.success("Message sent!", {
-      description: "We'll get back to you as soon as we can.",
-    });
+      const data = await response.json();
 
-    setFormData({
-      name: "",
-      email: "",
-      subject: "",
-      message: "",
-    });
-    setIsSubmitting(false);
+      if (!response.ok || !data.success) {
+        throw new Error(data.error || "Failed to send message");
+      }
+
+      toast.success("Message sent!", {
+        description: "We'll get back to you as soon as we can.",
+      });
+
+      setFormData({
+        name: "",
+        email: "",
+        subject: "",
+        message: "",
+      });
+    } catch (error) {
+      toast.error("Failed to send message", {
+        description: error instanceof Error ? error.message : "Please try again later.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleMapReady = (map: google.maps.Map) => {
