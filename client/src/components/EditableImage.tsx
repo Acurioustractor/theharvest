@@ -13,6 +13,25 @@ import { cn } from "@/lib/utils";
 const EMPATHY_LEDGER_BASE =
   import.meta.env.VITE_EMPATHY_LEDGER_URL || "http://localhost:3030";
 
+/**
+ * Transform Supabase storage URL to use image transformation
+ * Reduces 6-8MB images to ~200KB for mobile performance
+ */
+function optimizeImageUrl(src: string, width: number = 1200): string {
+  if (!src) return src;
+
+  // Check if it's a Supabase storage URL
+  if (src.includes('supabase.co/storage/v1/object/public/')) {
+    // Convert to render endpoint with transformation params
+    return src.replace(
+      '/storage/v1/object/public/',
+      '/storage/v1/render/image/public/'
+    ) + `?width=${width}&quality=80`;
+  }
+
+  return src;
+}
+
 interface Photo {
   id: string;
   src: string;
@@ -219,7 +238,7 @@ export function EditableImage({
             {/* Gradient placeholder while loading */}
             <div className="absolute inset-0 bg-gradient-to-br from-stone-200 to-stone-300" />
             <img
-              src={photo.src}
+              src={optimizeImageUrl(photo.src)}
               alt={photo.altText || alt}
               onLoad={() => setImageLoaded(true)}
               className={cn(
