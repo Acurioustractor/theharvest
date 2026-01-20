@@ -1,3 +1,4 @@
+// Layout component - v2 with Contact Us button
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { Menu, X, ChevronRight, User } from "lucide-react";
