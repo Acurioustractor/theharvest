@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import {
-  Utensils,
   Leaf,
   Users,
   Hammer,
@@ -47,40 +46,40 @@ const staggerContainer = {
 
 const offers = [
   {
-    icon: Utensils,
-    title: "Eat",
-    tagline: "Seasonal, simple, generous.",
+    icon: Users,
+    title: "Connect",
+    tagline: "Find your place here.",
     description:
-      "We're building a community kitchen to serve honest food made with local produce. A place for breakfast, conversation, and connection.",
+      "We're creating space for artists, makers, builders, and thinkers who want somewhere to work, create, and belong. Whether you need a desk, a studio, or just a community that gets it – this is becoming a home for people who make things happen.",
     slot: "card-1" as const,
     color: "from-amber-500/20 to-orange-500/20",
   },
   {
-    icon: Leaf,
-    title: "Grow",
-    tagline: "Seedlings, soil, skills.",
+    icon: Sparkles,
+    title: "Celebrate",
+    tagline: "Witta's story, told together.",
     description:
-      "We're developing a garden centre and outdoor learning space where you'll be able to get your hands dirty and take something home to plant.",
+      "This place has a history worth honouring – and a future worth gathering for. We're building a space for music, art, food, and the kind of moments that remind us why community matters. Come for an event, stay for the feeling.",
     slot: "card-2" as const,
-    color: "from-green-500/20 to-emerald-500/20",
+    color: "from-pink-500/20 to-rose-500/20",
   },
   {
-    icon: Users,
-    title: "Gather",
-    tagline: "A venue with warmth and room to breathe.",
+    icon: Hammer,
+    title: "Collaborate",
+    tagline: "Shape what happens here.",
     description:
-      "We're creating flexible spaces for celebrations, workshops, and community events – designed for connection, not performance.",
+      "Want to host a workshop? Run an event? Share a skill you've spent years learning? We're not building this alone – we're creating it with the people who show up. Your ideas have a home here.",
     slot: "card-3" as const,
     color: "from-blue-500/20 to-indigo-500/20",
   },
   {
-    icon: Hammer,
-    title: "Make",
-    tagline: "Workshops and maker days with locals.",
+    icon: Leaf,
+    title: "Regenerate",
+    tagline: "Growing something that gives back.",
     description:
-      "We're planning workshops where you can learn new skills from neighbours who know their craft. Pottery, preserving, woodwork, and more.",
+      "Good for the land. Good for people. We're planting gardens, nurturing soil, and building a community that leaves things better than we found them. This is about the long game – roots that go deep.",
     slot: "card-4" as const,
-    color: "from-purple-500/20 to-pink-500/20",
+    color: "from-green-500/20 to-emerald-500/20",
   },
 ];
 
