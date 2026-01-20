@@ -197,9 +197,9 @@ export default function HarvestHome() {
                 className="bg-amber-500 hover:bg-amber-600 text-black font-semibold px-8 py-6 text-lg"
                 asChild
               >
-                <Link href="/whats-on">
-                  <Calendar className="mr-2 h-5 w-5" />
-                  See What's On
+                <Link href="/about">
+                  <Heart className="mr-2 h-5 w-5" />
+                  About Us
                 </Link>
               </Button>
               <Button
@@ -208,9 +208,9 @@ export default function HarvestHome() {
                 className="border-white/30 text-white hover:bg-white/10 px-8 py-6 text-lg bg-white/5 backdrop-blur-sm"
                 asChild
               >
-                <Link href="/visit">
-                  <MapPin className="mr-2 h-5 w-5" />
-                  Plan Your Visit
+                <Link href="/explore">
+                  <Compass className="mr-2 h-5 w-5" />
+                  The Space
                 </Link>
               </Button>
             </div>
