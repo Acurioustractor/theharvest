@@ -1,4 +1,3 @@
-import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -84,7 +83,7 @@ export default function AccommodationDirectory() {
   }, [mapCenter]);
 
   return (
-    <Layout>
+    <>
       {/* Header Section */}
       <section className="bg-primary text-primary-foreground py-20 relative overflow-hidden">
         <div className="absolute inset-0 opacity-20">
@@ -260,6 +259,6 @@ export default function AccommodationDirectory() {
           )}
         </div>
       </section>
-    </Layout>
+    </>
   );
 }

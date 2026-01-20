@@ -5,6 +5,38 @@ import type { Session } from "@supabase/supabase-js";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
+// Dev mode admin user - bypasses Supabase entirely
+const DEV_ADMIN_USER = {
+  id: 1,
+  openId: "dev-admin-local",
+  name: "Dev Admin",
+  email: "benjamin@act.place",
+  role: "admin" as const,
+  createdAt: new Date(),
+  updatedAt: new Date(),
+  lastSignedIn: new Date(),
+  loginMethod: "dev",
+};
+
+// Check if dev mode is enabled
+const isDevMode = () => {
+  if (typeof window === "undefined") return false;
+  return window.location.hostname === "localhost" &&
+         localStorage.getItem("dev-admin-login") === "true";
+};
+
+// Enable dev login
+export const enableDevLogin = () => {
+  localStorage.setItem("dev-admin-login", "true");
+  window.location.reload();
+};
+
+// Disable dev login
+export const disableDevLogin = () => {
+  localStorage.removeItem("dev-admin-login");
+  window.location.reload();
+};
+
 type UseAuthOptions = {
   redirectOnUnauthenticated?: boolean;
   redirectPath?: string;
@@ -16,8 +48,18 @@ export function useAuth(options?: UseAuthOptions) {
   const queryClient = useQueryClient();
   const [session, setSession] = useState<Session | null>(null);
   const [sessionLoading, setSessionLoading] = useState(true);
+  const [devMode, setDevMode] = useState(isDevMode());
 
   useEffect(() => {
+    // Check dev mode on mount
+    setDevMode(isDevMode());
+
+    // If dev mode, skip Supabase entirely
+    if (isDevMode()) {
+      setSessionLoading(false);
+      return;
+    }
+
     let active = true;
 
     supabase.auth.getSession().then(({ data }) => {
@@ -41,9 +83,14 @@ export function useAuth(options?: UseAuthOptions) {
   }, [queryClient]);
 
   const meQuery = useQuery({
-    queryKey: ["app-user", session?.user?.id],
-    enabled: Boolean(session?.access_token && session?.user?.id),
+    queryKey: ["app-user", devMode ? "dev" : session?.user?.id],
+    enabled: devMode || Boolean(session?.access_token && session?.user?.id),
     queryFn: async () => {
+      // Dev mode - return mock admin user
+      if (devMode) {
+        return DEV_ADMIN_USER;
+      }
+
       try {
         await syncAppUser();
       } catch {
@@ -56,11 +103,27 @@ export function useAuth(options?: UseAuthOptions) {
   });
 
   const logout = useCallback(async () => {
+    // Dev mode logout
+    if (isDevMode()) {
+      disableDevLogin();
+      return;
+    }
+
     await supabase.auth.signOut();
     queryClient.setQueryData(["app-user"], null);
   }, [queryClient]);
 
   const state = useMemo(() => {
+    // Dev mode - always authenticated as admin
+    if (devMode) {
+      return {
+        user: DEV_ADMIN_USER,
+        loading: false,
+        error: null,
+        isAuthenticated: true,
+      };
+    }
+
     return {
       user: meQuery.data ?? null,
       loading: sessionLoading || meQuery.isLoading,
@@ -68,6 +131,7 @@ export function useAuth(options?: UseAuthOptions) {
       isAuthenticated: Boolean(session?.access_token && meQuery.data),
     };
   }, [
+    devMode,
     meQuery.data,
     meQuery.error,
     meQuery.isLoading,
@@ -77,6 +141,7 @@ export function useAuth(options?: UseAuthOptions) {
 
   useEffect(() => {
     if (!redirectOnUnauthenticated) return;
+    if (devMode) return; // Dev mode always authenticated
     if (sessionLoading || meQuery.isLoading) return;
     if (state.user) return;
     if (typeof window === "undefined") return;
@@ -89,6 +154,7 @@ export function useAuth(options?: UseAuthOptions) {
     meQuery.isLoading,
     sessionLoading,
     state.user,
+    devMode,
   ]);
 
   return {

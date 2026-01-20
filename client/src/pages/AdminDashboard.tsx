@@ -1,5 +1,4 @@
 import { useState } from "react";
-import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -92,18 +91,18 @@ export default function AdminDashboard() {
   // Loading state
   if (authLoading) {
     return (
-      <Layout>
+      <>
         <div className="min-h-[60vh] flex items-center justify-center">
           <Loader2 className="h-8 w-8 animate-spin text-[#2c4c3b]" />
         </div>
-      </Layout>
+      </>
     );
   }
 
   // Not authenticated
   if (!isAuthenticated) {
     return (
-      <Layout>
+      <>
         <div className="min-h-[60vh] flex items-center justify-center">
           <Card className="max-w-md w-full mx-4">
             <CardHeader className="text-center">
@@ -126,14 +125,14 @@ export default function AdminDashboard() {
             </CardFooter>
           </Card>
         </div>
-      </Layout>
+      </>
     );
   }
 
   // Not admin
   if (user?.role !== "admin") {
     return (
-      <Layout>
+      <>
         <div className="min-h-[60vh] flex items-center justify-center">
           <Card className="max-w-md w-full mx-4">
             <CardHeader className="text-center">
@@ -155,7 +154,7 @@ export default function AdminDashboard() {
             </CardFooter>
           </Card>
         </div>
-      </Layout>
+      </>
     );
   }
 
@@ -187,7 +186,7 @@ export default function AdminDashboard() {
   const totalPending = (pendingEvents?.length || 0) + (pendingBusinesses?.length || 0);
 
   return (
-    <Layout>
+    <>
       {/* Header */}
       <section className="bg-[#2c4c3b] text-white py-12">
         <div className="container px-4">
@@ -565,6 +564,6 @@ export default function AdminDashboard() {
           </Tabs>
         </div>
       </section>
-    </Layout>
+    </>
   );
 }

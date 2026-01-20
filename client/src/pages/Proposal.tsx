@@ -1,4 +1,3 @@
-import Layout from "@/components/Layout";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,17 +8,17 @@ export default function Proposal() {
 
   if (loading) {
     return (
-      <Layout>
+      <>
         <div className="min-h-[60vh] flex items-center justify-center">
           <div className="text-sm text-muted-foreground">Loading proposal…</div>
         </div>
-      </Layout>
+      </>
     );
   }
 
   if (!isAuthenticated) {
     return (
-      <Layout>
+      <>
         <div className="min-h-[60vh] flex items-center justify-center">
           <Card className="max-w-md w-full mx-4">
             <CardHeader className="text-center">
@@ -40,12 +39,12 @@ export default function Proposal() {
             </CardContent>
           </Card>
         </div>
-      </Layout>
+      </>
     );
   }
 
   return (
-    <Layout>
+    <>
       <section className="py-16">
         <div className="container px-4">
           <div className="max-w-4xl space-y-10">
@@ -177,6 +176,6 @@ export default function Proposal() {
           </div>
         </div>
       </section>
-    </Layout>
+    </>
   );
 }

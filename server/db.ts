@@ -10,7 +10,15 @@ import {
   businesses,
   InsertBusiness,
   Business,
+  progressImages,
+  InsertProgressImage,
+  ProgressImage,
+  editableContent,
+  InsertEditableContent,
+  EditableContent,
 } from "../drizzle/schema";
+// Blog posts are now fetched from Empathy Ledger Content Hub API
+// See server/empathyLedgerClient.ts for the integration
 import { ENV } from "./_core/env";
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -64,10 +72,16 @@ export async function upsertUser(user: InsertUser): Promise<void> {
       values.lastSignedIn = user.lastSignedIn;
       updateSet.lastSignedIn = user.lastSignedIn;
     }
+    // Admin emails - add your email here for auto-promotion
+    const adminEmails = ['benjamin@act.place', 'dev@localhost.test'];
+
     if (user.role !== undefined) {
       values.role = user.role;
       updateSet.role = user.role;
     } else if (user.openId === ENV.ownerOpenId) {
+      values.role = 'admin';
+      updateSet.role = 'admin';
+    } else if (user.email && adminEmails.includes(user.email.toLowerCase())) {
       values.role = 'admin';
       updateSet.role = 'admin';
     }
@@ -105,6 +119,41 @@ export async function getUserByOpenId(openId: string) {
     .limit(1);
 
   return result.length > 0 ? result[0] : undefined;
+}
+
+export async function promoteUserToAdmin(openId: string): Promise<boolean> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot promote user: database not available");
+    return false;
+  }
+
+  try {
+    await db
+      .update(appUsers)
+      .set({ role: "admin", updatedAt: new Date() })
+      .where(eq(appUsers.openId, openId));
+    return true;
+  } catch (error) {
+    console.error("[Database] Failed to promote user:", error);
+    return false;
+  }
+}
+
+export async function getAllUsers() {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot get users: database not available");
+    return [];
+  }
+
+  try {
+    const result = await db.select().from(appUsers).orderBy(desc(appUsers.createdAt));
+    return result;
+  } catch (error) {
+    console.error("[Database] Failed to get users:", error);
+    return [];
+  }
 }
 
 // Event queries
@@ -363,5 +412,175 @@ export async function getUnclaimedApprovedBusinesses(): Promise<Business[]> {
   } catch (error) {
     console.error("[Database] Failed to get unclaimed businesses:", error);
     return [];
+  }
+}
+
+// Blog posts are now managed through Empathy Ledger Content Hub
+// See server/empathyLedgerClient.ts and server/routers.ts blog router
+
+// Progress Images (Gallery) queries
+export async function getProgressImages(category?: string): Promise<ProgressImage[]> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot get progress images: database not available");
+    return [];
+  }
+
+  try {
+    let query = db.select().from(progressImages).where(eq(progressImages.isPublished, 1));
+
+    if (category && category !== "all") {
+      const { and } = await import("drizzle-orm");
+      query = db.select().from(progressImages).where(
+        and(
+          eq(progressImages.isPublished, 1),
+          eq(progressImages.category, category as "before" | "during" | "after" | "milestone")
+        )
+      );
+    }
+
+    const result = await query.orderBy(progressImages.sortOrder, desc(progressImages.createdAt));
+    return result;
+  } catch (error) {
+    console.error("[Database] Failed to get progress images:", error);
+    return [];
+  }
+}
+
+export async function createProgressImage(image: InsertProgressImage): Promise<ProgressImage | undefined> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot create progress image: database not available");
+    return undefined;
+  }
+
+  try {
+    await db.insert(progressImages).values(image);
+    const result = await db.select().from(progressImages)
+      .where(eq(progressImages.src, image.src))
+      .orderBy(desc(progressImages.createdAt))
+      .limit(1);
+    return result[0];
+  } catch (error) {
+    console.error("[Database] Failed to create progress image:", error);
+    throw error;
+  }
+}
+
+export async function updateProgressImage(
+  imageId: number,
+  updates: Partial<Omit<InsertProgressImage, 'id' | 'createdAt'>>
+): Promise<boolean> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot update progress image: database not available");
+    return false;
+  }
+
+  try {
+    await db.update(progressImages).set(updates).where(eq(progressImages.id, imageId));
+    return true;
+  } catch (error) {
+    console.error("[Database] Failed to update progress image:", error);
+    return false;
+  }
+}
+
+export async function deleteProgressImage(imageId: number): Promise<boolean> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot delete progress image: database not available");
+    return false;
+  }
+
+  try {
+    await db.delete(progressImages).where(eq(progressImages.id, imageId));
+    return true;
+  } catch (error) {
+    console.error("[Database] Failed to delete progress image:", error);
+    return false;
+  }
+}
+
+// Editable Content queries for inline CMS
+export async function getContent(page: string, slot: string): Promise<EditableContent | undefined> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot get content: database not available");
+    return undefined;
+  }
+
+  try {
+    const { and } = await import("drizzle-orm");
+    const result = await db.select().from(editableContent)
+      .where(and(eq(editableContent.page, page), eq(editableContent.slot, slot)))
+      .limit(1);
+    return result[0];
+  } catch (error) {
+    console.error("[Database] Failed to get content:", error);
+    return undefined;
+  }
+}
+
+export async function getContentForPage(page: string): Promise<EditableContent[]> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot get page content: database not available");
+    return [];
+  }
+
+  try {
+    const result = await db.select().from(editableContent)
+      .where(eq(editableContent.page, page));
+    return result;
+  } catch (error) {
+    console.error("[Database] Failed to get page content:", error);
+    return [];
+  }
+}
+
+export async function upsertContent(
+  page: string,
+  slot: string,
+  content: string,
+  contentType: string = "text",
+  editedBy?: number
+): Promise<EditableContent | undefined> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot upsert content: database not available");
+    return undefined;
+  }
+
+  try {
+    const { and } = await import("drizzle-orm");
+    // Check if content exists
+    const existing = await db.select().from(editableContent)
+      .where(and(eq(editableContent.page, page), eq(editableContent.slot, slot)))
+      .limit(1);
+
+    if (existing.length > 0) {
+      // Update
+      await db.update(editableContent)
+        .set({ content, contentType, editedBy, updatedAt: new Date() })
+        .where(eq(editableContent.id, existing[0].id));
+      return { ...existing[0], content, contentType, editedBy, updatedAt: new Date() };
+    } else {
+      // Insert
+      await db.insert(editableContent).values({
+        page,
+        slot,
+        content,
+        contentType,
+        editedBy,
+      });
+      const result = await db.select().from(editableContent)
+        .where(and(eq(editableContent.page, page), eq(editableContent.slot, slot)))
+        .limit(1);
+      return result[0];
+    }
+  } catch (error) {
+    console.error("[Database] Failed to upsert content:", error);
+    throw error;
   }
 }

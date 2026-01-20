@@ -1,7 +1,21 @@
 import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
-import { createEvent, getApprovedEvents, getPendingEvents, updateEventStatus, createBusiness, getApprovedBusinesses, getPendingBusinesses, updateBusinessStatus, getBusinessByUserId, getBusinessById, claimBusiness, updateBusinessProfile, getUnclaimedApprovedBusinesses } from "./db";
+import { createEvent, getApprovedEvents, getPendingEvents, updateEventStatus, createBusiness, getApprovedBusinesses, getPendingBusinesses, updateBusinessStatus, getBusinessByUserId, getBusinessById, claimBusiness, updateBusinessProfile, getUnclaimedApprovedBusinesses, getProgressImages, createProgressImage, updateProgressImage, deleteProgressImage, promoteUserToAdmin, getAllUsers, getContent, getContentForPage, upsertContent } from "./db";
 import { upsertGHLContact } from "./gohighlevel";
+import { empathyLedgerClient } from "./empathyLedgerClient";
+import {
+  loadTimeline,
+  loadZones,
+  loadTestimonials,
+  loadImpact,
+  loadContact,
+  loadValues,
+  loadOrigins,
+  loadAllContent,
+  listStories,
+  loadStory,
+  getWikiStatus,
+} from "./wiki";
 import { z } from "zod";
 
 export const appRouter = router({
@@ -14,6 +28,34 @@ export const appRouter = router({
         success: true,
       } as const;
     }),
+  }),
+
+  admin: router({
+    // Get all users (admin only, or first user setup)
+    users: protectedProcedure.query(async ({ ctx }) => {
+      // Allow if admin OR if this is the first/only user (for initial setup)
+      const users = await getAllUsers();
+      if (ctx.user.role !== "admin" && users.length > 1) {
+        throw new Error("Unauthorized");
+      }
+      return users;
+    }),
+
+    // Promote user to admin (requires existing admin, or first user can self-promote)
+    promoteToAdmin: protectedProcedure
+      .input(z.object({ openId: z.string() }))
+      .mutation(async ({ ctx, input }) => {
+        const users = await getAllUsers();
+        const hasAdmin = users.some(u => u.role === "admin");
+
+        // Allow if: current user is admin, OR no admins exist yet (first setup)
+        if (ctx.user.role !== "admin" && hasAdmin) {
+          throw new Error("Unauthorized - only admins can promote users");
+        }
+
+        const success = await promoteUserToAdmin(input.openId);
+        return { success };
+      }),
   }),
 
   events: router({
@@ -211,6 +253,300 @@ export const appRouter = router({
           success: true,
           message: "Successfully subscribed to the newsletter!",
         };
+      }),
+  }),
+
+  blog: router({
+    // Public: Get articles from Empathy Ledger with optional filters
+    list: publicProcedure
+      .input(z.object({
+        theme: z.string().optional(),
+        type: z.string().optional(),
+        page: z.number().optional(),
+        limit: z.number().min(1).max(50).optional(),
+      }).optional())
+      .query(async ({ input }) => {
+        const response = await empathyLedgerClient.fetchArticles({
+          theme: input?.theme,
+          type: input?.type,
+          page: input?.page,
+          limit: input?.limit || 20,
+        });
+        return response;
+      }),
+
+    // Public: Get recent articles for homepage
+    recent: publicProcedure
+      .input(z.object({
+        limit: z.number().min(1).max(10).default(3),
+      }).optional())
+      .query(async ({ input }) => {
+        const articles = await empathyLedgerClient.fetchRecentArticles(input?.limit ?? 3);
+        return articles;
+      }),
+
+    // Public: Get single article by slug
+    bySlug: publicProcedure
+      .input(z.object({
+        slug: z.string().min(1),
+      }))
+      .query(async ({ input }) => {
+        const article = await empathyLedgerClient.fetchArticle(input.slug);
+        if (!article) {
+          throw new Error("Article not found");
+        }
+        return article;
+      }),
+
+    // Public: Search articles
+    search: publicProcedure
+      .input(z.object({
+        query: z.string().min(2),
+        limit: z.number().min(1).max(20).optional(),
+      }))
+      .query(async ({ input }) => {
+        const results = await empathyLedgerClient.search(input.query, {
+          type: "articles",
+          limit: input.limit || 10,
+        });
+        return results;
+      }),
+  }),
+
+  // Wiki content from thoughts/wiki folder
+  wiki: router({
+    // Get all content at once (for initial page load)
+    all: publicProcedure.query(() => {
+      return loadAllContent();
+    }),
+
+    // Journey page: timeline events
+    timeline: publicProcedure.query(() => {
+      return loadTimeline();
+    }),
+
+    // Explore page: zones
+    zones: publicProcedure.query(() => {
+      return loadZones();
+    }),
+
+    // Stories page: testimonials
+    testimonials: publicProcedure
+      .input(z.object({
+        page: z.string().optional(), // Filter by page: "home", "stories", etc.
+        featured: z.boolean().optional(),
+      }).optional())
+      .query(({ input }) => {
+        let testimonials = loadTestimonials();
+
+        if (input?.page) {
+          testimonials = testimonials.filter(t => t.pages.includes(input.page!));
+        }
+        if (input?.featured !== undefined) {
+          testimonials = testimonials.filter(t => t.featured === input.featured);
+        }
+
+        return testimonials;
+      }),
+
+    // Impact metrics
+    impact: publicProcedure
+      .input(z.object({
+        section: z.enum(["stories", "membership", "journey"]).optional(),
+      }).optional())
+      .query(({ input }) => {
+        const impact = loadImpact();
+        if (!impact) return null;
+
+        if (input?.section === "stories") return impact.stories_stats;
+        if (input?.section === "membership") return impact.membership_stats;
+        if (input?.section === "journey") return impact.journey_stats;
+
+        return impact;
+      }),
+
+    // Contact info
+    contact: publicProcedure.query(() => {
+      return loadContact();
+    }),
+
+    // Values content (markdown)
+    values: publicProcedure.query(() => {
+      return loadValues();
+    }),
+
+    // Origins story (markdown)
+    origins: publicProcedure.query(() => {
+      return loadOrigins();
+    }),
+
+    // List all community stories
+    stories: publicProcedure.query(() => {
+      return listStories();
+    }),
+
+    // Get a specific story by slug
+    story: publicProcedure
+      .input(z.object({ slug: z.string() }))
+      .query(({ input }) => {
+        return loadStory(input.slug);
+      }),
+
+    // Admin: Get wiki status
+    status: protectedProcedure.query(({ ctx }) => {
+      if (ctx.user.role !== "admin") {
+        throw new Error("Unauthorized");
+      }
+      return getWikiStatus();
+    }),
+  }),
+
+  // Gallery - Progress images for the transformation journey
+  // Supports both local database and Empathy Ledger sync
+  gallery: router({
+    // Public: Get all published progress images (local database)
+    list: publicProcedure
+      .input(z.object({
+        category: z.enum(["all", "before", "during", "after", "milestone"]).optional(),
+      }).optional())
+      .query(async ({ input }) => {
+        const images = await getProgressImages(input?.category || "all");
+        return images;
+      }),
+
+    // Public: Get gallery images from Empathy Ledger
+    // Uses dedicated Harvest gallery API with Harvest-specific tags
+    fromEL: publicProcedure
+      .input(z.object({
+        category: z.enum(["all", "before", "during", "after", "milestone", "general"]).optional(),
+        tag: z.string().optional(), // Page tag: "home", "journey", "stories", etc.
+        theme: z.string().optional(), // Theme: "eat", "grow", "make", "gather"
+        limit: z.number().min(1).max(100).optional(),
+        page: z.number().min(1).optional(),
+      }).optional())
+      .query(async ({ input }) => {
+        const response = await empathyLedgerClient.fetchHarvestGallery({
+          category: input?.category === "all" ? undefined : input?.category,
+          tag: input?.tag,
+          theme: input?.theme,
+          limit: input?.limit || 50,
+          page: input?.page,
+        });
+        return response;
+      }),
+
+    // Public: Get media for a specific page
+    // Uses dedicated Harvest gallery API
+    forPage: publicProcedure
+      .input(z.object({
+        page: z.string().min(1), // Page tag: "home", "journey", "stories", etc.
+        limit: z.number().min(1).max(20).optional(),
+      }))
+      .query(async ({ input }) => {
+        const media = await empathyLedgerClient.fetchHarvestMediaForPage(input.page, input.limit || 10);
+        return media;
+      }),
+
+    // Admin: Add a new progress image
+    create: protectedProcedure
+      .input(z.object({
+        src: z.string().min(1).max(1000),
+        title: z.string().min(1).max(255),
+        description: z.string().optional(),
+        date: z.string().min(1).max(20), // YYYY-MM format
+        category: z.enum(["before", "during", "after", "milestone"]),
+        location: z.string().max(255).optional(),
+        sortOrder: z.number().optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== "admin") {
+          throw new Error("Unauthorized");
+        }
+        const image = await createProgressImage({
+          ...input,
+          isPublished: 1,
+          uploadedBy: ctx.user.id,
+        });
+        return { success: true, image };
+      }),
+
+    // Admin: Update a progress image
+    update: protectedProcedure
+      .input(z.object({
+        imageId: z.number(),
+        title: z.string().min(1).max(255).optional(),
+        description: z.string().optional(),
+        date: z.string().max(20).optional(),
+        category: z.enum(["before", "during", "after", "milestone"]).optional(),
+        location: z.string().max(255).optional(),
+        sortOrder: z.number().optional(),
+        isPublished: z.number().min(0).max(1).optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== "admin") {
+          throw new Error("Unauthorized");
+        }
+        const { imageId, ...updates } = input;
+        const success = await updateProgressImage(imageId, updates);
+        return { success };
+      }),
+
+    // Admin: Delete a progress image
+    delete: protectedProcedure
+      .input(z.object({
+        imageId: z.number(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== "admin") {
+          throw new Error("Unauthorized");
+        }
+        const success = await deleteProgressImage(input.imageId);
+        return { success };
+      }),
+  }),
+
+  // Editable content for inline CMS
+  content: router({
+    // Public: Get content for a specific slot
+    get: publicProcedure
+      .input(z.object({
+        page: z.string().min(1).max(100),
+        slot: z.string().min(1).max(100),
+      }))
+      .query(async ({ input }) => {
+        const content = await getContent(input.page, input.slot);
+        return content ?? null;
+      }),
+
+    // Public: Get all content for a page
+    forPage: publicProcedure
+      .input(z.object({
+        page: z.string().min(1).max(100),
+      }))
+      .query(async ({ input }) => {
+        return await getContentForPage(input.page);
+      }),
+
+    // Admin: Update content for a slot
+    update: protectedProcedure
+      .input(z.object({
+        page: z.string().min(1).max(100),
+        slot: z.string().min(1).max(100),
+        content: z.string(),
+        contentType: z.enum(["text", "markdown", "html"]).optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== "admin") {
+          throw new Error("Unauthorized");
+        }
+        const result = await upsertContent(
+          input.page,
+          input.slot,
+          input.content,
+          input.contentType || "text",
+          ctx.user.id
+        );
+        return { success: true, content: result };
       }),
   }),
 });

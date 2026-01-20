@@ -123,3 +123,157 @@ export const businesses = pgTable("businesses", {
 
 export type Business = typeof businesses.$inferSelect;
 export type InsertBusiness = typeof businesses.$inferInsert;
+
+/**
+ * Story theme categories for community voices
+ */
+const storyThemeEnum = pgEnum("story_theme", [
+  "belonging",
+  "growth",
+  "connection",
+  "transformation",
+]);
+
+/**
+ * Story status for moderation workflow
+ */
+const storyStatusEnum = pgEnum("story_status", [
+  "pending",
+  "approved",
+  "rejected",
+  "featured",
+]);
+
+/**
+ * Community stories table for the Stories/Empathy Ledger feature
+ */
+export const stories = pgTable("stories", {
+  id: serial("id").primaryKey(),
+  content: text("content").notNull(),
+  authorName: varchar("authorName", { length: 255 }).notNull(),
+  authorEmail: varchar("authorEmail", { length: 320 }).notNull(),
+  authorRole: varchar("authorRole", { length: 255 }),
+  theme: storyThemeEnum("theme"),
+  status: storyStatusEnum("status").default("pending").notNull(),
+  isAnonymous: integer("isAnonymous").default(0).notNull(),
+  consentGiven: integer("consentGiven").default(0).notNull(),
+  aiEnhanced: text("aiEnhanced"), // AI-generated enhancement of the story
+  aiNarrative: text("aiNarrative"), // AI-generated audio transcript
+  createdAt: timestamp("createdAt", { withTimezone: false })
+    .defaultNow()
+    .notNull(),
+  updatedAt: timestamp("updatedAt", { withTimezone: false })
+    .defaultNow()
+    .notNull(),
+  approvedAt: timestamp("approvedAt", { withTimezone: false }),
+  approvedBy: integer("approvedBy"),
+});
+
+export type Story = typeof stories.$inferSelect;
+export type InsertStory = typeof stories.$inferInsert;
+
+/**
+ * Progress gallery images for transformation journey
+ */
+const progressCategoryEnum = pgEnum("progress_category", [
+  "before",
+  "during",
+  "after",
+  "milestone",
+]);
+
+export const progressImages = pgTable("progress_images", {
+  id: serial("id").primaryKey(),
+  src: varchar("src", { length: 1000 }).notNull(),
+  title: varchar("title", { length: 255 }).notNull(),
+  description: text("description"),
+  date: varchar("date", { length: 20 }).notNull(), // YYYY-MM format
+  category: progressCategoryEnum("category").notNull(),
+  location: varchar("location", { length: 255 }),
+  sortOrder: integer("sortOrder").default(0),
+  isPublished: integer("isPublished").default(1).notNull(),
+  uploadedBy: integer("uploadedBy"),
+  createdAt: timestamp("createdAt", { withTimezone: false })
+    .defaultNow()
+    .notNull(),
+});
+
+export type ProgressImage = typeof progressImages.$inferSelect;
+export type InsertProgressImage = typeof progressImages.$inferInsert;
+
+/**
+ * Workshop bookings for the booking system
+ */
+const bookingStatusEnum = pgEnum("booking_status", [
+  "pending",
+  "confirmed",
+  "cancelled",
+  "attended",
+]);
+
+export const workshopBookings = pgTable("workshop_bookings", {
+  id: serial("id").primaryKey(),
+  workshopId: varchar("workshopId", { length: 100 }).notNull(),
+  name: varchar("name", { length: 255 }).notNull(),
+  email: varchar("email", { length: 320 }).notNull(),
+  phone: varchar("phone", { length: 50 }),
+  attendees: integer("attendees").default(1).notNull(),
+  dietaryRequirements: text("dietaryRequirements"),
+  specialRequests: text("specialRequests"),
+  status: bookingStatusEnum("status").default("pending").notNull(),
+  ghlContactId: varchar("ghlContactId", { length: 100 }),
+  createdAt: timestamp("createdAt", { withTimezone: false })
+    .defaultNow()
+    .notNull(),
+  confirmedAt: timestamp("confirmedAt", { withTimezone: false }),
+});
+
+export type WorkshopBooking = typeof workshopBookings.$inferSelect;
+export type InsertWorkshopBooking = typeof workshopBookings.$inferInsert;
+
+/**
+ * Visitor quiz responses for personalization
+ */
+export const quizResponses = pgTable("quiz_responses", {
+  id: serial("id").primaryKey(),
+  personaId: varchar("personaId", { length: 50 }).notNull(),
+  answers: text("answers").notNull(), // JSON stringified answers
+  email: varchar("email", { length: 320 }),
+  ghlContactId: varchar("ghlContactId", { length: 100 }),
+  createdAt: timestamp("createdAt", { withTimezone: false })
+    .defaultNow()
+    .notNull(),
+});
+
+export type QuizResponse = typeof quizResponses.$inferSelect;
+export type InsertQuizResponse = typeof quizResponses.$inferInsert;
+
+// Blog posts are fetched from Empathy Ledger Content Hub API
+// See server/empathyLedgerClient.ts for the integration
+
+/**
+ * Editable content table for inline CMS functionality
+ * Allows admins to edit text content on pages without code changes
+ */
+export const editableContent = pgTable("editable_content", {
+  id: serial("id").primaryKey(),
+  /** Page identifier (e.g., "journey", "home", "about") */
+  page: varchar("page", { length: 100 }).notNull(),
+  /** Slot identifier within the page (e.g., "hero-title", "event-1-description") */
+  slot: varchar("slot", { length: 100 }).notNull(),
+  /** The actual content - can be plain text or markdown */
+  content: text("content").notNull(),
+  /** Content type for rendering hints */
+  contentType: varchar("contentType", { length: 20 }).default("text").notNull(),
+  /** Last edited by user ID */
+  editedBy: integer("editedBy"),
+  createdAt: timestamp("createdAt", { withTimezone: false })
+    .defaultNow()
+    .notNull(),
+  updatedAt: timestamp("updatedAt", { withTimezone: false })
+    .defaultNow()
+    .notNull(),
+});
+
+export type EditableContent = typeof editableContent.$inferSelect;
+export type InsertEditableContent = typeof editableContent.$inferInsert;

@@ -47,8 +47,13 @@
 :root {
   /* Modern Agrarian Palette */
   /* Primary: Deep Forest Green */
-  --primary: oklch(0.35 0.04 160); 
+  --primary: oklch(0.35 0.04 160);
   --primary-foreground: oklch(0.98 0.01 160);
+
+  /* Seasonal Colors (set dynamically via SeasonalContext) */
+  --seasonal-primary: oklch(0.35 0.04 160);
+  --seasonal-secondary: oklch(0.65 0.15 45);
+  --seasonal-accent: oklch(0.75 0.12 85);
   
   /* Secondary: Warm Terracotta */
   --secondary: oklch(0.65 0.15 45);

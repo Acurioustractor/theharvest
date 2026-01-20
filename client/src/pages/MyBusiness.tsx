@@ -1,5 +1,4 @@
 import { useState } from "react";
-import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -120,18 +119,18 @@ export default function MyBusiness() {
   // Loading state
   if (authLoading) {
     return (
-      <Layout>
+      <>
         <div className="min-h-[60vh] flex items-center justify-center">
           <Loader2 className="h-8 w-8 animate-spin text-[#2c4c3b]" />
         </div>
-      </Layout>
+      </>
     );
   }
 
   // Not authenticated
   if (!isAuthenticated) {
     return (
-      <Layout>
+      <>
         <div className="min-h-[60vh] flex items-center justify-center">
           <Card className="max-w-md w-full mx-4">
             <CardHeader className="text-center">
@@ -154,26 +153,26 @@ export default function MyBusiness() {
             </CardFooter>
           </Card>
         </div>
-      </Layout>
+      </>
     );
   }
 
   // Loading business
   if (businessLoading) {
     return (
-      <Layout>
+      <>
         <div className="min-h-[60vh] flex items-center justify-center">
           <Loader2 className="h-8 w-8 animate-spin text-[#2c4c3b]" />
           <span className="ml-3 text-muted-foreground">Loading your business...</span>
         </div>
-      </Layout>
+      </>
     );
   }
 
   // No business yet - show claim or register options
   if (!myBusiness) {
     return (
-      <Layout>
+      <>
         {/* Header */}
         <section className="bg-[#2c4c3b] text-white py-12">
           <div className="container px-4">
@@ -298,13 +297,13 @@ export default function MyBusiness() {
             </Card>
           </div>
         </section>
-      </Layout>
+      </>
     );
   }
 
   // Has business - show management dashboard
   return (
-    <Layout>
+    <>
       {/* Header */}
       <section className="bg-[#2c4c3b] text-white py-12">
         <div className="container px-4">
@@ -608,6 +607,6 @@ export default function MyBusiness() {
           </Tabs>
         </div>
       </section>
-    </Layout>
+    </>
   );
 }

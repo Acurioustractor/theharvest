@@ -1,4 +1,3 @@
-import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -9,7 +8,7 @@ import accommodationData from "@/data/accommodation-full.json";
 
 export default function Accommodation() {
   return (
-    <Layout>
+    <>
       {/* Hero Section */}
       <section className="relative h-[60vh] min-h-[500px] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
@@ -156,6 +155,6 @@ export default function Accommodation() {
           </Link>
         </div>
       </section>
-    </Layout>
+    </>
   );
 }

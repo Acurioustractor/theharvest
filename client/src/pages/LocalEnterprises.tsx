@@ -1,5 +1,4 @@
 import { useState, useMemo } from "react";
-import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -79,7 +78,7 @@ export default function LocalEnterprises() {
   }, [apiEvents]);
 
   return (
-    <Layout>
+    <>
       {/* Hero Section */}
       <section className="relative h-[50vh] min-h-[400px] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
@@ -319,6 +318,6 @@ export default function LocalEnterprises() {
           </Button>
         </div>
       </section>
-    </Layout>
+    </>
   );
 }

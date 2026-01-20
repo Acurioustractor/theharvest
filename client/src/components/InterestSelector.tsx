@@ -1,28 +1,55 @@
 import { cn } from "@/lib/utils";
-import { Calendar, Hammer, ShoppingBag, Building2, Leaf, Utensils } from "lucide-react";
+import {
+  Calendar,
+  Hammer,
+  ShoppingBag,
+  Building2,
+  Leaf,
+  Utensils,
+  Users,
+  Heart,
+  Sparkles,
+  TreeDeciduous,
+} from "lucide-react";
 
-export type Interest = 
+export type Interest =
   | "events"
   | "workshops"
   | "markets"
   | "venue-hire"
   | "garden-centre"
-  | "food-kitchen";
+  | "food-kitchen"
+  | "community"
+  | "volunteering"
+  | "membership"
+  | "sustainability";
 
 interface InterestOption {
   id: Interest;
   label: string;
   icon: React.ComponentType<{ className?: string }>;
+  ghlTag?: string; // Tag to send to GHL
 }
 
 const interestOptions: InterestOption[] = [
-  { id: "events", label: "Events", icon: Calendar },
-  { id: "workshops", label: "Workshops", icon: Hammer },
-  { id: "markets", label: "Markets", icon: ShoppingBag },
-  { id: "venue-hire", label: "Venue Hire", icon: Building2 },
-  { id: "garden-centre", label: "Garden", icon: Leaf },
-  { id: "food-kitchen", label: "Food & Kitchen", icon: Utensils },
+  { id: "events", label: "Events", icon: Calendar, ghlTag: "interest-events" },
+  { id: "workshops", label: "Workshops", icon: Hammer, ghlTag: "interest-workshops" },
+  { id: "markets", label: "Markets", icon: ShoppingBag, ghlTag: "interest-markets" },
+  { id: "venue-hire", label: "Venue Hire", icon: Building2, ghlTag: "interest-venue" },
+  { id: "garden-centre", label: "Garden", icon: Leaf, ghlTag: "interest-garden" },
+  { id: "food-kitchen", label: "Food & Kitchen", icon: Utensils, ghlTag: "interest-food" },
+  { id: "community", label: "Community", icon: Users, ghlTag: "interest-community" },
+  { id: "volunteering", label: "Volunteering", icon: Heart, ghlTag: "interest-volunteer" },
+  { id: "membership", label: "Membership", icon: Sparkles, ghlTag: "interest-membership" },
+  { id: "sustainability", label: "Sustainability", icon: TreeDeciduous, ghlTag: "interest-sustainability" },
 ];
+
+// Get GHL tags from selected interests
+export function getGHLTagsFromInterests(interests: Interest[]): string[] {
+  return interests
+    .map((id) => interestOptions.find((opt) => opt.id === id)?.ghlTag)
+    .filter((tag): tag is string => !!tag);
+}
 
 interface InterestSelectorProps {
   selected: Interest[];

@@ -6,7 +6,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { Github, Mail, Lock, Sparkles } from "lucide-react";
+import { Github, Mail, Lock, Sparkles, Zap } from "lucide-react";
+import { enableDevLogin } from "@/_core/hooks/useAuth";
 
 export default function Login() {
   const [, setLocation] = useLocation();
@@ -97,6 +98,14 @@ export default function Login() {
     }
   };
 
+  // Dev mode: simple login bypass - no Supabase, just localStorage
+  const handleDevLogin = () => {
+    toast.success("Logging in as Dev Admin...");
+    enableDevLogin(); // Sets localStorage flag and reloads
+  };
+
+  const isDev = window.location.hostname === "localhost";
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-amber-50 via-white to-stone-50 flex items-center justify-center px-4 py-24">
       <Card className="w-full max-w-lg shadow-xl border-stone-200">
@@ -109,6 +118,26 @@ export default function Login() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
+          {/* Dev Login - only shows on localhost */}
+          {isDev && (
+            <Button
+              className="w-full bg-amber-500 hover:bg-amber-600 text-black gap-2"
+              onClick={handleDevLogin}
+              disabled={loading}
+            >
+              <Zap className="h-4 w-4" />
+              {loading ? "Signing in..." : "Quick Dev Login (Admin)"}
+            </Button>
+          )}
+
+          {isDev && (
+            <div className="flex items-center gap-3 text-xs text-muted-foreground">
+              <div className="h-px flex-1 bg-stone-200" />
+              or use standard auth
+              <div className="h-px flex-1 bg-stone-200" />
+            </div>
+          )}
+
           <div className="grid grid-cols-2 gap-3">
             <Button
               variant="outline"
