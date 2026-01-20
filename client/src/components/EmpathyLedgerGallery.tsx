@@ -25,6 +25,25 @@ interface HarvestGalleryProps {
 }
 
 /**
+ * Transform Supabase storage URL to use image transformation
+ * Reduces 6-8MB images to ~200KB for mobile performance
+ */
+function optimizeImageUrl(src: string, width: number = 800): string {
+  if (!src) return src;
+
+  // Check if it's a Supabase storage URL
+  if (src.includes('supabase.co/storage/v1/object/public/')) {
+    // Convert to render endpoint with transformation params
+    return src.replace(
+      '/storage/v1/object/public/',
+      '/storage/v1/render/image/public/'
+    ) + `?width=${width}&quality=75`;
+  }
+
+  return src;
+}
+
+/**
  * Displays photos from Empathy Ledger with Harvest tags
  *
  * Uses tRPC gallery.fromEL endpoint which proxies to Empathy Ledger.
@@ -91,7 +110,7 @@ export function HarvestGallery({
             onClick={() => setSelectedPhoto(photo)}
           >
             <img
-              src={photo.src}
+              src={optimizeImageUrl(photo.src, 600)}
               alt={photo.altText || photo.title || "Gallery image"}
               className="w-full h-64 object-cover transition-transform duration-300 group-hover:scale-105"
               loading="lazy"
@@ -123,7 +142,7 @@ export function HarvestGallery({
             &times;
           </button>
           <img
-            src={selectedPhoto.src}
+            src={optimizeImageUrl(selectedPhoto.src, 1200)}
             alt={selectedPhoto.altText || selectedPhoto.title || "Gallery image"}
             className="max-w-full max-h-[90vh] object-contain"
             onClick={(e) => e.stopPropagation()}
