@@ -177,7 +177,7 @@ export default function HarvestHome() {
             transition={{ duration: 0.8 }}
             className="max-w-4xl mx-auto"
           >
-            <span className="inline-block px-4 py-2 mb-6 text-sm font-medium bg-white/10 backdrop-blur-sm rounded-full border border-white/20">
+            <span className="hidden md:inline-block px-4 py-2 mb-6 text-sm font-medium bg-white/10 backdrop-blur-sm rounded-full border border-white/20">
               {seasonalData.emoji} {seasonalData.content.tagline} in Witta
             </span>
 
