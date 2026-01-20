@@ -25,7 +25,7 @@ Deno.serve(async req => {
   if (!businessId) return new Response("Missing businessId", { status: 400 });
 
   const { data, error } = await supabase
-    .from("businesses")
+    .from("harvest_businesses")
     .update({ userOpenId: userData.user.id, updatedAt: new Date().toISOString() })
     .eq("id", businessId)
     .is("userOpenId", null)

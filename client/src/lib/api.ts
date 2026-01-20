@@ -47,7 +47,7 @@ export async function fetchAppUser(openId: string) {
 
 export async function listApprovedEvents() {
   const { data, error } = await supabase
-    .from("events")
+    .from("harvest_events")
     .select("*")
     .eq("status", "approved")
     .order("date", { ascending: true });
@@ -57,7 +57,7 @@ export async function listApprovedEvents() {
 }
 
 export async function submitEvent(input: Record<string, unknown>) {
-  const { data, error } = await supabase.from("events").insert({
+  const { data, error } = await supabase.from("harvest_events").insert({
     ...input,
     status: "pending",
   }).select().maybeSingle();
@@ -68,7 +68,7 @@ export async function submitEvent(input: Record<string, unknown>) {
 
 export async function listApprovedBusinesses() {
   const { data, error } = await supabase
-    .from("businesses")
+    .from("harvest_businesses")
     .select("*")
     .eq("status", "approved")
     .order("name", { ascending: true });
@@ -78,7 +78,7 @@ export async function listApprovedBusinesses() {
 }
 
 export async function submitBusiness(input: Record<string, unknown>) {
-  const { data, error } = await supabase.from("businesses").insert({
+  const { data, error } = await supabase.from("harvest_businesses").insert({
     ...input,
     status: "pending",
   }).select().maybeSingle();
@@ -115,7 +115,7 @@ export async function updateBusinessStatus(businessId: number, status: "approved
 
 export async function fetchMyBusiness(openId: string) {
   const { data, error } = await supabase
-    .from("businesses")
+    .from("harvest_businesses")
     .select("*")
     .eq("userOpenId", openId)
     .maybeSingle();
@@ -125,7 +125,7 @@ export async function fetchMyBusiness(openId: string) {
 
 export async function listUnclaimedBusinesses() {
   const { data, error } = await supabase
-    .from("businesses")
+    .from("harvest_businesses")
     .select("*")
     .eq("status", "approved")
     .is("userOpenId", null)

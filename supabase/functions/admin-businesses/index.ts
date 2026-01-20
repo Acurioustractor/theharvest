@@ -43,7 +43,7 @@ Deno.serve(async req => {
     const url = new URL(req.url);
     const status = url.searchParams.get("status") ?? "pending";
     const { data, error } = await supabase
-      .from("businesses")
+      .from("harvest_businesses")
       .select("*")
       .eq("status", status)
       .order("createdAt", { ascending: false });
@@ -69,7 +69,7 @@ Deno.serve(async req => {
     }
 
     const { data, error } = await supabase
-      .from("businesses")
+      .from("harvest_businesses")
       .update({ status, updatedAt: new Date().toISOString() })
       .eq("id", businessId)
       .select()

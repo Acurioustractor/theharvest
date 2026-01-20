@@ -45,7 +45,7 @@ Deno.serve(async req => {
   updates.updatedAt = new Date().toISOString();
 
   const { data, error } = await supabase
-    .from("businesses")
+    .from("harvest_businesses")
     .update(updates)
     .eq("id", businessId)
     .eq("userOpenId", userData.user.id)
