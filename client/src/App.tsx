@@ -30,6 +30,7 @@ import Stories from "./pages/Stories";
 import Membership from "./pages/Membership";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
+import Witta from "./pages/Witta";
 import PhotoManager from "./pages/admin/PhotoManager";
 // Blog admin removed - using Empathy Ledger Content Hub admin
 
@@ -55,6 +56,7 @@ function Router() {
         <Route path="/explore" component={Explore} />
         <Route path="/stories" component={Stories} />
         <Route path="/membership" component={Membership} />
+        <Route path="/witta" component={Witta} />
 
         {/* Blog pages */}
         <Route path="/blog" component={Blog} />

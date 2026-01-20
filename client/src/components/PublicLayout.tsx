@@ -34,6 +34,7 @@ const navGroups = {
       { label: "About The Harvest", href: "/about", icon: Heart, description: "Our story and values" },
       { label: "Our Journey", href: "/journey", icon: MapPin, description: "From nursery to community hub" },
       { label: "Stories", href: "/stories", icon: Users, description: "Voices from our community" },
+      { label: "Venue Hire", href: "/venue-hire", icon: Building, description: "Host your event with us" },
     ],
   },
   visit: {
@@ -41,14 +42,14 @@ const navGroups = {
     items: [
       { label: "Plan Your Visit", href: "/visit", icon: MapPin, description: "Hours, directions & what to expect" },
       { label: "What's On", href: "/whats-on", icon: Calendar, description: "Events, workshops & markets" },
-      { label: "Explore", href: "/explore", icon: HomeIcon, description: "Discover our spaces" },
+      { label: "The Space", href: "/explore", icon: HomeIcon, description: "Explore our buildings & gardens" },
     ],
   },
-  stay: {
-    label: "Stay",
+  witta: {
+    label: "About Witta",
     items: [
+      { label: "Witta History", href: "/witta", icon: BookOpen, description: "The story of this place" },
       { label: "Accommodation", href: "/accommodation", icon: Bed, description: "Places to stay nearby" },
-      { label: "Venue Hire", href: "/venue-hire", icon: Building, description: "Host your event with us" },
       { label: "Local Enterprises", href: "/enterprises", icon: Store, description: "Our community partners" },
     ],
   },
