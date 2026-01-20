@@ -7,7 +7,7 @@ import * as db from "../../server/db";
 import { ENV } from "../../server/_core/env";
 
 export const config = {
-  runtime: "nodejs22.x",
+  runtime: "nodejs",
 };
 
 type VercelContext = {
