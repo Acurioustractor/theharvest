@@ -59,7 +59,7 @@ const seasonalData: Record<Season, SeasonalData> = {
     content: {
       tagline: "Long days, warm gatherings",
       heroImage: "/images/harvest-hero-summer.jpg",
-      welcomeMessage: "Summer at The Harvest brings outdoor markets, twilight dinners, and garden abundance.",
+      welcomeMessage: "We're dreaming of long summer evenings – community tables under the stars, food shared with neighbours, gardens bursting with life.",
     },
   },
   autumn: {
@@ -79,7 +79,7 @@ const seasonalData: Record<Season, SeasonalData> = {
     content: {
       tagline: "Harvest time, gratitude season",
       heroImage: "/images/harvest-hero-autumn.jpg",
-      welcomeMessage: "Autumn brings the harvest home. Preserving workshops, cozy gatherings, and seasonal feasts.",
+      welcomeMessage: "We're building a place for harvest gatherings – where preserving skills pass between generations and gratitude becomes tradition.",
     },
   },
   winter: {
@@ -99,7 +99,7 @@ const seasonalData: Record<Season, SeasonalData> = {
     content: {
       tagline: "Slow down, warm up",
       heroImage: "/images/harvest-hero-winter.jpg",
-      welcomeMessage: "Winter is for warming soups, fireside workshops, and planning the season ahead.",
+      welcomeMessage: "Picture winter here: warm kitchens, slow conversations, a fire going while we plan what comes next together.",
     },
   },
   spring: {
@@ -119,7 +119,7 @@ const seasonalData: Record<Season, SeasonalData> = {
     content: {
       tagline: "New growth, fresh starts",
       heroImage: "/images/harvest-hero-spring.jpg",
-      welcomeMessage: "Spring awakens the garden. Seedlings, planting days, and the joy of new beginnings.",
+      welcomeMessage: "Spring is for beginnings. We're preparing the ground for something beautiful – a place to grow, learn, and belong.",
     },
   },
 };
