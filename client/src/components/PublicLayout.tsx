@@ -270,11 +270,9 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
               <Button
                 variant={showTransparentNav ? "secondary" : "outline"}
                 className="ml-3"
-                onClick={() => {
-                  window.location.href = getLoginUrl();
-                }}
+                asChild
               >
-                Sign in
+                <Link href="/contact">Contact Us</Link>
               </Button>
             )}
           </nav>
@@ -399,11 +397,9 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
               <Button
                 className="w-full mt-2"
                 variant="outline"
-                onClick={() => {
-                  window.location.href = getLoginUrl();
-                }}
+                asChild
               >
-                Sign in
+                <Link href="/contact">Contact Us</Link>
               </Button>
             )}
           </nav>
