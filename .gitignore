@@ -119,3 +119,10 @@ temp/
 
 # Global scripts symlink
 scripts-global
+
+# TLDR index files
+.tldr/
+.tldrignore
+
+# Local notes/thoughts
+thoughts/
