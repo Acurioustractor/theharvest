@@ -46,11 +46,11 @@ export default function Home() {
   return (
     <>
       {/* Hero Section */}
-      <section className="relative h-screen min-h-[600px] flex items-center justify-center overflow-hidden">
+      <section className="relative h-screen min-h-[600px] flex items-center justify-center overflow-hidden pt-16 md:pt-0">
         <div className="absolute inset-0 z-0">
-          <img 
-            src="/images/hero-background.jpg" 
-            alt="Witta Hinterland Landscape" 
+          <img
+            src="/images/hero-background.jpg"
+            alt="Witta Hinterland Landscape"
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-black/40 mix-blend-multiply" />

@@ -14,21 +14,21 @@ import { useQuery } from "@tanstack/react-query";
 
 // Category images mapping
 const categoryImages: Record<string, string> = {
-  "Markets & Retail": "/assets/images/category-market.jpg",
-  "Arts & Crafts": "/assets/images/category-arts.jpg",
+  "Markets & Retail": "/images/category-market.jpg",
+  "Arts & Crafts": "/images/category-arts.jpg",
   "Accommodation": "/images/accommodation/directory-hero.jpg",
-  "Services & Trades": "/assets/images/category-services.jpg",
-  "Community & Sports": "/assets/images/category-community.jpg",
-  "Local Business": "/assets/images/enterprises-hero.jpg"
+  "Services & Trades": "/images/category-services.jpg",
+  "Community & Sports": "/images/category-community.jpg",
+  "Local Business": "/images/enterprises-hero.jpg"
 };
 
 // Category image mapping for events
 const eventCategoryImages: Record<string, string> = {
-  market: "/assets/images/category-market.jpg",
-  community: "/assets/images/category-community.jpg",
-  arts: "/assets/images/category-arts.jpg",
-  workshop: "/assets/images/category-services.jpg",
-  music: "/assets/images/enterprises-hero.jpg",
+  market: "/images/category-market.jpg",
+  community: "/images/category-community.jpg",
+  arts: "/images/category-arts.jpg",
+  workshop: "/images/category-services.jpg",
+  music: "/images/enterprises-hero.jpg",
 };
 
 export default function LocalEnterprises() {
@@ -63,7 +63,7 @@ export default function LocalEnterprises() {
       location: event.location,
       category: event.category.charAt(0).toUpperCase() + event.category.slice(1),
       description: event.description,
-      image: eventCategoryImages[event.category] || "/assets/images/enterprises-hero.jpg",
+      image: eventCategoryImages[event.category] || "/images/enterprises-hero.jpg",
       isFromApi: true,
     }));
 
@@ -80,10 +80,10 @@ export default function LocalEnterprises() {
   return (
     <>
       {/* Hero Section */}
-      <section className="relative h-[50vh] min-h-[400px] flex items-center justify-center overflow-hidden">
+      <section className="relative h-[50vh] min-h-[400px] flex items-center justify-center overflow-hidden pt-16 md:pt-0">
         <div className="absolute inset-0 z-0">
           <LazyImage
-            src="/assets/images/enterprises-hero.jpg"
+            src="/images/enterprises-hero.jpg"
             alt="Community gathering"
             className="w-full h-full object-cover"
           />
@@ -148,7 +148,7 @@ export default function LocalEnterprises() {
               <Card key={enterprise.id} className="flex flex-col h-full border-none shadow-md hover:shadow-lg transition-shadow overflow-hidden">
                 <div className="h-48 overflow-hidden">
                   <LazyImage
-                    src={enterprise.image || categoryImages[enterprise.category] || "/assets/images/enterprises-hero.jpg"}
+                    src={enterprise.image || categoryImages[enterprise.category] || "/images/enterprises-hero.jpg"}
                     alt={enterprise.name}
                     className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
                   />

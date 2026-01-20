@@ -85,7 +85,7 @@ export default function AccommodationDirectory() {
   return (
     <>
       {/* Header Section */}
-      <section className="bg-primary text-primary-foreground py-20 relative overflow-hidden">
+      <section className="bg-primary text-primary-foreground pt-24 pb-20 md:py-20 relative overflow-hidden">
         <div className="absolute inset-0 opacity-20">
            <img 
             src="/images/accommodation/directory-hero.jpg" 

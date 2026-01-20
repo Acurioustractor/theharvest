@@ -10,7 +10,7 @@ export default function Accommodation() {
   return (
     <>
       {/* Hero Section */}
-      <section className="relative h-[60vh] min-h-[500px] flex items-center justify-center overflow-hidden">
+      <section className="relative h-[60vh] min-h-[500px] flex items-center justify-center overflow-hidden pt-16 md:pt-0">
         <div className="absolute inset-0 z-0">
           <img 
             src="/images/accommodation-hero.jpg" 
