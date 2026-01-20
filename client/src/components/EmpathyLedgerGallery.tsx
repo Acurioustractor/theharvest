@@ -1,7 +1,5 @@
-import { useEffect, useState } from "react";
-
-// Use localhost for development, production URL when deployed
-const EMPATHY_LEDGER_BASE = import.meta.env.VITE_EMPATHY_LEDGER_URL || "http://localhost:3030";
+import { useState } from "react";
+import { trpc } from "@/lib/trpc";
 
 // Media asset returned by Harvest Gallery API
 interface ELMediaAsset {
@@ -19,7 +17,7 @@ interface ELMediaAsset {
 
 interface HarvestGalleryProps {
   className?: string;
-  tag?: "home" | "journey" | "stories" | "explore" | "membership" | "visit" | "whats-on";
+  tag?: string;
   theme?: "eat" | "grow" | "make" | "gather";
   category?: "before" | "during" | "after" | "milestone" | "general";
   limit?: number;
@@ -29,8 +27,8 @@ interface HarvestGalleryProps {
 /**
  * Displays photos from Empathy Ledger with Harvest tags
  *
- * Uses the /api/v1/harvest/gallery endpoint which filters by tags.
- * No syndication setup required - just tag photos in Empathy Ledger admin.
+ * Uses tRPC gallery.fromEL endpoint which proxies to Empathy Ledger.
+ * No CORS issues - all requests go through our server.
  */
 export function HarvestGallery({
   className = "",
@@ -40,42 +38,18 @@ export function HarvestGallery({
   limit = 12,
   columns = 3,
 }: HarvestGalleryProps) {
-  const [photos, setPhotos] = useState<ELMediaAsset[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [selectedPhoto, setSelectedPhoto] = useState<ELMediaAsset | null>(null);
 
-  useEffect(() => {
-    const fetchPhotos = async () => {
-      setLoading(true);
-      setError(null);
+  const { data, isLoading, error } = trpc.gallery.fromEL.useQuery({
+    tag,
+    theme,
+    category: category === "general" ? undefined : category,
+    limit,
+  });
 
-      const params = new URLSearchParams({ limit: String(limit) });
-      if (tag) params.set("tag", tag);
-      if (theme) params.set("theme", theme);
-      if (category) params.set("category", category);
+  const photos = (data?.media as ELMediaAsset[]) || [];
 
-      const url = `${EMPATHY_LEDGER_BASE}/api/v1/harvest/gallery?${params}`;
-
-      try {
-        const response = await fetch(url);
-        if (!response.ok) {
-          const data = await response.json();
-          throw new Error(data.error || "Failed to load gallery");
-        }
-        const data = await response.json();
-        setPhotos(data.media || []);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to load gallery");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPhotos();
-  }, [tag, theme, category, limit]);
-
-  if (loading) {
+  if (isLoading) {
     return (
       <div className={`text-center py-12 text-stone-500 ${className}`}>
         Loading gallery...
@@ -85,8 +59,9 @@ export function HarvestGallery({
 
   if (error) {
     return (
-      <div className={`text-center py-12 text-red-600 bg-red-50 rounded-lg ${className}`}>
-        {error}
+      <div className={`text-center py-12 text-stone-500 ${className}`}>
+        <p className="mb-2">Gallery not available</p>
+        <p className="text-sm text-stone-400">Photos will appear here once connected</p>
       </div>
     );
   }
@@ -94,7 +69,8 @@ export function HarvestGallery({
   if (photos.length === 0) {
     return (
       <div className={`text-center py-12 text-stone-500 ${className}`}>
-        No photos available
+        <p className="mb-2">No photos yet</p>
+        <p className="text-sm text-stone-400">Photos tagged with "{tag || 'harvest'}" will appear here</p>
       </div>
     );
   }
