@@ -12,7 +12,7 @@
 > "Does this make us more like a tractor's PTO - transferring power to communities who then drive their own future? Or does it make us the driver?"
 
 ### Mission Statement
-**A regenerative innovation ecosystem partnering with marginalised—especially First Nations—communities to dismantle extractive systems.**
+**A regenerative innovation ecosystem partnering with marginalised - especially First Nations - communities to dismantle extractive systems.**
 
 ### The Tractor Metaphor
 Like a tractor's Power Take-Off (PTO):

@@ -277,3 +277,18 @@ export const editableContent = pgTable("editable_content", {
 
 export type EditableContent = typeof editableContent.$inferSelect;
 export type InsertEditableContent = typeof editableContent.$inferInsert;
+
+/**
+ * Site plan annotations for notes and photos on info points
+ */
+export const sitePlanAnnotations = pgTable("site_plan_annotations", {
+  id: serial("id").primaryKey(),
+  pointId: text("point_id").notNull(),
+  type: text("type").notNull(), // 'note' or 'photo'
+  content: text("content").notNull(), // note text or photo URL
+  caption: text("caption"),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+});
+
+export type SitePlanAnnotation = typeof sitePlanAnnotations.$inferSelect;
+export type InsertSitePlanAnnotation = typeof sitePlanAnnotations.$inferInsert;

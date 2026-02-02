@@ -1,6 +1,7 @@
 import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
-import { createEvent, getApprovedEvents, getPendingEvents, updateEventStatus, createBusiness, getApprovedBusinesses, getPendingBusinesses, updateBusinessStatus, getBusinessByUserId, getBusinessById, claimBusiness, updateBusinessProfile, getUnclaimedApprovedBusinesses, getProgressImages, createProgressImage, updateProgressImage, deleteProgressImage, promoteUserToAdmin, getAllUsers, getContent, getContentForPage, upsertContent } from "./db";
+import { createEvent, getApprovedEvents, getPendingEvents, updateEventStatus, createBusiness, getApprovedBusinesses, getPendingBusinesses, updateBusinessStatus, getBusinessByUserId, getBusinessById, claimBusiness, updateBusinessProfile, getUnclaimedApprovedBusinesses, getProgressImages, createProgressImage, updateProgressImage, deleteProgressImage, promoteUserToAdmin, getAllUsers, getContent, getContentForPage, upsertContent, getAnnotationsForPoint, createAnnotation, deleteAnnotation } from "./db";
+import { storagePut } from "./storage";
 import { upsertGHLContact } from "./gohighlevel";
 import { empathyLedgerClient } from "./empathyLedgerClient";
 import {
@@ -501,6 +502,45 @@ export const appRouter = router({
           throw new Error("Unauthorized");
         }
         const success = await deleteProgressImage(input.imageId);
+        return { success };
+      }),
+  }),
+
+  // Site plan annotations (notes & photos on info points)
+  sitePlan: router({
+    annotations: publicProcedure
+      .input(z.object({ pointId: z.string() }))
+      .query(async ({ input }) => {
+        return await getAnnotationsForPoint(input.pointId);
+      }),
+
+    addNote: publicProcedure
+      .input(z.object({ pointId: z.string(), content: z.string().min(1) }))
+      .mutation(async ({ input }) => {
+        const annotation = await createAnnotation(input.pointId, "note", input.content);
+        return { success: true, annotation };
+      }),
+
+    uploadPhoto: publicProcedure
+      .input(z.object({
+        pointId: z.string(),
+        fileName: z.string(),
+        base64Data: z.string(),
+        contentType: z.string(),
+        caption: z.string().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        const buffer = Buffer.from(input.base64Data, "base64");
+        const key = `site-plan/${input.pointId}/${Date.now()}-${input.fileName}`;
+        const { url } = await storagePut(key, buffer, input.contentType);
+        const annotation = await createAnnotation(input.pointId, "photo", url, input.caption);
+        return { success: true, annotation };
+      }),
+
+    delete: publicProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ input }) => {
+        const success = await deleteAnnotation(input.id);
         return { success };
       }),
   }),

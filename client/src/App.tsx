@@ -31,6 +31,11 @@ import Membership from "./pages/Membership";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 import Witta from "./pages/Witta";
+import Vision from "./pages/Vision";
+import Story from "./pages/Story";
+import SitePlan from "./pages/SitePlan";
+import Compendium from "./pages/Compendium";
+import DrawingPicker from "./pages/DrawingPicker";
 import PhotoManager from "./pages/admin/PhotoManager";
 // Blog admin removed - using Empathy Ledger Content Hub admin
 
@@ -62,7 +67,12 @@ function Router() {
         <Route path="/blog" component={Blog} />
         <Route path="/blog/:slug" component={BlogPost} />
         
-        {/* Strategic / Partner pages */}
+        {/* Vision / Strategic pages */}
+        <Route path="/vision" component={Vision} />
+        <Route path="/story" component={Story} />
+        <Route path="/site-plan" component={SitePlan} />
+        <Route path="/compendium" component={Compendium} />
+        <Route path="/drawing-picker" component={DrawingPicker} />
         <Route path="/strategic-analysis" component={StrategicAnalysis} />
         <Route path="/partner-portal" component={PartnerPortal} />
         <Route path="/proposal" component={Proposal} />

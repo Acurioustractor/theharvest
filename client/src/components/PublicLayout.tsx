@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
-import { Menu, X, ChevronDown, Leaf, Heart, MapPin, Calendar, Home as HomeIcon, Users, Bed, Building, Store, UserPlus, BookOpen, Mail } from "lucide-react";
+import { Menu, X, ChevronDown, Leaf, Heart, MapPin, Calendar, Home as HomeIcon, Users, Bed, Building, Store, UserPlus, BookOpen, Mail, Eye, Map, ScrollText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   NavigationMenu,
@@ -35,6 +35,9 @@ const navGroups = {
       { label: "Our Journey", href: "/journey", icon: MapPin, description: "From nursery to community hub" },
       { label: "Stories", href: "/stories", icon: Users, description: "Voices from our community" },
       { label: "Venue Hire", href: "/venue-hire", icon: Building, description: "Host your event with us" },
+      { label: "Our Vision", href: "/vision", icon: Eye, description: "The plan for The Harvest" },
+      { label: "The Compendium", href: "/compendium", icon: ScrollText, description: "Our manifesto and field guide" },
+      { label: "Site Plan", href: "/site-plan", icon: Map, description: "Interactive site exploration" },
     ],
   },
   visit: {

@@ -16,6 +16,8 @@ import {
   editableContent,
   InsertEditableContent,
   EditableContent,
+  sitePlanAnnotations,
+  SitePlanAnnotation,
 } from "../drizzle/schema";
 // Blog posts are now fetched from Empathy Ledger Content Hub API
 // See server/empathyLedgerClient.ts for the integration
@@ -582,5 +584,65 @@ export async function upsertContent(
   } catch (error) {
     console.error("[Database] Failed to upsert content:", error);
     throw error;
+  }
+}
+
+// Site Plan Annotations
+export async function getAnnotationsForPoint(pointId: string): Promise<SitePlanAnnotation[]> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot get annotations: database not available");
+    return [];
+  }
+
+  try {
+    const result = await db.select().from(sitePlanAnnotations)
+      .where(eq(sitePlanAnnotations.pointId, pointId))
+      .orderBy(desc(sitePlanAnnotations.createdAt));
+    return result;
+  } catch (error) {
+    console.error("[Database] Failed to get annotations:", error);
+    return [];
+  }
+}
+
+export async function createAnnotation(
+  pointId: string,
+  type: "note" | "photo",
+  content: string,
+  caption?: string
+): Promise<SitePlanAnnotation | undefined> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot create annotation: database not available");
+    return undefined;
+  }
+
+  try {
+    await db.insert(sitePlanAnnotations).values({ pointId, type, content, caption });
+    const result = await db.select().from(sitePlanAnnotations)
+      .where(eq(sitePlanAnnotations.pointId, pointId))
+      .orderBy(desc(sitePlanAnnotations.createdAt))
+      .limit(1);
+    return result[0];
+  } catch (error) {
+    console.error("[Database] Failed to create annotation:", error);
+    throw error;
+  }
+}
+
+export async function deleteAnnotation(id: number): Promise<boolean> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot delete annotation: database not available");
+    return false;
+  }
+
+  try {
+    await db.delete(sitePlanAnnotations).where(eq(sitePlanAnnotations.id, id));
+    return true;
+  } catch (error) {
+    console.error("[Database] Failed to delete annotation:", error);
+    return false;
   }
 }

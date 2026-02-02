@@ -126,3 +126,14 @@ scripts-global
 
 # Local notes/thoughts
 thoughts/
+
+# Generated slide outputs
+docs/vision-prep/slides/*.pdf
+docs/vision-prep/slides/*.html
+docs/vision-prep/slides/*.pptx
+
+# Audio files (too large for git)
+docs/vision-prep/audio-transcripts/*.mp3
+docs/vision-prep/audio-transcripts/*.m4a
+docs/vision-prep/audio-transcripts/*.wav
+docs/vision-prep/audio-transcripts/*.ogg
