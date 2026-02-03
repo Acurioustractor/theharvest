@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, FormEvent } from "react";
 import { Link, useLocation } from "wouter";
-import { Menu, X, ChevronDown, Leaf, Heart, MapPin, Calendar, Home as HomeIcon, Users, Bed, Building, Store, UserPlus, BookOpen, Mail, Eye, Map, ScrollText } from "lucide-react";
+import { Menu, X, ChevronDown, Leaf, Heart, MapPin, Calendar, Home as HomeIcon, Users, Building, Store, UserPlus, BookOpen, Mail, Eye, Map, ScrollText, Compass, ArrowRight, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   NavigationMenu,
@@ -20,51 +20,140 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { getLoginUrl } from "@/const";
 import { cn } from "@/lib/utils";
-import UnifiedFooter from "@/components/shared/UnifiedFooter";
+import { subscribeNewsletter } from "@/lib/api";
 
 interface PublicLayoutProps {
   children: React.ReactNode;
 }
 
-// Navigation structure with grouped categories
+// Navigation structure — minimal, two dropdowns + standalone Compendium
 const navGroups = {
-  about: {
-    label: "About",
-    items: [
-      { label: "About The Harvest", href: "/about", icon: Heart, description: "Our story and values" },
-      { label: "Our Journey", href: "/journey", icon: MapPin, description: "From nursery to community hub" },
-      { label: "Stories", href: "/stories", icon: Users, description: "Voices from our community" },
-      { label: "Venue Hire", href: "/venue-hire", icon: Building, description: "Host your event with us" },
-      { label: "Our Vision", href: "/vision", icon: Eye, description: "The plan for The Harvest" },
-      { label: "The Compendium", href: "/compendium", icon: ScrollText, description: "Our manifesto and field guide" },
-      { label: "Site Plan", href: "/site-plan", icon: Map, description: "Interactive site exploration" },
-    ],
-  },
   visit: {
     label: "Visit",
     items: [
       { label: "Plan Your Visit", href: "/visit", icon: MapPin, description: "Hours, directions & what to expect" },
       { label: "What's On", href: "/whats-on", icon: Calendar, description: "Events, workshops & markets" },
-      { label: "The Space", href: "/explore", icon: HomeIcon, description: "Explore our buildings & gardens" },
     ],
   },
-  witta: {
-    label: "About Witta",
+  discover: {
+    label: "Discover",
     items: [
-      { label: "Witta History", href: "/witta", icon: BookOpen, description: "The story of this place" },
-      { label: "Accommodation", href: "/accommodation", icon: Bed, description: "Places to stay nearby" },
+      { label: "About", href: "/about", icon: Heart, description: "Who we are, in 30 seconds" },
+      { label: "Our Story", href: "/story", icon: BookOpen, description: "The space, the plan, the progress" },
+      { label: "Witta", href: "/witta", icon: Compass, description: "The story of this place" },
       { label: "Local Enterprises", href: "/enterprises", icon: Store, description: "Our community partners" },
-    ],
-  },
-  join: {
-    label: "Join",
-    items: [
-      { label: "Membership", href: "/membership", icon: UserPlus, description: "Become part of our community", badge: "Coming Soon" },
       { label: "Journal", href: "/blog", icon: BookOpen, description: "News, recipes & reflections" },
-      { label: "Contact", href: "/contact", icon: Mail, description: "Get in touch" },
     ],
   },
 };
+
+// Footer link groups
+const footerGroups = {
+  harvest: {
+    label: "The Harvest",
+    links: [
+      { label: "About", href: "/about" },
+      { label: "The Compendium", href: "/compendium" },
+      { label: "Our Story", href: "/story" },
+      { label: "Site Plan", href: "/site-plan" },
+    ],
+  },
+  visit: {
+    label: "Visit",
+    links: [
+      { label: "Plan Your Visit", href: "/visit" },
+      { label: "What's On", href: "/whats-on" },
+      { label: "Venue Hire", href: "/venue-hire" },
+    ],
+  },
+  community: {
+    label: "Community",
+    links: [
+      { label: "Witta", href: "/witta" },
+      { label: "Local Enterprises", href: "/enterprises" },
+      { label: "Membership", href: "/membership" },
+      { label: "Stories", href: "/stories" },
+      { label: "Journal", href: "/blog" },
+    ],
+  },
+  connect: {
+    label: "Connect",
+    links: [
+      { label: "Get Involved", href: "/get-involved" },
+      { label: "Contact", href: "/contact" },
+    ],
+  },
+};
+
+function FooterNewsletter() {
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [errorMsg, setErrorMsg] = useState("");
+
+  async function handleSubmit(e: FormEvent) {
+    e.preventDefault();
+    if (!email.trim()) return;
+    setStatus("loading");
+    try {
+      const result = await subscribeNewsletter({ email: email.trim(), source: "footer" });
+      if (result.success) {
+        setStatus("success");
+        setEmail("");
+      } else {
+        setErrorMsg(result.error || "Something went wrong.");
+        setStatus("error");
+      }
+    } catch {
+      setErrorMsg("Could not connect. Please try again.");
+      setStatus("error");
+    }
+  }
+
+  if (status === "success") {
+    return (
+      <div className="bg-stone-800 py-10">
+        <div className="container text-center">
+          <p className="text-amber-400 font-serif text-lg">You're in. Welcome to The Harvest.</p>
+          <p className="text-stone-400 text-sm mt-2">We'll be in touch with stories, events, and ways to get involved.</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-stone-800 py-10">
+      <div className="container">
+        <div className="max-w-2xl mx-auto text-center space-y-4">
+          <h3 className="text-amber-400 font-serif text-xl">Stay close to what's growing</h3>
+          <p className="text-stone-400 text-sm leading-relaxed">
+            Stories from the land, upcoming gatherings, and ways to be part of something worth building.
+          </p>
+          <form onSubmit={handleSubmit} className="flex gap-2 max-w-md mx-auto">
+            <input
+              type="email"
+              required
+              value={email}
+              onChange={(e) => { setEmail(e.target.value); if (status === "error") setStatus("idle"); }}
+              placeholder="Your email"
+              className="flex-1 px-4 py-2.5 rounded-lg bg-stone-700 border border-stone-600 text-stone-200 placeholder:text-stone-500 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+            />
+            <button
+              type="submit"
+              disabled={status === "loading"}
+              className="px-5 py-2.5 rounded-lg bg-amber-500 text-black font-medium text-sm hover:bg-amber-400 transition-colors disabled:opacity-60 flex items-center gap-2"
+            >
+              {status === "loading" ? <Loader2 className="h-4 w-4 animate-spin" /> : <ArrowRight className="h-4 w-4" />}
+              Join
+            </button>
+          </form>
+          {status === "error" && (
+            <p className="text-red-400 text-xs">{errorMsg}</p>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function PublicLayout({ children }: PublicLayoutProps) {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -225,6 +314,24 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
               </NavigationMenuList>
             </NavigationMenu>
 
+            {/* Standalone Compendium Link */}
+            <Link href="/compendium">
+              <span
+                className={cn(
+                  "px-4 py-2 text-sm font-medium rounded-full transition-colors",
+                  location === "/compendium"
+                    ? showTransparentNav
+                      ? "bg-white/20 text-white"
+                      : "bg-stone-100 text-stone-900"
+                    : showTransparentNav
+                    ? "text-white/90 hover:text-white hover:bg-white/10"
+                    : "text-stone-600 hover:text-stone-900 hover:bg-stone-50"
+                )}
+              >
+                The Compendium
+              </span>
+            </Link>
+
             {/* CTA Button */}
             <Button
               className={cn(
@@ -355,11 +462,6 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
                         >
                           <Icon className="h-5 w-5" />
                           {item.label}
-                          {"badge" in item && item.badge && (
-                            <span className="ml-auto px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide bg-amber-100 text-amber-700 rounded">
-                              {item.badge}
-                            </span>
-                          )}
                         </span>
                       </Link>
                     );
@@ -367,6 +469,23 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
                 </div>
               </div>
             ))}
+
+            {/* Standalone Compendium */}
+            <div className="border-t border-stone-100 pt-2 mt-2">
+              <Link href="/compendium">
+                <span
+                  className={cn(
+                    "flex items-center gap-3 text-base font-medium py-3 px-4 rounded-lg transition-colors",
+                    location === "/compendium"
+                      ? "bg-amber-50 text-amber-700"
+                      : "text-stone-700 hover:bg-stone-50"
+                  )}
+                >
+                  <ScrollText className="h-5 w-5" />
+                  The Compendium
+                </span>
+              </Link>
+            </div>
 
             {/* CTA */}
             <div className="border-t border-stone-100 pt-4 mt-4">
@@ -411,20 +530,64 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
 
       <main>{children}</main>
 
+      {/* Newsletter Banner */}
+      <FooterNewsletter />
+
       {/* Footer */}
-      <UnifiedFooter
-        currentProject="The Harvest"
-        showProjects={true}
-        customLinks={[
-          { label: "About", href: "/about" },
-          { label: "Our Journey", href: "/journey" },
-          { label: "Visit", href: "/visit" },
-          { label: "What's On", href: "/whats-on" },
-          { label: "Membership", href: "/membership" },
-          { label: "Contact", href: "/contact" },
-        ]}
-        contactEmail="hello@theharvestwitta.com.au"
-      />
+      <footer className="border-t border-stone-200 bg-stone-50 py-12">
+        <div className="container">
+          <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-5">
+            {/* Brand column */}
+            <div className="lg:col-span-1 space-y-4">
+              <div className="flex items-center gap-2">
+                <div className="h-8 w-8 rounded-full bg-amber-500 flex items-center justify-center">
+                  <Leaf className="h-4 w-4 text-black" />
+                </div>
+                <div>
+                  <span className="font-serif font-bold text-lg block leading-tight text-stone-800">The Harvest</span>
+                  <span className="text-xs tracking-wider uppercase text-stone-500">Witta</span>
+                </div>
+              </div>
+              <p className="text-sm text-stone-500 leading-relaxed">
+                A place to eat, gather, make, and grow on Jinibara Country.
+              </p>
+              <p className="text-sm text-stone-500">
+                <a href="mailto:hello@theharvestwitta.com.au" className="hover:text-stone-800 transition-colors">
+                  hello@theharvestwitta.com.au
+                </a>
+              </p>
+            </div>
+
+            {/* Link groups */}
+            {Object.entries(footerGroups).map(([key, group]) => (
+              <div key={key}>
+                <h4 className="text-xs font-semibold uppercase tracking-wider text-stone-400 mb-4">
+                  {group.label}
+                </h4>
+                <nav className="space-y-2">
+                  {group.links.map((link) => (
+                    <Link key={link.href} href={link.href}>
+                      <span className="block text-sm text-stone-600 transition hover:text-stone-900">
+                        {link.label}
+                      </span>
+                    </Link>
+                  ))}
+                </nav>
+              </div>
+            ))}
+          </div>
+
+          {/* Bottom bar */}
+          <div className="mt-12 pt-6 border-t border-stone-200 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p className="text-xs text-stone-400">
+              We acknowledge the Jinibara people as the traditional custodians of this land.
+            </p>
+            <p className="text-xs text-stone-400">
+              A Curious Tractor project
+            </p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

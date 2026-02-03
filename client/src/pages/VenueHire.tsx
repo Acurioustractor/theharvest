@@ -1,20 +1,12 @@
-import { useState } from "react";
+import { useState, FormEvent } from "react";
 import { motion } from "framer-motion";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Users,
   Calendar,
   Clock,
-  Wifi,
   Car,
   Coffee,
-  Music,
   Utensils,
   CheckCircle,
   ArrowRight,
@@ -22,7 +14,7 @@ import {
   Phone,
   Loader2,
 } from "lucide-react";
-import { toast } from "sonner";
+import { communitySubmit } from "@/lib/api";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
@@ -44,9 +36,8 @@ const spaces = [
     capacity: "Up to 80 seated / 120 standing",
     description:
       "Our largest space is taking shape with exposed timber beams, natural light, and flexible seating. Perfect for workshops, markets, and celebrations.",
-    features: ["Natural lighting", "Sound system planned", "Flexible layout", "Kitchen access coming"],
+    features: ["Natural lighting", "Flexible layout", "Kitchen access coming", "Sound system planned"],
     ideal: ["Workshops", "Markets", "Private events", "Community gatherings"],
-    image: "/images/venue-main-hall.jpg",
   },
   {
     name: "The Garden Pavilion",
@@ -55,7 +46,6 @@ const spaces = [
       "A covered outdoor space we're developing surrounded by native gardens. Ideal for intimate gatherings, small workshops, or casual dining events.",
     features: ["Covered outdoor", "Garden views", "Power outlets", "BBQ access planned"],
     ideal: ["Small workshops", "Garden parties", "Pop-up dining", "Meetings"],
-    image: "/images/venue-pavilion.jpg",
   },
   {
     name: "The Kitchen",
@@ -64,71 +54,68 @@ const spaces = [
       "We're fitting out a commercial kitchen for cooking classes, food prep, and catering support for larger events.",
     features: ["Commercial appliances", "Prep stations", "Storage", "Dishwashing"],
     ideal: ["Cooking classes", "Food prep", "Catering base", "Preserving workshops"],
-    image: "/images/venue-kitchen.jpg",
   },
 ];
 
 const amenities = [
-  { icon: Wifi, label: "Free WiFi" },
   { icon: Car, label: "Free Parking" },
   { icon: Coffee, label: "Tea & Coffee" },
-  { icon: Music, label: "Sound System" },
   { icon: Utensils, label: "Kitchen Access" },
   { icon: Users, label: "Accessible Entry" },
 ];
 
 export default function VenueHire() {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [eventType, setEventType] = useState("");
-  const [selectedSpace, setSelectedSpace] = useState("");
+  const [formData, setFormData] = useState<Record<string, string>>({});
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [errorMsg, setErrorMsg] = useState("");
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  function updateField(name: string, value: string) {
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (status === "error") setStatus("idle");
+  }
+
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault();
-    setIsSubmitting(true);
-
-    // Simulate form submission
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-
-    toast.success("Enquiry sent successfully!", {
-      description: "We'll get back to you within 2 business days.",
-    });
-
-    setIsSubmitting(false);
-    (e.target as HTMLFormElement).reset();
-    setEventType("");
-    setSelectedSpace("");
-  };
+    setStatus("loading");
+    try {
+      const result = await communitySubmit({
+        type: "venue-enquiry",
+        ...formData,
+      });
+      if (result.success) {
+        setStatus("success");
+        setFormData({});
+      } else {
+        setErrorMsg(result.error || "Something went wrong.");
+        setStatus("error");
+      }
+    } catch {
+      setErrorMsg("Could not connect. Please try again.");
+      setStatus("error");
+    }
+  }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-stone-50">
       {/* Hero Section */}
-      <section className="relative py-24 bg-gradient-to-b from-green-50 to-white overflow-hidden">
-        <div className="absolute inset-0 opacity-5">
-          <div
-            className="absolute inset-0"
-            style={{
-              backgroundImage: `url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='0.4'%3E%3Cpath d='M50 50c0-5.523 4.477-10 10-10s10 4.477 10 10-4.477 10-10 10c0 5.523-4.477 10-10 10s-10-4.477-10-10 4.477-10 10-10zM10 10c0-5.523 4.477-10 10-10s10 4.477 10 10-4.477 10-10 10c0 5.523-4.477 10-10 10S0 25.523 0 20s4.477-10 10-10zm10 8c4.418 0 8-3.582 8-8s-3.582-8-8-8-8 3.582-8 8 3.582 8 8 8zm40 40c4.418 0 8-3.582 8-8s-3.582-8-8-8-8 3.582-8 8 3.582 8 8 8z' /%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-            }}
-          />
-        </div>
-
-        <div className="container relative">
+      <section className="relative py-24 bg-stone-100 overflow-hidden">
+        <div className="container">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             className="max-w-3xl"
           >
-            <span className="text-green-600 font-medium tracking-wide uppercase text-sm">
+            <span className="text-amber-600 font-medium tracking-wide uppercase text-sm">
               Host Your Event
             </span>
             <h1 className="text-5xl md:text-6xl font-serif font-bold text-stone-800 mt-3 mb-6">
               Venue Hire
             </h1>
             <p className="text-xl text-stone-600 leading-relaxed">
-              Looking for a space with character? We're developing flexible venues for workshops,
-              celebrations, community events, and more – all surrounded by the beauty of the
-              hinterland. Get in touch to discuss availability.
+              We're developing flexible spaces for workshops, celebrations, community events,
+              and more — surrounded by the beauty of the hinterland. Get in touch to discuss
+              what's possible.
             </p>
           </motion.div>
         </div>
@@ -151,7 +138,7 @@ export default function VenueHire() {
               Our Spaces
             </motion.h2>
             <motion.p variants={fadeInUp} className="text-lg text-stone-600 max-w-2xl mx-auto">
-              Each space has its own character – choose the one that fits your vision.
+              Each space has its own character — choose the one that fits your vision.
             </motion.p>
           </motion.div>
 
@@ -169,13 +156,13 @@ export default function VenueHire() {
                     <div
                       className={`grid lg:grid-cols-2 ${index % 2 === 1 ? "lg:flex-row-reverse" : ""}`}
                     >
-                      {/* Image */}
+                      {/* Image placeholder */}
                       <div
                         className={`h-64 lg:h-auto bg-stone-200 ${index % 2 === 1 ? "lg:order-2" : ""}`}
                       >
-                        <div className="w-full h-full bg-gradient-to-br from-green-100 to-amber-100 flex items-center justify-center">
+                        <div className="w-full h-full bg-gradient-to-br from-stone-100 to-amber-50 flex items-center justify-center">
                           <div className="text-center p-8">
-                            <Users className="h-16 w-16 text-green-600 mx-auto mb-4" />
+                            <Users className="h-16 w-16 text-amber-600 mx-auto mb-4" />
                             <p className="text-stone-600 font-medium">{space.capacity}</p>
                           </div>
                         </div>
@@ -195,7 +182,7 @@ export default function VenueHire() {
                             <ul className="space-y-2">
                               {space.features.map((feature) => (
                                 <li key={feature} className="flex items-center gap-2 text-stone-600">
-                                  <CheckCircle className="h-4 w-4 text-green-500" />
+                                  <CheckCircle className="h-4 w-4 text-amber-500" />
                                   {feature}
                                 </li>
                               ))}
@@ -205,13 +192,12 @@ export default function VenueHire() {
                             <h4 className="font-semibold text-stone-800 mb-3">Ideal For</h4>
                             <div className="flex flex-wrap gap-2">
                               {space.ideal.map((use) => (
-                                <Badge
+                                <span
                                   key={use}
-                                  variant="outline"
-                                  className="border-green-300 text-green-700"
+                                  className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border border-amber-300 text-amber-700 bg-amber-50"
                                 >
                                   {use}
-                                </Badge>
+                                </span>
                               ))}
                             </div>
                           </div>
@@ -227,7 +213,7 @@ export default function VenueHire() {
       </section>
 
       {/* Amenities Section */}
-      <section className="py-16 bg-stone-50">
+      <section className="py-16 bg-stone-100">
         <div className="container">
           <motion.div
             initial="initial"
@@ -249,14 +235,14 @@ export default function VenueHire() {
             whileInView="animate"
             viewport={{ once: true }}
             variants={staggerContainer}
-            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6"
+            className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-2xl mx-auto"
           >
             {amenities.map((amenity) => (
               <motion.div key={amenity.label} variants={fadeInUp}>
                 <Card className="h-full border-0 shadow-sm bg-white text-center">
                   <CardContent className="p-6">
-                    <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-3">
-                      <amenity.icon className="h-6 w-6 text-green-600" />
+                    <div className="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center mx-auto mb-3">
+                      <amenity.icon className="h-6 w-6 text-amber-600" />
                     </div>
                     <p className="font-medium text-stone-700">{amenity.label}</p>
                   </CardContent>
@@ -279,116 +265,143 @@ export default function VenueHire() {
               transition={{ duration: 0.6 }}
             >
               <Card className="border-0 shadow-lg">
-                <CardHeader>
-                  <CardTitle className="text-2xl font-serif">Make an Enquiry</CardTitle>
-                  <p className="text-stone-600">
+                <CardContent className="p-8">
+                  <h2 className="text-2xl font-serif font-bold text-stone-800 mb-2">
+                    Make an Enquiry
+                  </h2>
+                  <p className="text-stone-600 mb-6">
                     Tell us about your event and we'll get back to you with availability and pricing.
                   </p>
-                </CardHeader>
-                <CardContent>
-                  <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="grid sm:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="name">Your Name</Label>
-                        <Input id="name" name="name" required placeholder="Jane Smith" />
+
+                  {status === "success" ? (
+                    <div className="text-center py-12 space-y-4">
+                      <CheckCircle className="h-12 w-12 text-amber-500 mx-auto" />
+                      <h3 className="font-serif text-xl text-stone-800">Thanks for your enquiry</h3>
+                      <p className="text-stone-600">We'll get back to you within 2 business days.</p>
+                      <button
+                        onClick={() => { setStatus("idle"); setFormData({}); }}
+                        className="mt-4 px-6 py-2 rounded-lg bg-stone-800 text-stone-200 text-sm font-medium hover:bg-stone-700 transition-colors"
+                      >
+                        Submit another
+                      </button>
+                    </div>
+                  ) : (
+                    <form onSubmit={handleSubmit} className="space-y-5">
+                      <div className="grid sm:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-stone-700 mb-1">
+                            Your name <span className="text-red-500">*</span>
+                          </label>
+                          <input
+                            type="text"
+                            required
+                            value={formData.name || ""}
+                            onChange={(e) => updateField("name", e.target.value)}
+                            className="w-full px-4 py-2.5 rounded-lg border border-stone-300 bg-white text-stone-800 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-stone-700 mb-1">
+                            Email <span className="text-red-500">*</span>
+                          </label>
+                          <input
+                            type="email"
+                            required
+                            value={formData.email || ""}
+                            onChange={(e) => updateField("email", e.target.value)}
+                            className="w-full px-4 py-2.5 rounded-lg border border-stone-300 bg-white text-stone-800 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                          />
+                        </div>
                       </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="email">Email</Label>
-                        <Input
-                          id="email"
-                          name="email"
-                          type="email"
+
+                      <div className="grid sm:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-stone-700 mb-1">Phone</label>
+                          <input
+                            type="text"
+                            value={formData.phone || ""}
+                            onChange={(e) => updateField("phone", e.target.value)}
+                            placeholder="0400 000 000"
+                            className="w-full px-4 py-2.5 rounded-lg border border-stone-300 bg-white text-stone-800 text-sm placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-stone-700 mb-1">
+                            Event type <span className="text-red-500">*</span>
+                          </label>
+                          <select
+                            required
+                            value={formData.eventType || ""}
+                            onChange={(e) => updateField("eventType", e.target.value)}
+                            className="w-full px-4 py-2.5 rounded-lg border border-stone-300 bg-white text-stone-800 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                          >
+                            <option value="">Select...</option>
+                            <option value="workshop">Workshop</option>
+                            <option value="celebration">Celebration / Party</option>
+                            <option value="meeting">Meeting / Retreat</option>
+                            <option value="market">Market / Pop-up</option>
+                            <option value="class">Class / Course</option>
+                            <option value="other">Other</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div className="grid sm:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-stone-700 mb-1">Preferred date</label>
+                          <input
+                            type="date"
+                            value={formData.date || ""}
+                            onChange={(e) => updateField("date", e.target.value)}
+                            className="w-full px-4 py-2.5 rounded-lg border border-stone-300 bg-white text-stone-800 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-stone-700 mb-1">Expected guests</label>
+                          <input
+                            type="number"
+                            min="1"
+                            max="150"
+                            placeholder="e.g. 30"
+                            value={formData.guests || ""}
+                            onChange={(e) => updateField("guests", e.target.value)}
+                            className="w-full px-4 py-2.5 rounded-lg border border-stone-300 bg-white text-stone-800 text-sm placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-stone-700 mb-1">
+                          Tell us about your event <span className="text-red-500">*</span>
+                        </label>
+                        <textarea
                           required
-                          placeholder="jane@example.com"
+                          rows={4}
+                          placeholder="What are you planning? Any special requirements?"
+                          value={formData.message || ""}
+                          onChange={(e) => updateField("message", e.target.value)}
+                          className="w-full px-4 py-2.5 rounded-lg border border-stone-300 bg-white text-stone-800 text-sm placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent resize-y"
                         />
                       </div>
-                    </div>
 
-                    <div className="grid sm:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="phone">Phone</Label>
-                        <Input id="phone" name="phone" placeholder="0400 000 000" />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="eventType">Event Type</Label>
-                        <Select value={eventType} onValueChange={setEventType} required>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select type" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="workshop">Workshop</SelectItem>
-                            <SelectItem value="celebration">Celebration / Party</SelectItem>
-                            <SelectItem value="meeting">Meeting / Retreat</SelectItem>
-                            <SelectItem value="market">Market / Pop-up</SelectItem>
-                            <SelectItem value="class">Class / Course</SelectItem>
-                            <SelectItem value="other">Other</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-
-                    <div className="grid sm:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="date">Preferred Date</Label>
-                        <Input id="date" name="date" type="date" required />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="guests">Expected Guests</Label>
-                        <Input
-                          id="guests"
-                          name="guests"
-                          type="number"
-                          placeholder="e.g., 30"
-                          min="1"
-                          max="150"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="space">Preferred Space</Label>
-                      <Select value={selectedSpace} onValueChange={setSelectedSpace}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a space (optional)" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="main-hall">The Main Hall</SelectItem>
-                          <SelectItem value="garden-pavilion">The Garden Pavilion</SelectItem>
-                          <SelectItem value="kitchen">The Kitchen</SelectItem>
-                          <SelectItem value="not-sure">Not sure yet</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="message">Tell us about your event</Label>
-                      <Textarea
-                        id="message"
-                        name="message"
-                        placeholder="What are you planning? Any special requirements?"
-                        className="h-32"
-                        required
-                      />
-                    </div>
-
-                    <Button
-                      type="submit"
-                      disabled={isSubmitting}
-                      className="w-full bg-green-600 hover:bg-green-700 text-white"
-                    >
-                      {isSubmitting ? (
-                        <>
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          Sending...
-                        </>
-                      ) : (
-                        <>
-                          Send Enquiry
-                          <ArrowRight className="ml-2 h-4 w-4" />
-                        </>
+                      {status === "error" && (
+                        <p className="text-red-600 text-sm">{errorMsg}</p>
                       )}
-                    </Button>
-                  </form>
+
+                      <button
+                        type="submit"
+                        disabled={status === "loading"}
+                        className="flex items-center gap-2 px-6 py-3 rounded-lg bg-amber-500 text-black font-medium text-sm hover:bg-amber-400 transition-colors disabled:opacity-60"
+                      >
+                        {status === "loading" ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <ArrowRight className="h-4 w-4" />
+                        )}
+                        Send Enquiry
+                      </button>
+                    </form>
+                  )}
                 </CardContent>
               </Card>
             </motion.div>
@@ -407,7 +420,7 @@ export default function VenueHire() {
                 </h3>
                 <ul className="space-y-4">
                   <li className="flex items-start gap-3">
-                    <CheckCircle className="h-5 w-5 text-green-500 mt-1 flex-shrink-0" />
+                    <CheckCircle className="h-5 w-5 text-amber-500 mt-1 flex-shrink-0" />
                     <div>
                       <strong className="text-stone-800">Flexible spaces</strong>
                       <p className="text-stone-600">
@@ -416,17 +429,16 @@ export default function VenueHire() {
                     </div>
                   </li>
                   <li className="flex items-start gap-3">
-                    <CheckCircle className="h-5 w-5 text-green-500 mt-1 flex-shrink-0" />
+                    <CheckCircle className="h-5 w-5 text-amber-500 mt-1 flex-shrink-0" />
                     <div>
                       <strong className="text-stone-800">Beautiful setting</strong>
                       <p className="text-stone-600">
-                        Surrounded by native gardens and hinterland views – a world away from the
-                        everyday.
+                        Surrounded by native gardens and hinterland views — a world away from the everyday.
                       </p>
                     </div>
                   </li>
                   <li className="flex items-start gap-3">
-                    <CheckCircle className="h-5 w-5 text-green-500 mt-1 flex-shrink-0" />
+                    <CheckCircle className="h-5 w-5 text-amber-500 mt-1 flex-shrink-0" />
                     <div>
                       <strong className="text-stone-800">Community rates</strong>
                       <p className="text-stone-600">
@@ -435,7 +447,7 @@ export default function VenueHire() {
                     </div>
                   </li>
                   <li className="flex items-start gap-3">
-                    <CheckCircle className="h-5 w-5 text-green-500 mt-1 flex-shrink-0" />
+                    <CheckCircle className="h-5 w-5 text-amber-500 mt-1 flex-shrink-0" />
                     <div>
                       <strong className="text-stone-800">Catering options</strong>
                       <p className="text-stone-600">
@@ -446,23 +458,23 @@ export default function VenueHire() {
                 </ul>
               </div>
 
-              <Card className="border-0 shadow-md bg-stone-50">
+              <Card className="border-0 shadow-md bg-stone-100">
                 <CardContent className="p-6">
                   <h4 className="font-semibold text-stone-800 mb-4">Prefer to chat?</h4>
                   <div className="space-y-3">
                     <a
                       href="tel:+61422883943"
-                      className="flex items-center gap-3 text-stone-600 hover:text-green-600 transition-colors"
+                      className="flex items-center gap-3 text-stone-600 hover:text-amber-600 transition-colors"
                     >
                       <Phone className="h-5 w-5" />
                       0422 883 943
                     </a>
                     <a
-                      href="mailto:venues@theharvestwitta.com.au"
-                      className="flex items-center gap-3 text-stone-600 hover:text-green-600 transition-colors"
+                      href="mailto:hello@theharvestwitta.com.au"
+                      className="flex items-center gap-3 text-stone-600 hover:text-amber-600 transition-colors"
                     >
                       <Mail className="h-5 w-5" />
-                      venues@theharvestwitta.com.au
+                      hello@theharvestwitta.com.au
                     </a>
                   </div>
                 </CardContent>
@@ -476,7 +488,22 @@ export default function VenueHire() {
                       <h4 className="font-semibold text-stone-800 mb-2">Booking Timeline</h4>
                       <p className="text-stone-600 text-sm">
                         We recommend booking at least 4 weeks in advance for larger events. For
-                        smaller gatherings, we can often accommodate shorter notice – just ask!
+                        smaller gatherings, we can often accommodate shorter notice — just ask.
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="border-0 shadow-md bg-stone-50">
+                <CardContent className="p-6">
+                  <div className="flex items-start gap-4">
+                    <Clock className="h-8 w-8 text-amber-600 flex-shrink-0" />
+                    <div>
+                      <h4 className="font-semibold text-stone-800 mb-2">Still Taking Shape</h4>
+                      <p className="text-stone-600 text-sm">
+                        Some spaces are still being developed. We're happy to discuss what's available
+                        now and what's coming — get in touch and we'll work something out.
                       </p>
                     </div>
                   </div>

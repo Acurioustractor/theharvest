@@ -14,7 +14,6 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { toast } from "sonner";
-import { MapView } from "@/components/Map";
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 
@@ -75,30 +74,6 @@ export default function Contact() {
     } finally {
       setIsSubmitting(false);
     }
-  };
-
-  const handleMapReady = (map: google.maps.Map) => {
-    const harvestLocation = { lat: -26.7833, lng: 152.8667 };
-
-    new google.maps.Marker({
-      position: harvestLocation,
-      map,
-      title: "The Harvest",
-      icon: {
-        url:
-          "data:image/svg+xml," +
-          encodeURIComponent(`
-          <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="#d97706" stroke="#ffffff" stroke-width="2">
-            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-            <circle cx="12" cy="10" r="3" fill="#ffffff"/>
-          </svg>
-        `),
-        scaledSize: new google.maps.Size(40, 40),
-      },
-    });
-
-    map.setCenter(harvestLocation);
-    map.setZoom(14);
   };
 
   return (
@@ -240,7 +215,7 @@ export default function Contact() {
                 <div className="ml-[60px]">
                   <p className="text-stone-700 font-medium mb-1">The Harvest</p>
                   <p className="text-stone-600">
-                    123 Witta Road
+                    9 Gumland Drive
                     <br />
                     Witta QLD 4552
                   </p>
@@ -253,8 +228,8 @@ export default function Contact() {
               {/* Email */}
               <div>
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
-                    <Mail className="h-6 w-6 text-blue-600" />
+                  <div className="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center">
+                    <Mail className="h-6 w-6 text-amber-600" />
                   </div>
                   <h3 className="text-xl font-serif font-bold text-stone-800">
                     Email
@@ -276,8 +251,8 @@ export default function Contact() {
               {/* Phone */}
               <div>
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
-                    <Phone className="h-6 w-6 text-green-600" />
+                  <div className="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center">
+                    <Phone className="h-6 w-6 text-amber-600" />
                   </div>
                   <h3 className="text-xl font-serif font-bold text-stone-800">
                     Phone
@@ -299,8 +274,8 @@ export default function Contact() {
               {/* Hours */}
               <div>
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center">
-                    <Clock className="h-6 w-6 text-purple-600" />
+                  <div className="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center">
+                    <Clock className="h-6 w-6 text-amber-600" />
                   </div>
                   <h3 className="text-xl font-serif font-bold text-stone-800">
                     Opening Hours
@@ -347,7 +322,14 @@ export default function Contact() {
           >
             <Card className="overflow-hidden border-0 shadow-lg">
               <div className="h-[400px]">
-                <MapView onMapReady={handleMapReady} />
+                <iframe
+                  title="The Harvest location map"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  loading="lazy"
+                  src="https://www.openstreetmap.org/export/embed.html?bbox=152.80%2C-26.73%2C152.84%2C-26.70&layer=mapnik&marker=-26.7176%2C152.8178"
+                />
               </div>
             </Card>
           </motion.div>
@@ -364,7 +346,7 @@ export default function Contact() {
               className="border-amber-300 text-amber-700 hover:bg-amber-50"
               onClick={() =>
                 window.open(
-                  "https://www.google.com/maps/dir/?api=1&destination=-26.7833,152.8667",
+                  "https://www.google.com/maps/dir/?api=1&destination=-26.7176,152.8178",
                   "_blank"
                 )
               }

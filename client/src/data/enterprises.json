@@ -315,6 +315,568 @@
         "instagram": "https://www.instagram.com/zarinacountrycabins/?hl=en"
       },
       "image": "https://files.manuscdn.com/user_upload_by_module/session_file/310519663259238950/cNsBBxzxWIFeLike.webp"
+    },
+    {
+      "id": "barung-landcare",
+      "name": "Barung Landcare Association",
+      "category": "Community & Sports",
+      "description": "With over 30 years of grassroots action, Barung Landcare empowers and connects community to restore, protect, and celebrate the natural landscape of the Blackall Range. They run a community native plant nursery in Maleny (open to the public), professional bush regeneration services, and the annual Maleny Wood Expo. Over 1.5 million local provenance native trees planted. Community volunteer support valued at over $250,000 per year.",
+      "address": "Maleny, QLD 4552",
+      "contact": {
+        "phone": null,
+        "email": null,
+        "website": "https://barunglandcare.org.au/",
+        "facebook": "https://www.facebook.com/barunglandcare/"
+      },
+      "image": "/images/placeholder-enterprise.jpg"
+    },
+    {
+      "id": "maleny-dairies",
+      "name": "Maleny Dairies",
+      "category": "Local Business",
+      "description": "Family-owned dairy since 1948 when Great Grandfather Hopper purchased the land. One of the few local dairies to survive deregulation in 2000 by building their own processing and bottling plant. They produce fresh milk, cream, and flavoured milk sold across the Sunshine Coast and Brisbane. A living piece of the hinterland's dairy heritage.",
+      "address": "Maleny, QLD 4552",
+      "contact": {
+        "phone": null,
+        "email": null,
+        "website": "https://www.malenydairies.com/",
+        "facebook": "https://www.facebook.com/malenydairies/"
+      },
+      "image": "/images/placeholder-enterprise.jpg"
+    },
+    {
+      "id": "lake-baroon-catchment-care",
+      "name": "Lake Baroon Catchment Care Group",
+      "category": "Community & Sports",
+      "description": "Community group working to reduce threats to water quality throughout the Lake Baroon catchment through on-ground works, education, and awareness programs. The catchment supplies 150 megalitres of drinking water daily to the Sunshine Coast.",
+      "address": "Maleny, QLD 4552",
+      "contact": {
+        "phone": null,
+        "email": null,
+        "website": null
+      },
+      "image": "/images/placeholder-enterprise.jpg"
+    },
+    {
+      "id": "maleny-historical-society",
+      "name": "Maleny Historical Society",
+      "category": "Community & Sports",
+      "description": "Collects, stores, preserves, restores, and displays examples of past life in Maleny to tell the story of the community. A valuable resource for understanding the German settlement, dairy, and timber history of the Blackall Range.",
+      "address": "Maleny, QLD 4552",
+      "contact": {
+        "phone": null,
+        "email": null,
+        "website": null
+      },
+      "image": "/images/placeholder-enterprise.jpg"
+    },
+    {
+      "id": "blackall-range-growers-market",
+      "name": "Blackall Range Growers Market",
+      "category": "Markets & Retail",
+      "description": "Monthly market showcasing the best of small producers on the Blackall Range. In-season fruit and vegetables, locally made value-added products, organic pork and beef, chicken, veggie and herb seedlings, mulch hay, Obi Obi valley olive oils, honey, and more. Held at the Witta School on Witta Road, 3rd Saturday of each month.",
+      "address": "Witta School, Witta Road, Witta QLD 4552",
+      "contact": {
+        "phone": null,
+        "email": null,
+        "website": null
+      },
+      "image": "/images/placeholder-enterprise.jpg"
+    },
+    {
+      "id": "maleny-cheese",
+      "name": "Maleny Cheese",
+      "category": "Local Business",
+      "description": "Handcrafted cheese and yoghurt from local hinterland milk. Run by the Bucher family — Master Cheesemaker Markus is Swiss-trained. Uses milk from five small local dairy farms including their own Obi Obi Dairy. Produces cheddar, white mould, feta-style cheeses from cow and buffalo milk. 2025 Champion Yoghurt at Royal Queensland Cheese & Dairy Awards.",
+      "address": "Maleny, QLD 4552",
+      "contact": {
+        "phone": null,
+        "email": null,
+        "website": "https://malenycheese.com.au/"
+      },
+      "image": "/images/placeholder-enterprise.jpg"
+    },
+    {
+      "id": "maleny-food-co",
+      "name": "Maleny Food Co.",
+      "category": "Local Business",
+      "description": "Award-winning artisan gelato and sorbet producer, founded 2001. Over 80 flavours made fresh daily from local Guernsey milk and cream. Walk-in fromagerie with hundreds of gourmet cheeses. Over 70% of store products produced within 100km. Seven awards at 2023 Royal Queensland Ice Cream Awards.",
+      "address": "37 Maple St, Maleny QLD 4552",
+      "contact": {
+        "phone": null,
+        "email": null,
+        "website": "https://www.malenyfoodco.com/"
+      },
+      "image": "/images/placeholder-enterprise.jpg"
+    },
+    {
+      "id": "obi-obi-essentials",
+      "name": "Obi Obi Essentials",
+      "category": "Local Business",
+      "description": "Run by Alexina and Barry Johnson on a 200-acre farm with 1,000 olive trees and 700 green tea trees. Products include olive oil, green tea, olive leaf tea, lemon myrtle infused teas, and the 'Maleny Picnic Olive Oil'. Also raise Dexter cows and alpacas. All organically grown. Sells at Blackall Range Growers Markets.",
+      "address": "Obi Obi Valley, QLD",
+      "contact": {
+        "phone": null,
+        "email": null,
+        "website": "https://obiobiessentials.com.au/"
+      },
+      "image": "/images/placeholder-enterprise.jpg"
+    },
+    {
+      "id": "hinterland-bees",
+      "name": "Hinterland Bees",
+      "category": "Local Business",
+      "description": "Beekeepers since 1996. Raw honey from fixed-location apiaries across the Blackall Range — Bald Knob, North Maleny, Mapleton, Peachester. Chemical-free, no heat treatment. Also operates a 3,000-tree pollinator plantation (reforestation since 2014, 50+ endemic species). Expert beehive and swarm removal.",
+      "address": "30 Nadi Lane, North Maleny QLD",
+      "contact": {
+        "phone": "0404 100 358",
+        "email": null,
+        "website": "https://www.hinterlandbees.com/"
+      },
+      "image": "/images/placeholder-enterprise.jpg"
+    },
+    {
+      "id": "cooking-on-witta",
+      "name": "Cooking on Witta",
+      "category": "Local Business",
+      "description": "Cooking school run by Chef Kim Broad (20+ years experience). Classes include Italian, Mediterranean, Indian, desserts, pastry, and vegan. Uses produce from their chemical-free citrus orchard and vegetable patch plus locally sourced ingredients. After cooking, eat on the deck overlooking the citrus orchard and rolling Witta hills.",
+      "address": "Witta, QLD 4552",
+      "contact": {
+        "phone": null,
+        "email": "kim@cookingonwitta.com",
+        "website": "https://cookingonwittamaleny.com.au/",
+        "instagram": "https://www.instagram.com/cooking_on_witta_maleny_/"
+      },
+      "image": "/images/placeholder-enterprise.jpg"
+    },
+    {
+      "id": "gympie-farm-cheese",
+      "name": "Gympie Farm Cheese",
+      "category": "Local Business",
+      "description": "French-born cheesemaker Camille Mortaud makes matured fresh goat cheese in chabichou style, 'Molten Gold' cow's milk cheese (similar to brie), and old-fashioned cultured butter. All handmade in small quantities. Sells at local farmers markets.",
+      "address": "Conondale, QLD",
+      "contact": {
+        "phone": null,
+        "email": null,
+        "website": "https://gympiefarmcheese.com/"
+      },
+      "image": "/images/placeholder-enterprise.jpg"
+    },
+    {
+      "id": "changing-habits-farm",
+      "name": "Changing Habits Farm",
+      "category": "Local Business",
+      "description": "Founded by Cyndi O'Meara, leading nutritionist and filmmaker. Regenerative farm using biodynamics, natural sequence farming, syntropics, cell grazing, and composting. Offers farm tours, farm stays (The Cattleman's Cottage), and education programs. Also sells ethical whole food products available in 37 countries.",
+      "address": "Reesville, QLD (near Maleny)",
+      "contact": {
+        "phone": null,
+        "email": null,
+        "website": "https://changinghabits.com.au/"
+      },
+      "image": "/images/placeholder-enterprise.jpg"
+    },
+    {
+      "id": "peace-of-green-gallery",
+      "name": "Peace of Green Gallery",
+      "category": "Arts & Crafts",
+      "description": "Sunshine Coast Artists Collective Gallery, owned and operated by member artists. Running for 28 years — Maleny's longest running gallery. Features 25 local artists working across hand-blown glass, ceramics, mosaics, paintings, printmaking, silk art, woodwork, leather, and jewellery. Open 7 days.",
+      "address": "38 Maple St, Maleny QLD 4552",
+      "contact": {
+        "phone": null,
+        "email": null,
+        "website": "https://www.peaceofgreengallery.com/"
+      },
+      "image": "/images/placeholder-enterprise.jpg"
+    },
+    {
+      "id": "blackall-range-woodies",
+      "name": "Blackall Range Woodcrafters Guild",
+      "category": "Arts & Crafts",
+      "description": "Non-profit woodworking guild formed 1996. Shared workshop for furniture, turning, pyrography, carving, marquetry, and toy making. Notable projects include Mary Cairncross Doors and Sunshine Coast University Hospital Chapel. Key organisers of the annual Maleny Wood Expo (Barung Landcare's biggest fundraiser, 24+ years).",
+      "address": "Montville Sportsground, 230 Balmoral Road, Montville QLD",
+      "contact": {
+        "phone": "0409 050 418",
+        "email": "secretary@blackallrangewoodies.org.au",
+        "website": "https://blackallrangewoodies.org.au/"
+      },
+      "image": "/images/placeholder-enterprise.jpg"
+    },
+    {
+      "id": "witta-wires",
+      "name": "Witta Wires",
+      "category": "Services & Trades",
+      "description": "Electrical, security, and communications contractor — all three trades handled in-house. Over 35 years electrical experience (domestic and commercial), 13+ years communications. Based in Witta, serving the Blackall Range.",
+      "address": "42 Cooke Rd, Witta QLD 4552",
+      "contact": {
+        "phone": null,
+        "email": null,
+        "website": "https://wittawires.com.au/"
+      },
+      "image": "/images/placeholder-enterprise.jpg"
+    },
+    {
+      "id": "innerform-health",
+      "name": "Innerform Health",
+      "category": "Services & Trades",
+      "description": "Integrative wellness service specialising in the mind-gut connection. Clinical Nutrition, Hypnotherapy, Nervous System Coaching, Yoga, Meditation. All practitioners are trauma-informed. In-person (Curramore studio) and telehealth available.",
+      "address": "Curramore, QLD",
+      "contact": {
+        "phone": null,
+        "email": null,
+        "website": "https://innerformhealth.com/"
+      },
+      "image": "/images/placeholder-enterprise.jpg"
+    },
+    {
+      "id": "crystal-waters-ecovillage",
+      "name": "Crystal Waters Ecovillage",
+      "category": "Community & Sports",
+      "description": "World's first permaculture village, founded 1984. 85 lots on 650 acres at headwaters of Mary River. 250+ residents. Businesses include bakery, cafe, natural therapies, builders, and permaculture consultants. Monthly Crystal Waters Country Market (1st Saturday, 8am-1pm). UN 'World's Best Practices' database 1998.",
+      "address": "Conondale, QLD",
+      "contact": {
+        "phone": null,
+        "email": null,
+        "website": "https://crystalwaters.org.au/"
+      },
+      "image": "/images/placeholder-enterprise.jpg"
+    },
+    {
+      "id": "maleny-botanic-gardens",
+      "name": "Maleny Botanic Gardens & Bird World",
+      "category": "Local Business",
+      "description": "Award-winning 18-acre garden on the escarpment with waterfalls, lakes, rainforest, and Glass House Mountains backdrop. Bird World has 600+ native and exotic birds across 5 aviaries with guided tours. Farm Friends enclosure with miniature animals. Open 7 days, 9am-4:30pm.",
+      "address": "233 Maleny Stanley River Road, Maleny QLD 4552",
+      "contact": {
+        "phone": null,
+        "email": null,
+        "website": "https://malenybotanicgardens.com.au/"
+      },
+      "image": "/images/placeholder-enterprise.jpg"
+    },
+    {
+      "id": "blackall-range-nurseries",
+      "name": "Blackall Range Nurseries",
+      "category": "Local Business",
+      "description": "Family owned and operated wholesale production nursery established 1990. Grows premium quality trees, shrubs, and greenlife for retail/wholesale nurseries, consignment markets, and the landscaping industry.",
+      "address": "Blackall Range, Sunshine Coast QLD",
+      "contact": {
+        "phone": null,
+        "email": null,
+        "website": "https://www.blackallrangenurseries.com.au/"
+      },
+      "image": "/images/placeholder-enterprise.jpg"
+    },
+    {
+      "id": "blue-summit-cottages",
+      "name": "Blue Summit Cottages",
+      "category": "Accommodation",
+      "description": "Luxury 4.5-star adults-only cottages perched high in Witta with magnificent views, sunsets, and premium amenities. Massaging spa baths, gas log fires, and luxury linen. Panoramic views across the hinterland.",
+      "address": "Witta, QLD 4552",
+      "contact": {
+        "phone": "07 5435 8410",
+        "email": null,
+        "website": "https://bluesummitcottages.com.au/"
+      },
+      "image": "/images/accommodation/blue-summit.jpg"
+    },
+    {
+      "id": "jacaranda-cottages",
+      "name": "Jacaranda Cottages",
+      "category": "Accommodation",
+      "description": "Family and pet-friendly holiday homes on 6.5 acres of lush dairy farm country. Great for groups and reunions — sleeps up to 26. Swimming pool, fire pits, child-friendly. A true hinterland farm stay.",
+      "address": "Witta, QLD 4552",
+      "contact": {
+        "phone": "07 5435 8183",
+        "email": null,
+        "website": "https://www.jacarandacottages.com.au/"
+      },
+      "image": "/images/accommodation/jacaranda.jpg"
+    },
+    {
+      "id": "maleny-retreat",
+      "name": "Maleny Retreat",
+      "category": "Accommodation",
+      "description": "Retreat destination dedicated to peace and nature, featuring a guest house and tent village in Booroobin.",
+      "address": "Booroobin, QLD",
+      "contact": {
+        "phone": "0490 843 648",
+        "email": null,
+        "website": "http://www.malenyretreat.com/"
+      },
+      "image": "/images/placeholder-enterprise.jpg"
+    },
+    {
+      "id": "harmonic-haven",
+      "name": "Harmonic Haven",
+      "category": "Accommodation",
+      "description": "Peaceful guesthouse accommodation in Witta featuring a garden and terrace. 30 Gumland Dr.",
+      "address": "30 Gumland Dr, Witta, QLD 4552",
+      "contact": {
+        "phone": null,
+        "email": null,
+        "website": "https://www.harmonichaven.net/"
+      },
+      "image": "/images/placeholder-enterprise.jpg"
+    },
+    {
+      "id": "maleny-hinterland-escape",
+      "name": "Maleny Hinterland Escape",
+      "category": "Accommodation",
+      "description": "Private retreat in the hinterland region with views over lush green pastures. 32 Sidney Lane, Witta.",
+      "address": "32 Sidney Lane, Witta, QLD 4552",
+      "contact": {
+        "phone": null,
+        "email": null,
+        "website": "https://www.malenyhinterlandescape.com.au/"
+      },
+      "image": "/images/placeholder-enterprise.jpg"
+    },
+    {
+      "id": "parkland-guesthouse",
+      "name": "Parkland Guesthouse Retreat",
+      "category": "Accommodation",
+      "description": "Stylishly decorated queen bedrooms with large lounge and outdoor areas in Witta.",
+      "address": "Witta, QLD 4552",
+      "contact": {
+        "phone": "0417 790 610",
+        "email": null,
+        "website": null
+      },
+      "image": "/images/placeholder-enterprise.jpg"
+    },
+    {
+      "id": "witta-country-escape",
+      "name": "Witta Country Escape",
+      "category": "Accommodation",
+      "description": "Spacious 3-bedroom holiday home perfect for families visiting the Witta area.",
+      "address": "Witta, QLD 4552",
+      "contact": {
+        "phone": null,
+        "email": null,
+        "website": "https://www.booking.com/hotel/au/witta-country-escape.html"
+      },
+      "image": "/images/placeholder-enterprise.jpg"
+    },
+    {
+      "id": "wittaview",
+      "name": "Wittaview",
+      "category": "Accommodation",
+      "description": "Perfect weekend getaway sleeping up to 6 guests in Witta.",
+      "address": "Witta, QLD 4552",
+      "contact": {
+        "phone": null,
+        "email": null,
+        "website": "https://www.bookabach.co.nz/d/10039/witta"
+      },
+      "image": "/images/placeholder-enterprise.jpg"
+    },
+    {
+      "id": "bunya-farmhouse",
+      "name": "Bunya@Maleny Farm House",
+      "category": "Accommodation",
+      "description": "4-bedroom farmhouse sleeping 8, ideal for larger families visiting Witta and Maleny.",
+      "address": "Witta/Maleny, QLD",
+      "contact": {
+        "phone": null,
+        "email": null,
+        "website": "https://www.bookabach.co.nz/d/10039/witta"
+      },
+      "image": "/images/placeholder-enterprise.jpg"
+    },
+    {
+      "id": "rosebrook-cottages",
+      "name": "Rosebrook Cottages",
+      "category": "Accommodation",
+      "description": "Charming cottages with views and spa baths in Maleny.",
+      "address": "Maleny, QLD 4552",
+      "contact": {
+        "phone": null,
+        "email": null,
+        "website": "https://www.rosebrookcottages.com.au"
+      },
+      "image": "/images/placeholder-enterprise.jpg"
+    },
+    {
+      "id": "bendles-cottages",
+      "name": "Bendles Cottages",
+      "category": "Accommodation",
+      "description": "Romantic cottages set in beautiful gardens in Maleny.",
+      "address": "Maleny, QLD 4552",
+      "contact": {
+        "phone": null,
+        "email": null,
+        "website": "https://www.bendles.com.au"
+      },
+      "image": "/images/placeholder-enterprise.jpg"
+    },
+    {
+      "id": "tranquil-park",
+      "name": "Tranquil Park Maleny",
+      "category": "Accommodation",
+      "description": "Hotel accommodation with stunning views of the Glass House Mountains.",
+      "address": "Maleny, QLD 4552",
+      "contact": {
+        "phone": null,
+        "email": null,
+        "website": "https://tranquilpark.com.au"
+      },
+      "image": "/images/placeholder-enterprise.jpg"
+    },
+    {
+      "id": "maleny-luxury-cottages",
+      "name": "Maleny Luxury Cottages",
+      "category": "Accommodation",
+      "description": "Three luxury two-storey cabins set 100m apart in secluded gardens on Curramore Road. Double spas, log fires, king/queen beds. Luxury chocolates and breakfast provisions included. Adults only. Rated 9.7/10 on Booking.com.",
+      "address": "Curramore, QLD",
+      "contact": {
+        "phone": null,
+        "email": null,
+        "website": "https://malenyluxurycottages.com.au/"
+      },
+      "image": "/images/placeholder-enterprise.jpg"
+    },
+    {
+      "id": "burgess-cottage",
+      "name": "Burgess Cottage",
+      "category": "Accommodation",
+      "description": "Historic former powered dairy farm, now a boutique cottage on 6 acres. Uninterrupted views from Pacific Ocean to Glass House Mountains. Sleeps 4, modern kitchen, gas fireplace, extra-large bathtub, fire pit, outdoor deck.",
+      "address": "Bald Knob, QLD",
+      "contact": {
+        "phone": null,
+        "email": null,
+        "website": "https://burgesscottagebaldknob.com/"
+      },
+      "image": "/images/placeholder-enterprise.jpg"
+    },
+    {
+      "id": "petrichor-estate",
+      "name": "Petrichor Estate & Dome Experience",
+      "category": "Accommodation",
+      "description": "Luxe 3-bedroom villa with infinity pool and 360-degree views of Glass House Mountains and sea. Plus a geodesic bubble dome for two with king bed. Villa sleeps 6.",
+      "address": "Bald Knob, QLD",
+      "contact": {
+        "phone": null,
+        "email": null,
+        "website": null
+      },
+      "image": "/images/placeholder-enterprise.jpg"
+    },
+    {
+      "id": "narrows-escape",
+      "name": "Narrows Escape Rainforest Retreat",
+      "category": "Accommodation",
+      "description": "Multi-award-winning 5-star adults-only retreat. Eight luxurious villas nestled in 7 acres of rainforest, four with private heated plunge pools. Adjacent to Kondalilla National Park. Fireplaces, jetted tubs, Egyptian cotton sheets, spa services.",
+      "address": "North Maleny, QLD",
+      "contact": {
+        "phone": null,
+        "email": null,
+        "website": "https://narrowsescape.com.au/"
+      },
+      "image": "/images/placeholder-enterprise.jpg"
+    },
+    {
+      "id": "down-at-the-dale",
+      "name": "Down at The Dale",
+      "category": "Accommodation",
+      "description": "Two private luxury cabins on an 82-acre working cattle farm. Spacious deck with large outdoor bath, fire pit, and sunset views over the Conondale Ranges. Romantic couples-only escape.",
+      "address": "Conondale, QLD",
+      "contact": {
+        "phone": null,
+        "email": null,
+        "website": "https://www.downatthedale.com/"
+      },
+      "image": "/images/placeholder-enterprise.jpg"
+    },
+    {
+      "id": "maleny-country-estate",
+      "name": "Maleny Country Estate",
+      "category": "Accommodation",
+      "description": "185-acre estate with Swiss-inspired chalets along upper ridges, a romantic Stone Cottage, and the Estate House. Timber features, fireplaces, panoramic Blackall Range views. Also a wedding and events venue.",
+      "address": "Reesville, QLD",
+      "contact": {
+        "phone": null,
+        "email": null,
+        "website": "https://www.malenycountryestate.com.au/"
+      },
+      "image": "/images/placeholder-enterprise.jpg"
+    },
+    {
+      "id": "spicers-tamarind",
+      "name": "Spicers Tamarind Retreat",
+      "category": "Accommodation",
+      "description": "4.5-star luxury retreat on 10 tranquil acres above Gardners Falls. Stand-alone villas with fireplaces, cedar hot tubs, orchard views. On-site Spa Anise and celebrated Thai-inspired Tamarind restaurant. #1 ranked on TripAdvisor for Maleny.",
+      "address": "Maleny, QLD 4552",
+      "contact": {
+        "phone": null,
+        "email": null,
+        "website": "https://spicersretreats.com/retreats/spicers-tamarind-retreat/"
+      },
+      "image": "/images/placeholder-enterprise.jpg"
+    },
+    {
+      "id": "scandi-at-maleny",
+      "name": "Scandi at Maleny",
+      "category": "Accommodation",
+      "description": "Carbon-neutral, architecturally designed Scandinavian-style modular cabin on 300 pristine acres at 450m elevation. Two bedrooms, open-plan living, fireplace, panoramic views. Pantry stocked with local ingredients. Award-winning. Adults only.",
+      "address": "Booroobin, QLD",
+      "contact": {
+        "phone": null,
+        "email": null,
+        "website": "https://www.scandiatmaleny.com/"
+      },
+      "image": "/images/placeholder-enterprise.jpg"
+    },
+    {
+      "id": "cattlemans-cottage",
+      "name": "The Cattleman's Cottage",
+      "category": "Accommodation",
+      "description": "Lovingly restored old milking shed on the Changing Habits Regenerative Farm. Incredible hinterland views from the porch. 5-minute drive to Maleny centre. Rated 4.94 on Airbnb.",
+      "address": "Reesville, QLD",
+      "contact": {
+        "phone": null,
+        "email": null,
+        "website": null
+      },
+      "image": "/images/placeholder-enterprise.jpg"
+    },
+    {
+      "id": "bellbird-rise",
+      "name": "Bellbird Rise Off-Grid Cottage",
+      "category": "Accommodation",
+      "description": "Old hunters lodge on large acreage in the Mary River Valley. Three bedrooms, rustic country feel with modern amenities. Hidden away in the hinterland.",
+      "address": "Conondale, QLD",
+      "contact": {
+        "phone": null,
+        "email": null,
+        "website": null
+      },
+      "image": "/images/placeholder-enterprise.jpg"
+    },
+    {
+      "id": "conondale-station",
+      "name": "Conondale Station",
+      "category": "Accommodation",
+      "description": "Modern farmhouse cottage on a 930-hectare working cattle farm. Complimentary breakfast provisions: freshly-baked bread, milk, farm eggs, locally-sourced Montville coffee.",
+      "address": "Conondale, QLD",
+      "contact": {
+        "phone": null,
+        "email": null,
+        "website": null
+      },
+      "image": "/images/placeholder-enterprise.jpg"
+    },
+    {
+      "id": "the-bower",
+      "name": "The Bower",
+      "category": "Accommodation",
+      "description": "Rustique rainforest retreat with private pavilions including a Swiss-style Couple's Cabin and The Glamper's Shack tiny house on wheels. Bush pool, outdoor fireplace, breakfast hamper included.",
+      "address": "Near Maleny, QLD",
+      "contact": {
+        "phone": null,
+        "email": null,
+        "website": null
+      },
+      "image": "/images/placeholder-enterprise.jpg"
     }
   ]
 }

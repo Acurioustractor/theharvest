@@ -33,7 +33,10 @@ const eventCategoryImages: Record<string, string> = {
 
 export default function LocalEnterprises() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const initialCategory = typeof window !== "undefined"
+    ? new URLSearchParams(window.location.search).get("category")
+    : null;
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(initialCategory);
 
   // Fetch approved events from API
   const { data: apiEvents, isLoading: eventsLoading, refetch: refetchEvents } = useQuery({

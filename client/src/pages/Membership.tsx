@@ -13,14 +13,9 @@ import {
   Users,
   Sparkles,
   Gift,
-  Calendar,
-  Coffee,
-  TreeDeciduous,
-  Star,
   Bell,
   Mail,
 } from "lucide-react";
-import { useSeason } from "@/contexts/SeasonalContext";
 import { useMutation } from "@tanstack/react-query";
 import { subscribeNewsletter } from "@/lib/api";
 import { toast } from "sonner";
@@ -64,8 +59,8 @@ const membershipTiers: MembershipTier[] = [
     description:
       "Perfect for those who believe in what we're building and want to help it grow. Your contribution directly supports community programs.",
     icon: Heart,
-    color: "text-rose-600",
-    bgGradient: "from-rose-50 to-white",
+    color: "text-amber-600",
+    bgGradient: "from-amber-50 to-white",
     features: [
       "Monthly newsletter with behind-the-scenes updates",
       "10% discount on workshops",
@@ -83,8 +78,8 @@ const membershipTiers: MembershipTier[] = [
     description:
       "For committed community members who want deeper involvement. Help shape the future of The Harvest while enjoying exclusive benefits.",
     icon: Leaf,
-    color: "text-emerald-600",
-    bgGradient: "from-emerald-50 to-white",
+    color: "text-amber-700",
+    bgGradient: "from-stone-50 to-white",
     highlighted: true,
     features: [
       "Everything in Friend, plus:",
@@ -120,40 +115,18 @@ const membershipTiers: MembershipTier[] = [
   },
 ];
 
-const impactStats = [
-  {
-    icon: Users,
-    value: "500+",
-    label: "Community members",
-  },
-  {
-    icon: TreeDeciduous,
-    value: "40+",
-    label: "Trees planted",
-  },
-  {
-    icon: Calendar,
-    value: "100+",
-    label: "Events hosted",
-  },
-  {
-    icon: Coffee,
-    value: "2,000+",
-    label: "Coffees served",
-  },
-];
 
 function MembershipCard({ tier }: { tier: MembershipTier }) {
   return (
     <motion.div variants={fadeInUp} className="h-full">
       <Card
         className={`h-full border-0 shadow-lg hover:shadow-xl transition-shadow overflow-hidden ${
-          tier.highlighted ? "ring-2 ring-emerald-500 ring-offset-2" : ""
+          tier.highlighted ? "ring-2 ring-amber-500 ring-offset-2" : ""
         }`}
       >
         <div className={`bg-gradient-to-br ${tier.bgGradient}`}>
           {tier.highlighted && (
-            <div className="bg-emerald-500 text-white text-center py-1 text-sm font-medium">
+            <div className="bg-amber-500 text-white text-center py-1 text-sm font-medium">
               Most Popular
             </div>
           )}
@@ -195,7 +168,7 @@ function MembershipCard({ tier }: { tier: MembershipTier }) {
           <Button
             className={`w-full ${
               tier.highlighted
-                ? "bg-emerald-600 hover:bg-emerald-700 text-white"
+                ? "bg-amber-500 hover:bg-amber-600 text-black"
                 : "bg-stone-800 hover:bg-stone-900 text-white"
             }`}
             size="lg"
@@ -213,7 +186,6 @@ function MembershipCard({ tier }: { tier: MembershipTier }) {
 }
 
 export default function Membership() {
-  const { data: seasonalData } = useSeason();
   const [email, setEmail] = useState("");
   const [interests, setInterests] = useState<Interest[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -291,11 +263,11 @@ export default function Membership() {
                 <span className="text-stone-700 font-medium">Exclusive benefits</span>
               </div>
               <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-sm">
-                <Heart className="h-5 w-5 text-rose-500" />
+                <Heart className="h-5 w-5 text-amber-500" />
                 <span className="text-stone-700 font-medium">Support the mission</span>
               </div>
               <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-sm">
-                <Users className="h-5 w-5 text-blue-500" />
+                <Users className="h-5 w-5 text-amber-600" />
                 <span className="text-stone-700 font-medium">Join the community</span>
               </div>
             </div>
@@ -320,47 +292,6 @@ export default function Membership() {
         </div>
       </section>
 
-      {/* Impact Section */}
-      <section className="py-24 bg-gradient-to-b from-white to-stone-50">
-        <div className="container">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-3xl md:text-4xl font-serif font-bold text-stone-800 mb-4">
-              Your Support in Action
-            </h2>
-            <p className="text-stone-600 max-w-2xl mx-auto">
-              Every membership directly contributes to growing this community asset.
-              Here's what we've achieved together.
-            </p>
-          </motion.div>
-
-          <motion.div
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true }}
-            variants={staggerContainer}
-            className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8"
-          >
-            {impactStats.map((stat, index) => (
-              <motion.div key={stat.label} variants={fadeInUp}>
-                <Card className="text-center border-0 shadow-md">
-                  <CardContent className="p-8">
-                    <stat.icon className="h-8 w-8 text-amber-500 mx-auto mb-4" />
-                    <p className="text-4xl font-serif font-bold text-stone-800 mb-2">
-                      {stat.value}
-                    </p>
-                    <p className="text-stone-600">{stat.label}</p>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
 
       {/* FAQ Section */}
       <section className="py-24 bg-white">

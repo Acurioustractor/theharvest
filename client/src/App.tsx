@@ -11,8 +11,6 @@ import Visit from "./pages/Visit";
 import WhatsOn from "./pages/WhatsOn";
 import VenueHire from "./pages/VenueHire";
 import About from "./pages/About";
-import Accommodation from "./pages/Accommodation";
-import AccommodationDirectory from "./pages/AccommodationDirectory";
 import LocalEnterprises from "./pages/LocalEnterprises";
 import StrategicAnalysis from "./pages/StrategicAnalysis";
 import AdminDashboard from "./pages/AdminDashboard";
@@ -36,6 +34,7 @@ import Story from "./pages/Story";
 import SitePlan from "./pages/SitePlan";
 import Compendium from "./pages/Compendium";
 import DrawingPicker from "./pages/DrawingPicker";
+import GetInvolved from "./pages/GetInvolved";
 import PhotoManager from "./pages/admin/PhotoManager";
 // Blog admin removed - using Empathy Ledger Content Hub admin
 
@@ -52,15 +51,16 @@ function Router() {
         <Route path="/contact" component={Contact} />
         
         {/* Explore pages */}
-        <Route path="/accommodation" component={Accommodation} />
-        <Route path="/accommodation/directory" component={AccommodationDirectory} />
         <Route path="/enterprises" component={LocalEnterprises} />
+        <Route path="/accommodation">{() => { window.location.replace("/enterprises?category=Accommodation"); return null; }}</Route>
+        <Route path="/accommodation/directory">{() => { window.location.replace("/enterprises?category=Accommodation"); return null; }}</Route>
 
         {/* New Experience pages */}
         <Route path="/journey" component={Journey} />
         <Route path="/explore" component={Explore} />
         <Route path="/stories" component={Stories} />
         <Route path="/membership" component={Membership} />
+        <Route path="/get-involved" component={GetInvolved} />
         <Route path="/witta" component={Witta} />
 
         {/* Blog pages */}

@@ -149,3 +149,7 @@ export async function updateBusinessProfile(payload: Record<string, unknown>) {
 export async function subscribeNewsletter(payload: Record<string, unknown>) {
   return callFunction<{ success: boolean; error?: string }>("newsletter-subscribe", payload);
 }
+
+export async function communitySubmit(payload: Record<string, unknown>) {
+  return callFunction<{ success: boolean; error?: string; contactId?: string }>("community-submit", payload);
+}

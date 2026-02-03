@@ -1,34 +1,10 @@
-import { useState } from "react";
-import { subscribeNewsletter } from "@/lib/api";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
-import {
-  Leaf,
-  Users,
-  Hammer,
-  MapPin,
-  Calendar,
-  ArrowRight,
-  Heart,
-  Sparkles,
-  HandHeart,
-  TreeDeciduous,
-  Mail,
-  ChevronRight,
-  Compass,
-  BookOpen,
-  Newspaper,
-} from "lucide-react";
-import { toast } from "sonner";
-import { InterestSelector, type Interest } from "@/components/InterestSelector";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { useSeason } from "@/contexts/SeasonalContext";
+import { Newspaper, ArrowRight } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 import { trpc } from "@/lib/trpc";
 import BlogCard, { type ELArticle } from "@/components/BlogCard";
-import { EditableImage } from "@/components/EditableImage";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
@@ -44,132 +20,47 @@ const staggerContainer = {
   },
 };
 
-const offers = [
+const pillars = [
   {
-    icon: Users,
-    title: "Connect",
-    tagline: "Find your place here.",
-    description:
-      "We're creating space for artists, makers, builders, and thinkers who want somewhere to work, create, and belong. Whether you need a desk, a studio, or just a community that gets it – this is becoming a home for people who make things happen.",
-    slot: "card-1" as const,
-    color: "from-amber-500/20 to-orange-500/20",
+    word: "Eat",
+    line: "A kitchen that feeds the neighbourhood. Local produce, shared tables, honest food.",
   },
   {
-    icon: Sparkles,
-    title: "Celebrate",
-    tagline: "Witta's story, told together.",
-    description:
-      "This place has a history worth honouring – and a future worth gathering for. We're building a space for music, art, food, and the kind of moments that remind us why community matters. Come for an event, stay for the feeling.",
-    slot: "card-2" as const,
-    color: "from-pink-500/20 to-rose-500/20",
+    word: "Gather",
+    line: "Markets, music, workshops, and the kind of mornings that turn strangers into regulars.",
   },
   {
-    icon: Hammer,
-    title: "Collaborate",
-    tagline: "Shape what happens here.",
-    description:
-      "Want to host a workshop? Run an event? Share a skill you've spent years learning? We're not building this alone – we're creating it with the people who show up. Your ideas have a home here.",
-    slot: "card-3" as const,
-    color: "from-blue-500/20 to-indigo-500/20",
+    word: "Make",
+    line: "Studio space for artists, makers, and anyone who needs a place to work with their hands.",
   },
   {
-    icon: Leaf,
-    title: "Regenerate",
-    tagline: "Growing something that gives back.",
-    description:
-      "Good for the land. Good for people. We're planting gardens, nurturing soil, and building a community that leaves things better than we found them. This is about the long game – roots that go deep.",
-    slot: "card-4" as const,
-    color: "from-green-500/20 to-emerald-500/20",
+    word: "Grow",
+    line: "Gardens, nursery beds, and soil that's been growing things on this hill for a hundred years.",
   },
 ];
-
-const values = [
-  {
-    icon: Heart,
-    title: "Community-led",
-    description: "Locals shape what happens here. We listen, adapt, and grow together.",
-  },
-  {
-    icon: Sparkles,
-    title: "Inclusive",
-    description: "Everyone deserves a place to land. No gatekeeping, no pretense.",
-  },
-  {
-    icon: TreeDeciduous,
-    title: "Sustainable",
-    description: "We practice stewardship, not extraction. Good for the land, good for people.",
-  },
-  {
-    icon: HandHeart,
-    title: "Collaborative",
-    description: "We back local enterprise and shared learning. Your success is our success.",
-  },
-];
-
 
 export default function HarvestHome() {
-  const [email, setEmail] = useState("");
-  const [interests, setInterests] = useState<Interest[]>([]);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const { data: seasonalData } = useSeason();
-
-  // Fetch recent blog posts
   const { data: recentPosts = [] } = useQuery({
     queryKey: ["blog", "recent"],
     queryFn: () => trpc.blog.recent.query({ limit: 3 }),
   });
 
-  const newsletterMutation = useMutation({
-    mutationFn: subscribeNewsletter,
-    onSuccess: () => {
-      toast.success("Welcome to The Harvest!", {
-        description: "You've been added to our mailing list. We'll be in touch soon.",
-      });
-      setEmail("");
-      setInterests([]);
-      setIsSubmitting(false);
-    },
-    onError: (error: Error) => {
-      toast.error("Subscription failed", {
-        description: error.message || "Please try again later.",
-      });
-      setIsSubmitting(false);
-    },
-  });
-
-  const handleNewsletterSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email) return;
-
-    setIsSubmitting(true);
-    newsletterMutation.mutate({
-      email,
-      source: "Homepage Newsletter",
-      interests: interests.length > 0 ? interests : undefined,
-    });
-  };
-
   return (
-    <div className="min-h-screen bg-background">
-      {/* Hero Section */}
+    <div className="min-h-screen bg-stone-50">
+      {/* Hero — Full-bleed aerial with declaration */}
       <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
-        {/* Background - editable hero image */}
         <div className="absolute inset-0">
-          <EditableImage
-            page="home"
-            slot="hero"
-            alt="The Harvest community gathering"
-            className="h-full w-full"
-            aspectRatio=""
-            imageClassName="object-cover"
-            placeholder={
-              <div className="w-full h-full bg-gradient-to-br from-stone-700 via-stone-800 to-stone-900" />
-            }
+          <video
+            src="/images/compendium/hero-aerial.mp4"
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black/60 pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70" />
         </div>
 
-        {/* Hero Content */}
         <div className="relative z-10 container text-center text-white">
           <motion.div
             initial={{ opacity: 0, y: 40 }}
@@ -177,19 +68,11 @@ export default function HarvestHome() {
             transition={{ duration: 0.8 }}
             className="max-w-4xl mx-auto"
           >
-            <span className="hidden md:inline-block px-4 py-2 mb-6 text-sm font-medium bg-white/10 backdrop-blur-sm rounded-full border border-white/20">
-              {seasonalData.emoji} {seasonalData.content.tagline} in Witta
-            </span>
-
-            <h1 className="text-5xl md:text-7xl font-serif font-bold mb-6 leading-tight">
-              We're creating a place
+            <h1 className="text-5xl md:text-7xl font-serif font-bold mb-8 leading-tight">
+              Witta has nowhere to gather.
               <br />
-              <span className="text-amber-300">to gather, grow, and share.</span>
+              <span className="text-amber-300">We're changing that.</span>
             </h1>
-
-            <p className="text-xl md:text-2xl text-white/90 mb-10 max-w-2xl mx-auto font-light">
-              {seasonalData.content.welcomeMessage}
-            </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
@@ -197,10 +80,7 @@ export default function HarvestHome() {
                 className="bg-amber-500 hover:bg-amber-600 text-black font-semibold px-8 py-6 text-lg"
                 asChild
               >
-                <Link href="/about">
-                  <Heart className="mr-2 h-5 w-5" />
-                  About Us
-                </Link>
+                <Link href="/compendium">The Compendium</Link>
               </Button>
               <Button
                 size="lg"
@@ -208,10 +88,7 @@ export default function HarvestHome() {
                 className="border-white/30 text-white hover:bg-white/10 px-8 py-6 text-lg bg-white/5 backdrop-blur-sm"
                 asChild
               >
-                <Link href="/compendium">
-                  <BookOpen className="mr-2 h-5 w-5" />
-                  The Compendium
-                </Link>
+                <Link href="/blog">The Harvest Journal</Link>
               </Button>
             </div>
           </motion.div>
@@ -229,107 +106,39 @@ export default function HarvestHome() {
         </motion.div>
       </section>
 
-      {/* What We Offer Section */}
-      <section className="py-24 bg-gradient-to-b from-stone-50 to-white">
+      {/* Four Pillars */}
+      <section className="py-24 bg-stone-100">
         <div className="container">
           <motion.div
             initial="initial"
             whileInView="animate"
             viewport={{ once: true }}
             variants={staggerContainer}
-            className="text-center mb-16"
+            className="max-w-5xl mx-auto"
           >
-            <motion.span
-              variants={fadeInUp}
-              className="text-amber-600 font-medium tracking-wide uppercase text-sm"
-            >
-              What We're Building
-            </motion.span>
-            <motion.h2
-              variants={fadeInUp}
-              className="text-4xl md:text-5xl font-serif font-bold text-stone-800 mt-3 mb-6"
-            >
-              Eat. Grow. Gather. Make.
-            </motion.h2>
-            <motion.p
-              variants={fadeInUp}
-              className="text-lg text-stone-600 max-w-3xl mx-auto mb-4"
-            >
-              This is the starting point of a new vision for this site. Right now, we're focused on
-              engaging the community – hearing your ideas, testing concepts, hosting events, and
-              working with local artists and makers.
-            </motion.p>
-            <motion.p
-              variants={fadeInUp}
-              className="text-lg text-stone-600 max-w-3xl mx-auto"
-            >
-              We're doing everything we can to celebrate Witta and welcome new friends. This is about
-              regenerative ideas, food, art, and connection – a place where everyone belongs and
-              good ideas grow.
-            </motion.p>
-          </motion.div>
+            <motion.div variants={fadeInUp} className="text-center mb-16">
+              <h2 className="text-4xl md:text-5xl font-serif font-bold text-stone-800">
+                Eat. Gather. Make. Grow.
+              </h2>
+            </motion.div>
 
-          <motion.div
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true }}
-            variants={staggerContainer}
-            className="grid md:grid-cols-2 gap-8"
-          >
-            {offers.map((offer) => (
-              <motion.div key={offer.title} variants={fadeInUp}>
-                <Card className="group overflow-hidden border-0 shadow-lg hover:shadow-xl transition-all duration-500 bg-white">
-                  <div className="relative h-64 overflow-hidden">
-                    <EditableImage
-                      page="home"
-                      slot={offer.slot}
-                      alt={offer.title}
-                      className="h-full w-full"
-                      aspectRatio=""
-                      imageClassName="object-cover group-hover:scale-105 transition-transform duration-700"
-                      placeholder={
-                        <div className={`w-full h-full bg-gradient-to-br ${offer.color}`} />
-                      }
-                    />
-                    <div
-                      className={`absolute inset-0 bg-gradient-to-t ${offer.color} opacity-60 pointer-events-none`}
-                    />
-                    <div className="absolute bottom-4 left-4 flex items-center gap-3 pointer-events-none">
-                      <div className="w-12 h-12 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center">
-                        <offer.icon className="h-6 w-6 text-stone-700" />
-                      </div>
-                      <div>
-                        <h3 className="text-2xl font-serif font-bold text-white drop-shadow-lg">
-                          {offer.title}
-                        </h3>
-                        <p className="text-white/90 text-sm font-medium drop-shadow">
-                          {offer.tagline}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  <CardContent className="p-6">
-                    <p className="text-stone-600 leading-relaxed">{offer.description}</p>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-10">
+              {pillars.map((pillar) => (
+                <motion.div key={pillar.word} variants={fadeInUp} className="text-center">
+                  <h3 className="text-2xl font-serif font-bold text-stone-800 mb-3">
+                    {pillar.word}
+                  </h3>
+                  <p className="text-stone-600 leading-relaxed">{pillar.line}</p>
+                </motion.div>
+              ))}
+            </div>
           </motion.div>
         </div>
       </section>
 
-      {/* Signature Invitation Section */}
-      <section className="py-24 bg-stone-800 text-white relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div
-            className="absolute inset-0"
-            style={{
-              backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-            }}
-          />
-        </div>
-
-        <div className="container relative">
+      {/* The Invitation */}
+      <section className="py-24 bg-stone-800 text-white">
+        <div className="container">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -337,88 +146,32 @@ export default function HarvestHome() {
             transition={{ duration: 0.8 }}
             className="max-w-4xl mx-auto text-center"
           >
-            <h2 className="text-4xl md:text-5xl font-serif font-bold mb-8 leading-tight">
-              We're building this for{" "}
-              <span className="text-amber-400">people who want to belong</span> without having to
-              perform.
+            <h2 className="text-3xl md:text-5xl font-serif font-bold mb-8 leading-tight">
+              Building for people who want to{" "}
+              <span className="text-amber-400">belong without having to perform.</span>
             </h2>
             <p className="text-xl text-stone-300 mb-10 leading-relaxed">
               For families looking for a third place. For makers who need space and community. For
               anyone rebuilding confidence through routine and connection. For neighbours who
               believe good things grow when we work together.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button
-                size="lg"
-                className="bg-amber-500 hover:bg-amber-600 text-black font-semibold"
-                asChild
-              >
-                <Link href="/about">
-                  Learn Our Story
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
-              </Button>
-            </div>
+            <Button
+              size="lg"
+              className="bg-amber-500 hover:bg-amber-600 text-black font-semibold"
+              asChild
+            >
+              <Link href="/compendium">
+                Read the Compendium
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Link>
+            </Button>
           </motion.div>
         </div>
       </section>
 
-      {/* Values Section */}
-      <section className="py-24 bg-white">
-        <div className="container">
-          <motion.div
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true }}
-            variants={staggerContainer}
-            className="text-center mb-16"
-          >
-            <motion.span
-              variants={fadeInUp}
-              className="text-amber-600 font-medium tracking-wide uppercase text-sm"
-            >
-              What We Stand For
-            </motion.span>
-            <motion.h2
-              variants={fadeInUp}
-              className="text-4xl md:text-5xl font-serif font-bold text-stone-800 mt-3 mb-6"
-            >
-              Values as behaviour
-            </motion.h2>
-            <motion.p variants={fadeInUp} className="text-lg text-stone-600 max-w-2xl mx-auto">
-              Not just words on a wall. These principles guide everything we're building.
-            </motion.p>
-          </motion.div>
-
-          <motion.div
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true }}
-            variants={staggerContainer}
-            className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8"
-          >
-            {values.map((value) => (
-              <motion.div key={value.title} variants={fadeInUp}>
-                <Card className="h-full border-0 shadow-md hover:shadow-lg transition-shadow bg-stone-50">
-                  <CardContent className="p-8 text-center">
-                    <div className="w-16 h-16 rounded-full bg-amber-100 flex items-center justify-center mx-auto mb-6">
-                      <value.icon className="h-8 w-8 text-amber-600" />
-                    </div>
-                    <h3 className="text-xl font-serif font-bold text-stone-800 mb-3">
-                      {value.title}
-                    </h3>
-                    <p className="text-stone-600 leading-relaxed">{value.description}</p>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Blog Preview Section */}
+      {/* Blog Preview */}
       {recentPosts.length > 0 && (
-        <section className="py-24 bg-white">
+        <section className="py-24 bg-stone-50">
           <div className="container">
             <motion.div
               initial="initial"
@@ -439,9 +192,6 @@ export default function HarvestHome() {
               >
                 Latest stories
               </motion.h2>
-              <motion.p variants={fadeInUp} className="text-lg text-stone-600 max-w-2xl mx-auto">
-                Seasonal rhythms, kitchen tales, and community moments from The Harvest.
-              </motion.p>
             </motion.div>
 
             <motion.div
@@ -468,7 +218,7 @@ export default function HarvestHome() {
               <Button variant="outline" size="lg" asChild>
                 <Link href="/blog">
                   <Newspaper className="mr-2 h-5 w-5" />
-                  Read More Stories
+                  Read More
                 </Link>
               </Button>
             </motion.div>
@@ -476,107 +226,6 @@ export default function HarvestHome() {
         </section>
       )}
 
-      {/* Newsletter / Join Section */}
-      <section id="newsletter" className="py-24 bg-stone-900 text-white">
-        <div className="container">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="max-w-2xl mx-auto text-center"
-          >
-            <Mail className="h-12 w-12 text-amber-400 mx-auto mb-6" />
-            <h2 className="text-3xl md:text-4xl font-serif font-bold mb-4">Join the list</h2>
-            <p className="text-stone-300 mb-8">
-              Be the first to know about opening hours, events, workshops, and community gatherings.
-              No spam, just good news from the hills.
-            </p>
-
-            <form onSubmit={handleNewsletterSubmit} className="space-y-6">
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Input
-                  type="email"
-                  placeholder="Your email address"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="flex-1 bg-white/10 border-white/20 text-white placeholder:text-white/50 h-12"
-                  required
-                />
-                <Button
-                  type="submit"
-                  size="lg"
-                  className="bg-amber-500 hover:bg-amber-600 text-black font-semibold h-12 px-8"
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? "Joining..." : "Join Us"}
-                  <ChevronRight className="ml-2 h-5 w-5" />
-                </Button>
-              </div>
-              <InterestSelector
-                selected={interests}
-                onChange={setInterests}
-                variant="dark"
-              />
-            </form>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Quick Links / CTA Section */}
-      <section className="py-16 bg-white border-t border-stone-200">
-        <div className="container">
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Link href="/whats-on">
-              <Card className="group cursor-pointer border-0 shadow-md hover:shadow-lg transition-all bg-gradient-to-br from-amber-50 to-orange-50">
-                <CardContent className="p-6 flex items-center justify-between">
-                  <div>
-                    <h3 className="font-serif font-bold text-lg text-stone-800">What's On</h3>
-                    <p className="text-stone-600 text-sm">Events, workshops, markets</p>
-                  </div>
-                  <ArrowRight className="h-5 w-5 text-amber-600 group-hover:translate-x-1 transition-transform" />
-                </CardContent>
-              </Card>
-            </Link>
-
-            <Link href="/explore">
-              <Card className="group cursor-pointer border-0 shadow-md hover:shadow-lg transition-all bg-gradient-to-br from-green-50 to-emerald-50">
-                <CardContent className="p-6 flex items-center justify-between">
-                  <div>
-                    <h3 className="font-serif font-bold text-lg text-stone-800">Explore the Site</h3>
-                    <p className="text-stone-600 text-sm">Interactive map & zones</p>
-                  </div>
-                  <Compass className="h-5 w-5 text-green-600 group-hover:translate-x-1 transition-transform" />
-                </CardContent>
-              </Card>
-            </Link>
-
-            <Link href="/journey">
-              <Card className="group cursor-pointer border-0 shadow-md hover:shadow-lg transition-all bg-gradient-to-br from-purple-50 to-pink-50">
-                <CardContent className="p-6 flex items-center justify-between">
-                  <div>
-                    <h3 className="font-serif font-bold text-lg text-stone-800">Our Journey</h3>
-                    <p className="text-stone-600 text-sm">Transformation timeline</p>
-                  </div>
-                  <BookOpen className="h-5 w-5 text-purple-600 group-hover:translate-x-1 transition-transform" />
-                </CardContent>
-              </Card>
-            </Link>
-
-            <Link href="/visit">
-              <Card className="group cursor-pointer border-0 shadow-md hover:shadow-lg transition-all bg-gradient-to-br from-blue-50 to-indigo-50">
-                <CardContent className="p-6 flex items-center justify-between">
-                  <div>
-                    <h3 className="font-serif font-bold text-lg text-stone-800">Visit Us</h3>
-                    <p className="text-stone-600 text-sm">Hours, location, directions</p>
-                  </div>
-                  <ArrowRight className="h-5 w-5 text-blue-600 group-hover:translate-x-1 transition-transform" />
-                </CardContent>
-              </Card>
-            </Link>
-          </div>
-        </div>
-      </section>
     </div>
   );
 }

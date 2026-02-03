@@ -3,6 +3,7 @@ import { Link } from "wouter";
 import { ArrowRight, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect, useCallback } from "react";
+import SiteZoneExplorer from "@/components/SiteZoneExplorer";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 40 },
@@ -991,6 +992,29 @@ export default function Compendium() {
 
         {/* ═══════════ V. THE CANVAS ═══════════ */}
         <CanvasSection />
+
+        {/* ═══════════ V¼. THE SITE TODAY ═══════════ */}
+        <section className="min-h-[70vh] flex items-center justify-center relative bg-stone-900">
+          <div className="container px-6 md:px-8 py-20 md:py-28">
+            <div className="max-w-4xl mx-auto">
+              <motion.p
+                {...fadeIn}
+                className="text-amber-500/60 text-sm font-mono tracking-[0.3em] uppercase mb-6 text-center"
+              >
+                The Site Today
+              </motion.p>
+              <motion.p
+                {...fadeInUp}
+                className="text-lg text-stone-400 leading-relaxed text-center mb-8 max-w-2xl mx-auto"
+              >
+                Five acres as they stand right now. Hover the zones to see what's here — and what's coming.
+              </motion.p>
+              <motion.div {...fadeInUp}>
+                <SiteZoneExplorer compact />
+              </motion.div>
+            </div>
+          </div>
+        </section>
 
         {/* ═══════════ V½. THE DRAWING — scrolling element reveal ═══════════ */}
         <DrawingRevealSection />

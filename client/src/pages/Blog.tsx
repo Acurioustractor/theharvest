@@ -4,9 +4,10 @@ import { motion } from "framer-motion";
 import { trpc } from "@/lib/trpc";
 import BlogCard, { type ELArticle } from "@/components/BlogCard";
 import BlogCategories, { type BlogTheme } from "@/components/BlogCategories";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, Newspaper, ArrowRight } from "lucide-react";
+import { Search, Newspaper } from "lucide-react";
 import { Link } from "wouter";
 
 const fadeInUp = {
@@ -98,6 +99,53 @@ export default function Blog() {
         </div>
       </section>
 
+      {/* Featured Stories */}
+      <section className="py-12 bg-stone-50">
+        <div className="container">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <p className="text-amber-600 font-mono text-sm mb-3 uppercase tracking-wider">
+              Featured
+            </p>
+            <h2 className="text-2xl font-serif font-bold text-stone-800 mb-6">
+              Stories from the Land
+            </h2>
+            <Link href="/stories">
+              <Card className="overflow-hidden border-0 bg-stone-800 group cursor-pointer hover:ring-2 hover:ring-amber-500/50 transition-all">
+                <div className="grid md:grid-cols-2">
+                  <div className="relative h-64 md:h-auto overflow-hidden">
+                    <img
+                      src="/images/compendium/barry/IMG_5764.jpg"
+                      alt="Barry at golden hour"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                  </div>
+                  <CardContent className="p-8 flex flex-col justify-center">
+                    <span className="text-amber-400 font-mono text-xs uppercase tracking-wider mb-2">
+                      Photo Essay
+                    </span>
+                    <h3 className="text-2xl md:text-3xl font-serif font-bold text-white mb-3">
+                      Barry & The Shed
+                    </h3>
+                    <p className="text-stone-300 leading-relaxed mb-4">
+                      Barry has been on this land since 1972. His shed is full of machines
+                      that built the hinterland — log trucks, Blitz trucks, a little Italian
+                      tractor with a Lombardini diesel.
+                    </p>
+                    <p className="text-amber-500 text-sm font-medium group-hover:text-amber-400 transition-colors">
+                      Read the full story →
+                    </p>
+                  </CardContent>
+                </div>
+              </Card>
+            </Link>
+          </motion.div>
+        </div>
+      </section>
+
       {/* Articles Grid */}
       <section className="py-16">
         <div className="container">
@@ -176,36 +224,6 @@ export default function Blog() {
         </div>
       </section>
 
-      {/* Newsletter CTA */}
-      <section className="py-16 bg-stone-800 text-white">
-        <div className="container">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="max-w-2xl mx-auto text-center"
-          >
-            <h2 className="text-3xl font-serif font-bold mb-4">
-              Never miss a story
-            </h2>
-            <p className="text-stone-300 mb-8">
-              Subscribe to our newsletter for seasonal updates, recipes, and community news
-              delivered straight to your inbox.
-            </p>
-            <Button
-              size="lg"
-              className="bg-amber-500 hover:bg-amber-600 text-black font-semibold"
-              asChild
-            >
-              <Link href="/#newsletter">
-                Subscribe to the Newsletter
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Link>
-            </Button>
-          </motion.div>
-        </div>
-      </section>
     </div>
   );
 }

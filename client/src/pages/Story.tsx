@@ -1,7 +1,9 @@
+import { useState, useCallback, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import FloorPlanViewer from "@/components/FloorPlanViewer";
 import SitePlanExplorer from "@/components/SitePlanExplorer";
+import SiteZoneExplorer from "@/components/SiteZoneExplorer";
 import {
   Utensils,
   Users,
@@ -9,15 +11,16 @@ import {
   Sprout,
   ArrowRight,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
   Quote,
   Palette,
-  Flame,
-  Heart,
   CheckCircle,
   Calendar,
   TreePine,
   MessageCircle,
   Mail,
+  X,
 } from "lucide-react";
 import { Link } from "wouter";
 
@@ -48,7 +51,7 @@ const pillars = [
     icon: Users,
     name: "Gather",
     description: "Markets, music, oyster pop-ups, and community events year-round.",
-    color: "bg-green-600",
+    color: "bg-stone-600",
   },
   {
     icon: Hammer,
@@ -60,7 +63,7 @@ const pillars = [
     icon: Sprout,
     name: "Grow",
     description: "Established gardens with tomatoes, pomegranate, coffee, taro, herbs, and pecan trees.",
-    color: "bg-emerald-600",
+    color: "bg-amber-700",
   },
 ];
 
@@ -72,7 +75,7 @@ const timeline = [
     quote: "Test everything. Keep what works.",
     items: [
       "March: First pop-up — oyster bar + pizza nights",
-      "Shed clad and activated as retail/servery space",
+      "Building fit-out and activation as community hub",
       "Scaffold pavilion built under the pecan trees",
       "Gardens restored with market produce + raised beds",
       "The Classroom opens for bookable workshops",
@@ -111,13 +114,13 @@ const momentum = [
   {
     icon: CheckCircle,
     title: "Pop-Up Confirmed",
-    detail: "Sean (Aboriginal oyster farmer, Stradbroke Island) has 1,000 dozen ready for March 2026. Ticketed event to test demand.",
+    detail: "Shaun Fisher — Goenpul man, Quandamooka People — is bringing oysters from Minjerribah for our first pop-up. March 2026, ticketed.",
     status: "Confirmed",
   },
   {
     icon: Palette,
     title: "Architect On-Site",
-    detail: "Thais has walked the site, measured the buildings, and is developing concept designs — scaffold pavilion, shed cladding, zone layouts.",
+    detail: "Thais has walked the site, measured the buildings, and is developing concept designs — scaffold pavilion, building fit-out, zone layouts.",
     status: "In progress",
   },
   {
@@ -134,16 +137,58 @@ const momentum = [
   },
 ];
 
+const barryImages = [
+  { src: "/images/compendium/barry/IMG_5764.jpg", caption: "Barry at golden hour, his shed behind him" },
+  { src: "/images/compendium/barry/IMG_5613.jpg", caption: "The machinery graveyard — engines, axles, memory" },
+  { src: "/images/compendium/barry/IMG_5699.jpg", caption: "Inside the shed — pointing out a bandsaw older than most of us" },
+  { src: "/images/compendium/barry/IMG_5659.jpg", caption: "Barry among the engines, still knows every one" },
+  { src: "/images/compendium/barry/IMG_5745.jpg", caption: "Sitting on the workbench, spanners beside him, telling stories" },
+  { src: "/images/compendium/barry/IMG_5758.jpg", caption: "With the Case bulldozer — been here since '72" },
+  { src: "/images/compendium/barry/IMG_5687.jpg", caption: "The workshop — where everything gets fixed" },
+  { src: "/images/compendium/barry/IMG_5618.jpg", caption: "Surveying the yard with the crane at his back" },
+  { src: "/images/compendium/barry/IMG_5727.jpg", caption: "Barry in the shed with visitors — stories are better shared" },
+  { src: "/images/compendium/barry/IMG_5777.jpg", caption: "Looking out — 80 years of hinterland in one gaze" },
+  { src: "/images/compendium/barry/IMG_5819.jpg", caption: "With the Blue Heelers — always the same breed, always called Samantha" },
+  { src: "/images/compendium/barry/IMG_5633.jpg", caption: "Barry" },
+];
+
 export default function Story() {
+  const [barryPhoto, setBarryPhoto] = useState(0);
+  const [viewBarryPhoto, setViewBarryPhoto] = useState<number | null>(null);
+
+  const nextBarryPhoto = useCallback(() => {
+    setBarryPhoto((prev) => (prev + 1) % barryImages.length);
+  }, []);
+
+  const prevBarryPhoto = useCallback(() => {
+    setBarryPhoto((prev) => (prev - 1 + barryImages.length) % barryImages.length);
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(nextBarryPhoto, 5000);
+    return () => clearInterval(interval);
+  }, [nextBarryPhoto]);
+
   return (
     <div className="story-page">
       {/* Scroll-snap container */}
       <div className="h-screen overflow-y-auto snap-y snap-mandatory">
 
         {/* ═══════════ 1. HERO ═══════════ */}
-        <section className="min-h-screen snap-start flex items-center justify-center relative bg-gradient-to-b from-stone-800 to-stone-900 overflow-hidden">
-          <div className="absolute inset-0 opacity-10">
-            <div className="absolute inset-0 bg-[url('/images/harvest-hero.jpg')] bg-cover bg-center" />
+        <section className="min-h-screen snap-start flex items-center justify-center relative bg-stone-950 overflow-hidden">
+          {/* Drone aerial video background */}
+          <div className="absolute inset-0">
+            <video
+              autoPlay
+              muted
+              loop
+              playsInline
+              poster="/images/compendium/hero-aerial.jpg"
+              className="w-full h-full object-cover"
+            >
+              <source src="/images/compendium/hero-aerial.mp4" type="video/mp4" />
+            </video>
+            <div className="absolute inset-0 bg-stone-950/60" />
           </div>
           <div className="container relative text-center px-4">
             <motion.div
@@ -185,15 +230,19 @@ export default function Story() {
         <section className="min-h-screen snap-start flex items-center justify-center bg-white">
           <div className="container px-4">
             <motion.div {...fadeInUp} className="max-w-3xl mx-auto text-center">
-              <h2 className="text-3xl md:text-5xl font-serif font-bold text-stone-800 mb-8">
+              <h2 className="text-3xl md:text-5xl font-serif font-bold text-stone-800 mb-4">
                 Witta has nowhere to gather
               </h2>
+              <p className="text-lg text-stone-600 leading-relaxed mb-10 max-w-xl mx-auto">
+                Two thousand cars pass through every weekend. One cafe. No gathering place.
+                The hinterland is hollowing out — people drive through but never stop.
+              </p>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-10">
                 {[
                   { value: "2,000+", label: "cars every weekend" },
-                  { value: "Zero", label: "cafes or shops" },
-                  { value: "#1", label: "homeschooling rate in Australia" },
-                  { value: "10 min", label: "from Maleny — but a world away" },
+                  { value: "One", label: "cafe — no gathering place" },
+                  { value: "#1", label: "homeschooling rate in AU" },
+                  { value: "10 min", label: "from Maleny — a world away" },
                 ].map((stat) => (
                   <motion.div key={stat.label} {...fadeInUp} className="text-center">
                     <p className="text-3xl md:text-4xl font-serif font-bold text-amber-600">
@@ -210,7 +259,7 @@ export default function Story() {
                   Maleny"
                 </p>
                 <footer className="mt-3 text-sm text-stone-400">
-                  — Nic, site walkthrough
+                  — Nic
                 </footer>
               </motion.blockquote>
             </motion.div>
@@ -257,67 +306,65 @@ export default function Story() {
           </div>
         </section>
 
-        {/* ═══════════ 4. THE CANVAS ═══════════ */}
-        <section className="min-h-screen snap-start flex items-center justify-center bg-stone-800">
-          <div className="container px-4">
-            <motion.div {...fadeInUp} className="max-w-4xl mx-auto">
-              <h2 className="text-3xl md:text-5xl font-serif font-bold text-white text-center mb-12">
-                Our Design Philosophy
-              </h2>
-              <div className="grid md:grid-cols-3 gap-8 mb-12">
-                {[
-                  {
-                    icon: Palette,
-                    title: "Gallery, Not Museum",
-                    text: "Nothing is super permanent. Like an art gallery — exhibitions come, people love them, they evolve, new ones take their place. The space is always becoming.",
-                  },
-                  {
-                    icon: Flame,
-                    title: "Test Before You Build",
-                    text: "Pop-ups before permanent builds. We test with oysters and pizza before investing in a restaurant. Every dollar follows proof of demand.",
-                  },
-                  {
-                    icon: Heart,
-                    title: "Unfinished Canvas",
-                    text: "You're not coming to something that's finished — you're coming to something you can be a part of. Every chair, every plant, every event is a community contribution.",
-                  },
-                ].map((principle) => {
-                  const Icon = principle.icon;
-                  return (
-                    <motion.div key={principle.title} {...fadeInUp} className="text-center">
-                      <div className="h-12 w-12 rounded-xl bg-amber-500/20 flex items-center justify-center mx-auto mb-4">
-                        <Icon className="h-6 w-6 text-amber-400" />
-                      </div>
-                      <h3 className="font-serif font-bold text-white text-lg mb-2">
-                        {principle.title}
-                      </h3>
-                      <p className="text-stone-400 text-sm leading-relaxed">
-                        {principle.text}
-                      </p>
-                    </motion.div>
-                  );
-                })}
-              </div>
-              <motion.blockquote {...fadeInUp} className="text-center max-w-2xl mx-auto">
-                <p className="text-lg text-stone-300 italic font-serif leading-relaxed">
-                  "You're not coming to something finished — you're coming to something you can be a part of"
-                </p>
-              </motion.blockquote>
-            </motion.div>
-          </div>
-        </section>
-
-        {/* ═══════════ 5. THE SPACE ═══════════ */}
+        {/* ═══════════ 4. THE SPACE — WHERE WE'RE HEADED ═══════════ */}
         <section className="min-h-screen snap-start flex items-center justify-center bg-stone-50">
           <div className="container px-4 py-12">
             <motion.div {...fadeInUp} className="max-w-3xl mx-auto text-center mb-8">
               <h2 className="text-3xl md:text-5xl font-serif font-bold text-stone-800 mb-4">
-                The Space
+                Where we're headed
               </h2>
               <p className="text-lg text-stone-600 leading-relaxed">
-                A former nursery with decades of rich soil, established fruit trees,
-                rammed earth buildings, and covered outdoor spaces. Hover the zones
-                to explore.
+                This is the master plan — what the site looks like when it's done.
+                We're not there yet. Right now we're fitting out the rammed earth building,
+                restoring the gardens, and preparing for our first pop-up events.
+              </p>
+            </motion.div>
+            <motion.div {...fadeInUp} className="max-w-5xl mx-auto">
+              <div className="rounded-2xl overflow-hidden shadow-xl bg-white">
+                <img
+                  src="/images/compendium/canvas-drawing-full.jpg"
+                  alt="The Harvest master plan — hand-drawn colour site layout showing buildings, gardens, gathering spaces, and community zones"
+                  className="w-full"
+                />
+              </div>
+              <p className="text-center text-stone-500 text-sm mt-4 italic">
+                Hand-drawn master plan by our architect — the full vision for the 5-acre site
+              </p>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* ═══════════ 5. THE SPACE — WHERE WE ARE NOW ═══════════ */}
+        <section className="min-h-screen snap-start flex items-center justify-center bg-stone-900">
+          <div className="container px-4 py-12">
+            <motion.div {...fadeInUp} className="max-w-3xl mx-auto text-center mb-8">
+              <h2 className="text-3xl md:text-5xl font-serif font-bold text-white mb-4">
+                The site today
+              </h2>
+              <p className="text-lg text-stone-400 leading-relaxed">
+                Aerial view of the 5-acre property as it stands right now.
+                The rammed earth building, the nursery, the paddocks — all being brought to life.
+              </p>
+            </motion.div>
+            <motion.div {...fadeInUp} className="max-w-4xl mx-auto">
+              <SiteZoneExplorer />
+              <p className="text-center text-stone-500 text-sm mt-2 italic">
+                Hover or tap zones to explore — click for details
+              </p>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* ═══════════ 5b. FLOOR PLAN ═══════════ */}
+        <section className="min-h-screen snap-start flex items-center justify-center bg-white">
+          <div className="container px-4 py-12">
+            <motion.div {...fadeInUp} className="max-w-3xl mx-auto text-center mb-8">
+              <h2 className="text-3xl md:text-5xl font-serif font-bold text-stone-800 mb-4">
+                Inside the building
+              </h2>
+              <p className="text-lg text-stone-600 leading-relaxed">
+                The rammed earth building is being fitted out as a community hub.
+                Hover the zones to explore the current layout.
               </p>
             </motion.div>
             <motion.div {...fadeInUp} className="max-w-4xl mx-auto">
@@ -341,27 +388,41 @@ export default function Story() {
         </section>
 
         {/* ═══════════ 7. THE OYSTER STORY ═══════════ */}
-        <section className="min-h-screen snap-start flex items-center justify-center bg-white">
-          <div className="container px-4">
+        <section className="min-h-screen snap-start flex items-center justify-center bg-stone-900">
+          <div className="container px-4 py-12">
             <motion.div {...fadeInUp} className="max-w-3xl mx-auto">
-              <h2 className="text-3xl md:text-5xl font-serif font-bold text-stone-800 text-center mb-10">
-                The Oyster Story
+              <h2 className="text-3xl md:text-5xl font-serif font-bold text-white text-center mb-10">
+                The Cycle
               </h2>
-              <div className="space-y-6 text-stone-700 text-lg leading-relaxed">
+              <div className="aspect-video rounded-xl overflow-hidden mb-10 shadow-xl">
+                <video
+                  src="/images/compendium/oyster-lease.mp4"
+                  poster="/images/compendium/oyster-lease-poster.jpg"
+                  controls
+                  playsInline
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="space-y-6 text-stone-300 text-lg leading-relaxed">
                 <p>
-                  Sean is an Aboriginal oyster farmer from Stradbroke Island.
+                  Shaun Fisher is a Goenpul man — one of the three clans of the
+                  Quandamooka People, Traditional Owners of Minjerribah (North
+                  Stradbroke Island) and the southern Moreton Bay. The
+                  Yoolooburrabee — people of the sand and sea. The quampi shell
+                  is their totem, their food source, their cultural symbol.
                 </p>
                 <p>
-                  When colonizers arrived in Brisbane, they blew up the Aboriginal oyster
-                  leases for limestone — the Treasury building, the banks, the city
-                  foundations are built from his ancestors' oyster shells.
+                  When colonizers arrived in Brisbane, they blew up the
+                  Quandamooka oyster leases for limestone. The Treasury building,
+                  the banks, the foundations of the city — built from those
+                  shells.
                 </p>
                 <div className="border-l-4 border-amber-500 pl-6 py-2 my-8">
-                  <p className="text-xl md:text-2xl font-serif italic text-stone-800">
-                    At The Harvest, Sean sells oysters direct to community. People eat
-                    on picnic blankets on the lawn. Shells are collected and used to make
-                    rammed earth flooring. The oyster shells return to the earth — full
-                    cycle.
+                  <p className="text-xl md:text-2xl font-serif italic text-white">
+                    At The Harvest, Shaun sells oysters direct to community.
+                    People eat on picnic blankets on the grass. The shells are
+                    collected and worked into benchtops, surfaces, and finishes
+                    throughout The Harvest. The shells come back into the place. Full cycle.
                   </p>
                 </div>
                 <p className="text-stone-500 text-base text-center italic">
@@ -371,6 +432,191 @@ export default function Story() {
             </motion.div>
           </div>
         </section>
+
+        {/* ═══════════ 7b. BARRY'S STORY ═══════════ */}
+        <section className="min-h-screen snap-start relative overflow-hidden bg-stone-950">
+          {/* Photo background — crossfade slideshow */}
+          {barryImages.map((img, i) => (
+            <motion.div
+              key={img.src}
+              className="absolute inset-0"
+              initial={false}
+              animate={{ opacity: barryPhoto === i ? 1 : 0 }}
+              transition={{ duration: 1.5, ease: "easeInOut" }}
+            >
+              <img src={img.src} alt="" className="w-full h-full object-cover" />
+            </motion.div>
+          ))}
+
+          {/* Gradient overlays for text readability */}
+          <div className="absolute inset-0 bg-gradient-to-r from-stone-950 via-stone-950/80 to-stone-950/30" />
+          <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-transparent to-stone-950/40" />
+
+          {/* Content */}
+          <div className="relative z-10 flex items-center min-h-screen">
+            <div className="container px-6 md:px-8 py-20 md:py-28">
+              <div className="max-w-2xl">
+                <motion.h2
+                  {...fadeInUp}
+                  className="text-2xl md:text-3xl font-serif font-bold text-stone-400 mb-4 tracking-wide"
+                >
+                  The Shed
+                </motion.h2>
+
+                <motion.p
+                  {...fadeInUp}
+                  className="text-3xl md:text-5xl font-serif font-bold text-white leading-[1.15] mb-10"
+                >
+                  Before there was a harvest, there was a shed.
+                </motion.p>
+
+                <motion.div
+                  {...fadeInUp}
+                  className="text-lg md:text-xl text-stone-300 leading-relaxed space-y-6 mb-10"
+                >
+                  <p>
+                    Barry Rodgerig is 80 years old. He's been on this land since 1972.
+                    Before that, Peachester — 25 years of dairy, timber, and red soil.
+                    He drove tractors before he could see over the steering wheel. He
+                    still drives them now.
+                  </p>
+                  <p>
+                    His shed is full of machines that built this hinterland. An AB184 log
+                    truck from 1963. Ex-army Blitz trucks from the war. A little Italian
+                    Valpadana tractor with a Lombardini diesel. A 1957 Land Rover he'd
+                    like to restore, if he lives long enough.
+                  </p>
+                  <p>
+                    He starts them up sometimes, just to hear them run.
+                  </p>
+                </motion.div>
+
+                <motion.div {...fadeInUp} className="border-l-2 border-amber-500/40 pl-6 mb-10">
+                  <p className="text-xl md:text-2xl text-white font-serif italic leading-relaxed mb-3">
+                    "Rust is a terrible thing. It's just like cancer in humans. It eats. It just kills you."
+                  </p>
+                  <p className="text-sm text-stone-500 font-mono">— Barry Rodgerig, Witta</p>
+                </motion.div>
+
+                <motion.div
+                  {...fadeInUp}
+                  className="text-lg md:text-xl text-stone-300 leading-relaxed space-y-6 mb-10"
+                >
+                  <p>
+                    The cedar-getters came first, after the Jinibara. Then dairy. Then
+                    timber trucks grinding through red mud to Strathpine. Barry watched
+                    the hippies shut down the logging at Crystal Waters. He watched the
+                    government finish the job. He watched the hinterland turn from
+                    working country into scenic drive.
+                  </p>
+                  <p>
+                    <strong className="text-white">
+                      The Harvest is built on layers.
+                    </strong>{" "}
+                    Jinibara Country first. Then cedar. Then dairy. Then nursery. Now
+                    this. Every rusted blade and milk separator in Barry's shed is a
+                    chapter. The land remembers what was here before.
+                  </p>
+                </motion.div>
+
+                <motion.div {...fadeInUp} className="border-l-2 border-amber-500/40 pl-6 mb-10">
+                  <p className="text-xl md:text-2xl text-white font-serif italic leading-relaxed mb-3">
+                    "I think when I die, it'll probably all go for scrap."
+                  </p>
+                  <p className="text-sm text-stone-500 font-mono">— Barry</p>
+                </motion.div>
+
+                <motion.div
+                  {...fadeInUp}
+                  className="text-lg text-stone-400 leading-relaxed space-y-4"
+                >
+                  <p>
+                    Not if we can help it. Barry's shed isn't scrap — it's archaeology.
+                    It's the living memory of what this place was, and the reason why
+                    what we build next has to mean something.
+                  </p>
+                  <p>
+                    Barry is one neighbour. There are more. Every person who lives
+                    around this land carries a piece of its story — and The Harvest
+                    exists to make sure those stories aren't forgotten.
+                  </p>
+                  <p className="text-amber-400/80 font-serif italic">
+                    Four Blue Heelers. Always called Samantha. "You never have two the
+                    same."
+                  </p>
+                </motion.div>
+              </div>
+
+              {/* Photo controls */}
+              <div className="flex items-center gap-3 mt-8">
+                <button
+                  onClick={prevBarryPhoto}
+                  className="p-2 rounded-full border border-stone-700 text-stone-400 hover:text-white hover:border-stone-500 transition-colors bg-stone-950/60 backdrop-blur-sm"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </button>
+                <button
+                  onClick={nextBarryPhoto}
+                  className="p-2 rounded-full border border-stone-700 text-stone-400 hover:text-white hover:border-stone-500 transition-colors bg-stone-950/60 backdrop-blur-sm"
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </button>
+                <span className="text-stone-600 text-xs font-mono ml-1">
+                  {barryPhoto + 1}/{barryImages.length}
+                </span>
+                <button
+                  onClick={() => setViewBarryPhoto(barryPhoto)}
+                  className="ml-2 px-3 py-1.5 text-xs font-mono tracking-wider uppercase rounded-full border border-stone-600 text-stone-400 hover:text-white hover:border-stone-400 transition-colors bg-stone-950/60 backdrop-blur-sm"
+                >
+                  View
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Barry fullscreen photo viewer */}
+        {viewBarryPhoto !== null && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 z-[100] bg-stone-950 flex flex-col"
+          >
+            <div className="flex items-center justify-between px-4 md:px-6 py-3 md:py-4 bg-stone-900/90 backdrop-blur-sm border-b border-stone-800 shrink-0">
+              <p className="text-xs md:text-sm font-mono text-stone-400 truncate flex-1 min-w-0 mr-3">
+                {viewBarryPhoto + 1}/{barryImages.length} — {barryImages[viewBarryPhoto].caption}
+              </p>
+              <div className="flex gap-2 shrink-0">
+                <button
+                  onClick={() => setViewBarryPhoto((viewBarryPhoto - 1 + barryImages.length) % barryImages.length)}
+                  className="p-2 rounded-full border border-stone-700 text-stone-400 hover:text-white hover:border-stone-500"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </button>
+                <button
+                  onClick={() => setViewBarryPhoto((viewBarryPhoto + 1) % barryImages.length)}
+                  className="p-2 rounded-full border border-stone-700 text-stone-400 hover:text-white hover:border-stone-500"
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </button>
+                <button
+                  onClick={() => setViewBarryPhoto(null)}
+                  className="p-2 rounded-full border border-stone-700 text-stone-400 hover:text-white hover:border-stone-500"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+            <div className="flex-1 overflow-auto flex items-center justify-center p-4">
+              <img
+                src={barryImages[viewBarryPhoto].src}
+                alt={barryImages[viewBarryPhoto].caption}
+                className="max-w-none w-[95vw] md:w-auto md:max-h-[85vh] rounded-lg"
+              />
+            </div>
+          </motion.div>
+        )}
 
         {/* ═══════════ 8. THE JOURNEY ═══════════ */}
         <section className="min-h-screen snap-start flex items-center justify-center bg-stone-50">

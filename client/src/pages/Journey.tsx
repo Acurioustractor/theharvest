@@ -14,7 +14,6 @@ import {
   Target,
   Camera,
 } from "lucide-react";
-import { useSeason } from "@/contexts/SeasonalContext";
 import { HarvestGallery } from "@/components/EmpathyLedgerGallery";
 import { EditableImage } from "@/components/EditableImage";
 import { EditableText } from "@/components/EditableText";
@@ -119,7 +118,7 @@ function TimelineItem({
   const isEven = index % 2 === 0;
 
   const statusColors = {
-    complete: "bg-green-500",
+    complete: "bg-amber-600",
     "in-progress": "bg-amber-500",
     planned: "bg-stone-300",
   };
@@ -223,10 +222,8 @@ function TimelineItem({
 }
 
 export default function Journey() {
-  const { data: seasonalData } = useSeason();
-
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-stone-50">
       {/* Hero Section */}
       <section className="relative py-24 bg-gradient-to-b from-stone-100 to-white overflow-hidden">
         <div className="container">
@@ -260,11 +257,11 @@ export default function Journey() {
 
             <div className="flex flex-wrap justify-center gap-4">
               <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-sm">
-                <Heart className="h-5 w-5 text-red-500" />
+                <Heart className="h-5 w-5 text-amber-600" />
                 <span className="text-stone-700 font-medium">Community-built</span>
               </div>
               <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-sm">
-                <Leaf className="h-5 w-5 text-green-500" />
+                <Leaf className="h-5 w-5 text-amber-600" />
                 <span className="text-stone-700 font-medium">Regenerative</span>
               </div>
               <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-sm">
