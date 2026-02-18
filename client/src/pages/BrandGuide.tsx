@@ -259,10 +259,63 @@ function Collapsible({ title, defaultOpen = true, children }: {
    ───────────────────────────────────── */
 
 export default function BrandGuide() {
+  const [authed, setAuthed] = useState(() => sessionStorage.getItem("bg-auth") === "1");
+  const [pw, setPw] = useState("");
+  const [shake, setShake] = useState(false);
+
   const isMobile = useMediaQuery("(max-width: 768px)");
   const [lightbox, setLightbox] = useState<{ src: string; label: string } | null>(null);
   const [activeChapter, setActiveChapter] = useState("threes");
   const navRef = useRef<HTMLDivElement>(null);
+
+  if (!authed) {
+    return (
+      <div style={{ ...rootStyle, display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh" }}>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (pw.toUpperCase() === "BVC") {
+              sessionStorage.setItem("bg-auth", "1");
+              setAuthed(true);
+            } else {
+              setShake(true);
+              setTimeout(() => setShake(false), 500);
+              setPw("");
+            }
+          }}
+          style={{
+            textAlign: "center",
+            animation: shake ? "shake 0.4s ease" : undefined,
+          }}
+        >
+          <style>{`@keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-8px)} 75%{transform:translateX(8px)} }`}</style>
+          <div style={{ fontFamily: fonts.display, fontWeight: 900, fontSize: 14, letterSpacing: "0.2em", opacity: 0.4, marginBottom: 24 }}>
+            THE HARVEST — BRAND GUIDE
+          </div>
+          <input
+            type="password"
+            value={pw}
+            onChange={(e) => setPw(e.target.value)}
+            placeholder="Password"
+            autoFocus
+            style={{
+              fontFamily: fonts.body,
+              fontSize: 18,
+              textAlign: "center",
+              padding: "14px 24px",
+              border: `2px solid ${colors.black}`,
+              borderRadius: 0,
+              background: "transparent",
+              outline: "none",
+              letterSpacing: "0.1em",
+              width: 200,
+            }}
+          />
+          <div style={{ marginTop: 12, fontSize: 12, opacity: 0.3, fontFamily: fonts.display }}>ENTER TO CONTINUE</div>
+        </form>
+      </div>
+    );
+  }
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
