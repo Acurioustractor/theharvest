@@ -208,6 +208,115 @@ export default function BauhausHome() {
         </div>
       </section>
 
+      {/* ─── 2B. WHAT IS THIS? ─── */}
+      <section style={{
+        backgroundColor: colors.cream,
+        color: colors.black,
+        padding: isMobile ? "80px 28px" : "100px 40px",
+      }}>
+        <div style={{
+          maxWidth: 640,
+          margin: "0 auto",
+        }}>
+          <FadeIn>
+            <span style={{
+              fontFamily: fonts.display,
+              fontWeight: 700,
+              fontSize: 11,
+              letterSpacing: "0.2em",
+              opacity: 0.4,
+              display: "block",
+              marginBottom: 20,
+              textAlign: "center",
+            }}>
+              RIGHT NOW
+            </span>
+          </FadeIn>
+          <FadeIn delay={0.1}>
+            <h2 style={{
+              fontFamily: fonts.display,
+              fontWeight: 900,
+              fontSize: isMobile ? "clamp(22px, 6vw, 30px)" : "clamp(26px, 2.8vw, 34px)",
+              letterSpacing: "0.04em",
+              lineHeight: 1.3,
+              margin: "0 0 28px",
+              textAlign: "center",
+            }}>
+              The Harvest is a 10-acre site in Witta, on Jinibara Country.
+            </h2>
+          </FadeIn>
+          <FadeIn delay={0.15}>
+            <p style={{
+              fontFamily: fonts.body,
+              fontSize: isMobile ? 15 : 17,
+              lineHeight: 1.9,
+              opacity: 0.7,
+              margin: "0 0 20px",
+            }}>
+              It's not finished. It's not a venue yet. Right now it's a paddock, a shed, a few big ideas, and a growing group of people who want to build something together.
+            </p>
+          </FadeIn>
+          <FadeIn delay={0.2}>
+            <p style={{
+              fontFamily: fonts.body,
+              fontSize: isMobile ? 15 : 17,
+              lineHeight: 1.9,
+              opacity: 0.7,
+              margin: "0 0 20px",
+            }}>
+              We're imagining three zones — a <strong>garden</strong> to grow in, a <strong>kitchen</strong> to feed from, and an <strong>art space</strong> to make in. But what those become depends on who shows up and what they bring.
+            </p>
+          </FadeIn>
+          <FadeIn delay={0.25}>
+            <p style={{
+              fontFamily: fonts.body,
+              fontSize: isMobile ? 14 : 15,
+              lineHeight: 1.8,
+              opacity: 0.5,
+              margin: "0 0 36px",
+            }}>
+              If you're a grower, a maker, a cook, an artist, a builder, a thinker, a neighbour — there's a seat at this table. Come along to a gathering, bring an idea, or just come see the place.
+            </p>
+          </FadeIn>
+          <FadeIn delay={0.3}>
+            <div style={{
+              display: "flex",
+              gap: 16,
+              flexWrap: "wrap",
+              justifyContent: "center",
+            }}>
+              <Link href="/gather#rsvp" style={{
+                fontFamily: fonts.display,
+                fontWeight: 700,
+                fontSize: 13,
+                letterSpacing: "0.1em",
+                color: colors.cream,
+                backgroundColor: colors.black,
+                padding: "14px 32px",
+                textDecoration: "none",
+                display: "inline-block",
+              }}>
+                COME TO A GATHERING
+              </Link>
+              <Link href="/contact" style={{
+                fontFamily: fonts.display,
+                fontWeight: 700,
+                fontSize: 13,
+                letterSpacing: "0.1em",
+                color: colors.black,
+                backgroundColor: "transparent",
+                border: `2px solid ${colors.black}`,
+                padding: "12px 32px",
+                textDecoration: "none",
+                display: "inline-block",
+              }}>
+                GET INVOLVED
+              </Link>
+            </div>
+          </FadeIn>
+        </div>
+      </section>
+
       {/* ─── 3. WHAT'S HAPPENING — Event CTA (oyster video background) ─── */}
       <section style={{
         position: "relative",
@@ -270,7 +379,7 @@ export default function BauhausHome() {
               opacity: 0.8,
               margin: "0 0 28px",
             }}>
-              Saturday 7 March 2026, from 11am
+              Saturday 7 March, 11am – 4pm
             </p>
             <p style={{
               fontFamily: fonts.body,
@@ -284,7 +393,7 @@ export default function BauhausHome() {
             }}>
               Oysters from Minjerribah. A milk crate pavilion we'll build together. The launch of something we've been working toward.
             </p>
-            <Link href="/gather" style={{
+            <Link href="/gather#rsvp" style={{
               fontFamily: fonts.display,
               fontWeight: 700,
               fontSize: 14,
@@ -295,20 +404,20 @@ export default function BauhausHome() {
               textDecoration: "none",
               display: "inline-block",
             }}>
-              COME ALONG
+              SAVE MY SPOT
             </Link>
           </FadeIn>
         </div>
       </section>
 
-      {/* ─── 4. REGIONAL ARTS ─── */}
+      {/* ─── 4. HERITAGE PROJECT ─── */}
       <section style={{
         backgroundColor: colors.cream,
         color: colors.black,
-        padding: isMobile ? "0 28px 80px" : "0 40px 100px",
+        padding: isMobile ? "80px 28px" : "100px 40px",
       }}>
         <div style={{
-          maxWidth: 560,
+          maxWidth: 640,
           margin: "0 auto",
           textAlign: "center",
         }}>
@@ -320,38 +429,59 @@ export default function BauhausHome() {
               letterSpacing: "0.2em",
               opacity: 0.4,
               display: "block",
-              marginBottom: 16,
+              marginBottom: 20,
             }}>
-              REGIONAL ARTS AUSTRALIA
+              SUPPORTED BY REGIONAL ARTS AUSTRALIA
             </span>
+          </FadeIn>
+          <FadeIn delay={0.1}>
+            <h2 style={{
+              fontFamily: fonts.display,
+              fontWeight: 900,
+              fontSize: isMobile ? "clamp(22px, 6vw, 32px)" : "clamp(28px, 3vw, 38px)",
+              letterSpacing: "0.06em",
+              lineHeight: 1.2,
+              margin: "0 0 24px",
+            }}>
+              DAIRY, TIMBER &amp; CO-OP
+            </h2>
+          </FadeIn>
+          <FadeIn delay={0.15}>
             <p style={{
               fontFamily: fonts.body,
               fontSize: isMobile ? 15 : 17,
               lineHeight: 1.9,
-              opacity: 0.65,
-              margin: "0 0 20px",
+              opacity: 0.7,
+              margin: "0 0 16px",
             }}>
-              We have an opportunity to explore the dairy, timber and co-op heritage of this ridge. Through photography, storytelling, and building things from what's already here. This is the first chapter.
+              This ridge has three heritage stories — the dairy farmers who worked the land, the timber workers who milled the cedar, and the co-operatives that held it all together. We've been funded to explore these stories through photography, oral history, and community-built installations.
             </p>
-            <a
-              href="https://regionalarts.com.au"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                fontFamily: fonts.display,
-                fontWeight: 700,
-                fontSize: 11,
-                letterSpacing: "0.15em",
-                textTransform: "uppercase" as const,
-                color: colors.black,
-                opacity: 0.4,
-                textDecoration: "none",
-                borderBottom: "1px solid rgba(0,0,0,0.2)",
-                paddingBottom: 2,
-              }}
-            >
-              Learn more about Regional Arts Australia &rarr;
-            </a>
+          </FadeIn>
+          <FadeIn delay={0.2}>
+            <p style={{
+              fontFamily: fonts.body,
+              fontSize: isMobile ? 14 : 15,
+              lineHeight: 1.8,
+              opacity: 0.5,
+              margin: "0 0 32px",
+            }}>
+              This is the first chapter of a longer project — collecting what's here before it's gone, and making something from it together.
+            </p>
+          </FadeIn>
+          <FadeIn delay={0.25}>
+            <Link href="/compendium" style={{
+              fontFamily: fonts.display,
+              fontWeight: 700,
+              fontSize: 14,
+              letterSpacing: "0.1em",
+              color: colors.cream,
+              backgroundColor: colors.black,
+              padding: "14px 36px",
+              textDecoration: "none",
+              display: "inline-block",
+            }}>
+              EXPLORE THE PROJECT
+            </Link>
           </FadeIn>
         </div>
       </section>

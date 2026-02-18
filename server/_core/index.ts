@@ -137,8 +137,9 @@ async function startServer() {
       const result = await generateSketch({ type, seed, theme });
       return res.json(result);
     } catch (error) {
-      console.error("[Gemini] generate-sketch error:", error);
-      return res.status(500).json({ error: "Sketch generation failed" });
+      const msg = error instanceof Error ? error.message : "Unknown error";
+      console.error("[Gemini] generate-sketch error:", msg);
+      return res.status(500).json({ error: msg });
     }
   });
 

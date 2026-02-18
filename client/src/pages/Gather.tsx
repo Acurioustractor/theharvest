@@ -34,6 +34,14 @@ export default function Gather() {
     };
     meta("og:title", "First Gathering / Saturday 7 March");
     meta("og:description", "Oysters, a milk crate pavilion, and the beginning of something. 9 Gumland Drive, Witta.");
+
+    // Scroll to hash anchor (e.g. #rsvp)
+    if (window.location.hash) {
+      setTimeout(() => {
+        const el = document.querySelector(window.location.hash);
+        if (el) el.scrollIntoView({ behavior: "smooth" });
+      }, 300);
+    }
   }, []);
 
   const handleEoiSubmit = (e: React.FormEvent) => {
@@ -102,7 +110,16 @@ export default function Gather() {
             margin: "28px 0 0",
             opacity: 0.9,
           }}>
-            Saturday 7 March 2026, from 11am
+            Saturday 7 March, 11am – 4pm
+          </p>
+          <p style={{
+            fontFamily: fonts.body,
+            fontWeight: 400,
+            fontSize: isMobile ? 13 : 15,
+            margin: "8px 0 0",
+            opacity: 0.5,
+          }}>
+            Come for an hour or stay for the day
           </p>
           <p style={{
             fontFamily: fonts.body,
@@ -111,18 +128,35 @@ export default function Gather() {
             margin: "12px 0 0",
             opacity: 0.6,
           }}>
-            9 Gumland Drive, Witta
+            9 Gumland Drive, Witta &middot; Free entry
           </p>
           <p style={{
             fontFamily: fonts.body,
             fontWeight: 400,
-            fontSize: isMobile ? 14 : 16,
-            margin: "24px 0 0",
-            opacity: 0.7,
+            fontSize: isMobile ? 16 : 18,
+            margin: "28px 0 0",
+            opacity: 0.8,
             fontStyle: "italic",
           }}>
-            Come as you are. Bring something to share.
+            Come as you are.
           </p>
+          <a
+            href="#rsvp"
+            style={{
+              fontFamily: fonts.display,
+              fontWeight: 700,
+              fontSize: 14,
+              letterSpacing: "0.1em",
+              color: colors.black,
+              backgroundColor: colors.yellow,
+              padding: "16px 40px",
+              textDecoration: "none",
+              display: "inline-block",
+              marginTop: 28,
+            }}
+          >
+            SAVE MY SPOT
+          </a>
         </div>
       </section>
 
@@ -155,7 +189,7 @@ export default function Gather() {
               opacity: 0.85,
               margin: 0,
             }}>
-              No tickets. No agenda. No speeches. Just food, music, and the people who show up. This is how it begins. Not with a grand opening, but with a table.
+              No tickets. No agenda. No speeches. Just food, music, and the people who show up. Come see the place for yourself. This is how it begins.
             </p>
           </FadeIn>
         </div>
@@ -169,7 +203,8 @@ export default function Gather() {
           textColor: colors.cream,
           lines: [
             "Oysters fresh from Minjerribah.",
-            "Shaun Fisher. Quandamooka man, oyster farmer, the first person to say yes.",
+            "",
+            "Shaun Fisher — Quandamooka man, oyster farmer — was the first person to say yes to this place. We're honoured he's bringing his harvest to ours.",
             "",
             "Pizza from the trailer. BYO picnic.",
           ],
@@ -192,6 +227,8 @@ export default function Gather() {
           lines: [
             "Drinks. Music. Kids welcome. Dogs on leads.",
             "Everyone shares a table.",
+            "",
+            "Come for an hour or stay all afternoon. No pressure, no program.",
           ],
         },
       ] as const).map((band) => (
@@ -272,7 +309,10 @@ export default function Gather() {
               <div>
                 <h3 style={detailLabelStyle}>WHEN</h3>
                 <p style={detailTextStyle}>Saturday 7 March</p>
-                <p style={detailTextStyle}>From 11am</p>
+                <p style={detailTextStyle}>11am – 4pm</p>
+                <p style={{ ...detailTextStyle, opacity: 0.5, fontSize: 14 }}>
+                  Come for an hour or stay for the day
+                </p>
               </div>
             </FadeIn>
 
@@ -284,6 +324,29 @@ export default function Gather() {
                 <p style={{ ...detailTextStyle, opacity: 0.5, fontSize: 14 }}>
                   10 minutes from Maleny
                 </p>
+                <a
+                  href="https://maps.google.com/?q=9+Gumland+Drive+Witta+QLD+4552"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    fontFamily: fonts.display,
+                    fontWeight: 700,
+                    fontSize: 11,
+                    letterSpacing: "0.1em",
+                    color: colors.black,
+                    opacity: 0.6,
+                    textDecoration: "none",
+                    borderBottom: "1px solid rgba(0,0,0,0.2)",
+                    paddingBottom: 2,
+                    display: "inline-block",
+                    marginTop: 8,
+                  }}
+                >
+                  OPEN IN MAPS &rarr;
+                </a>
+                <p style={{ ...detailTextStyle, opacity: 0.4, fontSize: 13, marginTop: 8 }}>
+                  Follow the signs from the gate. Parking on grass.
+                </p>
               </div>
             </FadeIn>
 
@@ -292,7 +355,7 @@ export default function Gather() {
                 <h3 style={detailLabelStyle}>WHAT TO BRING</h3>
                 <p style={detailTextStyle}>A chair or picnic blanket</p>
                 <p style={detailTextStyle}>BYO drinks (we'll have water and coffee)</p>
-                <p style={detailTextStyle}>Something to share (food, story, skill)</p>
+                <p style={detailTextStyle}>Something to share — food, story, skill. Or nothing. Either's fine.</p>
                 <p style={detailTextStyle}>Kids, dogs (on leads), neighbours</p>
               </div>
             </FadeIn>
@@ -303,7 +366,7 @@ export default function Gather() {
                 <p style={detailTextStyle}>Oysters — pay what you feel</p>
                 <p style={detailTextStyle}>Pizza from the trailer</p>
                 <p style={detailTextStyle}>Music, fire, good light</p>
-                <p style={{ ...detailTextStyle, opacity: 0.5, fontSize: 14, marginTop: 8 }}>
+                <p style={{ ...detailTextStyle, fontWeight: 600, marginTop: 8 }}>
                   Free entry. Come and go as you please.
                 </p>
               </div>
@@ -313,7 +376,7 @@ export default function Gather() {
       </section>
 
       {/* ─── 5. EOI FORM ─── */}
-      <section style={{
+      <section id="rsvp" style={{
         backgroundColor: colors.black,
         color: colors.cream,
         padding: isMobile ? "80px 28px" : "100px 40px",
@@ -337,7 +400,7 @@ export default function Gather() {
               textAlign: "center",
               margin: "0 0 40px",
             }}>
-              No commitment, just helps us know how many oysters to shuck.
+              No commitment — it just helps Shaun know how many to shuck.
             </p>
           </FadeIn>
 
@@ -351,14 +414,15 @@ export default function Gather() {
                   letterSpacing: "0.04em",
                   margin: "0 0 12px",
                 }}>
-                  See you on March 7.
+                  You're in. See you March 7.
                 </p>
                 <p style={{
                   fontFamily: fonts.body,
                   fontSize: 16,
+                  lineHeight: 1.7,
                   opacity: 0.6,
                 }}>
-                  We'll be in touch closer to the day.
+                  We'll send you a few details before the day — where to park, what's happening, who else is coming.
                 </p>
               </div>
             </FadeIn>
@@ -395,46 +459,6 @@ export default function Gather() {
                       style={formInputStyle}
                     />
                   </div>
-                </div>
-
-                <div style={{ marginBottom: 20 }}>
-                  <label style={formLabelStyle} htmlFor="eoi-excitement">
-                    What excites you most about The Harvest?
-                  </label>
-                  <textarea
-                    id="eoi-excitement"
-                    placeholder="Tell us in a sentence or two..."
-                    value={eoiData.excitement}
-                    onChange={(e) => setEoiData((prev) => ({ ...prev, excitement: e.target.value }))}
-                    rows={3}
-                    style={{ ...formInputStyle, resize: "vertical", minHeight: 80 }}
-                  />
-                </div>
-
-                <div style={{ marginBottom: 32 }}>
-                  <label style={formLabelStyle} htmlFor="eoi-source">
-                    How did you hear about us?
-                  </label>
-                  <select
-                    id="eoi-source"
-                    value={eoiData.source}
-                    onChange={(e) => setEoiData((prev) => ({ ...prev, source: e.target.value }))}
-                    style={{
-                      ...formInputStyle,
-                      appearance: "none",
-                      backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23F4F4F2' stroke-width='1.5' fill='none'/%3E%3C/svg%3E")`,
-                      backgroundRepeat: "no-repeat",
-                      backgroundPosition: "right 16px center",
-                      paddingRight: 40,
-                    }}
-                  >
-                    <option value="" style={{ color: colors.black }}>Select...</option>
-                    <option value="Word of mouth" style={{ color: colors.black }}>Word of mouth</option>
-                    <option value="Social media" style={{ color: colors.black }}>Social media</option>
-                    <option value="Local paper" style={{ color: colors.black }}>Local paper</option>
-                    <option value="A friend sent me the link" style={{ color: colors.black }}>A friend sent me the link</option>
-                    <option value="Other" style={{ color: colors.black }}>Other</option>
-                  </select>
                 </div>
 
                 <button

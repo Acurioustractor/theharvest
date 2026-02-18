@@ -1,7 +1,9 @@
 /**
  * Gemini Image Generation Integration
  *
- * Uses Google's GenAI SDK with gemini-3-pro-image-preview for image generation.
+ * Uses Google's GenAI SDK for image generation.
+ * Primary: gemini-2.5-flash-image (fast, reliable)
+ * Fallback: gemini-3-pro-image-preview (higher quality, often overloaded)
  * Supports presets for brand-consistent output and optional Supabase storage.
  */
 
@@ -53,10 +55,54 @@ const SKETCH_TYPES: Record<string, string> = {
   "ornament": "a decorative ornamental element",
 };
 
+const IMAGE_MODELS = ["gemini-2.5-flash-image", "gemini-3-pro-image-preview"] as const;
+
 function getGenAI() {
   const apiKey = process.env.GOOGLE_AI_API_KEY;
   if (!apiKey) throw new Error("GOOGLE_AI_API_KEY not configured");
   return new GoogleGenAI({ apiKey });
+}
+
+/** Try each image model in order until one succeeds */
+async function generateWithFallback(ai: GoogleGenAI, prompt: string) {
+  let lastError: Error | null = null;
+  for (const model of IMAGE_MODELS) {
+    try {
+      console.log(`[Gemini] Trying ${model}...`);
+      const response = await withRetry(() => ai.models.generateContent({
+        model,
+        contents: [{ role: "user", parts: [{ text: prompt }] }],
+        config: { responseModalities: ["TEXT", "IMAGE"] },
+      }));
+      const parts = response.candidates?.[0]?.content?.parts || [];
+      const imagePart = parts.find((p: any) => p.inlineData?.mimeType?.startsWith("image/"));
+      if (imagePart?.inlineData) {
+        console.log(`[Gemini] Success with ${model}`);
+        return imagePart;
+      }
+      lastError = new Error(`${model} returned no image`);
+    } catch (err: any) {
+      console.log(`[Gemini] ${model} failed: ${(err?.message || "").slice(0, 100)}`);
+      lastError = err;
+    }
+  }
+  throw lastError || new Error("All image models failed");
+}
+
+async function withRetry<T>(fn: () => Promise<T>, maxRetries = 3): Promise<T> {
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      return await fn();
+    } catch (err: any) {
+      const msg = err?.message || "";
+      const isRetryable = msg.includes("503") || msg.includes("UNAVAILABLE") || msg.includes("high demand") || msg.includes("429") || msg.includes("RESOURCE_EXHAUSTED");
+      if (!isRetryable || i === maxRetries - 1) throw err;
+      const delay = (i + 1) * 2000;
+      console.log(`[Gemini] Retrying in ${delay}ms (attempt ${i + 2}/${maxRetries})...`);
+      await new Promise(r => setTimeout(r, delay));
+    }
+  }
+  throw new Error("Unreachable");
 }
 
 function getSupabaseStorage() {
@@ -100,23 +146,10 @@ export async function generateImage(options: {
   }
   fullPrompt = `${fullPrompt}\n\n${BRAND_CONTEXT}`;
 
-  const response = await ai.models.generateContent({
-    model: "gemini-3-pro-image-preview",
-    contents: [{ role: "user", parts: [{ text: fullPrompt }] }],
-    config: {
-      responseModalities: ["TEXT", "IMAGE"],
-    },
-  });
+  const imagePart = await generateWithFallback(ai, fullPrompt);
 
-  const parts = response.candidates?.[0]?.content?.parts || [];
-  const imagePart = parts.find((p: any) => p.inlineData?.mimeType?.startsWith("image/"));
-
-  if (!imagePart?.inlineData) {
-    throw new Error("No image generated");
-  }
-
-  const base64 = imagePart.inlineData.data as string;
-  const mimeType = imagePart.inlineData.mimeType as string;
+  const base64 = imagePart.inlineData!.data as string;
+  const mimeType = imagePart.inlineData!.mimeType as string;
   const ext = mimeType.includes("png") ? "png" : "jpg";
   const imageDataUri = `data:${mimeType};base64,${base64}`;
 
@@ -165,23 +198,10 @@ export async function generateSketch(options: {
 
   const prompt = `Create ${typeDesc} as a black ink sketch on transparent/white background. Simple, hand-drawn quality. ${themeDesc} ${seedContext}\n\n${BRAND_CONTEXT}`;
 
-  const response = await ai.models.generateContent({
-    model: "gemini-3-pro-image-preview",
-    contents: [{ role: "user", parts: [{ text: prompt }] }],
-    config: {
-      responseModalities: ["TEXT", "IMAGE"],
-    },
-  });
+  const imagePart = await generateWithFallback(ai, prompt);
 
-  const parts = response.candidates?.[0]?.content?.parts || [];
-  const imagePart = parts.find((p: any) => p.inlineData?.mimeType?.startsWith("image/"));
-
-  if (!imagePart?.inlineData) {
-    throw new Error("No sketch generated");
-  }
-
-  const base64 = imagePart.inlineData.data as string;
-  const mimeType = imagePart.inlineData.mimeType as string;
+  const base64 = imagePart.inlineData!.data as string;
+  const mimeType = imagePart.inlineData!.mimeType as string;
   const imageDataUri = `data:${mimeType};base64,${base64}`;
 
   // Cache to storage

@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sketch Studio — The Harvest</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #F4F4F2;
+    color: #1A1A1A;
+    min-height: 100vh;
+  }
+
+  header {
+    background: #1A1A1A;
+    color: #F4F4F2;
+    padding: 24px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  header h1 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 900;
+    font-size: 14px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+  header .subtitle {
+    font-size: 11px;
+    opacity: 0.4;
+    letter-spacing: 0.15em;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 32px;
+  }
+
+  /* Theme selector */
+  .themes {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+  }
+  .theme-btn {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    border: 2px solid #1A1A1A;
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .theme-btn:hover { background: #1A1A1A; color: #F4F4F2; }
+  .theme-btn.active { background: #1A1A1A; color: #F4F4F2; }
+  .theme-btn[data-theme="timber"] { border-color: #E05206; }
+  .theme-btn[data-theme="timber"].active { background: #E05206; color: #fff; }
+  .theme-btn[data-theme="dairy"] { border-color: #005EB8; }
+  .theme-btn[data-theme="dairy"].active { background: #005EB8; color: #fff; }
+  .theme-btn[data-theme="coop"] { border-color: #3A6E47; }
+  .theme-btn[data-theme="coop"].active { background: #3A6E47; color: #fff; }
+  .theme-btn[data-theme="hinterland"] { border-color: #2A3B8F; }
+  .theme-btn[data-theme="hinterland"].active { background: #2A3B8F; color: #fff; }
+  .theme-btn[data-theme="bauhaus"] { border-color: #D62C2C; }
+  .theme-btn[data-theme="bauhaus"].active { background: #D62C2C; color: #fff; }
+
+  /* Type selector */
+  .types {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+  }
+  .type-btn {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    padding: 8px 16px;
+    border: 1px solid rgba(26,26,26,0.2);
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .type-btn:hover { border-color: #1A1A1A; }
+  .type-btn.active { background: #1A1A1A; color: #F4F4F2; }
+
+  /* Custom prompt */
+  .prompt-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .prompt-input {
+    flex: 1;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    padding: 14px 16px;
+    border: 2px solid rgba(26,26,26,0.15);
+    background: #fff;
+    outline: none;
+  }
+  .prompt-input:focus { border-color: #1A1A1A; }
+  .prompt-input::placeholder { color: #aaa; }
+
+  .gen-btn {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 900;
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 14px 32px;
+    border: none;
+    background: #1A1A1A;
+    color: #F4F4F2;
+    cursor: pointer;
+    transition: opacity 0.15s;
+    white-space: nowrap;
+  }
+  .gen-btn:hover { opacity: 0.8; }
+  .gen-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+  /* Batch buttons */
+  .batch-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+  }
+  .batch-btn {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    padding: 8px 14px;
+    border: 1px dashed rgba(26,26,26,0.3);
+    background: transparent;
+    cursor: pointer;
+    color: #666;
+  }
+  .batch-btn:hover { border-style: solid; color: #1A1A1A; }
+
+  /* Status */
+  .status {
+    font-size: 13px;
+    color: #888;
+    margin-bottom: 16px;
+    min-height: 20px;
+    font-style: italic;
+  }
+  .status.error { color: #D62C2C; font-style: normal; }
+
+  /* Gallery */
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    margin-bottom: 40px;
+  }
+  .card {
+    background: #fff;
+    border: 1px solid rgba(26,26,26,0.08);
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+    transition: box-shadow 0.2s;
+  }
+  .card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+  .card img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  .card-meta {
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .card-label {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    opacity: 0.5;
+  }
+  .card-actions {
+    display: flex;
+    gap: 8px;
+  }
+  .card-actions button {
+    font-size: 11px;
+    padding: 4px 10px;
+    border: 1px solid rgba(26,26,26,0.15);
+    background: transparent;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+  }
+  .card-actions button:hover { background: #1A1A1A; color: #fff; }
+
+  /* Loading animation */
+  @keyframes pulse {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+  }
+  .loading-card {
+    background: #eee;
+    height: 280px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #999;
+    animation: pulse 1.5s ease infinite;
+  }
+
+  /* Lightbox */
+  .lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.9);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    cursor: pointer;
+  }
+  .lightbox.open { display: flex; }
+  .lightbox img {
+    max-width: 90vw;
+    max-height: 90vh;
+    object-fit: contain;
+  }
+
+  /* Saved section */
+  .saved-section {
+    border-top: 2px solid #1A1A1A;
+    padding-top: 32px;
+    margin-top: 40px;
+  }
+  .saved-section h2 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 900;
+    font-size: 13px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    opacity: 0.5;
+  }
+
+  /* Presets section */
+  .presets {
+    background: rgba(26,26,26,0.04);
+    padding: 20px 24px;
+    margin-bottom: 24px;
+    border-left: 3px solid rgba(26,26,26,0.1);
+  }
+  .presets h3 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    opacity: 0.4;
+    margin-bottom: 12px;
+  }
+  .preset-chips {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .preset-chip {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    padding: 6px 12px;
+    border: 1px solid rgba(26,26,26,0.15);
+    background: #fff;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .preset-chip:hover { background: #1A1A1A; color: #fff; }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Sketch Studio</h1>
+    <div class="subtitle">Heritage sketches for The Harvest</div>
+  </div>
+  <div class="subtitle">Gemini · Timber · Dairy · Co-op</div>
+</header>
+
+<div class="container">
+
+  <!-- Theme -->
+  <div class="themes">
+    <button class="theme-btn active" data-theme="timber" onclick="selectTheme(this)">🪵 Timber</button>
+    <button class="theme-btn" data-theme="dairy" onclick="selectTheme(this)">🥛 Dairy</button>
+    <button class="theme-btn" data-theme="coop" onclick="selectTheme(this)">🤝 Co-op</button>
+    <button class="theme-btn" data-theme="hinterland" onclick="selectTheme(this)">🌿 Hinterland</button>
+    <button class="theme-btn" data-theme="bauhaus" onclick="selectTheme(this)">◼ Bauhaus</button>
+  </div>
+
+  <!-- Type -->
+  <div class="types">
+    <button class="type-btn active" data-type="divider" onclick="selectType(this)">Divider Line</button>
+    <button class="type-btn" data-type="frame" onclick="selectType(this)">Frame</button>
+    <button class="type-btn" data-type="border" onclick="selectType(this)">Border</button>
+    <button class="type-btn" data-type="illustration" onclick="selectType(this)">Illustration</button>
+    <button class="type-btn" data-type="ornament" onclick="selectType(this)">Ornament</button>
+    <button class="type-btn" data-type="texture" onclick="selectType(this)">Texture</button>
+  </div>
+
+  <!-- Presets -->
+  <div class="presets">
+    <h3>Quick ideas</h3>
+    <div class="preset-chips">
+      <button class="preset-chip" onclick="usePreset('A decorative divider made of crossed axes and cedar branches')">Axe & cedar divider</button>
+      <button class="preset-chip" onclick="usePreset('Milk cans and cream jugs arranged as a border element')">Milk can border</button>
+      <button class="preset-chip" onclick="usePreset('Hands shaking over a shared table, cooperative spirit')">Handshake ornament</button>
+      <button class="preset-chip" onclick="usePreset('Oyster shells arranged in a circular pattern, like a mandala')">Oyster shell mandala</button>
+      <button class="preset-chip" onclick="usePreset('A horizontal line of tiny houses, trees, and farm equipment like a village skyline')">Village skyline</button>
+      <button class="preset-chip" onclick="usePreset('Wood grain pattern with hidden faces and animals in the grain')">Grain faces</button>
+      <button class="preset-chip" onclick="usePreset('A milk crate structure being built by many small hands')">Crate builders</button>
+      <button class="preset-chip" onclick="usePreset('Fern fronds unfurling into a decorative border with morning mist')">Fern border</button>
+      <button class="preset-chip" onclick="usePreset('An old timber saw blade reimagined as a decorative sun')">Saw blade sun</button>
+      <button class="preset-chip" onclick="usePreset('Pizza oven flames morphing into flowers and vines')">Fire flowers</button>
+      <button class="preset-chip" onclick="usePreset('A long table seen from above, food and hands, as a horizontal divider')">Table from above</button>
+      <button class="preset-chip" onclick="usePreset('Dairy cow silhouette filled with hinterland landscape')">Cow landscape</button>
+      <button class="preset-chip" onclick="usePreset('Heritage tools — axe, saw, butter churn, milk pail — arranged like a coat of arms')">Heritage crest</button>
+      <button class="preset-chip" onclick="usePreset('Abstract geometric pattern mixing milk crates, timber joints, and cooperative symbols')">Heritage geometry</button>
+    </div>
+  </div>
+
+  <!-- Custom prompt -->
+  <div class="prompt-row">
+    <input class="prompt-input" id="customPrompt" placeholder="Describe what you want to sketch... or pick a preset above" />
+    <button class="gen-btn" id="generateBtn" onclick="generate()">Sketch it</button>
+  </div>
+
+  <!-- Batch -->
+  <div class="batch-row">
+    <button class="batch-btn" onclick="batchGenerate('newsletter')">📧 Newsletter set (dividers + ornaments)</button>
+    <button class="batch-btn" onclick="batchGenerate('social')">📱 Social set (illustrations + frames)</button>
+    <button class="batch-btn" onclick="batchGenerate('all-themes')">🎨 All 3 heritage themes</button>
+  </div>
+
+  <div class="status" id="status"></div>
+
+  <!-- Gallery -->
+  <div class="gallery" id="gallery"></div>
+
+  <!-- Saved -->
+  <div class="saved-section" id="savedSection" style="display:none;">
+    <h2>⭐ Saved for use</h2>
+    <div class="gallery" id="savedGallery"></div>
+  </div>
+
+</div>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <img id="lightboxImg" />
+</div>
+
+<script>
+  let currentTheme = 'timber';
+  let currentType = 'divider';
+  let savedItems = JSON.parse(localStorage.getItem('sketch-saved') || '[]');
+  let counter = 0;
+  // Store image data separately to avoid bloating HTML attributes
+  const imageStore = {};
+
+  function selectTheme(btn) {
+    document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentTheme = btn.dataset.theme;
+  }
+
+  function selectType(btn) {
+    document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentType = btn.dataset.type;
+  }
+
+  function usePreset(text) {
+    document.getElementById('customPrompt').value = text;
+    generate();
+  }
+
+  function setStatus(msg, isError) {
+    const el = document.getElementById('status');
+    el.textContent = msg;
+    el.className = 'status' + (isError ? ' error' : '');
+  }
+
+  async function generate(overrideTheme, overrideType, overrideSeed) {
+    const theme = overrideTheme || currentTheme;
+    const type = overrideType || currentType;
+    const seed = overrideSeed || document.getElementById('customPrompt').value;
+    const btn = document.getElementById('generateBtn');
+
+    btn.disabled = true;
+    setStatus(`Sketching ${type} with ${theme} theme...`);
+
+    // Add loading placeholder
+    const id = 'img-' + (++counter);
+    const gallery = document.getElementById('gallery');
+    const placeholder = document.createElement('div');
+    placeholder.id = id;
+    placeholder.className = 'loading-card';
+    placeholder.textContent = 'Sketching...';
+    gallery.insertBefore(placeholder, gallery.firstChild);
+
+    try {
+      const res = await fetch('/api/generate-sketch', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type, theme, seed: seed || undefined }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || `API error: ${res.status}`);
+
+      // Store large data URI by key, reference by ID in DOM
+      const imgKey = 'k' + counter;
+      imageStore[imgKey] = data.image;
+      const saveUrl = data.url || data.image;
+      imageStore[imgKey + '_save'] = saveUrl;
+
+      const card = document.createElement('div');
+      card.className = 'card';
+      const img = document.createElement('img');
+      img.src = data.image;
+      img.alt = `${type} - ${theme}`;
+      img.onclick = () => openLightbox(imgKey);
+      card.appendChild(img);
+
+      const meta = document.createElement('div');
+      meta.className = 'card-meta';
+      meta.innerHTML = `<span class="card-label">${theme} · ${type}${data.cached ? ' · cached' : ''}</span>`;
+      const actions = document.createElement('div');
+      actions.className = 'card-actions';
+      const saveBtn = document.createElement('button');
+      saveBtn.textContent = 'Save';
+      saveBtn.onclick = (e) => { e.stopPropagation(); saveItem(imgKey, theme, type); };
+      const dlBtn = document.createElement('button');
+      dlBtn.textContent = '↓';
+      dlBtn.onclick = (e) => { e.stopPropagation(); downloadImage(imgKey, `${theme}-${type}`); };
+      actions.appendChild(saveBtn);
+      actions.appendChild(dlBtn);
+      meta.appendChild(actions);
+      card.appendChild(meta);
+
+      placeholder.replaceWith(card);
+      setStatus(`Done! ${data.cached ? '(from cache)' : ''}`);
+    } catch (err) {
+      placeholder.remove();
+      setStatus('Error: ' + err.message, true);
+    }
+
+    btn.disabled = false;
+  }
+
+  async function batchGenerate(preset) {
+    const batches = {
+      'newsletter': [
+        { theme: 'timber', type: 'divider' },
+        { theme: 'dairy', type: 'divider' },
+        { theme: 'coop', type: 'divider' },
+        { theme: 'timber', type: 'ornament' },
+        { theme: 'dairy', type: 'ornament' },
+        { theme: 'coop', type: 'ornament' },
+      ],
+      'social': [
+        { theme: 'timber', type: 'illustration', seed: 'Pit sawyers in the hinterland' },
+        { theme: 'dairy', type: 'illustration', seed: 'Milk cans and butter churns' },
+        { theme: 'coop', type: 'illustration', seed: 'Community building a structure together' },
+        { theme: 'timber', type: 'frame' },
+        { theme: 'dairy', type: 'frame' },
+        { theme: 'coop', type: 'frame' },
+      ],
+      'all-themes': [
+        { theme: 'timber', type: 'divider', seed: 'Axe marks and cedar grain' },
+        { theme: 'timber', type: 'illustration', seed: 'A sawmill in the hinterland bush' },
+        { theme: 'dairy', type: 'divider', seed: 'Milk cans in a row' },
+        { theme: 'dairy', type: 'illustration', seed: 'Butter churning and cream separators' },
+        { theme: 'coop', type: 'divider', seed: 'Hands joining together' },
+        { theme: 'coop', type: 'illustration', seed: 'Shared table with food and community' },
+      ],
+    };
+
+    const items = batches[preset] || [];
+    setStatus(`Generating ${items.length} sketches... this will take a minute`);
+
+    for (const item of items) {
+      await generate(item.theme, item.type, item.seed || '');
+      // Small delay between requests
+      await new Promise(r => setTimeout(r, 500));
+    }
+    setStatus(`Batch done! ${items.length} sketches generated.`);
+  }
+
+  function saveItem(imgKey, theme, type) {
+    const src = imageStore[imgKey + '_save'] || imageStore[imgKey];
+    const imgData = imageStore[imgKey];
+    savedItems.push({ src, imgData, theme, type, id: Date.now() });
+    // Store saved items — keep imgData for display
+    try { localStorage.setItem('sketch-saved', JSON.stringify(savedItems)); } catch(e) { /* quota */ }
+    renderSaved();
+  }
+
+  function removeSaved(id) {
+    savedItems = savedItems.filter(s => s.id !== id);
+    try { localStorage.setItem('sketch-saved', JSON.stringify(savedItems)); } catch(e) {}
+    renderSaved();
+  }
+
+  function renderSaved() {
+    const section = document.getElementById('savedSection');
+    const gallery = document.getElementById('savedGallery');
+    if (savedItems.length === 0) {
+      section.style.display = 'none';
+      return;
+    }
+    section.style.display = 'block';
+    gallery.innerHTML = '';
+    savedItems.forEach(item => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      const img = document.createElement('img');
+      img.src = item.imgData || item.src;
+      img.alt = `${item.theme} ${item.type}`;
+      img.onclick = () => { openLightbox(null, item.imgData || item.src); };
+      card.appendChild(img);
+
+      const meta = document.createElement('div');
+      meta.className = 'card-meta';
+      meta.innerHTML = `<span class="card-label">${item.theme} · ${item.type}</span>`;
+      const actions = document.createElement('div');
+      actions.className = 'card-actions';
+      const rmBtn = document.createElement('button');
+      rmBtn.textContent = 'Remove';
+      rmBtn.onclick = (e) => { e.stopPropagation(); removeSaved(item.id); };
+      const dlBtn = document.createElement('button');
+      dlBtn.textContent = '↓';
+      dlBtn.onclick = (e) => { e.stopPropagation(); downloadImage(null, `${item.theme}-${item.type}`, item.imgData || item.src); };
+      actions.appendChild(rmBtn);
+      actions.appendChild(dlBtn);
+      meta.appendChild(actions);
+      card.appendChild(meta);
+      gallery.appendChild(card);
+    });
+  }
+
+  function downloadImage(imgKey, name, directSrc) {
+    const src = directSrc || imageStore[imgKey];
+    const a = document.createElement('a');
+    a.href = src;
+    a.download = `harvest-sketch-${name}-${Date.now()}.png`;
+    a.click();
+  }
+
+  function openLightbox(imgKey, directSrc) {
+    const src = directSrc || imageStore[imgKey];
+    document.getElementById('lightboxImg').src = src;
+    document.getElementById('lightbox').classList.add('open');
+  }
+
+  function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('open');
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'Enter' && e.target.id === 'customPrompt') generate();
+  });
+
+  // Pre-generated sketches
+  const preGenerated = [
+    { src: '/images/sketches/timber-divider.png', theme: 'timber', type: 'divider' },
+    { src: '/images/sketches/dairy-divider.png', theme: 'dairy', type: 'divider' },
+    { src: '/images/sketches/coop-divider.png', theme: 'coop', type: 'divider' },
+    { src: '/images/sketches/timber-illustration.png', theme: 'timber', type: 'illustration' },
+    { src: '/images/sketches/dairy-illustration.png', theme: 'dairy', type: 'illustration' },
+    { src: '/images/sketches/coop-illustration.png', theme: 'coop', type: 'illustration' },
+    { src: '/images/sketches/hinterland-ornament.png', theme: 'hinterland', type: 'ornament' },
+    { src: '/images/sketches/bauhaus-frame.png', theme: 'bauhaus', type: 'frame' },
+  ];
+
+  // Load pre-generated into gallery
+  const gallery = document.getElementById('gallery');
+  preGenerated.forEach((item, i) => {
+    const key = 'pre' + i;
+    imageStore[key] = item.src;
+    const card = document.createElement('div');
+    card.className = 'card';
+    const img = document.createElement('img');
+    img.src = item.src;
+    img.alt = `${item.theme} ${item.type}`;
+    img.onclick = () => openLightbox(key);
+    card.appendChild(img);
+    const meta = document.createElement('div');
+    meta.className = 'card-meta';
+    meta.innerHTML = `<span class="card-label">${item.theme} · ${item.type}</span>`;
+    const actions = document.createElement('div');
+    actions.className = 'card-actions';
+    const saveBtn = document.createElement('button');
+    saveBtn.textContent = 'Save';
+    saveBtn.onclick = (e) => { e.stopPropagation(); saveItem(key, item.theme, item.type); };
+    const dlBtn = document.createElement('button');
+    dlBtn.textContent = '↓';
+    dlBtn.onclick = (e) => { e.stopPropagation(); downloadImage(key, `${item.theme}-${item.type}`); };
+    actions.appendChild(saveBtn);
+    actions.appendChild(dlBtn);
+    meta.appendChild(actions);
+    card.appendChild(meta);
+    gallery.appendChild(card);
+  });
+
+  // Init saved
+  renderSaved();
+</script>
+
+</body>
+</html>
