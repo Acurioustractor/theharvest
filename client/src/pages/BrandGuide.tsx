@@ -17,6 +17,9 @@ const chapters = [
   { id: "social", label: "Social Kit" },
   { id: "palette", label: "Palette" },
   { id: "typography", label: "Typography" },
+  { id: "voice", label: "Voice Rules" },
+  { id: "photo", label: "Photography" },
+  { id: "donts", label: "Do / Don't" },
 ];
 
 const threes = [
@@ -985,7 +988,7 @@ export default function BrandGuide() {
       }}>
         <h2 style={{ ...sectionHeadingStyle, color: colors.cream }}>SOCIAL KIT</h2>
         <p style={{ ...sectionDescStyle, color: colors.cream, opacity: 0.6 }}>
-          Ready-to-use templates and ideas. Screenshot these, adapt in Canva, or use as-is.
+          Everything a social media manager needs. Images, captions, posting order, and channel guidance.
         </p>
 
         <SocialTemplates isMobile={isMobile} onImageClick={(src, label) => setLightbox({ src, label })} />
@@ -1091,6 +1094,505 @@ export default function BrandGuide() {
             }}>
               "Timber workers, dairy farmers, red soil. We're not starting from nothing."
             </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── VOICE RULES ─── */}
+      <section id="voice" style={{
+        backgroundColor: colors.black,
+        color: colors.cream,
+        padding: isMobile ? "60px 24px" : "80px 40px",
+      }}>
+        <h2 style={{ ...sectionHeadingStyle, color: colors.cream }}>VOICE RULES</h2>
+        <p style={{ ...sectionDescStyle, color: colors.cream, opacity: 0.6 }}>
+          Write like you're talking to a neighbor over the fence. If it sounds like a council newsletter, start again.
+        </p>
+
+        <div style={{ maxWidth: 800, margin: "40px auto 0" }}>
+          {/* The Rule */}
+          <div style={{
+            border: `2px solid ${colors.yellow}`,
+            padding: isMobile ? "24px 20px" : "32px 40px",
+            marginBottom: 40,
+            textAlign: "center",
+          }}>
+            <span style={{ fontFamily: fonts.display, fontWeight: 900, fontSize: isMobile ? 14 : 18, letterSpacing: "0.08em", color: colors.yellow }}>
+              THE 3-SECOND RULE
+            </span>
+            <p style={{ fontFamily: fonts.body, fontSize: isMobile ? 15 : 17, lineHeight: 1.7, color: colors.cream, opacity: 0.7, margin: "12px 0 0" }}>
+              Read it out loud. If you wouldn't say it to someone standing in the garden, rewrite it.
+            </p>
+          </div>
+
+          {/* Word List */}
+          <div style={{ marginBottom: 48 }}>
+            <span style={{ ...smallLabelStyle, marginBottom: 16 }}>WORD LIST — SAY THIS, NOT THAT</span>
+            <div style={{
+              display: "grid",
+              gridTemplateColumns: isMobile ? "1fr 1fr" : "1fr 1fr",
+              gap: 0,
+              marginTop: 16,
+            }}>
+              <div style={{ padding: "12px 16px", backgroundColor: "rgba(58,110,71,0.15)", borderBottom: "1px solid rgba(244,244,242,0.06)" }}>
+                <span style={{ fontFamily: fonts.display, fontWeight: 700, fontSize: 10, letterSpacing: "0.15em", color: colors.green, opacity: 0.8 }}>SAY THIS</span>
+              </div>
+              <div style={{ padding: "12px 16px", backgroundColor: "rgba(214,44,44,0.1)", borderBottom: "1px solid rgba(244,244,242,0.06)" }}>
+                <span style={{ fontFamily: fonts.display, fontWeight: 700, fontSize: 10, letterSpacing: "0.15em", color: colors.red, opacity: 0.8 }}>NOT THAT</span>
+              </div>
+              {[
+                ["gather", "event"],
+                ["share a table", "networking opportunity"],
+                ["neighbours", "stakeholders"],
+                ["grow", "develop"],
+                ["make", "create content"],
+                ["come along", "register now"],
+                ["the place", "the venue"],
+                ["what's forming", "our vision"],
+                ["try something", "participate"],
+                ["we're figuring it out", "we're strategically positioned"],
+                ["kids, dogs, everyone", "all demographics"],
+                ["Saturday morning", "upcoming activation"],
+              ].map(([yes, no], i) => (
+                <div key={i} style={{ display: "contents" }}>
+                  <div style={{ padding: "10px 16px", borderBottom: "1px solid rgba(244,244,242,0.06)", fontFamily: fonts.body, fontSize: 14, color: colors.cream }}>
+                    {yes}
+                  </div>
+                  <div style={{ padding: "10px 16px", borderBottom: "1px solid rgba(244,244,242,0.06)", fontFamily: fonts.body, fontSize: 14, color: colors.cream, opacity: 0.35, textDecoration: "line-through" }}>
+                    {no}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Channel Examples */}
+          <div>
+            <span style={{ ...smallLabelStyle, marginBottom: 16 }}>BY CHANNEL — SAME MESSAGE, DIFFERENT FORMAT</span>
+            {[
+              {
+                channel: "SOCIAL CAPTION",
+                color: colors.blue,
+                good: "Saturday 7 March. Oysters, pizza, music. Come as you are.\nSave your spot → theharvest.net.au/gather",
+                bad: "Join us for our inaugural community gathering event! We're excited to announce The Harvest's first open day featuring local food, live music and more. RSVP via the link in our bio. #community #sundayvibes",
+              },
+              {
+                channel: "NEWSLETTER SUBJECT",
+                color: colors.yellow,
+                good: "Something's growing in Witta",
+                bad: "The Harvest Community Hub — March Newsletter & Upcoming Events",
+              },
+              {
+                channel: "EVENT SIGNAGE",
+                color: colors.orange,
+                good: "FOOD THIS WAY →\nOysters. Pizza. BYO.",
+                bad: "Welcome to The Harvest Community Hub First Gathering Event — Food Service Area Located Ahead",
+              },
+              {
+                channel: "INSTAGRAM STORY",
+                color: colors.red,
+                good: "Shaun's shucking 200 oysters on Saturday.\nHe was the first person to say yes to this place.",
+                bad: "Meet our amazing community partner @shaunfisher who will be providing fresh locally-sourced oysters at our upcoming event! 🦪✨ Don't miss out!",
+              },
+            ].map((ex) => (
+              <div key={ex.channel} style={{ marginTop: 32 }}>
+                <span style={{
+                  fontFamily: fonts.display,
+                  fontWeight: 700,
+                  fontSize: 11,
+                  letterSpacing: "0.12em",
+                  color: ex.color,
+                  display: "block",
+                  marginBottom: 12,
+                }}>
+                  {ex.channel}
+                </span>
+                <div style={{
+                  display: "grid",
+                  gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
+                  gap: isMobile ? 8 : 16,
+                }}>
+                  <div style={{
+                    padding: "16px 20px",
+                    border: `1px solid rgba(58,110,71,0.3)`,
+                    borderRadius: 2,
+                  }}>
+                    <span style={{ fontFamily: fonts.display, fontWeight: 700, fontSize: 9, letterSpacing: "0.15em", color: colors.green, display: "block", marginBottom: 8 }}>ON-BRAND</span>
+                    <p style={{ fontFamily: fonts.body, fontSize: 14, lineHeight: 1.7, color: colors.cream, margin: 0, whiteSpace: "pre-line" }}>{ex.good}</p>
+                  </div>
+                  <div style={{
+                    padding: "16px 20px",
+                    border: `1px solid rgba(214,44,44,0.2)`,
+                    borderRadius: 2,
+                    opacity: 0.5,
+                  }}>
+                    <span style={{ fontFamily: fonts.display, fontWeight: 700, fontSize: 9, letterSpacing: "0.15em", color: colors.red, display: "block", marginBottom: 8 }}>OFF-BRAND</span>
+                    <p style={{ fontFamily: fonts.body, fontSize: 14, lineHeight: 1.7, color: colors.cream, margin: 0, whiteSpace: "pre-line" }}>{ex.bad}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Never List */}
+          <div style={{
+            marginTop: 48,
+            padding: "24px 28px",
+            backgroundColor: "rgba(214,44,44,0.06)",
+            border: "1px solid rgba(214,44,44,0.15)",
+          }}>
+            <span style={{ fontFamily: fonts.display, fontWeight: 700, fontSize: 11, letterSpacing: "0.12em", color: colors.red }}>
+              NEVER USE THESE WORDS
+            </span>
+            <p style={{ fontFamily: fonts.body, fontSize: 14, lineHeight: 2, color: colors.cream, opacity: 0.5, margin: "12px 0 0" }}>
+              synergy — leverage — stakeholder — activation — holistic — scalable — innovative — curated — bespoke — journey — ecosystem — empower — uplift — vibrant — world-class — cutting-edge — best practice — thought leader — paradigm — reimagine
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── PHOTOGRAPHY RULES ─── */}
+      <section id="photo" style={{
+        padding: isMobile ? "60px 24px" : "80px 40px",
+      }}>
+        <h2 style={sectionHeadingStyle}>PHOTOGRAPHY</h2>
+        <p style={{ ...sectionDescStyle, opacity: 0.6 }}>
+          Every photo should feel like you stumbled across something real. Not staged, not filtered, not stock.
+        </p>
+
+        <div style={{ maxWidth: 900, margin: "40px auto 0" }}>
+          {/* Core Rule */}
+          <div style={{
+            border: `2px solid ${colors.green}`,
+            padding: isMobile ? "24px 20px" : "32px 40px",
+            marginBottom: 40,
+            textAlign: "center",
+          }}>
+            <span style={{ fontFamily: fonts.display, fontWeight: 900, fontSize: isMobile ? 14 : 18, letterSpacing: "0.08em", color: colors.green }}>
+              THE PHOTO TEST
+            </span>
+            <p style={{ fontFamily: fonts.body, fontSize: isMobile ? 15 : 17, lineHeight: 1.7, opacity: 0.7, margin: "12px 0 0" }}>
+              Could this photo have been taken by a neighbour with a good phone? If it looks like a marketing shoot, don't use it.
+            </p>
+          </div>
+
+          {/* Style Rules Grid */}
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
+            gap: 24,
+            marginBottom: 48,
+          }}>
+            {[
+              {
+                title: "LIGHT",
+                rule: "Natural light only. Golden hour, overcast, dappled shade through trees. Never flash, never studio.",
+                color: colors.yellow,
+              },
+              {
+                title: "SUBJECTS",
+                rule: "People doing things — hands in soil, fire cooking, painting, building. Not posed. Not looking at camera. Action over portrait.",
+                color: colors.red,
+              },
+              {
+                title: "LANDSCAPE",
+                rule: "Hinterland greens, morning mist on ridgelines, red soil, timber grain. Wide and atmospheric or tight and textural.",
+                color: colors.green,
+              },
+              {
+                title: "TONE",
+                rule: "Warm. Earthy. Slightly desaturated. Think morning light on timber, not Instagram sunset filter. Honest, not aspirational.",
+                color: colors.orange,
+              },
+              {
+                title: "COMPOSITION",
+                rule: "Off-center, environmental. Show the place around the person. Leave breathing room. Don't crop tight like a headshot.",
+                color: colors.blue,
+              },
+              {
+                title: "TEXTURE",
+                rule: "Close-ups of materials matter: timber grain, soil, clay, canvas, rust, woven fabric, handwritten notes, well-used tools.",
+                color: colors.magenta,
+              },
+            ].map((r) => (
+              <div key={r.title} style={{
+                padding: "20px 24px",
+                borderLeft: `3px solid ${r.color}`,
+                backgroundColor: "rgba(26,26,26,0.03)",
+              }}>
+                <span style={{ fontFamily: fonts.display, fontWeight: 700, fontSize: 11, letterSpacing: "0.12em", color: r.color }}>
+                  {r.title}
+                </span>
+                <p style={{ fontFamily: fonts.body, fontSize: 14, lineHeight: 1.7, margin: "8px 0 0", opacity: 0.7 }}>
+                  {r.rule}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          {/* Reference Pairs */}
+          <span style={{ ...smallLabelStyle, color: colors.black, opacity: 0.4, marginBottom: 16 }}>REFERENCE — ON-BRAND PHOTOGRAPHY</span>
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)",
+            gap: 12,
+            marginTop: 16,
+          }}>
+            {[
+              { src: "/images/compendium/barry/IMG_5764.jpg", label: "Documentary — person in place", rule: "Real person, natural light, environmental" },
+              { src: "/images/compendium/barry/IMG_5745.jpg", label: "Heritage — honest portrait", rule: "Unposed, mid-conversation, warm tone" },
+              { src: "/images/site-plan/inspiration/pen-sketch-portrait.jpeg", label: "Making — hands at work", rule: "Process over product, close crop on action" },
+              { src: "/images/harvest-eat.jpg", label: "Food — shared table", rule: "Overhead or angle, real food, real hands" },
+              { src: "/images/site-plan/inspiration/crate-wall.jpeg", label: "Materials — texture detail", rule: "Tight on material, shows character and wear" },
+              { src: "/images/compendium/canvas-drawing.jpg", label: "Art — work in progress", rule: "Unfinished is better than polished" },
+            ].map((ref) => (
+              <div key={ref.src} style={{ cursor: "pointer" }} onClick={() => setLightbox({ src: ref.src, label: ref.label })}>
+                <img src={ref.src} alt={ref.label} loading="lazy" style={{
+                  width: "100%",
+                  height: 180,
+                  objectFit: "cover",
+                  display: "block",
+                  borderRadius: 2,
+                }} />
+                <span style={{ fontFamily: fonts.display, fontWeight: 700, fontSize: 10, letterSpacing: "0.1em", display: "block", marginTop: 8, opacity: 0.6 }}>
+                  {ref.label.toUpperCase()}
+                </span>
+                <span style={{ fontFamily: fonts.body, fontSize: 12, display: "block", marginTop: 2, opacity: 0.4 }}>
+                  {ref.rule}
+                </span>
+              </div>
+            ))}
+          </div>
+
+          {/* Don'ts */}
+          <div style={{
+            marginTop: 40,
+            padding: "24px 28px",
+            backgroundColor: "rgba(214,44,44,0.04)",
+            border: "1px solid rgba(214,44,44,0.1)",
+          }}>
+            <span style={{ fontFamily: fonts.display, fontWeight: 700, fontSize: 11, letterSpacing: "0.12em", color: colors.red }}>
+              NEVER USE
+            </span>
+            <div style={{
+              display: "grid",
+              gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
+              gap: 4,
+              marginTop: 12,
+            }}>
+              {[
+                "Stock photography of any kind",
+                "Group photos where everyone faces camera and smiles",
+                "Drone shots that look like real estate listings",
+                "Heavy filters, HDR, or oversaturation",
+                "Corporate headshots or team photos",
+                "Food photography that looks styled for a magazine",
+                "Anything with a watermark or getty/shutterstock feel",
+                "Clip art, icons, or generic illustrations",
+              ].map((dont) => (
+                <div key={dont} style={{
+                  fontFamily: fonts.body,
+                  fontSize: 13,
+                  color: colors.red,
+                  opacity: 0.6,
+                  padding: "4px 0",
+                }}>
+                  {"\u2717"} {dont}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── DO / DON'T ─── */}
+      <section id="donts" style={{
+        backgroundColor: colors.black,
+        color: colors.cream,
+        padding: isMobile ? "60px 24px" : "80px 40px",
+      }}>
+        <h2 style={{ ...sectionHeadingStyle, color: colors.cream }}>DO / DON'T</h2>
+        <p style={{ ...sectionDescStyle, color: colors.cream, opacity: 0.6 }}>
+          When in doubt, check here. On-brand vs off-brand at a glance.
+        </p>
+
+        <div style={{ maxWidth: 800, margin: "40px auto 0" }}>
+          {[
+            {
+              category: "COLOR",
+              color: colors.yellow,
+              doList: [
+                "Use zone colors for their zone only (red = Art Space, yellow = Kitchen, green = Garden)",
+                "Black backgrounds with cream text for digital",
+                "Cream backgrounds with black text for print / light contexts",
+                "One accent color per composition — don't rainbow",
+              ],
+              dontList: [
+                "Mix zone colors randomly (green heading on a kitchen post)",
+                "Use gradients or color transitions",
+                "Use color as decoration — every color means something",
+                "White backgrounds (use cream #F4F4F2, not #FFFFFF)",
+              ],
+            },
+            {
+              category: "TYPE",
+              color: colors.blue,
+              doList: [
+                "Montserrat 900 for display headlines, always uppercase",
+                "Montserrat 700 for labels, buttons, and small caps",
+                "Inter for body text, quotes, and descriptions",
+                "Generous letter-spacing on display text (0.08em+)",
+              ],
+              dontList: [
+                "Use more than 2 fonts in any composition",
+                "Set body text in Montserrat (it's for display only)",
+                "Use thin or light weights — minimum 400 for body, 700 for display",
+                "Center-align body paragraphs (left-align or justify)",
+              ],
+            },
+            {
+              category: "PHOTOGRAPHY",
+              color: colors.green,
+              doList: [
+                "Natural light, warm tones, real people doing real things",
+                "Show the place — hinterland, timber, soil, garden",
+                "Texture close-ups — hands, materials, food, tools",
+                "Unposed, mid-action, environmental portraits",
+              ],
+              dontList: [
+                "Stock photography, ever",
+                "Staged group photos or corporate headshots",
+                "Heavy editing, filters, or HDR processing",
+                "Drone shots that look like real estate marketing",
+              ],
+            },
+            {
+              category: "COPY",
+              color: colors.orange,
+              doList: [
+                "Short sentences. Full stops. Let silence do the work.",
+                "Name real things — Saturday, oysters, Barry, Witta",
+                "Use 'we' and 'you' — first/second person",
+                "Read it aloud. If you wouldn't say it, rewrite it.",
+              ],
+              dontList: [
+                "Marketing jargon (activation, leverage, synergy, stakeholder)",
+                "Long paragraphs — if it's more than 3 sentences, break it up",
+                "Exclamation marks (one per page maximum, if ever)",
+                "Hashtag stuffing — max 3 per post, and only if relevant",
+              ],
+            },
+            {
+              category: "LAYOUT",
+              color: colors.red,
+              doList: [
+                "Lots of whitespace — let things breathe",
+                "Strong grid with one focal point per composition",
+                "Left-aligned text with generous leading (1.7+)",
+                "Bauhaus-inspired: bold geometry, clean blocks of color",
+              ],
+              dontList: [
+                "Busy layouts with competing elements",
+                "Rounded corners or soft drop shadows",
+                "Decorative borders or frames (except heritage sketch elements)",
+                "Centered layouts for anything longer than a headline",
+              ],
+            },
+            {
+              category: "TONE",
+              color: colors.magenta,
+              doList: [
+                "Warm, direct, honest — like a conversation",
+                "Acknowledge uncertainty: \"we're figuring it out together\"",
+                "Specific over vague: \"Saturday in the garden\" not \"upcoming event\"",
+                "Let the place speak — heritage, soil, timber, community",
+              ],
+              dontList: [
+                "Corporate polish or PR-speak",
+                "Overselling or hype (\"amazing\", \"incredible\", \"world-class\")",
+                "Vague aspiration (\"building a better tomorrow\")",
+                "Speaking about community in third person (\"the community will benefit\")",
+              ],
+            },
+          ].map((section) => (
+            <div key={section.category} style={{ marginBottom: 40 }}>
+              <span style={{
+                fontFamily: fonts.display,
+                fontWeight: 900,
+                fontSize: 14,
+                letterSpacing: "0.12em",
+                color: section.color,
+                display: "block",
+                marginBottom: 16,
+              }}>
+                {section.category}
+              </span>
+              <div style={{
+                display: "grid",
+                gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
+                gap: isMobile ? 8 : 16,
+              }}>
+                <div style={{
+                  padding: "20px 24px",
+                  border: "1px solid rgba(58,110,71,0.25)",
+                  borderRadius: 2,
+                }}>
+                  <span style={{ fontFamily: fonts.display, fontWeight: 700, fontSize: 10, letterSpacing: "0.15em", color: colors.green, display: "block", marginBottom: 12 }}>DO</span>
+                  {section.doList.map((item, i) => (
+                    <p key={i} style={{ fontFamily: fonts.body, fontSize: 13, lineHeight: 1.6, color: colors.cream, opacity: 0.7, margin: i === 0 ? 0 : "8px 0 0" }}>
+                      {"\u2713"} {item}
+                    </p>
+                  ))}
+                </div>
+                <div style={{
+                  padding: "20px 24px",
+                  border: "1px solid rgba(214,44,44,0.15)",
+                  borderRadius: 2,
+                  opacity: 0.6,
+                }}>
+                  <span style={{ fontFamily: fonts.display, fontWeight: 700, fontSize: 10, letterSpacing: "0.15em", color: colors.red, display: "block", marginBottom: 12 }}>DON'T</span>
+                  {section.dontList.map((item, i) => (
+                    <p key={i} style={{ fontFamily: fonts.body, fontSize: 13, lineHeight: 1.6, color: colors.cream, margin: i === 0 ? 0 : "8px 0 0" }}>
+                      {"\u2717"} {item}
+                    </p>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ))}
+
+          {/* Decision Tree */}
+          <div style={{
+            marginTop: 24,
+            border: `2px solid ${colors.yellow}`,
+            padding: isMobile ? "24px 20px" : "32px 40px",
+            textAlign: "center",
+          }}>
+            <span style={{ fontFamily: fonts.display, fontWeight: 900, fontSize: isMobile ? 14 : 18, letterSpacing: "0.08em", color: colors.yellow }}>
+              WHEN IN DOUBT
+            </span>
+            <div style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 12,
+              marginTop: 20,
+              textAlign: "left",
+              maxWidth: 500,
+              margin: "20px auto 0",
+            }}>
+              {[
+                "Is it something Barry would say? → Use it.",
+                "Would you print it on a timber sign? → It's the right length.",
+                "Could a neighbour have taken this photo? → It's on-brand.",
+                "Does it need more than one sentence to explain? → Simplify.",
+                "Are you using a word from the 'never' list? → Rewrite.",
+                "Still not sure? → Ask: does this feel like Witta, or like a brochure?",
+              ].map((rule, i) => (
+                <p key={i} style={{ fontFamily: fonts.body, fontSize: 14, lineHeight: 1.7, color: colors.cream, opacity: 0.7, margin: 0 }}>
+                  {rule}
+                </p>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -1250,15 +1752,29 @@ function SocialTemplates({ isMobile, onImageClick }: {
   isMobile: boolean;
   onImageClick: (src: string, label: string) => void;
 }) {
-  const [activeTab, setActiveTab] = useState("zones");
+  const [activeTab, setActiveTab] = useState("generated");
 
   const tabs = [
+    { id: "generated", label: "Social Examples", color: colors.yellow },
     { id: "zones", label: "Zone Tiles", color: colors.yellow },
     { id: "principles", label: "Principles", color: colors.blue },
     { id: "stories", label: "Story Cards", color: colors.green },
     { id: "cta", label: "Invites", color: colors.magenta },
     { id: "heritage", label: "Heritage", color: colors.orange },
     { id: "video", label: "Video", color: colors.red },
+  ];
+
+  const generatedAssets = [
+    { src: "/images/social/01-origin-story.png", label: "Origin Story", use: "PIN THIS FIRST. Launch announcement for Facebook & Instagram.", caption: "Something is growing in Witta.\n\nArt. Food. Community.\nA place where neighbours share a table, grow something together, and make things that matter.\n\nMore soon → theharvest.net.au" },
+    { src: "/images/social/02-event-announcement.png", label: "First Gathering", use: "Facebook Event image. Share in Sunshine Coast / Hinterland groups.", caption: "Saturday 7 March. 11am – 4pm.\nOysters, pizza, music. Free entry.\nCome for an hour or stay for the day.\n\nSave your spot → theharvest.net.au/gather" },
+    { src: "/images/social/03-shaun-fisher-voice.png", label: "Voices: Shaun Fisher", use: "Trust signal + food story. Post 3–4 days before event.", caption: "Shaun Fisher was the first person to say yes to this place.\n\nHe's bringing 200 freshly shucked oysters to the first gathering.\n\nSaturday 7 March → theharvest.net.au/gather" },
+    { src: "/images/social/04-barry-voice.png", label: "Voices: Barry", use: "Heritage story. Connection to place. Good for engagement.", caption: "\"This was all timber country. Everyone knew each other.\"\n\nBarry's lived next door for decades. He remembers when Witta was dairy farms and pit sawyers. We're not starting from nothing.\n\n→ theharvest.net.au/compendium" },
+    { src: "/images/social/05-zone-garden.png", label: "Zone: GROW", use: "Garden zone intro. Engagement prompt.", caption: "GROW.\n\nThe garden is open to everyone. Plant something. Harvest something. Bring the kids.\n\nWhat would you plant? ↓" },
+    { src: "/images/social/06-zone-kitchen.png", label: "Zone: FEED", use: "Kitchen zone intro. Post 1/day between zones.", caption: "FEED.\n\nThe kitchen is where community happens. Shared meals, cooking classes, food entrepreneurs.\n\nEveryone shares a table." },
+    { src: "/images/social/07-zone-artspace.png", label: "Zone: MAKE", use: "Art Space intro. Creative audience.", caption: "MAKE.\n\nGallery. Studio. Workshop. The space is always becoming — nothing is permanent, like a gallery.\n\nWhat would you make?" },
+    { src: "/images/social/08-countdown-1week.png", label: "Countdown — 7 Days", use: "One week out. Urgency post. Boost this one.", caption: "7 days.\n\nSaturday 7 March. 11am – 4pm.\nOysters. Pizza. Music. Free.\n\nSave your spot → theharvest.net.au/gather" },
+    { src: "/images/social/09-facebook-cover.png", label: "Facebook Cover", use: "Page header image. 820×312. Don't add text — it's already there." },
+    { src: "/images/social/10-save-your-spot.png", label: "Save Your Spot", use: "Final CTA. Use as last post before event + as paid boost.", caption: "Come see the place for yourself.\n\nSaturday 7 March. 11am – 4pm. Free entry.\nOysters, pizza, music, neighbours.\n\nSave your spot → theharvest.net.au/gather" },
   ];
 
   // Zone identity tiles — rendered as HTML compositions
@@ -1353,12 +1869,136 @@ function SocialTemplates({ isMobile, onImageClick }: {
         ))}
       </div>
 
+      {/* ── GENERATED SOCIAL EXAMPLES ── */}
+      {activeTab === "generated" && (
+        <div>
+          <p style={{ fontFamily: fonts.body, fontSize: 13, color: colors.cream, opacity: 0.4, margin: "0 0 8px" }}>
+            Ready-to-post social assets with captions. Right-click to save images. Copy captions below each one.
+          </p>
+          <div style={{
+            padding: "12px 16px",
+            backgroundColor: "rgba(242,201,0,0.08)",
+            border: `1px solid rgba(242,201,0,0.15)`,
+            marginBottom: 24,
+          }}>
+            <span style={{ fontFamily: fonts.display, fontWeight: 700, fontSize: 10, letterSpacing: "0.12em", color: colors.yellow }}>POSTING ORDER</span>
+            <p style={{ fontFamily: fonts.body, fontSize: 13, color: colors.cream, opacity: 0.5, margin: "6px 0 0", lineHeight: 1.6 }}>
+              Origin story (pin) → Event announcement → Zone teasers (1/day for 3 days) → Voices (Shaun, then Barry) → Countdown → Save Your Spot
+            </p>
+          </div>
+          <div style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 24,
+          }}>
+            {generatedAssets.map((asset) => (
+              <div key={asset.src} style={{ ...tileStyle }}>
+                <div style={{
+                  display: "grid",
+                  gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
+                }}>
+                  <img
+                    src={asset.src}
+                    alt={asset.label}
+                    style={{ width: "100%", height: "auto", display: "block", cursor: "pointer" }}
+                    onClick={() => onImageClick(asset.src, asset.label)}
+                  />
+                  <div style={{ padding: isMobile ? "16px 16px" : "20px 24px", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+                    <div style={{
+                      fontFamily: fonts.display,
+                      fontWeight: 900,
+                      fontSize: 14,
+                      letterSpacing: "0.08em",
+                      color: colors.cream,
+                      marginBottom: 4,
+                    }}>
+                      {asset.label}
+                    </div>
+                    <div style={{
+                      fontFamily: fonts.display,
+                      fontWeight: 700,
+                      fontSize: 10,
+                      letterSpacing: "0.1em",
+                      color: colors.yellow,
+                      opacity: 0.8,
+                      marginBottom: 16,
+                      lineHeight: 1.5,
+                    }}>
+                      {asset.use}
+                    </div>
+                    {asset.caption ? (
+                      <>
+                        <div style={{
+                          fontFamily: fonts.body,
+                          fontSize: 13,
+                          color: colors.cream,
+                          opacity: 0.8,
+                          lineHeight: 1.7,
+                          whiteSpace: "pre-line",
+                          padding: "14px 16px",
+                          backgroundColor: "rgba(244,244,242,0.04)",
+                          border: "1px solid rgba(244,244,242,0.08)",
+                        }}>
+                          {asset.caption}
+                        </div>
+                        <button
+                          onClick={() => navigator.clipboard.writeText(asset.caption!)}
+                          style={{
+                            fontFamily: fonts.display,
+                            fontWeight: 700,
+                            fontSize: 10,
+                            letterSpacing: "0.12em",
+                            color: colors.black,
+                            backgroundColor: colors.yellow,
+                            border: "none",
+                            padding: "8px 20px",
+                            cursor: "pointer",
+                            marginTop: 10,
+                            alignSelf: "flex-start",
+                            transition: "opacity 0.15s",
+                          }}
+                          onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.8")}
+                          onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
+                        >
+                          COPY CAPTION
+                        </button>
+                      </>
+                    ) : (
+                      <div style={{
+                        fontFamily: fonts.body,
+                        fontSize: 12,
+                        color: colors.cream,
+                        opacity: 0.3,
+                        fontStyle: "italic",
+                      }}>
+                        No caption needed — use image as-is.
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* ── ZONE TILES ── */}
       {activeTab === "zones" && (
         <div>
-          <p style={{ fontFamily: fonts.body, fontSize: 13, color: colors.cream, opacity: 0.4, margin: "0 0 20px" }}>
-            Post one per day for 9 days. Each zone has a verb, a color, and a photo. Screenshot or recreate in Canva.
+          <p style={{ fontFamily: fonts.body, fontSize: 13, color: colors.cream, opacity: 0.4, margin: "0 0 8px" }}>
+            Each zone has a verb, a color, and a photo. Post the core three first (Make, Feed, Grow), then the rest.
           </p>
+          <div style={{
+            padding: "12px 16px",
+            backgroundColor: "rgba(242,201,0,0.08)",
+            border: `1px solid rgba(242,201,0,0.15)`,
+            marginBottom: 20,
+          }}>
+            <span style={{ fontFamily: fonts.display, fontWeight: 700, fontSize: 10, letterSpacing: "0.12em", color: colors.yellow }}>CAPTION FORMAT</span>
+            <p style={{ fontFamily: fonts.body, fontSize: 13, color: colors.cream, opacity: 0.5, margin: "6px 0 0", lineHeight: 1.6 }}>
+              [VERB].<br/>The [Zone Name]. [Tagline].<br/>Art. Food. Community. → theharvest.net.au
+            </p>
+          </div>
           <div style={{
             display: "grid",
             gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)",
@@ -1429,9 +2069,21 @@ function SocialTemplates({ isMobile, onImageClick }: {
       {/* ── PRINCIPLES ── */}
       {activeTab === "principles" && (
         <div>
-          <p style={{ fontFamily: fonts.body, fontSize: 13, color: colors.cream, opacity: 0.4, margin: "0 0 20px" }}>
+          <p style={{ fontFamily: fonts.body, fontSize: 13, color: colors.cream, opacity: 0.4, margin: "0 0 8px" }}>
             Three operating principles. Use as standalone posts, or as a carousel series.
           </p>
+          <div style={{
+            padding: "12px 16px",
+            backgroundColor: "rgba(242,201,0,0.08)",
+            border: `1px solid rgba(242,201,0,0.15)`,
+            marginBottom: 20,
+          }}>
+            <span style={{ fontFamily: fonts.display, fontWeight: 700, fontSize: 10, letterSpacing: "0.12em", color: colors.yellow }}>BEST AS A CAROUSEL</span>
+            <p style={{ fontFamily: fonts.body, fontSize: 13, color: colors.cream, opacity: 0.5, margin: "6px 0 0", lineHeight: 1.6 }}>
+              Post all three as one carousel. Caption: "Three rules we build by."<br/>
+              Or use individually when the principle is relevant — e.g. "Nothing is permanent" alongside a gallery changeover.
+            </p>
+          </div>
           <div style={{
             display: "flex",
             flexDirection: "column",
@@ -1498,9 +2150,21 @@ function SocialTemplates({ isMobile, onImageClick }: {
       {/* ── STORY CARDS ── */}
       {activeTab === "stories" && (
         <div>
-          <p style={{ fontFamily: fonts.body, fontSize: 13, color: colors.cream, opacity: 0.4, margin: "0 0 20px" }}>
+          <p style={{ fontFamily: fonts.body, fontSize: 13, color: colors.cream, opacity: 0.4, margin: "0 0 8px" }}>
             Quote tiles for stories, reels, and carousel posts. The voice of the land and the people.
           </p>
+          <div style={{
+            padding: "12px 16px",
+            backgroundColor: "rgba(242,201,0,0.08)",
+            border: `1px solid rgba(242,201,0,0.15)`,
+            marginBottom: 20,
+          }}>
+            <span style={{ fontFamily: fonts.display, fontWeight: 700, fontSize: 10, letterSpacing: "0.12em", color: colors.yellow }}>CAPTION FORMAT</span>
+            <p style={{ fontFamily: fonts.body, fontSize: 13, color: colors.cream, opacity: 0.5, margin: "6px 0 0", lineHeight: 1.6 }}>
+              Let the quote speak. Caption = one line of context, then the link.<br/>
+              e.g. "Barry's lived next door for decades. → theharvest.net.au/compendium"
+            </p>
+          </div>
           <div style={{
             display: "grid",
             gridTemplateColumns: isMobile ? "1fr" : "repeat(2, 1fr)",
@@ -1551,9 +2215,22 @@ function SocialTemplates({ isMobile, onImageClick }: {
       {/* ── CTA / INVITE TILES ── */}
       {activeTab === "cta" && (
         <div>
-          <p style={{ fontFamily: fonts.body, fontSize: 13, color: colors.cream, opacity: 0.4, margin: "0 0 20px" }}>
-            Call-to-action tiles for event promotion. Each one focuses on a different activity.
+          <p style={{ fontFamily: fonts.body, fontSize: 13, color: colors.cream, opacity: 0.4, margin: "0 0 8px" }}>
+            Story-format tiles (9:16) for Instagram Stories and Facebook Stories. One activity per tile.
           </p>
+          <div style={{
+            padding: "12px 16px",
+            backgroundColor: "rgba(242,201,0,0.08)",
+            border: `1px solid rgba(242,201,0,0.15)`,
+            marginBottom: 20,
+          }}>
+            <span style={{ fontFamily: fonts.display, fontWeight: 700, fontSize: 10, letterSpacing: "0.12em", color: colors.yellow }}>ALWAYS ADD</span>
+            <p style={{ fontFamily: fonts.body, fontSize: 13, color: colors.cream, opacity: 0.5, margin: "6px 0 0", lineHeight: 1.6 }}>
+              Saturday 7 March. 11am – 4pm. Free entry.<br/>
+              Save your spot → theharvest.net.au/gather<br/>
+              Add a "link" sticker on Instagram Stories pointing to the RSVP page.
+            </p>
+          </div>
           <div style={{
             display: "grid",
             gridTemplateColumns: isMobile ? "1fr" : "repeat(auto-fill, minmax(180px, 1fr))",
@@ -1614,9 +2291,22 @@ function SocialTemplates({ isMobile, onImageClick }: {
       {/* ── HERITAGE ── */}
       {activeTab === "heritage" && (
         <div>
-          <p style={{ fontFamily: fonts.body, fontSize: 13, color: colors.cream, opacity: 0.4, margin: "0 0 20px" }}>
+          <p style={{ fontFamily: fonts.body, fontSize: 13, color: colors.cream, opacity: 0.4, margin: "0 0 8px" }}>
             Then & now split tiles. Witta's heritage paired with The Harvest's vision.
           </p>
+          <div style={{
+            padding: "12px 16px",
+            backgroundColor: "rgba(242,201,0,0.08)",
+            border: `1px solid rgba(242,201,0,0.15)`,
+            marginBottom: 20,
+          }}>
+            <span style={{ fontFamily: fonts.display, fontWeight: 700, fontSize: 10, letterSpacing: "0.12em", color: colors.yellow }}>WHEN TO POST</span>
+            <p style={{ fontFamily: fonts.body, fontSize: 13, color: colors.cream, opacity: 0.5, margin: "6px 0 0", lineHeight: 1.6 }}>
+              These are engagement gold. Post as a carousel ("1899 → 2026") or individual posts.<br/>
+              Caption: "Timber workers, dairy farmers, red soil. We're not starting from nothing."<br/>
+              Best for: slow days between event pushes. Builds depth without selling.
+            </p>
+          </div>
           <div style={{
             display: "flex",
             flexDirection: "column",
@@ -1695,9 +2385,21 @@ function SocialTemplates({ isMobile, onImageClick }: {
       {/* ── VIDEO ── */}
       {activeTab === "video" && (
         <div>
-          <p style={{ fontFamily: fonts.body, fontSize: 13, color: colors.cream, opacity: 0.4, margin: "0 0 20px" }}>
+          <p style={{ fontFamily: fonts.body, fontSize: 13, color: colors.cream, opacity: 0.4, margin: "0 0 8px" }}>
             Atmospheric video clips. Use as reel backgrounds, story videos, or website headers.
           </p>
+          <div style={{
+            padding: "12px 16px",
+            backgroundColor: "rgba(242,201,0,0.08)",
+            border: `1px solid rgba(242,201,0,0.15)`,
+            marginBottom: 20,
+          }}>
+            <span style={{ fontFamily: fonts.display, fontWeight: 700, fontSize: 10, letterSpacing: "0.12em", color: colors.yellow }}>USAGE</span>
+            <p style={{ fontFamily: fonts.body, fontSize: 13, color: colors.cream, opacity: 0.5, margin: "6px 0 0", lineHeight: 1.6 }}>
+              Aerial: loop as Instagram Reel with text overlay + music. No voiceover needed — let the place speak.<br/>
+              Oyster lease: food story content. Pair with Shaun Fisher post for the gathering.
+            </p>
+          </div>
           <div style={{
             display: "flex",
             flexDirection: "column",
