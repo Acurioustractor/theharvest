@@ -1173,7 +1173,7 @@ export default function BrandGuide() {
               {
                 channel: "SOCIAL CAPTION",
                 color: colors.blue,
-                good: "Saturday 7 March. Oysters, pizza, music. Come as you are.\nSave your spot → theharvest.net.au/gather",
+                good: "Saturday 7 March. Oysters, pizza, music. Come as you are.\nSave your spot → theharvestwitta.com.au/gather",
                 bad: "Join us for our inaugural community gathering event! We're excited to announce The Harvest's first open day featuring local food, live music and more. RSVP via the link in our bio. #community #sundayvibes",
               },
               {
@@ -1765,16 +1765,16 @@ function SocialTemplates({ isMobile, onImageClick }: {
   ];
 
   const generatedAssets = [
-    { src: "/images/social/01-origin-story.png", label: "Origin Story", use: "PIN THIS FIRST. Launch announcement for Facebook & Instagram.", caption: "Something is growing in Witta.\n\nArt. Food. Community.\nA place where neighbours share a table, grow something together, and make things that matter.\n\nMore soon → theharvest.net.au" },
-    { src: "/images/social/02-event-announcement.png", label: "First Gathering", use: "Facebook Event image. Share in Sunshine Coast / Hinterland groups.", caption: "Saturday 7 March. 11am – 4pm.\nOysters, pizza, music. Free entry.\nCome for an hour or stay for the day.\n\nSave your spot → theharvest.net.au/gather" },
-    { src: "/images/social/03-shaun-fisher-voice.png", label: "Voices: Shaun Fisher", use: "Trust signal + food story. Post 3–4 days before event.", caption: "Shaun Fisher was the first person to say yes to this place.\n\nHe's bringing 200 freshly shucked oysters to the first gathering.\n\nSaturday 7 March → theharvest.net.au/gather" },
-    { src: "/images/social/04-barry-voice.png", label: "Voices: Barry", use: "Heritage story. Connection to place. Good for engagement.", caption: "\"This was all timber country. Everyone knew each other.\"\n\nBarry's lived next door for decades. He remembers when Witta was dairy farms and pit sawyers. We're not starting from nothing.\n\n→ theharvest.net.au/compendium" },
-    { src: "/images/social/05-zone-garden.png", label: "Zone: GROW", use: "Garden zone intro. Engagement prompt.", caption: "GROW.\n\nThe garden is open to everyone. Plant something. Harvest something. Bring the kids.\n\nWhat would you plant? ↓" },
-    { src: "/images/social/06-zone-kitchen.png", label: "Zone: FEED", use: "Kitchen zone intro. Post 1/day between zones.", caption: "FEED.\n\nThe kitchen is where community happens. Shared meals, cooking classes, food entrepreneurs.\n\nEveryone shares a table." },
-    { src: "/images/social/07-zone-artspace.png", label: "Zone: MAKE", use: "Art Space intro. Creative audience.", caption: "MAKE.\n\nGallery. Studio. Workshop. The space is always becoming — nothing is permanent, like a gallery.\n\nWhat would you make?" },
-    { src: "/images/social/08-countdown-1week.png", label: "Countdown — 7 Days", use: "One week out. Urgency post. Boost this one.", caption: "7 days.\n\nSaturday 7 March. 11am – 4pm.\nOysters. Pizza. Music. Free.\n\nSave your spot → theharvest.net.au/gather" },
-    { src: "/images/social/09-facebook-cover.png", label: "Facebook Cover", use: "Page header image. 820×312. Don't add text — it's already there." },
-    { src: "/images/social/10-save-your-spot.png", label: "Save Your Spot", use: "Final CTA. Use as last post before event + as paid boost.", caption: "Come see the place for yourself.\n\nSaturday 7 March. 11am – 4pm. Free entry.\nOysters, pizza, music, neighbours.\n\nSave your spot → theharvest.net.au/gather" },
+    { src: "/images/social/01-origin-story.png", label: "Origin Story", use: "PIN THIS FIRST. Launch post for Facebook & Instagram.", caption: "Something is growing in Witta.\n\nArt. Food. Community.\nAn old dairy property in the hinterland. A kitchen, a garden, a gallery. Neighbours sharing a table.\n\nMore soon → theharvestwitta.com.au" },
+    { src: "/images/social/02-event-announcement.png", label: "First Gathering", use: "Facebook Event image. Share in Maleny, Witta, Hinterland groups.", caption: "Saturday 7 March. 11am – 4pm.\nOysters, pizza, music. Come for an hour or stay all afternoon.\nFree. 9 Gumland Drive, Witta.\n\nSave your spot → theharvestwitta.com.au/gather" },
+    { src: "/images/social/03-shaun-fisher-voice.png", label: "Voices: Shaun Fisher", use: "Trust signal + food story. Post 3–4 days before.", caption: "Shaun Fisher was the first person to say yes to this place.\n\nHe's shucking 200 oysters from Minjerribah for the first gathering. You'll find him near the fire.\n\nSaturday 7 March → theharvestwitta.com.au/gather" },
+    { src: "/images/social/04-barry-voice.png", label: "Voices: Barry", use: "Heritage story. Connection to place. High engagement.", caption: "\"This was all timber country. Everyone knew each other.\"\n\nBarry's lived next door for decades. Dairy farms, pit sawyers, red soil. We're not starting from nothing.\n\n→ theharvestwitta.com.au/compendium" },
+    { src: "/images/social/05-zone-garden.png", label: "Zone: GROW", use: "Garden zone intro. Ask a question to drive comments.", caption: "GROW.\n\nThe garden is open to everyone. Plant something. Pick something. Bring the kids.\n\nIf you had a row in a community garden, what would you grow? ↓" },
+    { src: "/images/social/06-zone-kitchen.png", label: "Zone: FEED", use: "Kitchen zone intro. Post 1/day between zones.", caption: "FEED.\n\nA shared kitchen. Neighbours cooking together, learning from each other, sharing a table.\n\nWhat would you bring to a shared meal?" },
+    { src: "/images/social/07-zone-artspace.png", label: "Zone: MAKE", use: "Art Space intro. Creative audience.", caption: "MAKE.\n\nGallery. Studio. Workshop. Nothing is permanent — the space is always becoming, like a gallery.\n\nWhat would you make if you had the space?" },
+    { src: "/images/social/08-countdown-1week.png", label: "Countdown — 7 Days", use: "One week out. Urgency post. Boost this one.", caption: "7 days.\n\nSaturday 7 March. 11am – 4pm. Witta.\nOysters. Pizza. Music. Free.\n\nSave your spot → theharvestwitta.com.au/gather" },
+    { src: "/images/social/09-facebook-cover.png", label: "Facebook Cover", use: "Page header image. 820×312. Don't add text — it's on the image." },
+    { src: "/images/social/10-save-your-spot.png", label: "Save Your Spot", use: "Final CTA. Post day before + use as paid boost.", caption: "Come see the place for yourself.\n\nSaturday 7 March. 11am – 4pm. Witta.\nOysters, pizza, music, neighbours. Free.\n\nSave your spot → theharvestwitta.com.au/gather" },
   ];
 
   // Zone identity tiles — rendered as HTML compositions
@@ -1996,7 +1996,7 @@ function SocialTemplates({ isMobile, onImageClick }: {
           }}>
             <span style={{ fontFamily: fonts.display, fontWeight: 700, fontSize: 10, letterSpacing: "0.12em", color: colors.yellow }}>CAPTION FORMAT</span>
             <p style={{ fontFamily: fonts.body, fontSize: 13, color: colors.cream, opacity: 0.5, margin: "6px 0 0", lineHeight: 1.6 }}>
-              [VERB].<br/>The [Zone Name]. [Tagline].<br/>Art. Food. Community. → theharvest.net.au
+              [VERB].<br/>The [Zone Name]. [Tagline].<br/>Art. Food. Community. → theharvestwitta.com.au
             </p>
           </div>
           <div style={{
@@ -2162,7 +2162,7 @@ function SocialTemplates({ isMobile, onImageClick }: {
             <span style={{ fontFamily: fonts.display, fontWeight: 700, fontSize: 10, letterSpacing: "0.12em", color: colors.yellow }}>CAPTION FORMAT</span>
             <p style={{ fontFamily: fonts.body, fontSize: 13, color: colors.cream, opacity: 0.5, margin: "6px 0 0", lineHeight: 1.6 }}>
               Let the quote speak. Caption = one line of context, then the link.<br/>
-              e.g. "Barry's lived next door for decades. → theharvest.net.au/compendium"
+              e.g. "Barry's lived next door for decades. → theharvestwitta.com.au/compendium"
             </p>
           </div>
           <div style={{
@@ -2227,7 +2227,7 @@ function SocialTemplates({ isMobile, onImageClick }: {
             <span style={{ fontFamily: fonts.display, fontWeight: 700, fontSize: 10, letterSpacing: "0.12em", color: colors.yellow }}>ALWAYS ADD</span>
             <p style={{ fontFamily: fonts.body, fontSize: 13, color: colors.cream, opacity: 0.5, margin: "6px 0 0", lineHeight: 1.6 }}>
               Saturday 7 March. 11am – 4pm. Free entry.<br/>
-              Save your spot → theharvest.net.au/gather<br/>
+              Save your spot → theharvestwitta.com.au/gather<br/>
               Add a "link" sticker on Instagram Stories pointing to the RSVP page.
             </p>
           </div>
