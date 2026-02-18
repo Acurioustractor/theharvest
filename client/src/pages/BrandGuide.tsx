@@ -307,7 +307,7 @@ export default function BrandGuide() {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            if (pw.toUpperCase() === "BVC") {
+            if (pw.toUpperCase() === "BCV") {
               sessionStorage.setItem("bg-auth", "1");
               setAuthed(true);
             } else {
