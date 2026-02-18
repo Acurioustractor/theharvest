@@ -34,7 +34,7 @@ Deno.serve(async req => {
   }
 
   const payload = await req.json();
-  const { name, email, subject, message } = payload;
+  const { name, email, subject, message, subscribe } = payload;
 
   if (!email || !message) {
     return jsonResponse({ success: false, error: "Email and message are required" }, 400);
@@ -60,7 +60,7 @@ Deno.serve(async req => {
       lastName,
       locationId,
       source: "Website Contact Form",
-      tags: ["contact-form", "website-inquiry"],
+      tags: ["contact-form", "website-inquiry", ...(subscribe ? ["newsletter"] : [])],
     }),
   });
 

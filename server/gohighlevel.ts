@@ -157,6 +157,42 @@ export async function upsertGHLContact(input: GHLContactInput): Promise<{ succes
 }
 
 /**
+ * Add a note to a contact in Go High Level
+ */
+export async function addGHLContactNote(contactId: string, noteBody: string): Promise<{ success: boolean; error?: string }> {
+  const apiKey = process.env.GHL_API_KEY;
+
+  if (!apiKey) {
+    console.error("Go High Level API key not configured.");
+    return { success: false, error: "Note service is not configured." };
+  }
+
+  try {
+    const response = await fetch(`${GHL_API_BASE}/contacts/${contactId}/notes`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Authorization": `Bearer ${apiKey}`,
+        "Version": GHL_API_VERSION,
+      },
+      body: JSON.stringify({ body: noteBody }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json() as GHLErrorResponse;
+      console.error("GHL Add Note Error:", errorData);
+      return { success: false, error: errorData.message || "Failed to add note." };
+    }
+
+    return { success: true };
+  } catch (error) {
+    console.error("GHL Add Note request failed:", error);
+    return { success: false, error: "Unable to add note to contact." };
+  }
+}
+
+/**
  * Trigger a workflow for a contact in Go High Level
  * Used to automate follow-up sequences and nurturing campaigns
  */

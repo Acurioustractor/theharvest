@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Photo–Plan Alignment Playground</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #111; color: #e5e5e5; font-family: system-ui, -apple-system, sans-serif; overflow: hidden; display: flex; flex-direction: column; height: 100vh; }
+
+  /* ─── Canvas ─── */
+  #canvas {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    background: #0a0a0a;
+    background-image: radial-gradient(circle, #1a1a1a 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+
+  .layer-img {
+    position: absolute;
+    top: 0; left: 0;
+    width: 1024px; height: 1024px;
+    transform-origin: 0 0;
+    will-change: transform;
+  }
+
+  #plan-img { z-index: 1; pointer-events: none; }
+  #photo-img { z-index: 2; cursor: move; }
+
+  /* ─── Controls Panel ─── */
+  #panel {
+    background: #161616;
+    border-top: 1px solid #2a2a2a;
+    padding: 12px 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    align-items: center;
+  }
+
+  .ctrl-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .ctrl-group label {
+    font-size: 11px;
+    color: #777;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    min-width: 50px;
+  }
+  input[type="range"] {
+    width: 110px;
+    accent-color: #d97706;
+    height: 4px;
+  }
+  .ctrl-val {
+    font-family: 'SF Mono', 'Menlo', monospace;
+    font-size: 12px;
+    color: #d97706;
+    min-width: 50px;
+    text-align: right;
+  }
+  select {
+    background: #222;
+    color: #ccc;
+    border: 1px solid #333;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+  }
+
+  .sep { width: 1px; height: 28px; background: #2a2a2a; }
+
+  /* ─── Prompt Output ─── */
+  #prompt-bar {
+    background: #0d0d0d;
+    border-top: 1px solid #222;
+    padding: 8px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  #prompt-text {
+    flex: 1;
+    font-family: 'SF Mono', 'Menlo', monospace;
+    font-size: 12px;
+    color: #999;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .btn {
+    background: #d97706;
+    color: #000;
+    border: none;
+    padding: 5px 14px;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 12px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .btn:hover { background: #f59e0b; }
+  .btn.ghost {
+    background: transparent;
+    color: #666;
+    border: 1px solid #333;
+  }
+  .btn.ghost:hover { color: #ccc; border-color: #555; }
+  .btn.copied { background: #16a34a; color: #fff; }
+
+  /* ─── Help overlay ─── */
+  #help {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 100;
+    background: rgba(0,0,0,0.85);
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 14px 18px;
+    font-size: 12px;
+    line-height: 1.7;
+    color: #999;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  #help.show { opacity: 1; }
+  #help kbd {
+    background: #222;
+    border: 1px solid #444;
+    border-radius: 3px;
+    padding: 1px 5px;
+    font-family: monospace;
+    color: #ccc;
+  }
+
+  #mode-indicator {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 100;
+    font-size: 11px;
+    color: #555;
+    background: rgba(0,0,0,0.7);
+    padding: 4px 10px;
+    border-radius: 4px;
+  }
+  #mode-indicator span { color: #d97706; }
+</style>
+</head>
+<body>
+
+<div id="canvas">
+  <img id="plan-img" class="layer-img" />
+  <img id="photo-img" class="layer-img" />
+  <div id="mode-indicator">Drag photo directly · Hold <span>Alt/Option</span> to pan viewport · Scroll to zoom</div>
+  <div id="help">
+    <strong style="color:#e5e5e5;">Keyboard shortcuts</strong><br>
+    <kbd>←</kbd><kbd>→</kbd><kbd>↑</kbd><kbd>↓</kbd> Nudge photo 1px<br>
+    <kbd>Shift</kbd> + arrows — 10px steps<br>
+    Drag — Move photo directly<br>
+    <kbd>Alt/⌥</kbd> + drag — Pan viewport<br>
+    <kbd>[</kbd> <kbd>]</kbd> — Rotate ±0.5°<br>
+    <kbd>-</kbd> <kbd>=</kbd> — Scale ±0.01<br>
+    <kbd>Space</kbd> — Toggle photo visibility<br>
+    <kbd>?</kbd> — Toggle this help
+  </div>
+</div>
+
+<div id="panel">
+  <div class="ctrl-group">
+    <label>Plan</label>
+    <select id="sel-plan">
+      <option value="/images/site-plan/layers/_preview/masterplan.png">Master Plan</option>
+      <option value="/images/site-plan/layers/_preview/sketch.png">Architect Sketch</option>
+      <option value="/images/site-plan/layers/_preview/landscaping.png">Landscaping</option>
+      <option value="/images/site-plan/layers/_preview/circulation.png">Circulation</option>
+      <option value="/images/site-plan/layers/_preview/zones.png">Zone Labels</option>
+    </select>
+  </div>
+
+  <div class="sep"></div>
+
+  <div class="ctrl-group">
+    <label>Opacity</label>
+    <input type="range" id="r-opacity" min="0" max="100" value="50">
+    <span class="ctrl-val" id="v-opacity">50%</span>
+  </div>
+  <div class="ctrl-group">
+    <label>Scale</label>
+    <input type="range" id="r-scale" min="10" max="400" value="100">
+    <span class="ctrl-val" id="v-scale">1.000</span>
+  </div>
+  <div class="ctrl-group">
+    <label>Rotate</label>
+    <input type="range" id="r-rotate" min="-180" max="180" value="0" step="0.25">
+    <span class="ctrl-val" id="v-rotate">0.00°</span>
+  </div>
+
+  <div class="sep"></div>
+  <button class="btn ghost" onclick="resetState()">Reset</button>
+  <button class="btn ghost" onclick="toggleHelp()">?</button>
+</div>
+
+<div id="prompt-bar">
+  <div id="prompt-text"></div>
+  <button class="btn" id="copy-btn" onclick="copyPrompt()">Copy Values</button>
+</div>
+
+<script>
+/* ── State ── */
+const DEFAULTS = { px: 0, py: 0, ps: 1, pr: 0, po: 0.5 };
+const S = { ...DEFAULTS }; // photo: x, y, scale, rotation, opacity
+let vx = 0, vy = 0, vz = 0.22; // viewport: x, y, zoom
+
+const canvas = document.getElementById('canvas');
+const planImg = document.getElementById('plan-img');
+const photoImg = document.getElementById('photo-img');
+
+/* ── Init ── */
+const IMG_SIZE = 1024; // preview size (full-res is 4096)
+const SCALE_FACTOR = 4; // 4096 / 1024
+
+planImg.src = document.getElementById('sel-plan').value;
+photoImg.src = '/images/site-plan/layers/_preview/photo.png';
+vz = 0.8; // start zoomed in more since images are smaller
+requestAnimationFrame(() => {
+  vx = (canvas.clientWidth - IMG_SIZE * vz) / 2;
+  vy = (canvas.clientHeight - IMG_SIZE * vz) / 2;
+  render();
+});
+
+/* ── Render ── */
+function render() {
+  planImg.style.transform = `translate(${vx}px,${vy}px) scale(${vz})`;
+  // Rotate around the center of the photo, not top-left
+  const cx = IMG_SIZE / 2, cy = IMG_SIZE / 2;
+  const screenCx = vx + (S.px + cx) * vz * S.ps;
+  const screenCy = vy + (S.py + cy) * vz * S.ps;
+  photoImg.style.transformOrigin = '0 0';
+  photoImg.style.transform = `translate(${vx + S.px * vz}px,${vy + S.py * vz}px) scale(${vz * S.ps}) translate(${cx}px,${cy}px) rotate(${S.pr}deg) translate(${-cx}px,${-cy}px)`;
+  photoImg.style.opacity = S.po;
+
+  // Sync controls
+  document.getElementById('v-opacity').textContent = Math.round(S.po * 100) + '%';
+  document.getElementById('v-scale').textContent = S.ps.toFixed(3);
+  document.getElementById('v-rotate').textContent = S.pr.toFixed(2) + '°';
+  document.getElementById('r-opacity').value = S.po * 100;
+  document.getElementById('r-scale').value = S.ps * 100;
+  document.getElementById('r-rotate').value = S.pr;
+
+  updatePrompt();
+}
+
+/* ── Prompt ── */
+function updatePrompt() {
+  const parts = [];
+  const fullX = Math.round(S.px * SCALE_FACTOR);
+  const fullY = Math.round(S.py * SCALE_FACTOR);
+  if (fullX !== 0 || fullY !== 0) parts.push(`offset x:${fullX} y:${fullY}`);
+  if (Math.abs(S.ps - 1) > 0.001) parts.push(`scale:${S.ps.toFixed(3)}`);
+  if (Math.abs(S.pr) > 0.01) parts.push(`rotate:${S.pr.toFixed(2)}°`);
+
+  const el = document.getElementById('prompt-text');
+  if (parts.length === 0) {
+    el.textContent = 'No transform applied yet. Drag the photo, adjust scale and rotation to align.';
+  } else {
+    el.textContent = `Apply to 00-base-photo.png (4096px): ${parts.join(', ')}`;
+  }
+}
+
+function copyPrompt() {
+  const text = `x:${Math.round(S.px * SCALE_FACTOR)}, y:${Math.round(S.py * SCALE_FACTOR)}, scale:${S.ps.toFixed(4)}, rotate:${S.pr.toFixed(2)}`;
+  navigator.clipboard.writeText(text);
+  const btn = document.getElementById('copy-btn');
+  btn.textContent = 'Copied!';
+  btn.classList.add('copied');
+  setTimeout(() => { btn.textContent = 'Copy Values'; btn.classList.remove('copied'); }, 1500);
+}
+
+/* ── Photo drag (default) & Viewport pan (Alt/Option) ── */
+let drag = null;
+canvas.addEventListener('mousedown', (e) => {
+  if (e.altKey) {
+    // Alt+drag = pan viewport
+    drag = { mode: 'pan', sx: e.clientX - vx, sy: e.clientY - vy };
+    canvas.style.cursor = 'grabbing';
+  } else {
+    // Normal drag = move photo
+    drag = { mode: 'photo', sx: e.clientX - S.px * vz, sy: e.clientY - S.py * vz };
+    canvas.style.cursor = 'grabbing';
+  }
+});
+window.addEventListener('mousemove', (e) => {
+  if (!drag) return;
+  if (drag.mode === 'pan') {
+    vx = e.clientX - drag.sx;
+    vy = e.clientY - drag.sy;
+  } else {
+    S.px = (e.clientX - drag.sx) / vz;
+    S.py = (e.clientY - drag.sy) / vz;
+  }
+  render();
+});
+window.addEventListener('mouseup', () => { drag = null; canvas.style.cursor = ''; });
+
+/* ── Zoom ── */
+canvas.addEventListener('wheel', (e) => {
+  e.preventDefault();
+  const r = canvas.getBoundingClientRect();
+  const mx = e.clientX - r.left, my = e.clientY - r.top;
+  const oz = vz;
+  vz = Math.max(0.03, Math.min(4, vz * (e.deltaY > 0 ? 0.92 : 1.08)));
+  vx = mx - (mx - vx) * (vz / oz);
+  vy = my - (my - vy) * (vz / oz);
+  render();
+}, { passive: false });
+
+/* ── Sliders ── */
+document.getElementById('r-opacity').addEventListener('input', (e) => { S.po = e.target.value / 100; render(); });
+document.getElementById('r-scale').addEventListener('input', (e) => { S.ps = e.target.value / 100; render(); });
+document.getElementById('r-rotate').addEventListener('input', (e) => { S.pr = parseFloat(e.target.value); render(); });
+document.getElementById('sel-plan').addEventListener('change', (e) => { planImg.src = e.target.value; });
+
+/* ── Keyboard ── */
+window.addEventListener('keydown', (e) => {
+  const step = e.shiftKey ? 10 : 1;
+  switch (e.key) {
+    case 'ArrowLeft':  S.px -= step; break;
+    case 'ArrowRight': S.px += step; break;
+    case 'ArrowUp':    S.py -= step; break;
+    case 'ArrowDown':  S.py += step; break;
+    case '[': S.pr -= 0.5; break;
+    case ']': S.pr += 0.5; break;
+    case '-': S.ps = Math.max(0.05, S.ps - 0.01); break;
+    case '=': S.ps += 0.01; break;
+    case ' ': e.preventDefault(); S.po = S.po > 0 ? 0 : 0.5; break;
+    case '?': toggleHelp(); return;
+    default: return;
+  }
+  e.preventDefault();
+  render();
+});
+
+/* ── Helpers ── */
+function resetState() { Object.assign(S, { ...DEFAULTS }); render(); }
+function toggleHelp() { document.getElementById('help').classList.toggle('show'); }
+
+</script>
+</body>
+</html>

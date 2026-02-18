@@ -1,0 +1,59 @@
+import { Link } from "wouter";
+import type { CSSProperties } from "react";
+import { colors, fonts } from "@/styles/brand";
+
+interface BauhausFooterProps {
+  isMobile: boolean;
+}
+
+export default function BauhausFooter({ isMobile }: BauhausFooterProps) {
+  return (
+    <footer style={{
+      backgroundColor: colors.black,
+      padding: isMobile ? "40px 28px" : "48px 40px",
+      borderTop: `1px solid rgba(244,244,242,0.08)`,
+      textAlign: "center",
+    }}>
+      <p style={{
+        fontFamily: fonts.display,
+        fontWeight: 900,
+        fontSize: 14,
+        letterSpacing: "0.12em",
+        color: colors.cream,
+        margin: "0 0 8px",
+      }}>
+        THE HARVEST
+      </p>
+      <p style={{
+        fontFamily: fonts.body,
+        fontSize: 13,
+        color: colors.cream,
+        opacity: 0.4,
+        margin: "0 0 24px",
+      }}>
+        Witta, Blackall Range. Jinibara Country.
+      </p>
+      <div style={{
+        display: "flex",
+        justifyContent: "center",
+        gap: isMobile ? 16 : 24,
+        flexWrap: "wrap",
+      }}>
+        <Link href="/" style={linkStyle}>HOME</Link>
+        <Link href="/gather" style={linkStyle}>THE GATHERING</Link>
+        <Link href="/compendium" style={linkStyle}>THE STORY</Link>
+        <Link href="/contact" style={linkStyle}>CONTACT</Link>
+      </div>
+    </footer>
+  );
+}
+
+const linkStyle: CSSProperties = {
+  fontFamily: fonts.display,
+  fontWeight: 700,
+  fontSize: 12,
+  letterSpacing: "0.1em",
+  color: colors.cream,
+  textDecoration: "none",
+  opacity: 0.7,
+};

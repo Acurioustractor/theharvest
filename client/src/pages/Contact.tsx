@@ -1,44 +1,38 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import {
-  Mail,
-  MapPin,
-  Phone,
-  Send,
-  Clock,
-  ChevronRight,
-} from "lucide-react";
 import { toast } from "sonner";
+import BauhausFooter from "@/components/BauhausFooter";
+import FadeIn from "@/components/FadeIn";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { rootStyle, colors, fonts, detailLabelStyle, detailTextStyle, formLabelStyle, formInputStyle } from "@/styles/brand";
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 
-const fadeInUp = {
-  initial: { opacity: 0, y: 30 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.6 },
-};
-
-const staggerContainer = {
-  animate: {
-    transition: {
-      staggerChildren: 0.1,
-    },
-  },
-};
-
 export default function Contact() {
+  const isMobile = useMediaQuery("(max-width: 768px)");
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     subject: "",
     message: "",
+    subscribe: false,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    document.title = "Get In Touch — The Harvest";
+    const meta = (name: string, content: string) => {
+      let el = document.querySelector(`meta[property="${name}"]`) as HTMLMetaElement | null;
+      if (!el) {
+        el = document.createElement("meta");
+        el.setAttribute("property", name);
+        document.head.appendChild(el);
+      }
+      el.content = content;
+    };
+    meta("og:title", "Get In Touch — The Harvest");
+    meta("og:description", "Questions, ideas, or just want to say hello.");
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,12 +55,7 @@ export default function Contact() {
         description: "We'll get back to you as soon as we can.",
       });
 
-      setFormData({
-        name: "",
-        email: "",
-        subject: "",
-        message: "",
-      });
+      setFormData({ name: "", email: "", subject: "", message: "", subscribe: false });
     } catch (error) {
       toast.error("Failed to send message", {
         description: error instanceof Error ? error.message : "Please try again later.",
@@ -77,286 +66,270 @@ export default function Contact() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Hero Section */}
-      <section className="relative py-24 bg-gradient-to-b from-stone-100 to-white overflow-hidden">
-        <div className="container">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="max-w-3xl"
-          >
-            <span className="text-amber-600 font-medium tracking-wide uppercase text-sm">
-              Get in Touch
-            </span>
-            <h1 className="text-5xl md:text-6xl font-serif font-bold text-stone-800 mt-3 mb-6">
-              Contact Us
-            </h1>
-            <p className="text-xl text-stone-600 leading-relaxed">
-              Have a question about what we're building, want to get involved, or just want to say hello?
-              We'd love to hear from you.
-            </p>
-          </motion.div>
-        </div>
+    <div style={rootStyle}>
+
+      {/* ─── HERO ─── */}
+      <section style={{
+        backgroundColor: colors.cream,
+        padding: isMobile ? "100px 28px 60px" : "140px 40px 80px",
+        textAlign: "center",
+      }}>
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7 }}
+        >
+          <h1 style={{
+            fontFamily: fonts.display,
+            fontWeight: 900,
+            fontSize: isMobile ? "clamp(32px, 8vw, 48px)" : "clamp(48px, 5vw, 64px)",
+            letterSpacing: "0.12em",
+            color: colors.black,
+            margin: 0,
+          }}>
+            GET IN TOUCH
+          </h1>
+          <p style={{
+            fontFamily: fonts.body,
+            fontSize: isMobile ? 16 : 18,
+            color: colors.black,
+            opacity: 0.6,
+            margin: "16px 0 0",
+            maxWidth: 480,
+            marginLeft: "auto",
+            marginRight: "auto",
+          }}>
+            Have a question, want to get involved, or just want to say hello? We'd love to hear from you.
+          </p>
+        </motion.div>
       </section>
 
-      {/* Contact Form & Info */}
-      <section className="py-16 bg-white">
-        <div className="container">
-          <div className="grid lg:grid-cols-2 gap-12">
-            {/* Contact Form */}
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-            >
-              <Card className="border-0 shadow-lg">
-                <CardContent className="p-8">
-                  <h2 className="text-2xl font-serif font-bold text-stone-800 mb-6">
-                    Send us a message
-                  </h2>
-
-                  <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="grid sm:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="name">Your Name</Label>
-                        <Input
-                          id="name"
-                          placeholder="Jane Smith"
-                          value={formData.name}
-                          onChange={(e) =>
-                            setFormData((prev) => ({ ...prev, name: e.target.value }))
-                          }
-                          required
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="email">Email Address</Label>
-                        <Input
-                          id="email"
-                          type="email"
-                          placeholder="jane@example.com"
-                          value={formData.email}
-                          onChange={(e) =>
-                            setFormData((prev) => ({ ...prev, email: e.target.value }))
-                          }
-                          required
-                        />
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="subject">Subject</Label>
-                      <Input
-                        id="subject"
-                        placeholder="What's this about?"
-                        value={formData.subject}
-                        onChange={(e) =>
-                          setFormData((prev) => ({ ...prev, subject: e.target.value }))
-                        }
-                        required
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="message">Message</Label>
-                      <Textarea
-                        id="message"
-                        placeholder="Tell us what's on your mind..."
-                        className="min-h-[150px]"
-                        value={formData.message}
-                        onChange={(e) =>
-                          setFormData((prev) => ({ ...prev, message: e.target.value }))
-                        }
-                        required
-                      />
-                    </div>
-
-                    <Button
-                      type="submit"
-                      className="w-full bg-amber-500 hover:bg-amber-600 text-black font-semibold"
-                      size="lg"
-                      disabled={isSubmitting}
-                    >
-                      {isSubmitting ? (
-                        "Sending..."
-                      ) : (
-                        <>
-                          Send Message
-                          <Send className="ml-2 h-5 w-5" />
-                        </>
-                      )}
-                    </Button>
-                  </form>
-                </CardContent>
-              </Card>
-            </motion.div>
-
-            {/* Contact Info */}
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="space-y-8"
-            >
-              {/* Address */}
-              <div>
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center">
-                    <MapPin className="h-6 w-6 text-amber-600" />
-                  </div>
-                  <h3 className="text-xl font-serif font-bold text-stone-800">
-                    Visit Us
-                  </h3>
+      {/* ─── FORM ─── */}
+      <section style={{
+        backgroundColor: colors.black,
+        padding: isMobile ? "60px 28px" : "80px 40px",
+      }}>
+        <div style={{ maxWidth: 560, margin: "0 auto" }}>
+          <FadeIn>
+            <form onSubmit={handleSubmit}>
+              <div style={{
+                display: "grid",
+                gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
+                gap: 20,
+                marginBottom: 20,
+              }}>
+                <div>
+                  <label style={formLabelStyle} htmlFor="name">Your Name</label>
+                  <input
+                    id="name"
+                    type="text"
+                    placeholder="Jane Smith"
+                    value={formData.name}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
+                    required
+                    style={formInputStyle}
+                  />
                 </div>
-                <div className="ml-[60px]">
-                  <p className="text-stone-700 font-medium mb-1">The Harvest</p>
-                  <p className="text-stone-600">
-                    9 Gumland Drive
-                    <br />
-                    Witta QLD 4552
-                  </p>
-                  <p className="text-stone-500 text-sm mt-2">
-                    10 minutes from Maleny, in the Sunshine Coast Hinterland
-                  </p>
+                <div>
+                  <label style={formLabelStyle} htmlFor="email">Email Address</label>
+                  <input
+                    id="email"
+                    type="email"
+                    placeholder="jane@example.com"
+                    value={formData.email}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
+                    required
+                    style={formInputStyle}
+                  />
                 </div>
               </div>
 
-              {/* Email */}
-              <div>
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center">
-                    <Mail className="h-6 w-6 text-amber-600" />
-                  </div>
-                  <h3 className="text-xl font-serif font-bold text-stone-800">
-                    Email
-                  </h3>
-                </div>
-                <div className="ml-[60px]">
-                  <a
-                    href="mailto:hello@theharvestwitta.com.au"
-                    className="text-stone-700 hover:text-amber-600 transition-colors"
-                  >
-                    hello@theharvestwitta.com.au
-                  </a>
-                  <p className="text-stone-500 text-sm mt-1">
-                    We typically respond within 1-2 business days
-                  </p>
-                </div>
-              </div>
-
-              {/* Phone */}
-              <div>
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center">
-                    <Phone className="h-6 w-6 text-amber-600" />
-                  </div>
-                  <h3 className="text-xl font-serif font-bold text-stone-800">
-                    Phone
-                  </h3>
-                </div>
-                <div className="ml-[60px]">
-                  <a
-                    href="tel:+61422883943"
-                    className="text-stone-700 hover:text-amber-600 transition-colors"
-                  >
-                    0422 883 943
-                  </a>
-                  <p className="text-stone-500 text-sm mt-1">
-                    Best reached during opening hours
-                  </p>
-                </div>
-              </div>
-
-              {/* Hours */}
-              <div>
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center">
-                    <Clock className="h-6 w-6 text-amber-600" />
-                  </div>
-                  <h3 className="text-xl font-serif font-bold text-stone-800">
-                    Opening Hours
-                  </h3>
-                </div>
-                <div className="ml-[60px] text-stone-600 space-y-1">
-                  <p>Wed–Fri: 8am – 3pm</p>
-                  <p>Saturday: 7am – 2pm (Market day)</p>
-                  <p>Sunday: 8am – 2pm</p>
-                  <p className="text-stone-400">Mon–Tue: Closed</p>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* Map Section */}
-      <section className="py-16 bg-stone-50">
-        <div className="container">
-          <motion.div
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true }}
-            variants={staggerContainer}
-            className="text-center mb-8"
-          >
-            <motion.h2
-              variants={fadeInUp}
-              className="text-3xl font-serif font-bold text-stone-800 mb-4"
-            >
-              Find Us
-            </motion.h2>
-            <motion.p variants={fadeInUp} className="text-stone-600">
-              Tucked away in the hills of Witta
-            </motion.p>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            <Card className="overflow-hidden border-0 shadow-lg">
-              <div className="h-[400px]">
-                <iframe
-                  title="The Harvest location map"
-                  width="100%"
-                  height="100%"
-                  style={{ border: 0 }}
-                  loading="lazy"
-                  src="https://www.openstreetmap.org/export/embed.html?bbox=152.80%2C-26.73%2C152.84%2C-26.70&layer=mapnik&marker=-26.7176%2C152.8178"
+              <div style={{ marginBottom: 20 }}>
+                <label style={formLabelStyle} htmlFor="subject">Subject</label>
+                <input
+                  id="subject"
+                  type="text"
+                  placeholder="What's this about?"
+                  value={formData.subject}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, subject: e.target.value }))}
+                  required
+                  style={formInputStyle}
                 />
               </div>
-            </Card>
-          </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.3 }}
-            className="text-center mt-8"
-          >
-            <Button
-              variant="outline"
-              className="border-amber-300 text-amber-700 hover:bg-amber-50"
-              onClick={() =>
-                window.open(
-                  "https://www.google.com/maps/dir/?api=1&destination=-26.7176,152.8178",
-                  "_blank"
-                )
-              }
-            >
-              Get Directions
-              <ChevronRight className="ml-2 h-4 w-4" />
-            </Button>
-          </motion.div>
+              <div style={{ marginBottom: 20 }}>
+                <label style={formLabelStyle} htmlFor="message">Message</label>
+                <textarea
+                  id="message"
+                  placeholder="Tell us what's on your mind..."
+                  value={formData.message}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, message: e.target.value }))}
+                  required
+                  rows={6}
+                  style={{ ...formInputStyle, resize: "vertical", minHeight: 150 }}
+                />
+              </div>
+
+              <div style={{ marginBottom: 28 }}>
+                <label style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 12,
+                  cursor: "pointer",
+                }}>
+                  <input
+                    type="checkbox"
+                    checked={formData.subscribe}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, subscribe: e.target.checked }))}
+                    style={{
+                      width: 18,
+                      height: 18,
+                      accentColor: colors.yellow,
+                      cursor: "pointer",
+                      flexShrink: 0,
+                    }}
+                  />
+                  <span style={{
+                    fontFamily: fonts.body,
+                    fontSize: 14,
+                    color: colors.cream,
+                    opacity: 0.7,
+                  }}>
+                    Keep me in the loop — send me occasional updates
+                  </span>
+                </label>
+              </div>
+
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                style={{
+                  fontFamily: fonts.display,
+                  fontWeight: 700,
+                  fontSize: 14,
+                  letterSpacing: "0.1em",
+                  color: colors.black,
+                  backgroundColor: colors.yellow,
+                  border: "none",
+                  padding: "16px 0",
+                  width: "100%",
+                  cursor: isSubmitting ? "not-allowed" : "pointer",
+                  opacity: isSubmitting ? 0.6 : 1,
+                }}
+              >
+                {isSubmitting ? "SENDING..." : "SEND MESSAGE"}
+              </button>
+            </form>
+          </FadeIn>
         </div>
       </section>
+
+      {/* ─── DETAILS ─── */}
+      <section style={{
+        backgroundColor: colors.cream,
+        color: colors.black,
+        padding: isMobile ? "60px 28px" : "80px 40px",
+      }}>
+        <div style={{
+          maxWidth: 640,
+          margin: "0 auto",
+          display: "grid",
+          gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
+          gap: isMobile ? 36 : 48,
+        }}>
+          <FadeIn>
+            <div>
+              <h3 style={detailLabelStyle}>VISIT US</h3>
+              <p style={detailTextStyle}>The Harvest</p>
+              <p style={detailTextStyle}>9 Gumland Drive</p>
+              <p style={detailTextStyle}>Witta QLD 4552</p>
+              <p style={{ ...detailTextStyle, opacity: 0.5, fontSize: 14, marginTop: 8 }}>
+                10 minutes from Maleny, in the Sunshine Coast Hinterland
+              </p>
+            </div>
+          </FadeIn>
+
+          <FadeIn delay={0.1}>
+            <div>
+              <h3 style={detailLabelStyle}>EMAIL</h3>
+              <a href="mailto:hello@theharvestwitta.com.au" style={{
+                ...detailTextStyle,
+                color: colors.black,
+                textDecoration: "underline",
+                textUnderlineOffset: 4,
+              }}>
+                hello@theharvestwitta.com.au
+              </a>
+            </div>
+          </FadeIn>
+
+          <FadeIn delay={0.2}>
+            <div>
+              <h3 style={detailLabelStyle}>PHONE</h3>
+              <a href="tel:+61422883943" style={{
+                ...detailTextStyle,
+                color: colors.black,
+                textDecoration: "none",
+              }}>
+                0422 883 943
+              </a>
+            </div>
+          </FadeIn>
+
+          <FadeIn delay={0.3}>
+            <div>
+              <h3 style={detailLabelStyle}>HOURS</h3>
+              <p style={detailTextStyle}>Wed–Fri: 8am – 3pm</p>
+              <p style={detailTextStyle}>Saturday: 7am – 2pm</p>
+              <p style={detailTextStyle}>Sunday: 8am – 2pm</p>
+              <p style={{ ...detailTextStyle, opacity: 0.4 }}>Mon–Tue: Closed</p>
+            </div>
+          </FadeIn>
+        </div>
+      </section>
+
+      {/* ─── MAP ─── */}
+      <section style={{
+        backgroundColor: colors.cream,
+        padding: isMobile ? "0 28px 60px" : "0 40px 80px",
+      }}>
+        <div style={{ maxWidth: 800, margin: "0 auto" }}>
+          <FadeIn>
+            <div style={{ height: 400, overflow: "hidden" }}>
+              <iframe
+                title="The Harvest location map"
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                loading="lazy"
+                src="https://www.openstreetmap.org/export/embed.html?bbox=152.80%2C-26.73%2C152.84%2C-26.70&layer=mapnik&marker=-26.7176%2C152.8178"
+              />
+            </div>
+            <div style={{ textAlign: "center", marginTop: 20 }}>
+              <a
+                href="https://www.google.com/maps/dir/?api=1&destination=-26.7176,152.8178"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  fontFamily: fonts.display,
+                  fontWeight: 700,
+                  fontSize: 12,
+                  letterSpacing: "0.1em",
+                  color: colors.black,
+                  textDecoration: "none",
+                  borderBottom: `2px solid ${colors.black}`,
+                  paddingBottom: 2,
+                }}
+              >
+                GET DIRECTIONS
+              </a>
+            </div>
+          </FadeIn>
+        </div>
+      </section>
+
+      {/* ─── FOOTER ─── */}
+      <BauhausFooter isMobile={isMobile} />
     </div>
   );
 }

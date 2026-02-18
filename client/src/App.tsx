@@ -1,114 +1,44 @@
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import NotFound from "@/pages/NotFound";
-import { Route, Switch } from "wouter";
+import { useLocation, Redirect } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { SeasonalProvider } from "./contexts/SeasonalContext";
-import PublicLayout from "./components/PublicLayout";
-import HarvestHome from "./pages/HarvestHome";
-import Visit from "./pages/Visit";
-import WhatsOn from "./pages/WhatsOn";
-import VenueHire from "./pages/VenueHire";
-import About from "./pages/About";
-import LocalEnterprises from "./pages/LocalEnterprises";
-import StrategicAnalysis from "./pages/StrategicAnalysis";
-import AdminDashboard from "./pages/AdminDashboard";
-import MyBusiness from "./pages/MyBusiness";
-import Login from "./pages/Login";
-import Account from "./pages/Account";
-import PartnerPortal from "./pages/PartnerPortal";
-import Proposal from "./pages/Proposal";
-import LeaseDraft from "./pages/LeaseDraft";
-import Financials from "./pages/Financials";
+import BauhausHome from "./pages/BauhausHome";
+import Gather from "./pages/Gather";
 import Contact from "./pages/Contact";
-import Journey from "./pages/Journey";
-import Explore from "./pages/Explore";
-import Stories from "./pages/Stories";
-import Membership from "./pages/Membership";
-import Blog from "./pages/Blog";
-import BlogPost from "./pages/BlogPost";
-import Witta from "./pages/Witta";
-import Vision from "./pages/Vision";
-import Story from "./pages/Story";
-import SitePlan from "./pages/SitePlan";
 import Compendium from "./pages/Compendium";
-import DrawingPicker from "./pages/DrawingPicker";
-import GetInvolved from "./pages/GetInvolved";
-import PhotoManager from "./pages/admin/PhotoManager";
-// Blog admin removed - using Empathy Ledger Content Hub admin
+import CommunityIntelligence from "./pages/CommunityIntelligence";
+import CommunityPulse from "./pages/CommunityPulse";
+import EventFeedback from "./pages/EventFeedback";
+import BrandGuide from "./pages/BrandGuide";
+import ZoneWorkshop from "./pages/ZoneWorkshop";
 
 function Router() {
-  return (
-    <PublicLayout>
-      <Switch>
-        {/* Public pages */}
-        <Route path="/" component={HarvestHome} />
-        <Route path="/visit" component={Visit} />
-        <Route path="/whats-on" component={WhatsOn} />
-        <Route path="/venue-hire" component={VenueHire} />
-        <Route path="/about" component={About} />
-        <Route path="/contact" component={Contact} />
-        
-        {/* Explore pages */}
-        <Route path="/enterprises" component={LocalEnterprises} />
-        <Route path="/accommodation">{() => { window.location.replace("/enterprises?category=Accommodation"); return null; }}</Route>
-        <Route path="/accommodation/directory">{() => { window.location.replace("/enterprises?category=Accommodation"); return null; }}</Route>
+  const [location] = useLocation();
 
-        {/* New Experience pages */}
-        <Route path="/journey" component={Journey} />
-        <Route path="/explore" component={Explore} />
-        <Route path="/stories" component={Stories} />
-        <Route path="/membership" component={Membership} />
-        <Route path="/get-involved" component={GetInvolved} />
-        <Route path="/witta" component={Witta} />
+  // All pages are standalone (no PublicLayout)
+  if (location === "/") return <BauhausHome />;
+  if (location === "/gather") return <Gather />;
+  if (location === "/contact") return <Contact />;
+  if (location === "/compendium") return <Compendium />;
+  if (location === "/community") return <CommunityIntelligence />;
+  if (location === "/pulse") return <CommunityPulse />;
+  if (location === "/brand-guide") return <BrandGuide />;
+  if (location === "/zone-workshop") return <ZoneWorkshop />;
+  if (location.startsWith("/feedback")) {
+    const eventId = location.split("/feedback/")[1];
+    return <EventFeedback eventId={eventId} />;
+  }
 
-        {/* Blog pages */}
-        <Route path="/blog" component={Blog} />
-        <Route path="/blog/:slug" component={BlogPost} />
-        
-        {/* Vision / Strategic pages */}
-        <Route path="/vision" component={Vision} />
-        <Route path="/story" component={Story} />
-        <Route path="/site-plan" component={SitePlan} />
-        <Route path="/compendium" component={Compendium} />
-        <Route path="/drawing-picker" component={DrawingPicker} />
-        <Route path="/strategic-analysis" component={StrategicAnalysis} />
-        <Route path="/partner-portal" component={PartnerPortal} />
-        <Route path="/proposal" component={Proposal} />
-        <Route path="/lease-draft" component={LeaseDraft} />
-        <Route path="/financials" component={Financials} />
-
-        {/* Auth */}
-        <Route path="/login" component={Login} />
-        <Route path="/account" component={Account} />
-        
-        {/* Admin / Business pages */}
-        <Route path="/admin" component={AdminDashboard} />
-        <Route path="/admin/photos" component={PhotoManager} />
-        {/* Blog admin removed - using Empathy Ledger Content Hub admin */}
-        <Route path="/my-business" component={MyBusiness} />
-        
-        {/* Fallback */}
-        <Route path="/404" component={NotFound} />
-        <Route component={NotFound} />
-      </Switch>
-    </PublicLayout>
-  );
+  // Everything else redirects to home
+  return <Redirect to="/" />;
 }
-
-// NOTE: About Theme
-// - First choose a default theme according to your design style (dark or light bg), than change color palette in index.css
-//   to keep consistent foreground/background color across components
-// - If you want to make theme switchable, pass `switchable` ThemeProvider and use `useTheme` hook
 
 function App() {
   return (
     <ErrorBoundary>
-      <ThemeProvider
-        defaultTheme="light"
-        // switchable
-      >
+      <ThemeProvider defaultTheme="light">
         <SeasonalProvider>
           <TooltipProvider>
             <Toaster />

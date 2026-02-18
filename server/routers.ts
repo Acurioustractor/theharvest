@@ -1,8 +1,8 @@
 import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
-import { createEvent, getApprovedEvents, getPendingEvents, updateEventStatus, createBusiness, getApprovedBusinesses, getPendingBusinesses, updateBusinessStatus, getBusinessByUserId, getBusinessById, claimBusiness, updateBusinessProfile, getUnclaimedApprovedBusinesses, getProgressImages, createProgressImage, updateProgressImage, deleteProgressImage, promoteUserToAdmin, getAllUsers, getContent, getContentForPage, upsertContent, getAnnotationsForPoint, createAnnotation, deleteAnnotation } from "./db";
+import { createEvent, getApprovedEvents, getPendingEvents, updateEventStatus, createBusiness, getApprovedBusinesses, getPendingBusinesses, updateBusinessStatus, getBusinessByUserId, getBusinessById, claimBusiness, updateBusinessProfile, getUnclaimedApprovedBusinesses, getProgressImages, createProgressImage, updateProgressImage, deleteProgressImage, promoteUserToAdmin, getAllUsers, getContent, getContentForPage, upsertContent, getAnnotationsForPoint, createAnnotation, deleteAnnotation, createPulseResponse, getPulseResults, createEventFeedbackEntry, getEventFeedbackByEventId, getAllEventFeedback } from "./db";
 import { storagePut } from "./storage";
-import { upsertGHLContact } from "./gohighlevel";
+import { upsertGHLContact, addGHLContactNote } from "./gohighlevel";
 import { empathyLedgerClient } from "./empathyLedgerClient";
 import {
   loadTimeline,
@@ -212,6 +212,36 @@ export const appRouter = router({
         );
         const business = await updateBusinessProfile(businessId, ctx.user.id, cleanUpdates);
         return { success: true, business };
+      }),
+  }),
+
+  eoi: router({
+    submit: publicProcedure
+      .input(z.object({
+        name: z.string().min(1),
+        email: z.string().email(),
+        excitement: z.string().optional(),
+        source: z.string().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        const [firstName, ...rest] = input.name.split(" ");
+        const lastName = rest.join(" ") || undefined;
+
+        const result = await upsertGHLContact({
+          email: input.email,
+          firstName,
+          lastName,
+          source: "EOI Form - First Gathering",
+          tags: ["eoi-gathering-march-2026", "website-eoi"],
+        });
+
+        if (result.contactId && input.excitement) {
+          await addGHLContactNote(result.contactId,
+            `**EOI — First Gathering**\n\n**What excites them:** ${input.excitement}\n**Source:** ${input.source || "Not specified"}`
+          );
+        }
+
+        return { success: true };
       }),
   }),
 
@@ -543,6 +573,82 @@ export const appRouter = router({
         const success = await deleteAnnotation(input.id);
         return { success };
       }),
+  }),
+
+  // Community Pulse Survey
+  pulse: router({
+    submit: publicProcedure
+      .input(z.object({
+        yearsInArea: z.string().optional(),
+        communityValues: z.array(z.string()).optional(),
+        whatsMissing: z.string().optional(),
+        heardOfHarvest: z.string().optional(),
+        wouldUse: z.array(z.string()).optional(),
+        visitFrequency: z.string().optional(),
+        preferredTime: z.array(z.string()).optional(),
+        skillsToShare: z.string().optional(),
+        participationBarriers: z.array(z.string()).optional(),
+        ageBracket: z.string().optional(),
+        name: z.string().optional(),
+        email: z.string().email().optional().or(z.literal("")),
+        source: z.string().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        const cleanEmail = input.email || undefined;
+        const response = await createPulseResponse({
+          ...input,
+          email: cleanEmail,
+        });
+
+        // If email provided, upsert GHL contact with pulse tags
+        if (cleanEmail) {
+          const interestTags = (input.wouldUse || []).map(u => `interest-${u}`);
+          await upsertGHLContact({
+            email: cleanEmail,
+            firstName: input.name?.split(" ")[0],
+            lastName: input.name?.split(" ").slice(1).join(" ") || undefined,
+            source: "Community Pulse Survey",
+            tags: ["pulse-respondent", ...interestTags],
+          });
+        }
+
+        return { success: true, id: response?.id };
+      }),
+
+    results: protectedProcedure.query(async ({ ctx }) => {
+      if (ctx.user.role !== "admin") {
+        throw new Error("Unauthorized");
+      }
+      return await getPulseResults();
+    }),
+  }),
+
+  // Event Micro-Feedback
+  feedback: router({
+    submit: publicProcedure
+      .input(z.object({
+        eventId: z.number().optional(),
+        rating: z.number().min(1).max(4),
+        bestPart: z.string().optional(),
+        wouldReturn: z.string(),
+      }))
+      .mutation(async ({ input }) => {
+        const feedback = await createEventFeedbackEntry(input);
+        return { success: true, id: feedback?.id };
+      }),
+
+    forEvent: publicProcedure
+      .input(z.object({ eventId: z.number() }))
+      .query(async ({ input }) => {
+        return await getEventFeedbackByEventId(input.eventId);
+      }),
+
+    all: protectedProcedure.query(async ({ ctx }) => {
+      if (ctx.user.role !== "admin") {
+        throw new Error("Unauthorized");
+      }
+      return await getAllEventFeedback();
+    }),
   }),
 
   // Editable content for inline CMS

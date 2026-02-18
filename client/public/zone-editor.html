@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Harvest — Zone Editor</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bh-black: #1A1A1A;
+    --bh-cream: #F4F4F2;
+    --bh-red: #D62C2C;
+    --bh-yellow: #F2C900;
+    --bh-blue: #005EB8;
+    --bh-orange: #E05206;
+    --bh-green: #3A6E47;
+    --bh-indigo: #2A3B8F;
+    --bh-magenta: #A64B8A;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bh-black);
+    color: var(--bh-cream);
+    overflow: hidden;
+    height: 100vh;
+  }
+  /* Layout */
+  .app { display: grid; grid-template-columns: 1fr 400px; height: 100vh; }
+  .map-panel { position: relative; overflow: hidden; background: #2a2a2a; }
+  .side-panel { overflow-y: auto; border-left: 2px solid rgba(244,244,242,0.1); display: flex; flex-direction: column; }
+
+  /* Map */
+  .map-container { position: relative; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
+  .map-container img { max-width: 100%; max-height: 100%; object-fit: contain; user-select: none; -webkit-user-drag: none; }
+  .map-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+
+  /* Pins */
+  .pin {
+    position: absolute;
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.9);
+    cursor: grab;
+    pointer-events: all;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    transition: box-shadow 0.15s, width 0.15s, height 0.15s;
+  }
+  .pin:hover, .pin.active { width: 22px; height: 22px; }
+  .pin.active { border: 3px solid white; box-shadow: 0 0 0 4px currentColor, 0 0 20px currentColor; z-index: 20; }
+  .pin.dragging { cursor: grabbing; opacity: 0.8; }
+  .pin-label {
+    position: absolute;
+    transform: translateX(-50%);
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 900; font-size: 8px;
+    letter-spacing: 0.1em;
+    background: rgba(244,244,242,0.9);
+    color: var(--bh-black);
+    padding: 1px 5px;
+    white-space: nowrap;
+    pointer-events: all;
+    cursor: pointer;
+    z-index: 9;
+  }
+  .pin-label.active { background: currentColor; }
+
+  /* Sub-pins */
+  .sub-pin {
+    position: absolute;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255,255,255,0.7);
+    cursor: grab;
+    pointer-events: all;
+    transform: translate(-50%, -50%);
+    z-index: 8;
+    opacity: 0.7;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+  }
+  .sub-pin:hover { opacity: 1; width: 13px; height: 13px; }
+  .sub-pin.active { opacity: 1; border: 2px solid white; box-shadow: 0 0 0 3px currentColor; z-index: 15; }
+  .sub-pin-label {
+    position: absolute;
+    transform: translateX(-50%);
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700; font-size: 7px;
+    letter-spacing: 0.08em;
+    background: rgba(244,244,242,0.75);
+    color: var(--bh-black);
+    padding: 1px 4px;
+    white-space: nowrap;
+    pointer-events: all;
+    cursor: pointer;
+    z-index: 7;
+  }
+
+  /* Side panel sections */
+  .panel-header {
+    padding: 20px;
+    border-bottom: 2px solid rgba(244,244,242,0.1);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .panel-header h1 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 900; font-size: 14px;
+    letter-spacing: 0.1em;
+  }
+  .panel-tabs {
+    display: flex; border-bottom: 2px solid rgba(244,244,242,0.1);
+  }
+  .panel-tab {
+    flex: 1; padding: 12px; text-align: center;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700; font-size: 11px;
+    letter-spacing: 0.08em;
+    cursor: pointer; border: none; background: none;
+    color: var(--bh-cream); opacity: 0.4;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+  }
+  .panel-tab.active { opacity: 1; border-bottom-color: var(--bh-yellow); }
+  .panel-content { flex: 1; overflow-y: auto; padding: 20px; }
+
+  /* Zone list */
+  .zone-item {
+    padding: 12px; margin-bottom: 8px;
+    border-left: 3px solid;
+    background: rgba(244,244,242,0.04);
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .zone-item:hover { background: rgba(244,244,242,0.08); }
+  .zone-item.active { background: rgba(244,244,242,0.12); }
+  .zone-item-name {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 900; font-size: 13px;
+    letter-spacing: 0.06em;
+  }
+  .zone-item-coords {
+    font-size: 11px; opacity: 0.4; margin-top: 2px;
+    font-family: 'Inter', monospace;
+  }
+
+  /* Edit form */
+  .form-group { margin-bottom: 16px; }
+  .form-label {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700; font-size: 10px;
+    letter-spacing: 0.12em;
+    opacity: 0.5;
+    display: block; margin-bottom: 4px;
+  }
+  .form-input, .form-textarea, .form-select {
+    width: 100%;
+    background: rgba(244,244,242,0.08);
+    border: 1px solid rgba(244,244,242,0.15);
+    color: var(--bh-cream);
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    padding: 8px 10px;
+    outline: none;
+  }
+  .form-input:focus, .form-textarea:focus, .form-select:focus {
+    border-color: var(--bh-yellow);
+  }
+  .form-textarea { resize: vertical; min-height: 60px; }
+  .form-select { cursor: pointer; }
+  .form-select option { background: var(--bh-black); }
+
+  /* Sub-zones */
+  .sub-zone-item {
+    padding: 8px 10px; margin-bottom: 4px;
+    background: rgba(244,244,242,0.04);
+    border-left: 2px solid;
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 12px; cursor: pointer;
+  }
+  .sub-zone-item:hover { background: rgba(244,244,242,0.08); }
+  .sub-zone-item.active { background: rgba(244,244,242,0.12); }
+
+  /* Photos */
+  .photo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+  .photo-slot {
+    aspect-ratio: 4/3; background: rgba(244,244,242,0.06);
+    border: 1px dashed rgba(244,244,242,0.2);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 11px; opacity: 0.4;
+    overflow: hidden; position: relative;
+  }
+  .photo-slot img { width: 100%; height: 100%; object-fit: cover; }
+  .photo-slot:hover { border-color: var(--bh-yellow); opacity: 0.7; }
+  .photo-remove {
+    position: absolute; top: 2px; right: 2px;
+    background: rgba(0,0,0,0.7); color: white;
+    border: none; cursor: pointer; font-size: 10px;
+    width: 18px; height: 18px; border-radius: 50%;
+    display: none; align-items: center; justify-content: center;
+  }
+  .photo-slot:hover .photo-remove { display: flex; }
+
+  /* Buttons */
+  .btn {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700; font-size: 11px;
+    letter-spacing: 0.08em;
+    padding: 8px 16px;
+    border: none; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn-primary { background: var(--bh-yellow); color: var(--bh-black); }
+  .btn-secondary { background: rgba(244,244,242,0.1); color: var(--bh-cream); }
+  .btn-danger { background: var(--bh-red); color: white; }
+  .btn-sm { font-size: 10px; padding: 5px 10px; }
+  .btn + .btn { margin-left: 6px; }
+
+  /* Export overlay */
+  .export-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.8);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 1000;
+  }
+  .export-box {
+    background: var(--bh-black); border: 2px solid rgba(244,244,242,0.2);
+    padding: 24px; max-width: 700px; width: 90%; max-height: 80vh;
+  }
+  .export-box pre {
+    background: rgba(244,244,242,0.05);
+    padding: 16px; overflow: auto; max-height: 50vh;
+    font-size: 11px; line-height: 1.5;
+    color: var(--bh-cream);
+  }
+  .export-box h2 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 900; font-size: 16px;
+    letter-spacing: 0.08em; margin-bottom: 12px;
+  }
+
+  /* Color picker row */
+  .color-picker-row { display: flex; gap: 6px; flex-wrap: wrap; }
+  .color-swatch {
+    width: 24px; height: 24px; border-radius: 50%;
+    border: 2px solid transparent;
+    cursor: pointer;
+  }
+  .color-swatch.active { border-color: white; }
+</style>
+</head>
+<body>
+
+<div class="app" id="app">
+  <div class="map-panel" id="mapPanel">
+    <div class="map-container" id="mapContainer">
+      <img id="mapImage" src="/images/plans/site-plan-colour-labelled.jpeg" alt="Site plan" draggable="false" />
+    </div>
+  </div>
+  <div class="side-panel">
+    <div class="panel-header">
+      <h1>ZONE EDITOR</h1>
+      <div>
+        <button class="btn btn-primary btn-sm" onclick="exportData()">EXPORT</button>
+        <button class="btn btn-secondary btn-sm" onclick="addZone()">+ ZONE</button>
+      </div>
+    </div>
+    <div class="panel-tabs">
+      <button class="panel-tab active" data-tab="zones" onclick="switchTab('zones')">ZONES</button>
+      <button class="panel-tab" data-tab="edit" onclick="switchTab('edit')">EDIT</button>
+      <button class="panel-tab" data-tab="photos" onclick="switchTab('photos')">PHOTOS</button>
+    </div>
+    <div class="panel-content" id="panelContent"></div>
+  </div>
+</div>
+
+<!-- Export overlay -->
+<div class="export-overlay" id="exportOverlay" style="display:none" onclick="if(event.target===this)closeExport()">
+  <div class="export-box">
+    <h2>EXPORT ZONE DATA</h2>
+    <p style="font-size:12px;opacity:0.6;margin-bottom:12px">Copy this into the siteZones array in BauhausHome.tsx</p>
+    <pre id="exportCode"></pre>
+    <div style="margin-top:12px;display:flex;gap:8px">
+      <button class="btn btn-primary" onclick="copyExport()">COPY TO CLIPBOARD</button>
+      <button class="btn btn-secondary" onclick="closeExport()">CLOSE</button>
+    </div>
+  </div>
+</div>
+
+<input type="file" id="photoInput" accept="image/*" style="display:none" />
+
+<script>
+const COLORS = [
+  { name: 'Red', value: '#D62C2C' },
+  { name: 'Yellow', value: '#F2C900' },
+  { name: 'Blue', value: '#005EB8' },
+  { name: 'Orange', value: '#E05206' },
+  { name: 'Green', value: '#3A6E47' },
+  { name: 'Indigo', value: '#2A3B8F' },
+  { name: 'Magenta', value: '#A64B8A' },
+];
+
+const ELEMENTS = ['EARTH', 'FIRE', 'WATER', 'WOOD', 'AIR', 'FOOD', 'ART', 'PLAY'];
+
+// Initial zone data — loaded from BauhausHome.tsx
+let zones = [
+  { id: 'kids', label: 'KIDS ZONE', x: 18, y: 10, color: '#F2C900', element: 'AIR',
+    summary: 'Designed and built by kids — not for them, with them.',
+    details: ['Blank canvas — kids design their own area each season','Work with local schools + homeschool families','Expression of how kids are feeling in the space','Leah runs quarterly design workshops'],
+    who: 'Leah', subZones: [], photos: [] },
+  { id: 'fire', label: 'FIRE & WOOD', x: 35, y: 15, color: '#E05206', element: 'FIRE',
+    summary: 'Pizza oven, open fire, timber pavilion — tribute to the sawmill workers who shaped this ridge.',
+    details: ['Pizza oven + open fire cooking (affordable, build-your-own)','Timber pavilion from reclaimed wood','General store / pop-up shop','Fire pit / BBQ area','Chill under the tree zone'],
+    who: 'Ben + Nic (Residency No. 1)', subZones: [], photos: [] },
+  { id: 'gardens', label: 'GARDENS', x: 10, y: 55, color: '#3A6E47', element: 'EARTH',
+    summary: 'A hundred years of soil on this hill. Everything here starts in the ground.',
+    details: ['Food forests + nursery beds producing for the whole site','NDIS-accessible garden design (Cath)','Gardener residency — seasonal, working with chefs on what to grow','Chill hammock zone + water feature','Mulch station + garden beds along the frontage'],
+    who: 'Cath', subZones: [], photos: [] },
+  { id: 'gather', label: 'PLAY & GATHER', x: 35, y: 48, color: '#A64B8A', element: 'PLAY',
+    summary: 'The centre of the site. Where paths cross and people meet.',
+    details: ['Multi-purpose gathering space — events, markets, community meals','Free community meal on open days (Fri/Sat/Sun)','Shared tables under pergola','Space for pop-up markets — test an idea, find your crowd','Grassed area for events at night'],
+    who: 'Community', subZones: [], photos: [] },
+  { id: 'milkbar', label: 'MILK BAR', x: 55, y: 30, color: '#D62C2C', element: 'FOOD',
+    summary: 'Paying tribute to the milk and dairy industry. Not a boring cafe — very intentional, maybe five items on the menu.',
+    details: ['Retro milk bar concept — milkshakes, artisanal offerings','Rotating residency: first season milk bar, then maybe coffee roastery','Cafe for gallery visitors + community','Sabrina managing','Outdoor seating flows into gathering area'],
+    who: 'Sabrina', subZones: [], photos: [] },
+  { id: 'gallery', label: 'GALLERY & STAGE', x: 68, y: 42, color: '#005EB8', element: 'ART',
+    summary: 'The main interior — gallery by day, theater by night. Everything can be bumped out and transformed between seasons.',
+    details: ['Timber floor, raised stage with fireplace in the middle','Round tables — warm, cooperative feel','Cold room on display inside the gallery (florist walk-in)','Once-a-month curated ticketed experience','Residency workspace in rammed earth room at back','Bar + two toilets + shared wash station'],
+    who: 'Artists in residence', subZones: [], photos: [] },
+  { id: 'kitchen', label: 'PREP KITCHEN', x: 78, y: 32, color: '#D62C2C', element: 'FOOD',
+    summary: 'Not a restaurant kitchen — a prep kitchen. Induction hubs, combi oven, underbench fridges. Under $20K.',
+    details: ['Commercial induction hubs (no exhaust fan needed)','Combi oven + tabletop fryer','Underbench fridges + stainless steel benches','Dishwasher + grease trap','Open servery to gallery — kitchen as performance','Back entry for service / goods'],
+    who: 'Rotating chef residency', subZones: [], photos: [] },
+  { id: 'outdoor-art', label: 'OUTDOOR STUDIO', x: 82, y: 18, color: '#005EB8', element: 'ART',
+    summary: 'Pergola area for artists to make and exhibit work outdoors. Rammed earth, large-scale, messy.',
+    details: ['Covered outdoor workspace for artists','Connected to gallery but separate enough for focused work','Thais designing rammed earth elements','Exhibition space flows into garden paths'],
+    who: 'Thais + artists', subZones: [], photos: [] },
+];
+
+let activeZoneId = null;
+let activeSubZoneIdx = null;
+let currentTab = 'zones';
+let dragTarget = null;
+let dragOffset = { x: 0, y: 0 };
+
+// ─── Rendering ───
+
+function render() {
+  renderPins();
+  renderPanel();
+}
+
+function renderPins() {
+  // Remove old pins
+  document.querySelectorAll('.pin, .pin-label, .sub-pin, .sub-pin-label').forEach(el => el.remove());
+
+  const container = document.getElementById('mapPanel');
+  const img = document.getElementById('mapImage');
+  const rect = img.getBoundingClientRect();
+  const containerRect = container.getBoundingClientRect();
+
+  // Image offset within container
+  const offX = rect.left - containerRect.left;
+  const offY = rect.top - containerRect.top;
+
+  zones.forEach(zone => {
+    // Main pin
+    const pin = document.createElement('div');
+    pin.className = 'pin' + (activeZoneId === zone.id ? ' active' : '');
+    pin.style.left = (offX + (zone.x / 100) * rect.width) + 'px';
+    pin.style.top = (offY + (zone.y / 100) * rect.height) + 'px';
+    pin.style.backgroundColor = zone.color;
+    pin.style.color = zone.color;
+    pin.dataset.zoneId = zone.id;
+    pin.dataset.type = 'zone';
+    pin.addEventListener('mousedown', startDrag);
+    pin.addEventListener('click', (e) => { e.stopPropagation(); selectZone(zone.id); });
+    container.appendChild(pin);
+
+    // Label
+    const label = document.createElement('div');
+    label.className = 'pin-label' + (activeZoneId === zone.id ? ' active' : '');
+    label.style.left = (offX + (zone.x / 100) * rect.width) + 'px';
+    label.style.top = (offY + (zone.y / 100) * rect.height + 14) + 'px';
+    label.style.color = zone.color;
+    label.textContent = zone.label;
+    label.addEventListener('click', (e) => { e.stopPropagation(); selectZone(zone.id); });
+    container.appendChild(label);
+
+    // Sub-zone pins
+    if (zone.subZones) {
+      zone.subZones.forEach((sub, idx) => {
+        const sp = document.createElement('div');
+        sp.className = 'sub-pin' + (activeZoneId === zone.id && activeSubZoneIdx === idx ? ' active' : '');
+        sp.style.left = (offX + (sub.x / 100) * rect.width) + 'px';
+        sp.style.top = (offY + (sub.y / 100) * rect.height) + 'px';
+        sp.style.backgroundColor = zone.color;
+        sp.style.color = zone.color;
+        sp.dataset.zoneId = zone.id;
+        sp.dataset.subIdx = idx;
+        sp.dataset.type = 'sub';
+        sp.addEventListener('mousedown', startDrag);
+        sp.addEventListener('click', (e) => { e.stopPropagation(); selectSubZone(zone.id, idx); });
+        container.appendChild(sp);
+
+        const sl = document.createElement('div');
+        sl.className = 'sub-pin-label';
+        sl.style.left = (offX + (sub.x / 100) * rect.width) + 'px';
+        sl.style.top = (offY + (sub.y / 100) * rect.height + 10) + 'px';
+        sl.textContent = sub.label;
+        sl.addEventListener('click', (e) => { e.stopPropagation(); selectSubZone(zone.id, idx); });
+        container.appendChild(sl);
+      });
+    }
+  });
+}
+
+function renderPanel() {
+  const panel = document.getElementById('panelContent');
+  if (currentTab === 'zones') renderZoneList(panel);
+  else if (currentTab === 'edit') renderEditForm(panel);
+  else if (currentTab === 'photos') renderPhotosPanel(panel);
+}
+
+function renderZoneList(panel) {
+  const zone = zones.find(z => z.id === activeZoneId);
+  let html = '';
+  zones.forEach(z => {
+    html += `<div class="zone-item ${z.id === activeZoneId ? 'active' : ''}" style="border-color:${z.color}" onclick="selectZone('${z.id}')">
+      <div class="zone-item-name" style="color:${z.color}">${z.label}</div>
+      <div class="zone-item-coords">x: ${z.x.toFixed(1)}% &nbsp; y: ${z.y.toFixed(1)}% &nbsp; | &nbsp; ${z.element}</div>
+      ${z.subZones && z.subZones.length ? `<div style="margin-top:6px">` +
+        z.subZones.map((s, i) => `<div class="sub-zone-item ${activeZoneId === z.id && activeSubZoneIdx === i ? 'active' : ''}" style="border-color:${z.color}" onclick="event.stopPropagation();selectSubZone('${z.id}',${i})">
+          <span>${s.label}</span><span style="opacity:0.4;font-size:10px">x:${s.x.toFixed(1)} y:${s.y.toFixed(1)}</span>
+        </div>`).join('') + `</div>` : ''}
+    </div>`;
+  });
+
+  if (zone) {
+    html += `<div style="margin-top:16px;padding-top:16px;border-top:1px solid rgba(244,244,242,0.1)">
+      <button class="btn btn-secondary btn-sm" onclick="addSubZone('${zone.id}')">+ SUB-ZONE</button>
+      <button class="btn btn-danger btn-sm" onclick="deleteZone('${zone.id}')" style="margin-left:6px">DELETE</button>
+    </div>`;
+  }
+  panel.innerHTML = html;
+}
+
+function renderEditForm(panel) {
+  const zone = zones.find(z => z.id === activeZoneId);
+  if (!zone) {
+    panel.innerHTML = '<p style="opacity:0.4;text-align:center;padding:40px 0;font-size:13px">Select a zone to edit</p>';
+    return;
+  }
+
+  // Check if editing a sub-zone
+  const sub = activeSubZoneIdx !== null && zone.subZones[activeSubZoneIdx];
+  if (sub) {
+    panel.innerHTML = `
+      <div style="margin-bottom:16px;display:flex;align-items:center;gap:8px">
+        <span style="font-family:'Montserrat';font-weight:900;font-size:11px;letter-spacing:0.08em;opacity:0.5">${zone.label} ></span>
+        <span style="font-family:'Montserrat';font-weight:900;font-size:14px;letter-spacing:0.06em;color:${zone.color}">${sub.label}</span>
+      </div>
+      <div class="form-group">
+        <label class="form-label">NAME</label>
+        <input class="form-input" value="${esc(sub.label)}" onchange="updateSubField('label', this.value)" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">SUMMARY</label>
+        <textarea class="form-textarea" onchange="updateSubField('summary', this.value)">${esc(sub.summary || '')}</textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">DETAILS (one per line)</label>
+        <textarea class="form-textarea" rows="6" onchange="updateSubField('details', this.value.split('\\n').filter(Boolean))">${(sub.details || []).join('\n')}</textarea>
+      </div>
+      <div style="margin-top:12px">
+        <button class="btn btn-secondary btn-sm" onclick="activeSubZoneIdx=null;render()">BACK TO ZONE</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteSubZone('${zone.id}',${activeSubZoneIdx})">DELETE SUB-ZONE</button>
+      </div>
+    `;
+    return;
+  }
+
+  const colorSwatches = COLORS.map(c =>
+    `<div class="color-swatch ${c.value === zone.color ? 'active' : ''}" style="background:${c.value}" onclick="updateField('color','${c.value}')"></div>`
+  ).join('');
+
+  const elementOptions = ELEMENTS.map(e =>
+    `<option value="${e}" ${e === zone.element ? 'selected' : ''}>${e}</option>`
+  ).join('');
+
+  panel.innerHTML = `
+    <div style="margin-bottom:16px">
+      <span style="font-family:'Montserrat';font-weight:900;font-size:18px;letter-spacing:0.06em;color:${zone.color}">${zone.label}</span>
+    </div>
+    <div class="form-group">
+      <label class="form-label">LABEL</label>
+      <input class="form-input" value="${esc(zone.label)}" onchange="updateField('label', this.value)" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">ID</label>
+      <input class="form-input" value="${esc(zone.id)}" onchange="updateField('id', this.value)" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">COLOR</label>
+      <div class="color-picker-row">${colorSwatches}</div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">ELEMENT</label>
+      <select class="form-select" onchange="updateField('element', this.value)">${elementOptions}</select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">SUMMARY</label>
+      <textarea class="form-textarea" onchange="updateField('summary', this.value)">${esc(zone.summary)}</textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">DETAILS (one per line)</label>
+      <textarea class="form-textarea" rows="8" onchange="updateField('details', this.value.split('\\n').filter(Boolean))">${zone.details.join('\n')}</textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">WHO</label>
+      <input class="form-input" value="${esc(zone.who)}" onchange="updateField('who', this.value)" />
+    </div>
+  `;
+}
+
+function renderPhotosPanel(panel) {
+  const zone = zones.find(z => z.id === activeZoneId);
+  if (!zone) {
+    panel.innerHTML = '<p style="opacity:0.4;text-align:center;padding:40px 0;font-size:13px">Select a zone to manage photos</p>';
+    return;
+  }
+
+  const photos = zone.photos || [];
+  let html = `
+    <div style="margin-bottom:16px">
+      <span style="font-family:'Montserrat';font-weight:900;font-size:14px;letter-spacing:0.06em;color:${zone.color}">${zone.label} — MOOD BOARD</span>
+    </div>
+    <p style="font-size:12px;opacity:0.5;margin-bottom:12px">Add reference photos and inspiration for this zone. These will be used for dedicated zone pages.</p>
+    <div class="photo-grid">
+  `;
+
+  photos.forEach((photo, i) => {
+    html += `<div class="photo-slot">
+      <img src="${photo.src}" alt="${esc(photo.caption || '')}" />
+      <button class="photo-remove" onclick="removePhoto('${zone.id}',${i})">x</button>
+    </div>`;
+  });
+
+  // Add empty slots
+  const emptySlots = Math.max(2, 4 - photos.length);
+  for (let i = 0; i < emptySlots; i++) {
+    html += `<div class="photo-slot" onclick="addPhoto('${zone.id}')">+ add photo</div>`;
+  }
+
+  html += `</div>`;
+
+  // Photo captions
+  if (photos.length) {
+    html += `<div style="margin-top:16px">`;
+    photos.forEach((photo, i) => {
+      html += `<div class="form-group">
+        <label class="form-label">PHOTO ${i + 1} CAPTION</label>
+        <input class="form-input" value="${esc(photo.caption || '')}" onchange="updatePhotoCaption('${zone.id}',${i},this.value)" />
+      </div>`;
+    });
+    html += `</div>`;
+  }
+
+  // URL input for reference images
+  html += `
+    <div style="margin-top:16px;padding-top:16px;border-top:1px solid rgba(244,244,242,0.1)">
+      <label class="form-label">ADD BY URL</label>
+      <div style="display:flex;gap:6px">
+        <input class="form-input" id="photoUrlInput" placeholder="/images/plans/..." style="flex:1" />
+        <button class="btn btn-secondary btn-sm" onclick="addPhotoByUrl('${zone.id}')">ADD</button>
+      </div>
+    </div>
+  `;
+
+  panel.innerHTML = html;
+}
+
+// ─── Actions ───
+
+function selectZone(id) {
+  activeZoneId = id;
+  activeSubZoneIdx = null;
+  render();
+}
+
+function selectSubZone(zoneId, idx) {
+  activeZoneId = zoneId;
+  activeSubZoneIdx = idx;
+  render();
+}
+
+function updateField(field, value) {
+  const zone = zones.find(z => z.id === activeZoneId);
+  if (zone) { zone[field] = value; render(); }
+}
+
+function updateSubField(field, value) {
+  const zone = zones.find(z => z.id === activeZoneId);
+  if (zone && activeSubZoneIdx !== null && zone.subZones[activeSubZoneIdx]) {
+    zone.subZones[activeSubZoneIdx][field] = value;
+    render();
+  }
+}
+
+function addZone() {
+  const id = 'zone-' + Date.now();
+  zones.push({
+    id, label: 'NEW ZONE', x: 50, y: 50,
+    color: '#F2C900', element: 'EARTH',
+    summary: '', details: [], who: '',
+    subZones: [], photos: [],
+  });
+  activeZoneId = id;
+  activeSubZoneIdx = null;
+  currentTab = 'edit';
+  updateTabs();
+  render();
+}
+
+function deleteZone(id) {
+  if (!confirm('Delete this zone?')) return;
+  zones = zones.filter(z => z.id !== id);
+  activeZoneId = null;
+  activeSubZoneIdx = null;
+  render();
+}
+
+function addSubZone(zoneId) {
+  const zone = zones.find(z => z.id === zoneId);
+  if (!zone) return;
+  if (!zone.subZones) zone.subZones = [];
+  const sub = {
+    label: 'Sub-zone ' + (zone.subZones.length + 1),
+    x: zone.x + 3, y: zone.y + 5,
+    summary: '', details: [],
+  };
+  zone.subZones.push(sub);
+  activeSubZoneIdx = zone.subZones.length - 1;
+  currentTab = 'edit';
+  updateTabs();
+  render();
+}
+
+function deleteSubZone(zoneId, idx) {
+  const zone = zones.find(z => z.id === zoneId);
+  if (!zone || !zone.subZones) return;
+  zone.subZones.splice(idx, 1);
+  activeSubZoneIdx = null;
+  render();
+}
+
+function addPhoto(zoneId) {
+  const input = document.getElementById('photoInput');
+  input.onchange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const zone = zones.find(z => z.id === zoneId);
+      if (!zone) return;
+      if (!zone.photos) zone.photos = [];
+      zone.photos.push({ src: ev.target.result, caption: file.name });
+      render();
+    };
+    reader.readAsDataURL(file);
+  };
+  input.click();
+}
+
+function addPhotoByUrl(zoneId) {
+  const input = document.getElementById('photoUrlInput');
+  const url = input.value.trim();
+  if (!url) return;
+  const zone = zones.find(z => z.id === zoneId);
+  if (!zone) return;
+  if (!zone.photos) zone.photos = [];
+  zone.photos.push({ src: url, caption: '' });
+  input.value = '';
+  render();
+}
+
+function removePhoto(zoneId, idx) {
+  const zone = zones.find(z => z.id === zoneId);
+  if (!zone || !zone.photos) return;
+  zone.photos.splice(idx, 1);
+  render();
+}
+
+function updatePhotoCaption(zoneId, idx, value) {
+  const zone = zones.find(z => z.id === zoneId);
+  if (zone && zone.photos && zone.photos[idx]) {
+    zone.photos[idx].caption = value;
+  }
+}
+
+// ─── Drag ───
+
+function startDrag(e) {
+  e.preventDefault();
+  e.stopPropagation();
+  dragTarget = e.target;
+  dragTarget.classList.add('dragging');
+
+  const img = document.getElementById('mapImage');
+  const rect = img.getBoundingClientRect();
+
+  const move = (ev) => {
+    const px = ((ev.clientX - rect.left) / rect.width) * 100;
+    const py = ((ev.clientY - rect.top) / rect.height) * 100;
+    const cx = Math.max(0, Math.min(100, px));
+    const cy = Math.max(0, Math.min(100, py));
+
+    if (dragTarget.dataset.type === 'zone') {
+      const zone = zones.find(z => z.id === dragTarget.dataset.zoneId);
+      if (zone) { zone.x = cx; zone.y = cy; }
+    } else if (dragTarget.dataset.type === 'sub') {
+      const zone = zones.find(z => z.id === dragTarget.dataset.zoneId);
+      const idx = parseInt(dragTarget.dataset.subIdx);
+      if (zone && zone.subZones && zone.subZones[idx]) {
+        zone.subZones[idx].x = cx;
+        zone.subZones[idx].y = cy;
+      }
+    }
+    render();
+  };
+
+  const up = () => {
+    if (dragTarget) dragTarget.classList.remove('dragging');
+    dragTarget = null;
+    document.removeEventListener('mousemove', move);
+    document.removeEventListener('mouseup', up);
+  };
+
+  document.addEventListener('mousemove', move);
+  document.addEventListener('mouseup', up);
+}
+
+// ─── Tabs ───
+
+function switchTab(tab) {
+  currentTab = tab;
+  updateTabs();
+  renderPanel();
+}
+
+function updateTabs() {
+  document.querySelectorAll('.panel-tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.tab === currentTab);
+  });
+}
+
+// ─── Export ───
+
+function exportData() {
+  const code = zones.map(z => {
+    const obj = {
+      id: z.id, label: z.label, x: Math.round(z.x * 10) / 10, y: Math.round(z.y * 10) / 10,
+      color: z.color, element: z.element,
+      summary: z.summary, details: z.details, who: z.who,
+    };
+    if (z.subZones && z.subZones.length) {
+      obj.subZones = z.subZones.map(s => ({
+        label: s.label,
+        x: Math.round(s.x * 10) / 10,
+        y: Math.round(s.y * 10) / 10,
+        summary: s.summary || '',
+        details: s.details || [],
+      }));
+    }
+    return JSON.stringify(obj, null, 2);
+  }).join(',\n');
+
+  document.getElementById('exportCode').textContent = `const siteZones = [\n${code}\n];`;
+  document.getElementById('exportOverlay').style.display = 'flex';
+}
+
+function copyExport() {
+  const text = document.getElementById('exportCode').textContent;
+  navigator.clipboard.writeText(text);
+  const btn = event.target;
+  btn.textContent = 'COPIED';
+  setTimeout(() => btn.textContent = 'COPY TO CLIPBOARD', 1500);
+}
+
+function closeExport() {
+  document.getElementById('exportOverlay').style.display = 'none';
+}
+
+// ─── Utils ───
+
+function esc(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ─── Init ───
+
+document.getElementById('mapPanel').addEventListener('click', () => {
+  activeZoneId = null;
+  activeSubZoneIdx = null;
+  render();
+});
+
+// Re-render on image load and resize
+document.getElementById('mapImage').addEventListener('load', render);
+window.addEventListener('resize', () => { requestAnimationFrame(render); });
+
+// Initial render
+setTimeout(render, 200);
+</script>
+</body>
+</html>

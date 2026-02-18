@@ -18,6 +18,12 @@ import {
   EditableContent,
   sitePlanAnnotations,
   SitePlanAnnotation,
+  pulseResponses,
+  InsertPulseResponse,
+  PulseResponse,
+  eventFeedback,
+  InsertEventFeedback,
+  EventFeedback,
 } from "../drizzle/schema";
 // Blog posts are now fetched from Empathy Ledger Content Hub API
 // See server/empathyLedgerClient.ts for the integration
@@ -644,5 +650,86 @@ export async function deleteAnnotation(id: number): Promise<boolean> {
   } catch (error) {
     console.error("[Database] Failed to delete annotation:", error);
     return false;
+  }
+}
+
+// Pulse Survey queries
+export async function createPulseResponse(response: InsertPulseResponse): Promise<PulseResponse | undefined> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot create pulse response: database not available");
+    return undefined;
+  }
+
+  try {
+    const result = await db.insert(pulseResponses).values(response).returning();
+    return result[0];
+  } catch (error) {
+    console.error("[Database] Failed to create pulse response:", error);
+    throw error;
+  }
+}
+
+export async function getPulseResults(): Promise<PulseResponse[]> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot get pulse results: database not available");
+    return [];
+  }
+
+  try {
+    return await db.select().from(pulseResponses).orderBy(desc(pulseResponses.createdAt));
+  } catch (error) {
+    console.error("[Database] Failed to get pulse results:", error);
+    return [];
+  }
+}
+
+// Event Feedback queries
+export async function createEventFeedbackEntry(feedback: InsertEventFeedback): Promise<EventFeedback | undefined> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot create event feedback: database not available");
+    return undefined;
+  }
+
+  try {
+    const result = await db.insert(eventFeedback).values(feedback).returning();
+    return result[0];
+  } catch (error) {
+    console.error("[Database] Failed to create event feedback:", error);
+    throw error;
+  }
+}
+
+export async function getEventFeedbackByEventId(eventId: number): Promise<EventFeedback[]> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot get event feedback: database not available");
+    return [];
+  }
+
+  try {
+    return await db.select().from(eventFeedback)
+      .where(eq(eventFeedback.eventId, eventId))
+      .orderBy(desc(eventFeedback.createdAt));
+  } catch (error) {
+    console.error("[Database] Failed to get event feedback:", error);
+    return [];
+  }
+}
+
+export async function getAllEventFeedback(): Promise<EventFeedback[]> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot get all event feedback: database not available");
+    return [];
+  }
+
+  try {
+    return await db.select().from(eventFeedback).orderBy(desc(eventFeedback.createdAt));
+  } catch (error) {
+    console.error("[Database] Failed to get all event feedback:", error);
+    return [];
   }
 }

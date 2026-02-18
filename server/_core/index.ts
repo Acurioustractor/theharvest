@@ -1,4 +1,5 @@
 import "dotenv/config";
+import path from "path";
 import express from "express";
 import { createServer } from "http";
 import net from "net";
@@ -7,6 +8,7 @@ import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
 import { getApprovedBusinesses, getApprovedEvents } from "../db";
+import { generateImage, generateSketch } from "../gemini";
 
 const resolveBaseUrl = (req: express.Request) => {
   const envUrl = process.env.PUBLIC_SITE_URL;
@@ -115,6 +117,31 @@ async function startServer() {
       return res.status(500).json({ error: "Failed to build registry feed." });
     }
   });
+  // Image generation API
+  app.post("/api/generate-image", async (req, res) => {
+    try {
+      const { prompt, aspectRatio, preset, save } = req.body;
+      if (!prompt) return res.status(400).json({ error: "prompt is required" });
+      const result = await generateImage({ prompt, aspectRatio, preset, save });
+      return res.json(result);
+    } catch (error) {
+      console.error("[Gemini] generate-image error:", error);
+      return res.status(500).json({ error: "Image generation failed" });
+    }
+  });
+
+  app.post("/api/generate-sketch", async (req, res) => {
+    try {
+      const { type, seed, theme } = req.body;
+      if (!type) return res.status(400).json({ error: "type is required" });
+      const result = await generateSketch({ type, seed, theme });
+      return res.json(result);
+    } catch (error) {
+      console.error("[Gemini] generate-sketch error:", error);
+      return res.status(500).json({ error: "Sketch generation failed" });
+    }
+  });
+
   // tRPC API
   app.use(
     "/api/trpc",
@@ -123,6 +150,11 @@ async function startServer() {
       createContext,
     })
   );
+  // Serve research data as static files
+  app.use("/research/data", express.static(
+    path.resolve(import.meta.dirname, "../..", "research", "data")
+  ));
+
   // development mode uses Vite, production mode uses static files
   if (process.env.NODE_ENV === "development") {
     await setupVite(app, server);

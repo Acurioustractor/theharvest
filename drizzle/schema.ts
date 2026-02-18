@@ -6,6 +6,7 @@ import {
   text,
   timestamp,
   varchar,
+  jsonb,
 } from "drizzle-orm/pg-core";
 
 const userRoleEnum = pgEnum("user_role", ["user", "admin"]);
@@ -292,3 +293,48 @@ export const sitePlanAnnotations = pgTable("site_plan_annotations", {
 
 export type SitePlanAnnotation = typeof sitePlanAnnotations.$inferSelect;
 export type InsertSitePlanAnnotation = typeof sitePlanAnnotations.$inferInsert;
+
+/**
+ * Community Pulse Survey Responses
+ * Captures community voice data: what people want, feel, dream about
+ */
+export const pulseResponses = pgTable("pulse_responses", {
+  id: serial("id").primaryKey(),
+  // Section 1: You & This Place
+  yearsInArea: text("years_in_area"),
+  communityValues: jsonb("community_values").$type<string[]>(),
+  whatsMissing: text("whats_missing"),
+  // Section 2: The Harvest
+  heardOfHarvest: text("heard_of_harvest"),
+  wouldUse: jsonb("would_use").$type<string[]>(),
+  visitFrequency: text("visit_frequency"),
+  preferredTime: jsonb("preferred_time").$type<string[]>(),
+  // Section 3: You
+  skillsToShare: text("skills_to_share"),
+  participationBarriers: jsonb("participation_barriers").$type<string[]>(),
+  ageBracket: text("age_bracket"),
+  name: text("name"),
+  email: text("email"),
+  // Meta
+  source: text("source").default("web"),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+});
+
+export type PulseResponse = typeof pulseResponses.$inferSelect;
+export type InsertPulseResponse = typeof pulseResponses.$inferInsert;
+
+/**
+ * Event Micro-Feedback
+ * 30-second post-event feedback via QR code
+ */
+export const eventFeedback = pgTable("event_feedback", {
+  id: serial("id").primaryKey(),
+  eventId: integer("event_id"),
+  rating: integer("rating"),
+  bestPart: text("best_part"),
+  wouldReturn: text("would_return"),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+});
+
+export type EventFeedback = typeof eventFeedback.$inferSelect;
+export type InsertEventFeedback = typeof eventFeedback.$inferInsert;

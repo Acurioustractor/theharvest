@@ -1,0 +1,3655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Harvest — Community Explorer</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<style>
+  :root {
+    --bg-primary: #141A12;
+    --bg-secondary: #1C2419;
+    --bg-card: #222D1F;
+    --bg-card-hover: #2A3726;
+    --bg-sidebar: #0F1410;
+    --border: rgba(200, 180, 140, 0.12);
+    --border-active: rgba(200, 180, 140, 0.3);
+    --text-primary: #F0EAD6;
+    --text-secondary: #B8AE98;
+    --text-muted: #7A7264;
+    --accent-green: #5A8F4A;
+    --accent-green-light: #7CB668;
+    --accent-amber: #D4A843;
+    --accent-amber-light: #E8C06A;
+    --accent-orange: #C97B3A;
+    --accent-blue: #4A7FA8;
+    --accent-blue-light: #6BA3CC;
+    --accent-red: #B85450;
+    --accent-cream: #F0EAD6;
+    --accent-teal: #4A9A8A;
+    --sidebar-width: 260px;
+    --sidebar-collapsed: 60px;
+    --radius: 8px;
+    --radius-lg: 12px;
+    --shadow: 0 2px 12px rgba(0,0,0,0.3);
+    --shadow-lg: 0 4px 24px rgba(0,0,0,0.4);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  /* Dashboard Layout */
+  .dashboard {
+    display: grid;
+    grid-template-columns: var(--sidebar-width) 1fr;
+    height: 100vh;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    background: var(--bg-sidebar);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    z-index: 100;
+    transition: width 0.3s ease;
+  }
+
+  .sidebar-header {
+    padding: 20px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 72px;
+  }
+
+  .sidebar-logo {
+    width: 36px;
+    height: 36px;
+    background: var(--accent-green);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 900;
+    font-size: 18px;
+    color: var(--bg-primary);
+    flex-shrink: 0;
+  }
+
+  .sidebar-title {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
+  .sidebar-title small {
+    display: block;
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  .sidebar-nav {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px;
+  }
+
+  .sidebar-nav::-webkit-scrollbar { width: 4px; }
+  .sidebar-nav::-webkit-scrollbar-track { background: transparent; }
+  .sidebar-nav::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    color: var(--text-secondary);
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    user-select: none;
+  }
+
+  .nav-item:hover {
+    background: rgba(200, 180, 140, 0.06);
+    color: var(--text-primary);
+  }
+
+  .nav-item.active {
+    background: rgba(90, 143, 74, 0.15);
+    color: var(--accent-green-light);
+  }
+
+  .nav-icon {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 16px;
+  }
+
+  .sidebar-footer {
+    padding: 12px 16px;
+    border-top: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
+  /* Mobile toggle */
+  .mobile-toggle {
+    display: none;
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 200;
+    width: 40px;
+    height: 40px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text-primary);
+    font-size: 20px;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Content Area */
+  .content {
+    overflow-y: auto;
+    padding: 24px;
+    scroll-behavior: smooth;
+  }
+
+  .content::-webkit-scrollbar { width: 6px; }
+  .content::-webkit-scrollbar-track { background: transparent; }
+  .content::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  /* Panels */
+  .panel {
+    display: none;
+    animation: fadeIn 0.25s ease;
+  }
+
+  .panel.active {
+    display: block;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .panel-header {
+    margin-bottom: 24px;
+  }
+
+  .panel-header h1 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 24px;
+    margin-bottom: 6px;
+  }
+
+  .panel-header p {
+    color: var(--text-secondary);
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  /* Stat Cards */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    transition: border-color 0.2s;
+  }
+
+  .stat-card:hover {
+    border-color: var(--border-active);
+  }
+
+  .stat-card .stat-icon {
+    font-size: 24px;
+    margin-bottom: 8px;
+  }
+
+  .stat-card .stat-value {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 28px;
+    color: var(--accent-cream);
+    margin-bottom: 4px;
+  }
+
+  .stat-card .stat-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+  }
+
+  /* Card Grid */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    transition: all 0.2s;
+  }
+
+  .card:hover {
+    border-color: var(--border-active);
+    background: var(--bg-card-hover);
+  }
+
+  .card h3 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    margin-bottom: 8px;
+  }
+
+  .card p {
+    color: var(--text-secondary);
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  /* Badge */
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+
+  .badge-green { background: rgba(90, 143, 74, 0.2); color: var(--accent-green-light); }
+  .badge-amber { background: rgba(212, 168, 67, 0.2); color: var(--accent-amber-light); }
+  .badge-blue { background: rgba(74, 127, 168, 0.2); color: var(--accent-blue-light); }
+  .badge-orange { background: rgba(201, 123, 58, 0.2); color: var(--accent-orange); }
+  .badge-red { background: rgba(184, 84, 80, 0.2); color: var(--accent-red); }
+  .badge-teal { background: rgba(74, 154, 138, 0.2); color: var(--accent-teal); }
+
+  /* Chart Containers */
+  .chart-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 20px;
+    margin-bottom: 24px;
+  }
+
+  .chart-container {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+  }
+
+  .chart-container h3 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 16px;
+    color: var(--text-primary);
+  }
+
+  .chart-canvas-wrap {
+    position: relative;
+    width: 100%;
+    max-height: 400px;
+  }
+
+  /* Map Container */
+  .map-container {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    height: 600px;
+  }
+
+  .map-container #community-map {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Leaflet dark theme overrides */
+  .leaflet-container { background: #1C2419; }
+  .leaflet-tile-pane { filter: brightness(0.85) saturate(0.8); }
+  .leaflet-popup-content-wrapper {
+    background: var(--bg-card);
+    color: var(--text-primary);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+  }
+  .leaflet-popup-tip { background: var(--bg-card); }
+  .leaflet-popup-content { font-family: 'Inter', sans-serif; font-size: 13px; }
+  .leaflet-popup-content h4 { font-family: 'Montserrat', sans-serif; margin-bottom: 4px; }
+
+  /* Search & Filter */
+  .toolbar {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .search-input {
+    flex: 1;
+    min-width: 200px;
+    padding: 10px 14px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text-primary);
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .search-input:focus {
+    border-color: var(--accent-green);
+  }
+
+  .search-input::placeholder {
+    color: var(--text-muted);
+  }
+
+  .filter-select {
+    padding: 10px 14px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text-primary);
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    outline: none;
+    cursor: pointer;
+    min-width: 160px;
+  }
+
+  .filter-select:focus {
+    border-color: var(--accent-green);
+  }
+
+  .filter-select option {
+    background: var(--bg-card);
+    color: var(--text-primary);
+  }
+
+  /* Timeline */
+  .timeline {
+    position: relative;
+    padding-left: 28px;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--border);
+  }
+
+  .timeline-item {
+    position: relative;
+    margin-bottom: 24px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 16px 20px;
+    transition: border-color 0.2s;
+  }
+
+  .timeline-item:hover {
+    border-color: var(--border-active);
+  }
+
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -24px;
+    top: 20px;
+    width: 10px;
+    height: 10px;
+    background: var(--accent-amber);
+    border-radius: 50%;
+    border: 2px solid var(--bg-primary);
+  }
+
+  .timeline-date {
+    font-size: 12px;
+    color: var(--accent-amber);
+    font-weight: 600;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .timeline-title {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    margin-bottom: 6px;
+  }
+
+  .timeline-snippet {
+    color: var(--text-secondary);
+    font-size: 13px;
+    line-height: 1.5;
+    margin-bottom: 8px;
+  }
+
+  .timeline-link {
+    color: var(--accent-blue-light);
+    font-size: 12px;
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .timeline-link:hover {
+    text-decoration: underline;
+  }
+
+  .timeline-source {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  /* Insight Tabs */
+  .insight-tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 20px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+
+  .insight-tab {
+    padding: 8px 16px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text-secondary);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s;
+  }
+
+  .insight-tab:hover {
+    background: var(--bg-card-hover);
+    color: var(--text-primary);
+  }
+
+  .insight-tab.active {
+    background: rgba(90, 143, 74, 0.15);
+    border-color: rgba(90, 143, 74, 0.3);
+    color: var(--accent-green-light);
+  }
+
+  .insight-content {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text-secondary);
+  }
+
+  .insight-content h2 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--text-primary);
+    margin: 24px 0 12px 0;
+  }
+
+  .insight-content h2:first-child { margin-top: 0; }
+
+  .insight-content h3 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--text-primary);
+    margin: 18px 0 8px 0;
+  }
+
+  .insight-content ul, .insight-content ol {
+    padding-left: 20px;
+    margin-bottom: 12px;
+  }
+
+  .insight-content li { margin-bottom: 4px; }
+
+  .insight-content p { margin-bottom: 12px; }
+
+  .insight-content strong { color: var(--text-primary); }
+
+  /* Data Source Table */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+
+  .data-table thead {
+    background: rgba(200, 180, 140, 0.05);
+  }
+
+  .data-table th {
+    text-align: left;
+    padding: 12px 16px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .data-table td {
+    padding: 12px 16px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .data-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  .data-table a {
+    color: var(--accent-blue-light);
+    text-decoration: none;
+  }
+
+  .data-table a:hover { text-decoration: underline; }
+
+  .status-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 6px;
+  }
+
+  .status-loaded { background: var(--accent-green-light); }
+  .status-missing { background: var(--accent-red); }
+
+  /* No Data Message */
+  .no-data {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 40px;
+    text-align: center;
+    color: var(--text-muted);
+  }
+
+  .no-data .no-data-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    opacity: 0.5;
+  }
+
+  .no-data h3 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+  }
+
+  .no-data p {
+    font-size: 13px;
+    line-height: 1.5;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+
+  .no-data code {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 6px 12px;
+    background: var(--bg-primary);
+    border-radius: 4px;
+    font-family: 'SF Mono', Monaco, monospace;
+    font-size: 12px;
+    color: var(--accent-amber);
+  }
+
+  /* Highlights panel */
+  .highlights {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    margin-bottom: 24px;
+  }
+
+  .highlights h3 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 12px;
+    color: var(--accent-amber);
+  }
+
+  .highlights ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .highlights li {
+    padding: 6px 0;
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    padding-left: 20px;
+    position: relative;
+  }
+
+  .highlights li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 12px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent-green);
+  }
+
+  /* Freshness indicator */
+  .freshness {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+  }
+
+  /* Species cards */
+  .species-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 12px;
+    margin-top: 16px;
+  }
+
+  .species-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: border-color 0.2s;
+  }
+
+  .species-card:hover { border-color: var(--border-active); }
+
+  .species-icon {
+    font-size: 24px;
+    flex-shrink: 0;
+  }
+
+  .species-info { flex: 1; }
+
+  .species-name {
+    font-weight: 600;
+    font-size: 13px;
+    margin-bottom: 2px;
+  }
+
+  .species-detail {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  /* Button */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: var(--accent-green);
+    color: var(--bg-primary);
+    border: none;
+    border-radius: var(--radius);
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .btn:hover { background: var(--accent-green-light); }
+
+  .btn-outline {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+  }
+
+  .btn-outline:hover {
+    background: var(--bg-card-hover);
+    color: var(--text-primary);
+  }
+
+  /* Event cards */
+  .event-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    margin-bottom: 12px;
+    transition: border-color 0.2s;
+  }
+
+  .event-card:hover { border-color: var(--border-active); }
+
+  .event-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+
+  .event-title {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+  }
+
+  .event-schedule {
+    font-size: 12px;
+    color: var(--accent-amber);
+    font-weight: 500;
+    margin-bottom: 6px;
+  }
+
+  .event-location {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+
+  .event-desc {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  /* Loading */
+  .loading-spinner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px;
+  }
+
+  .spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid var(--border);
+    border-top-color: var(--accent-green);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    .dashboard {
+      grid-template-columns: 1fr;
+    }
+
+    .sidebar {
+      position: fixed;
+      left: -100%;
+      top: 0;
+      bottom: 0;
+      width: var(--sidebar-width);
+      transition: left 0.3s ease;
+      z-index: 1000;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .sidebar.open {
+      left: 0;
+    }
+
+    .mobile-toggle {
+      display: flex;
+    }
+
+    .content {
+      padding: 16px;
+      padding-top: 60px;
+    }
+
+    .chart-row {
+      grid-template-columns: 1fr;
+    }
+
+    .stat-grid {
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+
+    .card-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .map-container {
+      height: 400px;
+    }
+
+    .data-table {
+      font-size: 12px;
+    }
+
+    .data-table th,
+    .data-table td {
+      padding: 8px 10px;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .stat-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .species-list {
+      grid-template-columns: 1fr;
+    }
+
+    .toolbar {
+      flex-direction: column;
+    }
+
+    .insight-tabs {
+      gap: 2px;
+    }
+
+    .insight-tab {
+      padding: 6px 12px;
+      font-size: 12px;
+    }
+  }
+
+  /* Backdrop for mobile sidebar */
+  .sidebar-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 999;
+  }
+
+  .sidebar-backdrop.visible {
+    display: block;
+  }
+
+  /* Scrollbar for content */
+  .content::-webkit-scrollbar { width: 6px; }
+  .content::-webkit-scrollbar-track { background: transparent; }
+  .content::-webkit-scrollbar-thumb { background: rgba(200,180,140,0.15); border-radius: 3px; }
+
+  /* Star rating */
+  .star-rating { color: var(--accent-amber); font-size: 18px; letter-spacing: 2px; }
+  .star-rating .empty { color: var(--text-muted); }
+
+  /* Review card */
+  .review-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+  .review-card .review-text {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    font-style: italic;
+    margin-bottom: 8px;
+  }
+  .review-card .review-meta {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  /* Venue rating card */
+  .venue-rating-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    transition: border-color 0.2s;
+  }
+  .venue-rating-card:hover { border-color: var(--border-active); }
+  .venue-rating-card h4 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 6px;
+  }
+  .venue-rating-card .venue-type {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+  }
+  .venue-rating-card .venue-stats {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+  .venue-rating-card .venue-rating-num {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 24px;
+    color: var(--accent-amber);
+  }
+  .venue-rating-card .venue-review-count {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  /* Consultation card */
+  .consultation-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    margin-bottom: 12px;
+    transition: border-color 0.2s;
+  }
+  .consultation-card:hover { border-color: var(--border-active); }
+  .consultation-card h4 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
+  .consultation-card p {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin-bottom: 8px;
+  }
+  .consultation-card .consultation-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  /* Article card */
+  .article-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    margin-bottom: 12px;
+    transition: border-color 0.2s;
+  }
+  .article-card:hover { border-color: var(--border-active); }
+  .article-card h4 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 6px;
+  }
+  .article-card .article-meta {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    display: flex;
+    gap: 12px;
+  }
+  .article-card p {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  /* Opportunity list */
+  .opportunity-list {
+    list-style: none;
+    padding: 0;
+  }
+  .opportunity-list li {
+    padding: 8px 0 8px 20px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    position: relative;
+  }
+  .opportunity-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 14px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent-green);
+  }
+
+  /* Map legend */
+  .map-legend {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px 16px;
+    margin-top: 12px;
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+
+  .legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+</style>
+</head>
+<body>
+
+<button class="mobile-toggle" onclick="toggleSidebar()" aria-label="Toggle menu">&#9776;</button>
+<div class="sidebar-backdrop" id="sidebar-backdrop" onclick="toggleSidebar()"></div>
+
+<div class="dashboard">
+  <!-- Sidebar -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">H</div>
+      <div class="sidebar-title">
+        Community Explorer
+        <small>Witta / Maleny (POA 4552)</small>
+      </div>
+    </div>
+    <div class="sidebar-nav" id="sidebar-nav">
+      <div class="nav-item active" data-panel="overview" onclick="switchPanel('overview')">
+        <span class="nav-icon">&#9673;</span>
+        <span>Overview</span>
+      </div>
+      <div class="nav-item" data-panel="demographics" onclick="switchPanel('demographics')">
+        <span class="nav-icon">&#9775;</span>
+        <span>Demographics</span>
+      </div>
+      <div class="nav-item" data-panel="map" onclick="switchPanel('map')">
+        <span class="nav-icon">&#9740;</span>
+        <span>Community Map</span>
+      </div>
+      <div class="nav-item" data-panel="organizations" onclick="switchPanel('organizations')">
+        <span class="nav-icon">&#9881;</span>
+        <span>Organizations</span>
+      </div>
+      <div class="nav-item" data-panel="events" onclick="switchPanel('events')">
+        <span class="nav-icon">&#9734;</span>
+        <span>Events &amp; Markets</span>
+      </div>
+      <div class="nav-item" data-panel="heritage" onclick="switchPanel('heritage')">
+        <span class="nav-icon">&#9961;</span>
+        <span>History &amp; Heritage</span>
+      </div>
+      <div class="nav-item" data-panel="biodiversity" onclick="switchPanel('biodiversity')">
+        <span class="nav-icon">&#9752;</span>
+        <span>Biodiversity</span>
+      </div>
+      <div class="nav-item" data-panel="media" onclick="switchPanel('media')">
+        <span class="nav-icon">&#128240;</span>
+        <span>Media Coverage</span>
+      </div>
+      <div class="nav-item" data-panel="reviews" onclick="switchPanel('reviews')">
+        <span class="nav-icon">&#11088;</span>
+        <span>Reviews &amp; Sentiment</span>
+      </div>
+      <div class="nav-item" data-panel="council" onclick="switchPanel('council')">
+        <span class="nav-icon">&#127963;</span>
+        <span>Council &amp; Policy</span>
+      </div>
+      <div class="nav-item" data-panel="insights" onclick="switchPanel('insights')">
+        <span class="nav-icon">&#10024;</span>
+        <span>AI Insights</span>
+      </div>
+      <div class="nav-item" data-panel="sources" onclick="switchPanel('sources')">
+        <span class="nav-icon">&#9776;</span>
+        <span>Data Sources</span>
+      </div>
+    </div>
+    <div class="sidebar-footer">
+      <span id="data-status">Loading data...</span>
+    </div>
+  </nav>
+
+  <!-- Content Area -->
+  <main class="content" id="content">
+
+    <!-- OVERVIEW PANEL -->
+    <div class="panel active" id="panel-overview">
+      <div class="panel-header">
+        <h1>Community Profile: Witta / Maleny</h1>
+        <p>Research data for POA 4552, Sunshine Coast Hinterland, Jinibara Country. Compiled from public data sources for community development and grant applications.</p>
+      </div>
+      <div class="freshness" id="freshness-indicator">
+        <span class="status-dot status-loaded"></span>
+        Data loaded: <span id="freshness-date">checking...</span>
+      </div>
+      <div class="stat-grid" id="overview-stats">
+        <div class="stat-card">
+          <div class="stat-icon">&#128101;</div>
+          <div class="stat-value" id="stat-population">--</div>
+          <div class="stat-label">Population</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">&#127963;</div>
+          <div class="stat-value" id="stat-orgs">--</div>
+          <div class="stat-label">Organizations</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">&#127793;</div>
+          <div class="stat-value" id="stat-species">--</div>
+          <div class="stat-label">Species Recorded</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">&#127970;</div>
+          <div class="stat-value" id="stat-heritage">--</div>
+          <div class="stat-label">Heritage Sites</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">&#127915;</div>
+          <div class="stat-value" id="stat-events">--</div>
+          <div class="stat-label">Events &amp; Markets</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">&#128240;</div>
+          <div class="stat-value" id="stat-articles">--</div>
+          <div class="stat-label">Media Articles</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">&#11088;</div>
+          <div class="stat-value" id="stat-rating">--</div>
+          <div class="stat-label">Community Rating</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">&#128172;</div>
+          <div class="stat-value" id="stat-venues-reviewed">--</div>
+          <div class="stat-label">Venues Reviewed</div>
+        </div>
+      </div>
+      <div class="highlights" id="overview-highlights">
+        <h3>Key Highlights</h3>
+        <ul id="highlights-list">
+          <li>Loading highlights...</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- DEMOGRAPHICS PANEL -->
+    <div class="panel" id="panel-demographics">
+      <div class="panel-header">
+        <h1>Demographics</h1>
+        <p>Census data for POA 4552 from the Australian Bureau of Statistics.</p>
+      </div>
+      <div id="demographics-content">
+        <div class="stat-grid" id="demo-stats"></div>
+        <div class="chart-row">
+          <div class="chart-container">
+            <h3>Age Distribution (Population Pyramid)</h3>
+            <div class="chart-canvas-wrap">
+              <canvas id="chart-age-pyramid"></canvas>
+            </div>
+          </div>
+          <div class="chart-container">
+            <h3>Income Distribution</h3>
+            <div class="chart-canvas-wrap">
+              <canvas id="chart-income"></canvas>
+            </div>
+          </div>
+        </div>
+        <div class="chart-row">
+          <div class="chart-container">
+            <h3>Occupation Breakdown</h3>
+            <div class="chart-canvas-wrap">
+              <canvas id="chart-occupation"></canvas>
+            </div>
+          </div>
+          <div class="chart-container">
+            <h3>Housing Tenure (Weekly Household Income)</h3>
+            <div class="chart-canvas-wrap">
+              <canvas id="chart-housing"></canvas>
+            </div>
+          </div>
+        </div>
+        <div class="chart-row">
+          <div class="chart-container">
+            <h3>Population Growth (Maroochy Hinterland SA2)</h3>
+            <div class="chart-canvas-wrap">
+              <canvas id="chart-population-growth"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="no-data" id="demographics-nodata" style="display:none;">
+        <div class="no-data-icon">&#128202;</div>
+        <h3>Census Data Not Available</h3>
+        <p>Run the ABS census scraper to load demographic data for POA 4552.</p>
+        <code>python research/scrapers/abs_census.py</code>
+      </div>
+    </div>
+
+    <!-- MAP PANEL -->
+    <div class="panel" id="panel-map">
+      <div class="panel-header">
+        <h1>Community Map</h1>
+        <p>Community venues, heritage sites, and parks in the Witta and Maleny area.</p>
+      </div>
+      <div class="map-container">
+        <div id="community-map"></div>
+      </div>
+      <div class="map-legend">
+        <div class="legend-item">
+          <div class="legend-dot" style="background:#4A7FA8;"></div>
+          Community Venues
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot" style="background:#D4A843;"></div>
+          Heritage Sites
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot" style="background:#5A8F4A;"></div>
+          Parks &amp; Reserves
+        </div>
+      </div>
+    </div>
+
+    <!-- ORGANIZATIONS PANEL -->
+    <div class="panel" id="panel-organizations">
+      <div class="panel-header">
+        <h1>Community Organizations</h1>
+        <p>Local groups, clubs, and organizations in the Witta/Maleny area.</p>
+      </div>
+      <div class="toolbar">
+        <input type="text" class="search-input" id="org-search" placeholder="Search organizations..." oninput="filterOrgs()">
+        <select class="filter-select" id="org-filter" onchange="filterOrgs()">
+          <option value="">All Types</option>
+        </select>
+      </div>
+      <div class="card-grid" id="org-list"></div>
+      <div class="no-data" id="orgs-nodata" style="display:none;">
+        <div class="no-data-icon">&#127963;</div>
+        <h3>Organization Data Not Available</h3>
+        <p>Run the community organizations scraper to load local org data.</p>
+        <code>python research/scrapers/community_orgs.py</code>
+      </div>
+    </div>
+
+    <!-- EVENTS PANEL -->
+    <div class="panel" id="panel-events">
+      <div class="panel-header">
+        <h1>Events &amp; Markets</h1>
+        <p>Recurring markets, festivals, and community events in the area.</p>
+      </div>
+      <div class="toolbar">
+        <input type="text" class="search-input" id="event-search" placeholder="Search events..." oninput="filterEvents()">
+        <select class="filter-select" id="event-filter" onchange="filterEvents()">
+          <option value="">All Types</option>
+        </select>
+      </div>
+      <div id="event-list"></div>
+      <div class="no-data" id="events-nodata" style="display:none;">
+        <div class="no-data-icon">&#127915;</div>
+        <h3>Events Data Not Available</h3>
+        <p>Run the local events scraper to load event listings.</p>
+        <code>python research/scrapers/local_events.py</code>
+      </div>
+    </div>
+
+    <!-- HERITAGE PANEL -->
+    <div class="panel" id="panel-heritage">
+      <div class="panel-header">
+        <h1>Heritage &amp; History</h1>
+        <p>Heritage-listed places from the Queensland Heritage Register and Sunshine Coast Council local heritage overlay, plus historical records from Trove.</p>
+      </div>
+      <div id="heritage-content">
+        <div class="stat-grid" id="heritage-stats"></div>
+        <h3 style="font-family:'Montserrat',sans-serif;font-weight:600;font-size:16px;margin:20px 0 12px;">Queensland Heritage Register</h3>
+        <div class="card-grid" id="qld-heritage-list"></div>
+        <h3 style="font-family:'Montserrat',sans-serif;font-weight:600;font-size:16px;margin:20px 0 12px;">Sunshine Coast Local Heritage Places</h3>
+        <div class="card-grid" id="scc-heritage-list"></div>
+        <h3 style="font-family:'Montserrat',sans-serif;font-weight:600;font-size:16px;margin:20px 0 12px;">Historical Records (Trove)</h3>
+        <div class="toolbar">
+          <input type="text" class="search-input" id="heritage-search" placeholder="Search historical records..." oninput="filterHeritage()">
+        </div>
+        <div class="timeline" id="heritage-timeline"></div>
+      </div>
+      <div class="no-data" id="heritage-nodata" style="display:none;">
+        <div class="no-data-icon">&#128218;</div>
+        <h3>Heritage Data Not Available</h3>
+        <p>No heritage or historical data loaded.</p>
+      </div>
+    </div>
+
+    <!-- BIODIVERSITY PANEL -->
+    <div class="panel" id="panel-biodiversity">
+      <div class="panel-header">
+        <h1>Biodiversity</h1>
+        <p>Species records from the Atlas of Living Australia (ALA) for the Witta region.</p>
+      </div>
+      <div id="biodiversity-content">
+        <div class="stat-grid" id="bio-stats"></div>
+        <div class="chart-row">
+          <div class="chart-container">
+            <h3>Species Groups</h3>
+            <div class="chart-canvas-wrap">
+              <canvas id="chart-species-groups"></canvas>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top: 20px;">
+          <h3 style="font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 16px; margin-bottom: 12px;">Threatened Species</h3>
+          <div class="species-list" id="threatened-species-list"></div>
+        </div>
+      </div>
+      <div class="no-data" id="biodiversity-nodata" style="display:none;">
+        <div class="no-data-icon">&#127793;</div>
+        <h3>Biodiversity Data Not Available</h3>
+        <p>Run the ALA species scraper to load biodiversity data.</p>
+        <code>python research/scrapers/ala_species.py</code>
+      </div>
+    </div>
+
+    <!-- MEDIA COVERAGE PANEL -->
+    <div class="panel" id="panel-media">
+      <div class="panel-header">
+        <h1>Media Coverage</h1>
+        <p>Local news articles about the Maleny/Witta hinterland area from Sunshine Coast media outlets.</p>
+      </div>
+      <div id="media-content">
+        <div class="stat-grid" id="media-stats"></div>
+        <div class="chart-row">
+          <div class="chart-container">
+            <h3>Coverage by Theme</h3>
+            <div class="chart-canvas-wrap">
+              <canvas id="chart-media-themes"></canvas>
+            </div>
+          </div>
+          <div class="chart-container">
+            <h3>Sentiment Breakdown</h3>
+            <div class="chart-canvas-wrap">
+              <canvas id="chart-media-sentiment"></canvas>
+            </div>
+          </div>
+        </div>
+        <div class="highlights" id="media-narrative">
+          <h3>Community Narrative</h3>
+          <div id="media-narrative-content"></div>
+        </div>
+        <h3 style="font-family:'Montserrat',sans-serif;font-weight:600;font-size:16px;margin:20px 0 12px;">Recent Articles</h3>
+        <div class="toolbar">
+          <input type="text" class="search-input" id="media-search" placeholder="Search articles..." oninput="filterMedia()">
+          <select class="filter-select" id="media-source-filter" onchange="filterMedia()">
+            <option value="">All Sources</option>
+          </select>
+          <select class="filter-select" id="media-sentiment-filter" onchange="filterMedia()">
+            <option value="">All Sentiment</option>
+            <option value="positive">Positive</option>
+            <option value="neutral">Neutral</option>
+            <option value="negative">Negative</option>
+          </select>
+        </div>
+        <div id="media-article-list"></div>
+      </div>
+      <div class="no-data" id="media-nodata" style="display:none;">
+        <div class="no-data-icon">&#128240;</div>
+        <h3>Media Data Not Available</h3>
+        <p>No local media articles loaded.</p>
+      </div>
+    </div>
+
+    <!-- REVIEWS & SENTIMENT PANEL -->
+    <div class="panel" id="panel-reviews">
+      <div class="panel-header">
+        <h1>Reviews &amp; Sentiment</h1>
+        <p>Google Reviews data for community venues, markets, and businesses in the area.</p>
+      </div>
+      <div id="reviews-content">
+        <div class="stat-grid" id="reviews-stats"></div>
+        <div class="chart-row">
+          <div class="chart-container">
+            <h3>Sentiment Themes</h3>
+            <div class="chart-canvas-wrap">
+              <canvas id="chart-review-themes"></canvas>
+            </div>
+          </div>
+        </div>
+        <div class="highlights" id="harvest-insights-box">
+          <h3>Harvest Opportunities from Reviews</h3>
+          <div id="harvest-insights-content"></div>
+        </div>
+        <h3 style="font-family:'Montserrat',sans-serif;font-weight:600;font-size:16px;margin:20px 0 12px;">Venue Ratings</h3>
+        <div class="card-grid" id="venue-ratings-list"></div>
+      </div>
+      <div class="no-data" id="reviews-nodata" style="display:none;">
+        <div class="no-data-icon">&#11088;</div>
+        <h3>Review Data Not Available</h3>
+        <p>No Google Reviews data loaded.</p>
+      </div>
+    </div>
+
+    <!-- COUNCIL & POLICY PANEL -->
+    <div class="panel" id="panel-council">
+      <div class="panel-header">
+        <h1>Council &amp; Policy</h1>
+        <p>Sunshine Coast Council consultations, strategies, and policy documents relevant to the hinterland community.</p>
+      </div>
+      <div id="council-content">
+        <div class="stat-grid" id="council-stats"></div>
+        <div class="chart-row">
+          <div class="chart-container">
+            <h3>Consultation Themes</h3>
+            <div class="chart-canvas-wrap">
+              <canvas id="chart-council-themes"></canvas>
+            </div>
+          </div>
+        </div>
+        <div class="highlights" id="council-alignment">
+          <h3>Harvest Alignment Points</h3>
+          <ul class="opportunity-list" id="council-alignment-list"></ul>
+        </div>
+        <h3 style="font-family:'Montserrat',sans-serif;font-weight:600;font-size:16px;margin:20px 0 12px;">Consultations &amp; Strategies</h3>
+        <div id="consultation-list"></div>
+      </div>
+      <div class="no-data" id="council-nodata" style="display:none;">
+        <div class="no-data-icon">&#127963;</div>
+        <h3>Council Data Not Available</h3>
+        <p>No council consultation data loaded.</p>
+      </div>
+    </div>
+
+    <!-- AI INSIGHTS PANEL -->
+    <div class="panel" id="panel-insights">
+      <div class="panel-header">
+        <h1>AI Insights &amp; Harvest Opportunities</h1>
+        <p>AI-generated analysis of community data, identifying opportunities for The Harvest.</p>
+      </div>
+      <div class="insight-tabs" id="insight-tabs"></div>
+      <div class="insight-content" id="insight-content">
+        <p>Select a topic above to view analysis.</p>
+      </div>
+      <div style="margin-top: 16px;">
+        <button class="btn btn-outline" id="btn-download-report" onclick="downloadReport()" style="display:none;">
+          Download Full Report
+        </button>
+      </div>
+      <div class="no-data" id="insights-nodata" style="display:none;">
+        <div class="no-data-icon">&#10024;</div>
+        <h3>AI Analysis Not Available</h3>
+        <p>Run the community analysis pipeline to generate insights.</p>
+        <code>python research/analyze.py</code>
+      </div>
+    </div>
+
+    <!-- DATA SOURCES PANEL -->
+    <div class="panel" id="panel-sources">
+      <div class="panel-header">
+        <h1>Data Sources</h1>
+        <p>Attribution and status for all data sources used in this community profile.</p>
+      </div>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Source</th>
+            <th>Description</th>
+            <th>License / Terms</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="sources-table-body">
+        </tbody>
+      </table>
+    </div>
+
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+// ============================================================
+// DATA LOADING
+// ============================================================
+
+const DATA_BASE = '../../research/data';
+const ANALYSIS_BASE = '../../research/analysis';
+
+// Global data store
+const appData = {
+  census: null,
+  venues: null,
+  heritage_sites: null,
+  planning: null,
+  orgs: null,
+  events: null,
+  trove: null,
+  species: null,
+  reviews: null,
+  media: null,
+  facebook: null,
+  consultations: null,
+  population: null,
+  qld_heritage: null,
+  analysis: null,
+};
+
+// Chart instances (for cleanup)
+const charts = {};
+
+// Leaflet map instance
+let communityMap = null;
+let mapInitialized = false;
+
+// Data source definitions
+const DATA_SOURCES = [
+  {
+    key: 'census',
+    name: 'Australian Bureau of Statistics',
+    file: 'abs-census.json',
+    description: 'Census 2021 data for POA 4552 (age, income, occupation, household)',
+    url: 'https://www.abs.gov.au/',
+    license: 'Creative Commons BY 4.0',
+  },
+  {
+    key: 'population',
+    name: 'ABS Estimated Resident Population',
+    file: 'qgso-population.json',
+    description: 'Annual population estimates for Maroochy Hinterland SA2 (2001-2024)',
+    url: 'https://www.abs.gov.au/',
+    license: 'Creative Commons BY 4.0',
+  },
+  {
+    key: 'venues',
+    name: 'Sunshine Coast Council — Venues',
+    file: 'scc-venues.json',
+    description: 'Community venues, halls, and facilities',
+    url: 'https://www.sunshinecoast.qld.gov.au/',
+    license: 'Creative Commons BY 4.0',
+  },
+  {
+    key: 'heritage_sites',
+    name: 'Sunshine Coast Council — Heritage',
+    file: 'scc-heritage.json',
+    description: 'Local heritage places from the planning overlay',
+    url: 'https://heritage.sunshinecoast.qld.gov.au/',
+    license: 'Creative Commons BY 4.0',
+  },
+  {
+    key: 'qld_heritage',
+    name: 'Queensland Heritage Register',
+    file: 'qld-heritage.json',
+    description: 'State heritage-listed places in the Sunshine Coast region',
+    url: 'https://www.qld.gov.au/environment/land/heritage',
+    license: 'Creative Commons BY 4.0',
+  },
+  {
+    key: 'planning',
+    name: 'Sunshine Coast Council — Planning',
+    file: 'scc-planning.json',
+    description: 'Planning zones, parks, and reserves',
+    url: 'https://www.sunshinecoast.qld.gov.au/',
+    license: 'Creative Commons BY 4.0',
+  },
+  {
+    key: 'orgs',
+    name: 'Community Organizations',
+    file: 'community-orgs.json',
+    description: 'Local community groups, clubs, and associations',
+    url: 'Various',
+    license: 'Public information',
+  },
+  {
+    key: 'events',
+    name: 'Local Events & Markets',
+    file: 'local-events.json',
+    description: 'Markets, festivals, and recurring events',
+    url: 'Various',
+    license: 'Public information',
+  },
+  {
+    key: 'trove',
+    name: 'National Library of Australia — Trove',
+    file: 'trove-history.json',
+    description: 'Historical newspaper articles, records, and archives',
+    url: 'https://trove.nla.gov.au/',
+    license: 'Various (see individual records)',
+  },
+  {
+    key: 'species',
+    name: 'Atlas of Living Australia',
+    file: 'ala-species.json',
+    description: 'Species occurrence records and biodiversity data',
+    url: 'https://www.ala.org.au/',
+    license: 'Creative Commons BY 4.0',
+  },
+  {
+    key: 'reviews',
+    name: 'Google Reviews',
+    file: 'google-reviews.json',
+    description: 'Venue ratings and review sentiment from Google Places',
+    url: 'https://maps.google.com/',
+    license: 'Google Terms of Service',
+  },
+  {
+    key: 'media',
+    name: 'Local Media Coverage',
+    file: 'local-media.json',
+    description: 'News articles from Sunshine Coast media outlets',
+    url: 'https://www.sunshinecoastnews.com.au/',
+    license: 'Fair use / research',
+  },
+  {
+    key: 'facebook',
+    name: 'Facebook Community Groups',
+    file: 'facebook-groups.json',
+    description: 'Local Facebook groups and community discussion themes',
+    url: 'https://www.facebook.com/',
+    license: 'Public information',
+  },
+  {
+    key: 'consultations',
+    name: 'Council Consultations & Strategies',
+    file: 'council-consultations.json',
+    description: 'SCC consultations, strategies, and community engagement',
+    url: 'https://haveyoursay.sunshinecoast.qld.gov.au/',
+    license: 'Creative Commons BY 4.0',
+  },
+  {
+    key: 'analysis',
+    name: 'AI Community Analysis',
+    file: null,
+    analysisFile: 'community-profile.json',
+    description: 'AI-generated community profile and opportunity analysis',
+    url: 'Generated locally',
+    license: 'Internal',
+  }
+];
+
+async function fetchJSON(url) {
+  const response = await fetch(url);
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  return response.json();
+}
+
+async function loadAllData() {
+  const results = { loaded: 0, failed: 0, errors: [] };
+
+  // Load data files
+  const dataPromises = DATA_SOURCES.filter(s => s.file).map(async (source) => {
+    try {
+      const data = await fetchJSON(`${DATA_BASE}/${source.file}`);
+      appData[source.key] = data;
+      results.loaded++;
+    } catch (err) {
+      appData[source.key] = null;
+      results.failed++;
+      results.errors.push({ source: source.name, error: err.message });
+    }
+  });
+
+  // Load analysis file separately
+  const analysisPromise = (async () => {
+    try {
+      const data = await fetchJSON(`${ANALYSIS_BASE}/community-profile.json`);
+      appData.analysis = data;
+      results.loaded++;
+    } catch (err) {
+      appData.analysis = null;
+      results.failed++;
+      results.errors.push({ source: 'AI Analysis', error: err.message });
+    }
+  })();
+
+  await Promise.all([...dataPromises, analysisPromise]);
+
+  return results;
+}
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+
+let activePanel = 'overview';
+
+function switchPanel(panelId) {
+  // Update nav
+  document.querySelectorAll('.nav-item').forEach(item => {
+    item.classList.toggle('active', item.dataset.panel === panelId);
+  });
+
+  // Update panels
+  document.querySelectorAll('.panel').forEach(panel => {
+    panel.classList.toggle('active', panel.id === `panel-${panelId}`);
+  });
+
+  activePanel = panelId;
+
+  // Initialize map when switching to map panel
+  if (panelId === 'map' && !mapInitialized) {
+    setTimeout(initMap, 100);
+  }
+
+  // Close mobile sidebar
+  if (window.innerWidth <= 900) {
+    closeSidebar();
+  }
+}
+
+function toggleSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  const backdrop = document.getElementById('sidebar-backdrop');
+  sidebar.classList.toggle('open');
+  backdrop.classList.toggle('visible');
+}
+
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebar-backdrop').classList.remove('visible');
+}
+
+// ============================================================
+// RENDER: OVERVIEW
+// ============================================================
+
+function renderOverview() {
+  // Population — from census Total persons or population data
+  const pop = getCensusPopulation();
+  if (pop) {
+    document.getElementById('stat-population').textContent = pop.toLocaleString();
+  }
+
+  // Orgs count (include facebook groups)
+  if (appData.orgs) {
+    let count = Array.isArray(appData.orgs) ? appData.orgs.length :
+                appData.orgs.organizations ? appData.orgs.organizations.length : 0;
+    document.getElementById('stat-orgs').textContent = count.toLocaleString();
+  }
+
+  // Species count
+  if (appData.species) {
+    const count = appData.species.totalRecords || 0;
+    document.getElementById('stat-species').textContent = count.toLocaleString();
+  }
+
+  // Heritage sites — combine SCC heritage features + QLD heritage records
+  let heritageCount = 0;
+  if (appData.heritage_sites && appData.heritage_sites.features) {
+    heritageCount += appData.heritage_sites.features.length;
+  }
+  if (appData.qld_heritage && appData.qld_heritage.records) {
+    heritageCount += appData.qld_heritage.records.length;
+  }
+  if (heritageCount > 0) {
+    document.getElementById('stat-heritage').textContent = heritageCount.toLocaleString();
+  }
+
+  // Events
+  if (appData.events) {
+    const count = Array.isArray(appData.events) ? appData.events.length :
+                  appData.events.events ? appData.events.events.length : 0;
+    document.getElementById('stat-events').textContent = count.toLocaleString();
+  }
+
+  // Media articles
+  if (appData.media && appData.media.articles) {
+    document.getElementById('stat-articles').textContent = appData.media.articles.length.toLocaleString();
+  }
+
+  // Reviews — overall rating and venue count
+  if (appData.reviews) {
+    const agg = appData.reviews.aggregateSentiment;
+    if (agg && agg.overallRating) {
+      document.getElementById('stat-rating').textContent = agg.overallRating.toFixed(1);
+    }
+    if (appData.reviews.venues) {
+      document.getElementById('stat-venues-reviewed').textContent = appData.reviews.venues.length.toLocaleString();
+    }
+  }
+
+  // Highlights
+  renderHighlights();
+
+  // Freshness
+  document.getElementById('freshness-date').textContent = new Date().toLocaleDateString('en-AU', {
+    day: 'numeric', month: 'long', year: 'numeric'
+  });
+}
+
+// Helper: extract population from raw ABS census keys
+function getCensusPopulation() {
+  if (appData.census && appData.census.ageStructure) {
+    const key = Object.keys(appData.census.ageStructure).find(k =>
+      k.startsWith('Persons | Total persons |'));
+    if (key) return appData.census.ageStructure[key];
+  }
+  // Fallback to latest population record
+  if (appData.population && appData.population.records) {
+    const sorted = [...appData.population.records].sort((a, b) => Number(b.year) - Number(a.year));
+    if (sorted.length > 0) return sorted[0].population;
+  }
+  return null;
+}
+
+// Helper: parse ABS census age groups into [{group, male, female}]
+function parseCensusAgeGroups() {
+  if (!appData.census || !appData.census.ageStructure) return [];
+  const age = appData.census.ageStructure;
+  const ageGroupOrder = ['0-4', '5-14', '15-19', '20-24', '25-34', '35-44', '45-54', '55-64', '65-74', '75-84', '85 years and over'];
+  const result = [];
+  for (const group of ageGroupOrder) {
+    const maleKey = Object.keys(age).find(k => k.startsWith(`Males | Age groups: ${group}`) && k.includes('4552'));
+    const femaleKey = Object.keys(age).find(k => k.startsWith(`Females | Age groups: ${group}`) && k.includes('4552'));
+    if (maleKey || femaleKey) {
+      result.push({
+        group: group.replace(' years and over', '+').replace(' years', ''),
+        male: maleKey ? age[maleKey] : 0,
+        female: femaleKey ? age[femaleKey] : 0,
+      });
+    }
+  }
+  return result;
+}
+
+// Helper: parse ABS census occupation totals into [{name, count}]
+function parseCensusOccupations() {
+  if (!appData.census || !appData.census.occupation) return [];
+  const occ = appData.census.occupation;
+  const result = [];
+  for (const [key, val] of Object.entries(occ)) {
+    if (key.startsWith('Persons | Total |') && !key.includes('Total | Total')) {
+      const name = key.split('|')[2].trim().split('|')[0].trim();
+      if (name !== 'Inadequately described/Not stated') {
+        result.push({ name, count: val });
+      }
+    }
+  }
+  return result.sort((a, b) => b.count - a.count);
+}
+
+// Helper: parse ABS census income summary
+function parseCensusIncome() {
+  if (!appData.census || !appData.census.income) return {};
+  const inc = appData.census.income;
+  const result = {};
+  for (const [key, val] of Object.entries(inc)) {
+    if (key.startsWith('Median total household income')) result.medianHouseholdIncome = val;
+    if (key.startsWith('Median total personal income')) result.medianPersonalIncome = val;
+    if (key.startsWith('Median total family income')) result.medianFamilyIncome = val;
+    if (key.startsWith('Median age of persons')) result.medianAge = val;
+    if (key.startsWith('Average household size')) result.avgHouseholdSize = val;
+    if (key.startsWith('Median rent')) result.medianRent = val;
+    if (key.startsWith('Median mortgage')) result.medianMortgage = val;
+  }
+  return result;
+}
+
+// Helper: parse housing tenure income brackets into [{range, count}]
+function parseCensusHousingIncome() {
+  if (!appData.census || !appData.census.housingTenure) return [];
+  const ht = appData.census.housingTenure;
+  const result = [];
+  const brackets = ['Negative/Nil income', '$1-$499', '$500-$649', '$650-$799', '$800-$999', '$1,000-$1,249',
+    '$1,250-$1,499', '$1,500-$1,749', '$1,750-$1,999', '$2,000-$2,499', '$2,500-$2,999',
+    '$3,000-$3,499', '$3,500-$3,999', '$4,000 or more'];
+  for (const bracket of brackets) {
+    const key = Object.keys(ht).find(k => k.startsWith(bracket + ' | Total |'));
+    if (key) {
+      result.push({ range: bracket, count: ht[key] });
+    }
+  }
+  return result;
+}
+
+function renderHighlights() {
+  const list = document.getElementById('highlights-list');
+  const items = [];
+
+  // Census-derived highlights
+  const incomeInfo = parseCensusIncome();
+  if (incomeInfo.medianAge) items.push(`Median age: ${incomeInfo.medianAge} years`);
+  if (incomeInfo.medianHouseholdIncome) items.push(`Median weekly household income: $${incomeInfo.medianHouseholdIncome.toLocaleString()}`);
+  if (incomeInfo.avgHouseholdSize) items.push(`Average household size: ${incomeInfo.avgHouseholdSize} persons`);
+
+  // Population growth
+  if (appData.population && appData.population.records && appData.population.records.length >= 2) {
+    const sorted = [...appData.population.records].sort((a, b) => Number(a.year) - Number(b.year));
+    const first = sorted[0];
+    const last = sorted[sorted.length - 1];
+    const growth = last.population - first.population;
+    const pct = ((growth / first.population) * 100).toFixed(1);
+    items.push(`Population grew from ${first.population.toLocaleString()} (${first.year}) to ${last.population.toLocaleString()} (${last.year}) — +${pct}%`);
+  }
+
+  if (appData.species) {
+    const threatened = appData.species.threatenedSpecies || [];
+    if (threatened.length > 0) {
+      items.push(`${threatened.length} threatened species identified in the area`);
+    }
+  }
+
+  if (appData.reviews && appData.reviews.aggregateSentiment) {
+    const agg = appData.reviews.aggregateSentiment;
+    if (agg.communityStrengths && agg.communityStrengths.length > 0) {
+      items.push(`Top community strength: ${agg.communityStrengths[0]}`);
+    }
+  }
+
+  if (appData.media && appData.media.articles) {
+    items.push(`${appData.media.articles.length} local news articles analyzed`);
+  }
+
+  if (appData.events) {
+    const events = Array.isArray(appData.events) ? appData.events : appData.events.events || [];
+    const markets = events.filter(e => (e.type || e.category || '').toLowerCase().includes('market'));
+    if (markets.length > 0) items.push(`${markets.length} regular markets in the area`);
+  }
+
+  if (items.length === 0) {
+    items.push('Load data sources to see community highlights');
+  }
+
+  list.innerHTML = items.map(item => `<li>${escapeHtml(item)}</li>`).join('');
+}
+
+// ============================================================
+// RENDER: DEMOGRAPHICS
+// ============================================================
+
+function renderDemographics() {
+  if (!appData.census) {
+    document.getElementById('demographics-content').style.display = 'none';
+    document.getElementById('demographics-nodata').style.display = 'block';
+    return;
+  }
+
+  document.getElementById('demographics-content').style.display = 'block';
+  document.getElementById('demographics-nodata').style.display = 'none';
+
+  const incomeInfo = parseCensusIncome();
+
+  // Stat cards
+  const statsEl = document.getElementById('demo-stats');
+  const stats = [];
+
+  const pop = getCensusPopulation();
+  if (pop) stats.push({ icon: '&#128101;', value: pop.toLocaleString(), label: 'Total Population (2021)' });
+  if (incomeInfo.medianAge) stats.push({ icon: '&#128197;', value: incomeInfo.medianAge, label: 'Median Age' });
+  if (incomeInfo.medianHouseholdIncome) stats.push({ icon: '&#128176;', value: `$${incomeInfo.medianHouseholdIncome.toLocaleString()}/wk`, label: 'Median Household Income' });
+  if (incomeInfo.avgHouseholdSize) stats.push({ icon: '&#127968;', value: incomeInfo.avgHouseholdSize, label: 'Avg Household Size' });
+  if (incomeInfo.medianRent) stats.push({ icon: '&#127970;', value: `$${incomeInfo.medianRent}/wk`, label: 'Median Rent' });
+  if (incomeInfo.medianMortgage) stats.push({ icon: '&#127974;', value: `$${incomeInfo.medianMortgage.toLocaleString()}/mo`, label: 'Median Mortgage' });
+
+  statsEl.innerHTML = stats.map(s => `
+    <div class="stat-card">
+      <div class="stat-icon">${s.icon}</div>
+      <div class="stat-value">${s.value}</div>
+      <div class="stat-label">${s.label}</div>
+    </div>
+  `).join('');
+
+  // Age Pyramid
+  renderAgePyramid();
+
+  // Income Distribution (housing income brackets)
+  renderIncomeChart();
+
+  // Occupation Chart
+  renderOccupationChart();
+
+  // Housing Tenure chart
+  renderHousingChart();
+
+  // Population Growth chart
+  renderPopulationGrowthChart();
+}
+
+function renderAgePyramid() {
+  const ageData = parseCensusAgeGroups();
+  if (ageData.length === 0) return;
+
+  const ctx = document.getElementById('chart-age-pyramid');
+  if (!ctx) return;
+
+  if (charts.agePyramid) charts.agePyramid.destroy();
+
+  let labels = [];
+  let maleData = [];
+  let femaleData = [];
+
+  ageData.forEach(d => {
+    labels.push(d.group);
+    maleData.push(-d.male);
+    femaleData.push(d.female);
+  });
+
+  charts.agePyramid = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: 'Male',
+          data: maleData,
+          backgroundColor: 'rgba(74, 127, 168, 0.7)',
+          borderColor: 'rgba(74, 127, 168, 1)',
+          borderWidth: 1,
+        },
+        {
+          label: 'Female',
+          data: femaleData,
+          backgroundColor: 'rgba(201, 123, 58, 0.7)',
+          borderColor: 'rgba(201, 123, 58, 1)',
+          borderWidth: 1,
+        }
+      ]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: {
+          ticks: {
+            callback: v => Math.abs(v),
+            color: '#7A7264',
+          },
+          grid: { color: 'rgba(200,180,140,0.08)' },
+        },
+        y: {
+          ticks: { color: '#B8AE98', font: { size: 11 } },
+          grid: { display: false },
+        }
+      },
+      plugins: {
+        legend: { labels: { color: '#B8AE98' } },
+        tooltip: {
+          callbacks: {
+            label: (ctx) => `${ctx.dataset.label}: ${Math.abs(ctx.raw).toLocaleString()}`
+          }
+        }
+      }
+    }
+  });
+}
+
+function renderIncomeChart() {
+  const incomeData = parseCensusHousingIncome();
+  if (incomeData.length === 0) return;
+
+  const ctx = document.getElementById('chart-income');
+  if (!ctx) return;
+
+  if (charts.income) charts.income.destroy();
+
+  const labels = incomeData.map(d => d.range);
+  const values = incomeData.map(d => d.count);
+
+  charts.income = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Households',
+        data: values,
+        backgroundColor: 'rgba(212, 168, 67, 0.6)',
+        borderColor: 'rgba(212, 168, 67, 1)',
+        borderWidth: 1,
+        borderRadius: 4,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: {
+          ticks: { color: '#7A7264', maxRotation: 45, font: { size: 10 } },
+          grid: { display: false },
+        },
+        y: {
+          ticks: { color: '#7A7264' },
+          grid: { color: 'rgba(200,180,140,0.08)' },
+        }
+      },
+      plugins: {
+        legend: { display: false },
+      }
+    }
+  });
+}
+
+function renderOccupationChart() {
+  const occData = parseCensusOccupations();
+  if (occData.length === 0) return;
+
+  const ctx = document.getElementById('chart-occupation');
+  if (!ctx) return;
+
+  if (charts.occupation) charts.occupation.destroy();
+
+  const labels = occData.map(d => d.name);
+  const values = occData.map(d => d.count);
+
+  const colors = [
+    'rgba(90, 143, 74, 0.7)',
+    'rgba(212, 168, 67, 0.7)',
+    'rgba(74, 127, 168, 0.7)',
+    'rgba(201, 123, 58, 0.7)',
+    'rgba(184, 84, 80, 0.7)',
+    'rgba(74, 154, 138, 0.7)',
+    'rgba(166, 75, 138, 0.7)',
+    'rgba(107, 163, 204, 0.7)',
+    'rgba(124, 182, 104, 0.7)',
+    'rgba(232, 192, 106, 0.7)',
+  ];
+
+  charts.occupation = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: labels,
+      datasets: [{
+        data: values,
+        backgroundColor: colors.slice(0, labels.length),
+        borderColor: 'rgba(20, 26, 18, 0.8)',
+        borderWidth: 2,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'right',
+          labels: {
+            color: '#B8AE98',
+            padding: 12,
+            font: { size: 11 },
+            usePointStyle: true,
+          }
+        }
+      }
+    }
+  });
+}
+
+function renderHousingChart() {
+  const housingData = parseCensusHousingIncome();
+  if (housingData.length === 0) return;
+
+  const ctx = document.getElementById('chart-housing');
+  if (!ctx) return;
+
+  if (charts.housing) charts.housing.destroy();
+
+  charts.housing = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: housingData.map(d => d.range),
+      datasets: [{
+        label: 'Households',
+        data: housingData.map(d => d.count),
+        backgroundColor: 'rgba(74, 154, 138, 0.6)',
+        borderColor: 'rgba(74, 154, 138, 1)',
+        borderWidth: 1,
+        borderRadius: 4,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: {
+          ticks: { color: '#7A7264', maxRotation: 45, font: { size: 9 } },
+          grid: { display: false },
+        },
+        y: {
+          ticks: { color: '#7A7264' },
+          grid: { color: 'rgba(200,180,140,0.08)' },
+        }
+      },
+      plugins: { legend: { display: false } }
+    }
+  });
+}
+
+function renderPopulationGrowthChart() {
+  if (!appData.population || !appData.population.records || appData.population.records.length === 0) return;
+
+  const ctx = document.getElementById('chart-population-growth');
+  if (!ctx) return;
+
+  if (charts.populationGrowth) charts.populationGrowth.destroy();
+
+  const sorted = [...appData.population.records].sort((a, b) => Number(a.year) - Number(b.year));
+
+  charts.populationGrowth = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: sorted.map(r => r.year),
+      datasets: [{
+        label: 'Population',
+        data: sorted.map(r => r.population),
+        borderColor: 'rgba(90, 143, 74, 1)',
+        backgroundColor: 'rgba(90, 143, 74, 0.15)',
+        fill: true,
+        tension: 0.3,
+        pointRadius: 3,
+        pointBackgroundColor: 'rgba(90, 143, 74, 1)',
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: {
+          ticks: { color: '#7A7264', maxRotation: 45, font: { size: 10 } },
+          grid: { display: false },
+        },
+        y: {
+          ticks: { color: '#7A7264' },
+          grid: { color: 'rgba(200,180,140,0.08)' },
+        }
+      },
+      plugins: {
+        legend: { display: false },
+      }
+    }
+  });
+}
+
+// ============================================================
+// RENDER: MAP
+// ============================================================
+
+function initMap() {
+  if (mapInitialized) return;
+  mapInitialized = true;
+
+  communityMap = L.map('community-map', {
+    center: [-26.75, 152.85],
+    zoom: 12,
+    zoomControl: true,
+  });
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    maxZoom: 18,
+  }).addTo(communityMap);
+
+  // Add markers from data
+  addMapMarkers();
+
+  // Fix Leaflet size calculation
+  setTimeout(() => communityMap.invalidateSize(), 200);
+}
+
+function addMapMarkers() {
+  if (!communityMap) return;
+
+  // Custom icon factory
+  function makeIcon(color) {
+    return L.divIcon({
+      className: 'custom-marker',
+      html: `<div style="width:14px;height:14px;background:${color};border:2px solid rgba(255,255,255,0.9);border-radius:50%;box-shadow:0 2px 6px rgba(0,0,0,0.4);"></div>`,
+      iconSize: [14, 14],
+      iconAnchor: [7, 7],
+      popupAnchor: [0, -10],
+    });
+  }
+
+  const venueIcon = makeIcon('#4A7FA8');
+  const heritageIcon = makeIcon('#D4A843');
+  const parkIcon = makeIcon('#5A8F4A');
+
+  // Venues — SCC GeoJSON features with attributes.Name
+  if (appData.venues && appData.venues.features) {
+    appData.venues.features.forEach(v => {
+      const lat = v.latitude;
+      const lng = v.longitude;
+      const name = (v.attributes && v.attributes.Name) || v.name || 'Venue';
+      const classification = (v.attributes && v.attributes.Classification) || '';
+      if (lat && lng) {
+        L.marker([lat, lng], { icon: venueIcon })
+          .addTo(communityMap)
+          .bindPopup(`<h4>${escapeHtml(name)}</h4><p>${escapeHtml(classification)}</p>`);
+      }
+    });
+  }
+
+  // Heritage sites — SCC GeoJSON features with attributes.LABEL
+  if (appData.heritage_sites && appData.heritage_sites.features) {
+    appData.heritage_sites.features.forEach(s => {
+      const lat = s.latitude;
+      const lng = s.longitude;
+      const name = (s.attributes && (s.attributes.PS_Policy_Name || s.attributes.LABEL)) || 'Heritage Site';
+      const desc = (s.attributes && s.attributes.DESCRIPT) || '';
+      if (lat && lng) {
+        L.marker([lat, lng], { icon: heritageIcon })
+          .addTo(communityMap)
+          .bindPopup(`<h4>${escapeHtml(name)}</h4><p>${escapeHtml(desc)}</p>`);
+      }
+    });
+  }
+
+  // Parks from planning data
+  if (appData.planning && appData.planning.features) {
+    const parks = appData.planning.features.filter(p => {
+      const zone = (p.attributes && (p.attributes.Zone || p.attributes.ZONE_CODE || '')) || '';
+      return zone.toLowerCase().includes('open space') || zone.toLowerCase().includes('park');
+    });
+    parks.forEach(p => {
+      const lat = p.latitude;
+      const lng = p.longitude;
+      const name = (p.attributes && (p.attributes.Name || p.attributes.LABEL)) || 'Park / Reserve';
+      if (lat && lng) {
+        L.marker([lat, lng], { icon: parkIcon })
+          .addTo(communityMap)
+          .bindPopup(`<h4>${escapeHtml(name)}</h4>`);
+      }
+    });
+  }
+
+  // Always add a marker for The Harvest
+  L.marker([-26.7667, 152.8500], {
+    icon: L.divIcon({
+      className: 'custom-marker',
+      html: '<div style="width:18px;height:18px;background:#5A8F4A;border:3px solid #F0EAD6;border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,0.5);"></div>',
+      iconSize: [18, 18],
+      iconAnchor: [9, 9],
+      popupAnchor: [0, -12],
+    })
+  })
+    .addTo(communityMap)
+    .bindPopup('<h4>The Harvest</h4><p>Witta, Sunshine Coast Hinterland<br>Jinibara Country</p>');
+}
+
+// ============================================================
+// RENDER: ORGANIZATIONS
+// ============================================================
+
+let allOrgs = [];
+
+function renderOrganizations() {
+  if (!appData.orgs) {
+    document.querySelector('#panel-organizations .toolbar').style.display = 'none';
+    document.getElementById('org-list').style.display = 'none';
+    document.getElementById('orgs-nodata').style.display = 'block';
+    return;
+  }
+
+  document.getElementById('orgs-nodata').style.display = 'none';
+
+  allOrgs = Array.isArray(appData.orgs) ? appData.orgs : appData.orgs.organizations || [];
+
+  // Populate type filter
+  const types = [...new Set(allOrgs.map(o => o.type || o.category || 'Other'))].sort();
+  const filterEl = document.getElementById('org-filter');
+  filterEl.innerHTML = '<option value="">All Types</option>' +
+    types.map(t => `<option value="${t}">${t}</option>`).join('');
+
+  filterOrgs();
+}
+
+function filterOrgs() {
+  const search = document.getElementById('org-search').value.toLowerCase();
+  const typeFilter = document.getElementById('org-filter').value;
+
+  let filtered = allOrgs;
+  if (search) {
+    filtered = filtered.filter(o =>
+      (o.name || '').toLowerCase().includes(search) ||
+      (o.description || '').toLowerCase().includes(search)
+    );
+  }
+  if (typeFilter) {
+    filtered = filtered.filter(o => (o.type || o.category || 'Other') === typeFilter);
+  }
+
+  const listEl = document.getElementById('org-list');
+  if (filtered.length === 0) {
+    listEl.innerHTML = '<div class="no-data" style="padding:24px;"><h3>No matching organizations</h3></div>';
+    return;
+  }
+
+  listEl.innerHTML = filtered.map(org => {
+    const type = org.type || org.category || 'Other';
+    const badgeClass = getBadgeClass(type);
+    return `
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+          <h3 style="flex:1;margin-bottom:0;">${escapeHtml(org.name || 'Unknown')}</h3>
+          <span class="badge ${badgeClass}">${escapeHtml(type)}</span>
+        </div>
+        ${org.description ? `<p>${escapeHtml(org.description)}</p>` : ''}
+        ${org.location || org.address ? `<p style="margin-top:6px;font-size:12px;color:var(--text-muted);">${escapeHtml(org.location || org.address)}</p>` : ''}
+        ${org.website || org.url ? `<a href="${escapeHtml(org.website || org.url)}" target="_blank" style="color:var(--accent-blue-light);font-size:12px;text-decoration:none;margin-top:6px;display:inline-block;">Visit website</a>` : ''}
+      </div>
+    `;
+  }).join('');
+}
+
+// ============================================================
+// RENDER: EVENTS
+// ============================================================
+
+let allEvents = [];
+
+function renderEvents() {
+  if (!appData.events) {
+    document.querySelector('#panel-events .toolbar').style.display = 'none';
+    document.getElementById('event-list').style.display = 'none';
+    document.getElementById('events-nodata').style.display = 'block';
+    return;
+  }
+
+  document.getElementById('events-nodata').style.display = 'none';
+
+  allEvents = Array.isArray(appData.events) ? appData.events : appData.events.events || [];
+
+  // Populate type filter
+  const types = [...new Set(allEvents.map(e => e.type || e.category || 'Event'))].sort();
+  const filterEl = document.getElementById('event-filter');
+  filterEl.innerHTML = '<option value="">All Types</option>' +
+    types.map(t => `<option value="${t}">${t}</option>`).join('');
+
+  filterEvents();
+}
+
+function filterEvents() {
+  const search = document.getElementById('event-search').value.toLowerCase();
+  const typeFilter = document.getElementById('event-filter').value;
+
+  let filtered = allEvents;
+  if (search) {
+    filtered = filtered.filter(e =>
+      (e.name || e.title || '').toLowerCase().includes(search) ||
+      (e.description || '').toLowerCase().includes(search)
+    );
+  }
+  if (typeFilter) {
+    filtered = filtered.filter(e => (e.type || e.category || 'Event') === typeFilter);
+  }
+
+  const listEl = document.getElementById('event-list');
+  if (filtered.length === 0) {
+    listEl.innerHTML = '<div class="no-data" style="padding:24px;"><h3>No matching events</h3></div>';
+    return;
+  }
+
+  listEl.innerHTML = filtered.map(event => {
+    const type = event.type || event.category || 'Event';
+    const badgeClass = getBadgeClass(type);
+    const name = event.name || event.title || 'Unnamed Event';
+    const schedule = event.schedule || event.frequency || event.when || event.date || '';
+    const location = event.location || event.venue || event.address || '';
+
+    return `
+      <div class="event-card">
+        <div class="event-header">
+          <div class="event-title">${escapeHtml(name)}</div>
+          <span class="badge ${badgeClass}">${escapeHtml(type)}</span>
+        </div>
+        ${schedule ? `<div class="event-schedule">${escapeHtml(schedule)}</div>` : ''}
+        ${location ? `<div class="event-location">${escapeHtml(location)}</div>` : ''}
+        ${event.description ? `<div class="event-desc">${escapeHtml(event.description)}</div>` : ''}
+      </div>
+    `;
+  }).join('');
+}
+
+// ============================================================
+// RENDER: HERITAGE / HISTORY
+// ============================================================
+
+let allHeritage = [];
+
+function renderHeritage() {
+  const hasQldHeritage = appData.qld_heritage && appData.qld_heritage.records && appData.qld_heritage.records.length > 0;
+  const hasSccHeritage = appData.heritage_sites && appData.heritage_sites.features && appData.heritage_sites.features.length > 0;
+  const hasTrove = appData.trove && ((appData.trove.results && appData.trove.results.length > 0) || (appData.trove.records && appData.trove.records.length > 0));
+
+  if (!hasQldHeritage && !hasSccHeritage && !hasTrove) {
+    document.getElementById('heritage-content').style.display = 'none';
+    document.getElementById('heritage-nodata').style.display = 'block';
+    return;
+  }
+
+  document.getElementById('heritage-content').style.display = 'block';
+  document.getElementById('heritage-nodata').style.display = 'none';
+
+  // Stats
+  const statsEl = document.getElementById('heritage-stats');
+  const stats = [];
+  let qldCount = hasQldHeritage ? appData.qld_heritage.records.length : 0;
+  let sccCount = hasSccHeritage ? appData.heritage_sites.features.length : 0;
+  if (qldCount) stats.push({ icon: '&#127970;', value: qldCount, label: 'QLD Heritage Places' });
+  if (sccCount) stats.push({ icon: '&#128204;', value: sccCount, label: 'Local Heritage Places' });
+  stats.push({ icon: '&#128218;', value: qldCount + sccCount, label: 'Total Heritage Sites' });
+  statsEl.innerHTML = stats.map(s => `
+    <div class="stat-card">
+      <div class="stat-icon">${s.icon}</div>
+      <div class="stat-value">${s.value}</div>
+      <div class="stat-label">${s.label}</div>
+    </div>
+  `).join('');
+
+  // QLD Heritage Register
+  const qldList = document.getElementById('qld-heritage-list');
+  if (hasQldHeritage) {
+    qldList.innerHTML = appData.qld_heritage.records.map(r => `
+      <div class="card">
+        <h3>${escapeHtml(r.name || 'Unknown')}</h3>
+        ${r.address ? `<p style="font-size:12px;color:var(--text-muted);margin-bottom:6px;">${escapeHtml(r.address)}, ${escapeHtml(r.locality || '')}</p>` : ''}
+        ${r.significance ? `<p>${escapeHtml(r.significance.substring(0, 200))}${r.significance.length > 200 ? '...' : ''}</p>` : ''}
+      </div>
+    `).join('');
+  } else {
+    qldList.innerHTML = '<p style="color:var(--text-muted);font-size:13px;">No QLD Heritage Register records loaded.</p>';
+  }
+
+  // SCC Local Heritage
+  const sccList = document.getElementById('scc-heritage-list');
+  if (hasSccHeritage) {
+    sccList.innerHTML = appData.heritage_sites.features.map(f => {
+      const name = (f.attributes && (f.attributes.PS_Policy_Name || f.attributes.LABEL)) || 'Local Heritage Place';
+      const desc = (f.attributes && f.attributes.DESCRIPT) || '';
+      return `
+        <div class="card">
+          <h3>${escapeHtml(name)}</h3>
+          ${desc ? `<p>${escapeHtml(desc)}</p>` : ''}
+        </div>
+      `;
+    }).join('');
+  } else {
+    sccList.innerHTML = '<p style="color:var(--text-muted);font-size:13px;">No SCC local heritage places loaded.</p>';
+  }
+
+  // Trove historical records
+  const records = appData.trove ? (appData.trove.results || appData.trove.records || appData.trove.articles || []) : [];
+  allHeritage = [...records].sort((a, b) => {
+    const da = a.date || a.year || '';
+    const db = b.date || b.year || '';
+    return String(da).localeCompare(String(db));
+  });
+
+  if (allHeritage.length === 0) {
+    document.getElementById('heritage-timeline').innerHTML = '<p style="color:var(--text-muted);font-size:13px;padding:12px 0;">No Trove historical records available. Set TROVE_API_KEY to fetch records.</p>';
+  } else {
+    filterHeritage();
+  }
+}
+
+function filterHeritage() {
+  const search = document.getElementById('heritage-search').value.toLowerCase();
+
+  let filtered = allHeritage;
+  if (search) {
+    filtered = filtered.filter(r =>
+      (r.title || '').toLowerCase().includes(search) ||
+      (r.snippet || r.description || r.abstract || '').toLowerCase().includes(search)
+    );
+  }
+
+  const timeline = document.getElementById('heritage-timeline');
+
+  if (filtered.length === 0) {
+    timeline.innerHTML = '<div class="no-data" style="padding:24px;"><h3>No matching records</h3></div>';
+    return;
+  }
+
+  // Limit display to 100 for performance
+  const display = filtered.slice(0, 100);
+
+  timeline.innerHTML = display.map(record => {
+    const date = record.date || record.year || 'Unknown date';
+    const title = record.title || 'Untitled';
+    const snippet = record.snippet || record.description || record.abstract || '';
+    const source = record.source || record.newspaper || record.publication || '';
+    const url = record.url || record.trove_url || record.link || '';
+
+    return `
+      <div class="timeline-item">
+        <div class="timeline-date">${escapeHtml(String(date))}</div>
+        <div class="timeline-title">${escapeHtml(title)}</div>
+        ${snippet ? `<div class="timeline-snippet">${escapeHtml(snippet.substring(0, 300))}${snippet.length > 300 ? '...' : ''}</div>` : ''}
+        <div style="display:flex;align-items:center;gap:12px;">
+          ${source ? `<span class="timeline-source">${escapeHtml(source)}</span>` : ''}
+          ${url ? `<a href="${escapeHtml(url)}" target="_blank" class="timeline-link">View on Trove</a>` : ''}
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  if (filtered.length > 100) {
+    timeline.innerHTML += `<div style="text-align:center;padding:16px;color:var(--text-muted);font-size:13px;">Showing 100 of ${filtered.length} records. Refine your search to see more.</div>`;
+  }
+}
+
+// ============================================================
+// RENDER: BIODIVERSITY
+// ============================================================
+
+function renderBiodiversity() {
+  if (!appData.species) {
+    document.getElementById('biodiversity-content').style.display = 'none';
+    document.getElementById('biodiversity-nodata').style.display = 'block';
+    return;
+  }
+
+  document.getElementById('biodiversity-content').style.display = 'block';
+  document.getElementById('biodiversity-nodata').style.display = 'none';
+
+  const sp = appData.species;
+
+  // Stats
+  const statsEl = document.getElementById('bio-stats');
+  const stats = [];
+
+  if (sp.totalRecords) stats.push({ icon: '&#128200;', value: sp.totalRecords.toLocaleString(), label: 'Occurrence Records' });
+
+  if (sp.speciesGroups) {
+    // Count unique species groups (excluding top-level "Animals" which is a superset)
+    const groupCount = sp.speciesGroups.filter(g => g.group !== 'Animals').length;
+    stats.push({ icon: '&#127793;', value: groupCount, label: 'Species Groups' });
+  }
+
+  const threatened = sp.threatenedSpecies || [];
+  if (Array.isArray(threatened)) {
+    stats.push({ icon: '&#9888;', value: threatened.length, label: 'Threatened Species' });
+  }
+
+  if (sp.notableSpecies) {
+    stats.push({ icon: '&#11088;', value: sp.notableSpecies.length, label: 'Notable Species' });
+  }
+
+  statsEl.innerHTML = stats.map(s => `
+    <div class="stat-card">
+      <div class="stat-icon">${s.icon}</div>
+      <div class="stat-value">${s.value}</div>
+      <div class="stat-label">${s.label}</div>
+    </div>
+  `).join('');
+
+  // Species Groups Chart
+  renderSpeciesGroupsChart(sp);
+
+  // Threatened Species List
+  renderThreatenedSpecies(sp);
+}
+
+function renderSpeciesGroupsChart(sp) {
+  const groups = sp.speciesGroups;
+  if (!groups || !Array.isArray(groups)) return;
+
+  const ctx = document.getElementById('chart-species-groups');
+  if (!ctx) return;
+
+  if (charts.speciesGroups) charts.speciesGroups.destroy();
+
+  // Filter out the top-level "Animals" group (superset) and show top 10 by count
+  const filtered = groups.filter(g => g.group !== 'Animals').sort((a, b) => b.count - a.count).slice(0, 10);
+  const labels = filtered.map(g => g.group);
+  const values = filtered.map(g => g.count);
+
+  if (labels.length === 0) return;
+
+  const groupColors = {
+    'Birds': 'rgba(74, 127, 168, 0.7)',
+    'Mammals': 'rgba(201, 123, 58, 0.7)',
+    'Plants': 'rgba(90, 143, 74, 0.7)',
+    'Reptiles': 'rgba(212, 168, 67, 0.7)',
+    'Amphibians': 'rgba(74, 154, 138, 0.7)',
+    'Fish': 'rgba(107, 163, 204, 0.7)',
+    'Insects': 'rgba(184, 84, 80, 0.7)',
+    'Fungi': 'rgba(166, 75, 138, 0.7)',
+  };
+
+  const defaultColors = [
+    'rgba(90, 143, 74, 0.7)', 'rgba(212, 168, 67, 0.7)', 'rgba(74, 127, 168, 0.7)',
+    'rgba(201, 123, 58, 0.7)', 'rgba(184, 84, 80, 0.7)', 'rgba(74, 154, 138, 0.7)',
+    'rgba(166, 75, 138, 0.7)', 'rgba(107, 163, 204, 0.7)',
+  ];
+
+  const barColors = labels.map((l, i) => groupColors[l] || defaultColors[i % defaultColors.length]);
+
+  charts.speciesGroups = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Species Count',
+        data: values,
+        backgroundColor: barColors,
+        borderColor: barColors.map(c => c.replace('0.7', '1')),
+        borderWidth: 1,
+        borderRadius: 4,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: {
+          ticks: { color: '#7A7264', font: { size: 11 } },
+          grid: { display: false },
+        },
+        y: {
+          ticks: { color: '#7A7264' },
+          grid: { color: 'rgba(200,180,140,0.08)' },
+        }
+      },
+      plugins: {
+        legend: { display: false },
+      }
+    }
+  });
+}
+
+function renderThreatenedSpecies(sp) {
+  const threatened = sp.threatenedSpecies || [];
+  const notable = sp.notableSpecies || [];
+  const listEl = document.getElementById('threatened-species-list');
+
+  if (threatened.length === 0 && notable.length === 0) {
+    listEl.innerHTML = '<p style="color:var(--text-muted);font-size:13px;">No threatened species data available.</p>';
+    return;
+  }
+
+  const statusColors = {
+    'Critically Endangered': 'badge-red',
+    'Endangered': 'badge-orange',
+    'Vulnerable': 'badge-amber',
+    'Near Threatened': 'badge-blue',
+    'Least Concern': 'badge-green',
+  };
+
+  // Show notable species first, then threatened (top 20)
+  let html = '';
+
+  if (notable.length > 0) {
+    html += notable.map(s => `
+      <div class="species-card">
+        <div class="species-icon">&#11088;</div>
+        <div class="species-info">
+          <div class="species-name">${escapeHtml(s.commonName || s.name)}</div>
+          ${s.scientificName ? `<div class="species-detail" style="font-style:italic;">${escapeHtml(s.scientificName)}</div>` : ''}
+          ${s.notes ? `<div class="species-detail">${escapeHtml(s.notes)}</div>` : ''}
+          <div style="margin-top:4px;">
+            <span class="badge badge-green">Notable</span>
+            ${s.recordCount ? `<span style="font-size:11px;color:var(--text-muted);margin-left:8px;">${s.recordCount.toLocaleString()} records</span>` : ''}
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // Show top threatened species by record count
+  const topThreatened = [...threatened].sort((a, b) => (b.recordCount || 0) - (a.recordCount || 0)).slice(0, 20);
+  html += topThreatened.map(s => {
+    const name = s.name || 'Unknown';
+    const status = s.conservationStatus || 'Unknown';
+    const badgeClass = statusColors[status] || 'badge-amber';
+    const records = s.recordCount || 0;
+
+    return `
+      <div class="species-card">
+        <div class="species-icon">&#127807;</div>
+        <div class="species-info">
+          <div class="species-name" style="font-style:italic;">${escapeHtml(name)}</div>
+          <div style="margin-top:4px;">
+            <span class="badge ${badgeClass}">${escapeHtml(status)}</span>
+            ${records ? `<span style="font-size:11px;color:var(--text-muted);margin-left:8px;">${records.toLocaleString()} records</span>` : ''}
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  listEl.innerHTML = html;
+}
+
+// ============================================================
+// RENDER: MEDIA COVERAGE
+// ============================================================
+
+let allArticles = [];
+
+function renderMedia() {
+  if (!appData.media || !appData.media.articles || appData.media.articles.length === 0) {
+    document.getElementById('media-content').style.display = 'none';
+    document.getElementById('media-nodata').style.display = 'block';
+    return;
+  }
+
+  document.getElementById('media-content').style.display = 'block';
+  document.getElementById('media-nodata').style.display = 'none';
+
+  const media = appData.media;
+  allArticles = media.articles;
+
+  // Stats
+  const statsEl = document.getElementById('media-stats');
+  const sources = media.sources || [];
+  const themes = media.themeAnalysis || [];
+  const positiveCount = allArticles.filter(a => a.sentiment === 'positive').length;
+  const neutralCount = allArticles.filter(a => a.sentiment === 'neutral').length;
+  const negativeCount = allArticles.filter(a => a.sentiment === 'negative').length;
+
+  statsEl.innerHTML = `
+    <div class="stat-card">
+      <div class="stat-icon">&#128240;</div>
+      <div class="stat-value">${allArticles.length}</div>
+      <div class="stat-label">Total Articles</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">&#128515;</div>
+      <div class="stat-value">${positiveCount}</div>
+      <div class="stat-label">Positive</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">&#128528;</div>
+      <div class="stat-value">${neutralCount}</div>
+      <div class="stat-label">Neutral</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">&#128530;</div>
+      <div class="stat-value">${negativeCount}</div>
+      <div class="stat-label">Negative</div>
+    </div>
+  `;
+
+  // Theme chart
+  renderMediaThemesChart(themes);
+
+  // Sentiment chart
+  renderMediaSentimentChart(positiveCount, neutralCount, negativeCount);
+
+  // Community narrative
+  if (media.communityNarrative) {
+    const narr = media.communityNarrative;
+    let html = '';
+    if (narr.dominantTopics && narr.dominantTopics.length > 0) {
+      html += '<h3 style="font-family:Montserrat,sans-serif;font-weight:600;font-size:14px;margin-bottom:8px;color:var(--text-primary);">Dominant Topics</h3>';
+      html += '<ul class="opportunity-list">' + narr.dominantTopics.map(t => `<li>${escapeHtml(t)}</li>`).join('') + '</ul>';
+    }
+    if (narr.opportunities && narr.opportunities.length > 0) {
+      html += '<h3 style="font-family:Montserrat,sans-serif;font-weight:600;font-size:14px;margin:16px 0 8px;color:var(--text-primary);">Opportunities</h3>';
+      html += '<ul class="opportunity-list">' + narr.opportunities.map(t => `<li>${escapeHtml(t)}</li>`).join('') + '</ul>';
+    }
+    if (narr.concerns && narr.concerns.length > 0) {
+      html += '<h3 style="font-family:Montserrat,sans-serif;font-weight:600;font-size:14px;margin:16px 0 8px;color:var(--accent-amber);">Concerns</h3>';
+      html += '<ul class="opportunity-list">' + narr.concerns.map(t => `<li>${escapeHtml(t)}</li>`).join('') + '</ul>';
+    }
+    document.getElementById('media-narrative-content').innerHTML = html;
+  }
+
+  // Source filter
+  const sourceNames = [...new Set(allArticles.map(a => a.source).filter(Boolean))];
+  const sourceFilter = document.getElementById('media-source-filter');
+  sourceFilter.innerHTML = '<option value="">All Sources</option>' +
+    sourceNames.map(s => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join('');
+
+  filterMedia();
+}
+
+function renderMediaThemesChart(themes) {
+  if (!themes || themes.length === 0) return;
+  const ctx = document.getElementById('chart-media-themes');
+  if (!ctx) return;
+  if (charts.mediaThemes) charts.mediaThemes.destroy();
+
+  const sorted = [...themes].sort((a, b) => b.count - a.count).slice(0, 10);
+  const defaultColors = [
+    'rgba(90, 143, 74, 0.7)', 'rgba(212, 168, 67, 0.7)', 'rgba(74, 127, 168, 0.7)',
+    'rgba(201, 123, 58, 0.7)', 'rgba(184, 84, 80, 0.7)', 'rgba(74, 154, 138, 0.7)',
+    'rgba(166, 75, 138, 0.7)', 'rgba(107, 163, 204, 0.7)', 'rgba(124, 182, 104, 0.7)',
+    'rgba(232, 192, 106, 0.7)',
+  ];
+
+  charts.mediaThemes = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: sorted.map(t => (t.theme || '').replace(/_/g, ' ')),
+      datasets: [{
+        label: 'Articles',
+        data: sorted.map(t => t.count),
+        backgroundColor: defaultColors,
+        borderRadius: 4,
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: { ticks: { color: '#7A7264' }, grid: { color: 'rgba(200,180,140,0.08)' } },
+        y: { ticks: { color: '#B8AE98', font: { size: 11 } }, grid: { display: false } },
+      },
+      plugins: { legend: { display: false } }
+    }
+  });
+}
+
+function renderMediaSentimentChart(positive, neutral, negative) {
+  const ctx = document.getElementById('chart-media-sentiment');
+  if (!ctx) return;
+  if (charts.mediaSentiment) charts.mediaSentiment.destroy();
+
+  charts.mediaSentiment = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Positive', 'Neutral', 'Negative'],
+      datasets: [{
+        data: [positive, neutral, negative],
+        backgroundColor: ['rgba(90, 143, 74, 0.7)', 'rgba(212, 168, 67, 0.7)', 'rgba(184, 84, 80, 0.7)'],
+        borderColor: 'rgba(20, 26, 18, 0.8)',
+        borderWidth: 2,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { color: '#B8AE98', padding: 12, usePointStyle: true } }
+      }
+    }
+  });
+}
+
+function filterMedia() {
+  const search = (document.getElementById('media-search').value || '').toLowerCase();
+  const sourceFilter = document.getElementById('media-source-filter').value;
+  const sentimentFilter = document.getElementById('media-sentiment-filter').value;
+
+  let filtered = allArticles;
+  if (search) {
+    filtered = filtered.filter(a =>
+      (a.title || '').toLowerCase().includes(search) ||
+      (a.snippet || '').toLowerCase().includes(search)
+    );
+  }
+  if (sourceFilter) filtered = filtered.filter(a => a.source === sourceFilter);
+  if (sentimentFilter) filtered = filtered.filter(a => a.sentiment === sentimentFilter);
+
+  const listEl = document.getElementById('media-article-list');
+  if (filtered.length === 0) {
+    listEl.innerHTML = '<div class="no-data" style="padding:24px;"><h3>No matching articles</h3></div>';
+    return;
+  }
+
+  // Show newest first, limit to 50
+  const display = [...filtered].sort((a, b) => (b.date || '').localeCompare(a.date || '')).slice(0, 50);
+
+  listEl.innerHTML = display.map(a => {
+    const sentBadge = a.sentiment === 'positive' ? 'badge-green' : a.sentiment === 'negative' ? 'badge-red' : 'badge-amber';
+    return `
+      <div class="article-card">
+        <h4>${a.url ? `<a href="${escapeHtml(a.url)}" target="_blank" style="color:var(--text-primary);text-decoration:none;">${escapeHtml(a.title || 'Untitled')}</a>` : escapeHtml(a.title || 'Untitled')}</h4>
+        <div class="article-meta">
+          ${a.source ? `<span>${escapeHtml(a.source)}</span>` : ''}
+          ${a.date ? `<span>${escapeHtml(a.date)}</span>` : ''}
+          <span class="badge ${sentBadge}">${escapeHtml(a.sentiment || 'unknown')}</span>
+        </div>
+        ${a.snippet ? `<p>${escapeHtml(a.snippet.substring(0, 250))}${a.snippet.length > 250 ? '...' : ''}</p>` : ''}
+        ${a.themes && a.themes.length > 0 ? `<div style="margin-top:6px;">${a.themes.map(t => `<span class="badge badge-blue" style="margin-right:4px;margin-top:4px;">${escapeHtml(t.replace(/_/g, ' '))}</span>`).join('')}</div>` : ''}
+      </div>
+    `;
+  }).join('');
+
+  if (filtered.length > 50) {
+    listEl.innerHTML += `<div style="text-align:center;padding:16px;color:var(--text-muted);font-size:13px;">Showing 50 of ${filtered.length} articles. Refine your search to see more.</div>`;
+  }
+}
+
+// ============================================================
+// RENDER: REVIEWS & SENTIMENT
+// ============================================================
+
+function renderReviews() {
+  if (!appData.reviews || !appData.reviews.venues) {
+    document.getElementById('reviews-content').style.display = 'none';
+    document.getElementById('reviews-nodata').style.display = 'block';
+    return;
+  }
+
+  document.getElementById('reviews-content').style.display = 'block';
+  document.getElementById('reviews-nodata').style.display = 'none';
+
+  const reviews = appData.reviews;
+  const venues = reviews.venues;
+  const agg = reviews.aggregateSentiment || {};
+
+  // Stats
+  const statsEl = document.getElementById('reviews-stats');
+  statsEl.innerHTML = `
+    <div class="stat-card">
+      <div class="stat-icon">&#11088;</div>
+      <div class="stat-value">${agg.overallRating ? agg.overallRating.toFixed(1) : '--'}</div>
+      <div class="stat-label">Overall Rating</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">&#128172;</div>
+      <div class="stat-value">${venues.length}</div>
+      <div class="stat-label">Venues Reviewed</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">&#128221;</div>
+      <div class="stat-value">${agg.totalReviewsAnalyzed || venues.reduce((s, v) => s + (v.totalReviews || 0), 0)}</div>
+      <div class="stat-label">Reviews Analyzed</div>
+    </div>
+  `;
+
+  // Theme chart from aggregate
+  renderReviewThemesChart(agg);
+
+  // Harvest Insights
+  if (reviews.harvestInsights) {
+    const hi = reviews.harvestInsights;
+    let html = '';
+    if (hi.gardenOpportunities && hi.gardenOpportunities.length > 0) {
+      html += '<h3 style="font-family:Montserrat,sans-serif;font-weight:600;font-size:14px;margin-bottom:8px;color:var(--accent-green-light);">Garden Zone</h3>';
+      html += '<ul class="opportunity-list">' + hi.gardenOpportunities.map(o => `<li>${escapeHtml(o)}</li>`).join('') + '</ul>';
+    }
+    if (hi.kitchenOpportunities && hi.kitchenOpportunities.length > 0) {
+      html += '<h3 style="font-family:Montserrat,sans-serif;font-weight:600;font-size:14px;margin:16px 0 8px;color:var(--accent-amber);">Kitchen Zone</h3>';
+      html += '<ul class="opportunity-list">' + hi.kitchenOpportunities.map(o => `<li>${escapeHtml(o)}</li>`).join('') + '</ul>';
+    }
+    if (hi.artSpaceOpportunities && hi.artSpaceOpportunities.length > 0) {
+      html += '<h3 style="font-family:Montserrat,sans-serif;font-weight:600;font-size:14px;margin:16px 0 8px;color:var(--accent-blue-light);">Art Space Zone</h3>';
+      html += '<ul class="opportunity-list">' + hi.artSpaceOpportunities.map(o => `<li>${escapeHtml(o)}</li>`).join('') + '</ul>';
+    }
+    document.getElementById('harvest-insights-content').innerHTML = html;
+  }
+
+  // Venue rating cards — sorted by rating desc
+  const sortedVenues = [...venues].sort((a, b) => (b.rating || 0) - (a.rating || 0));
+  const venueListEl = document.getElementById('venue-ratings-list');
+  venueListEl.innerHTML = sortedVenues.map(v => {
+    const stars = renderStars(v.rating || 0);
+    return `
+      <div class="venue-rating-card">
+        <h4>${escapeHtml(v.name || 'Unknown')}</h4>
+        <div class="venue-type">${escapeHtml((v.type || '').replace(/_/g, ' '))}</div>
+        <div class="venue-stats">
+          <div class="venue-rating-num">${(v.rating || 0).toFixed(1)}</div>
+          <div>
+            <div class="star-rating">${stars}</div>
+            <div class="venue-review-count">${(v.totalReviews || 0).toLocaleString()} reviews</div>
+          </div>
+        </div>
+        ${v.sampleReviews && v.sampleReviews.length > 0 ? `
+          <div class="review-card" style="margin-top:12px;">
+            <div class="review-text">"${escapeHtml(v.sampleReviews[0].text.substring(0, 200))}${v.sampleReviews[0].text.length > 200 ? '...' : ''}"</div>
+            <div class="review-meta">${renderStars(v.sampleReviews[0].rating || 0)} &middot; ${escapeHtml(v.sampleReviews[0].time || '')}</div>
+          </div>
+        ` : ''}
+      </div>
+    `;
+  }).join('');
+}
+
+function renderStars(rating) {
+  const full = Math.floor(rating);
+  const half = rating - full >= 0.5 ? 1 : 0;
+  const empty = 5 - full - half;
+  return '<span class="star-rating">' +
+    '\u2605'.repeat(full) +
+    (half ? '\u2605' : '') +
+    '<span class="empty">' + '\u2606'.repeat(empty) + '</span>' +
+    '</span>';
+}
+
+function renderReviewThemesChart(agg) {
+  const themes = agg.themeFrequency;
+  if (!themes) return;
+
+  const ctx = document.getElementById('chart-review-themes');
+  if (!ctx) return;
+  if (charts.reviewThemes) charts.reviewThemes.destroy();
+
+  const entries = Object.entries(themes).sort((a, b) => b[1] - a[1]);
+  const defaultColors = [
+    'rgba(90, 143, 74, 0.7)', 'rgba(212, 168, 67, 0.7)', 'rgba(74, 127, 168, 0.7)',
+    'rgba(201, 123, 58, 0.7)', 'rgba(184, 84, 80, 0.7)', 'rgba(74, 154, 138, 0.7)',
+    'rgba(166, 75, 138, 0.7)', 'rgba(107, 163, 204, 0.7)',
+  ];
+
+  charts.reviewThemes = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: entries.map(e => e[0].replace(/_/g, ' ')),
+      datasets: [{
+        label: 'Mentions',
+        data: entries.map(e => e[1]),
+        backgroundColor: defaultColors.slice(0, entries.length),
+        borderRadius: 4,
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: { ticks: { color: '#7A7264' }, grid: { color: 'rgba(200,180,140,0.08)' } },
+        y: { ticks: { color: '#B8AE98', font: { size: 11 } }, grid: { display: false } },
+      },
+      plugins: { legend: { display: false } }
+    }
+  });
+}
+
+// ============================================================
+// RENDER: COUNCIL & POLICY
+// ============================================================
+
+function renderCouncil() {
+  if (!appData.consultations || !appData.consultations.consultations || appData.consultations.consultations.length === 0) {
+    document.getElementById('council-content').style.display = 'none';
+    document.getElementById('council-nodata').style.display = 'block';
+    return;
+  }
+
+  document.getElementById('council-content').style.display = 'block';
+  document.getElementById('council-nodata').style.display = 'none';
+
+  const data = appData.consultations;
+  const consultations = data.consultations;
+
+  // Stats
+  const open = consultations.filter(c => c.status === 'open').length;
+  const closed = consultations.filter(c => c.status === 'closed').length;
+  const statsEl = document.getElementById('council-stats');
+  statsEl.innerHTML = `
+    <div class="stat-card">
+      <div class="stat-icon">&#128203;</div>
+      <div class="stat-value">${consultations.length}</div>
+      <div class="stat-label">Consultations</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">&#128994;</div>
+      <div class="stat-value">${open}</div>
+      <div class="stat-label">Open</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">&#128308;</div>
+      <div class="stat-value">${closed}</div>
+      <div class="stat-label">Closed</div>
+    </div>
+  `;
+
+  // Themes chart
+  renderCouncilThemesChart(consultations);
+
+  // Harvest alignment
+  if (data.harvestRelevance && Array.isArray(data.harvestRelevance)) {
+    document.getElementById('council-alignment-list').innerHTML =
+      data.harvestRelevance.map(r => `<li>${escapeHtml(r)}</li>`).join('');
+  } else if (data.communityPriorities && Array.isArray(data.communityPriorities)) {
+    document.getElementById('council-alignment-list').innerHTML =
+      data.communityPriorities.map(r => `<li>${escapeHtml(r)}</li>`).join('');
+  }
+
+  // Consultation list
+  const listEl = document.getElementById('consultation-list');
+  listEl.innerHTML = consultations.map(c => {
+    const statusBadge = c.status === 'open' ? 'badge-green' : 'badge-red';
+    return `
+      <div class="consultation-card">
+        <h4>${c.url ? `<a href="${escapeHtml(c.url)}" target="_blank" style="color:var(--text-primary);text-decoration:none;">${escapeHtml(c.title)}</a>` : escapeHtml(c.title)}</h4>
+        <p>${escapeHtml(c.description || '')}</p>
+        <div class="consultation-meta">
+          <span class="badge ${statusBadge}">${escapeHtml(c.status || 'unknown')}</span>
+          ${c.category ? `<span class="badge badge-blue">${escapeHtml(c.category.replace(/_/g, ' '))}</span>` : ''}
+          ${c.relevance ? `<span style="font-size:11px;color:var(--text-muted);">${escapeHtml(c.relevance)}</span>` : ''}
+        </div>
+        ${c.themes && c.themes.length > 0 ? `<div style="margin-top:8px;">${c.themes.map(t => `<span class="badge badge-amber" style="margin-right:4px;margin-top:4px;">${escapeHtml(t.replace(/_/g, ' '))}</span>`).join('')}</div>` : ''}
+      </div>
+    `;
+  }).join('');
+}
+
+function renderCouncilThemesChart(consultations) {
+  // Aggregate themes across all consultations
+  const themeCounts = {};
+  consultations.forEach(c => {
+    (c.themes || []).forEach(t => {
+      const label = t.replace(/_/g, ' ');
+      themeCounts[label] = (themeCounts[label] || 0) + 1;
+    });
+  });
+
+  const entries = Object.entries(themeCounts).sort((a, b) => b[1] - a[1]).slice(0, 12);
+  if (entries.length === 0) return;
+
+  const ctx = document.getElementById('chart-council-themes');
+  if (!ctx) return;
+  if (charts.councilThemes) charts.councilThemes.destroy();
+
+  const defaultColors = [
+    'rgba(90, 143, 74, 0.7)', 'rgba(212, 168, 67, 0.7)', 'rgba(74, 127, 168, 0.7)',
+    'rgba(201, 123, 58, 0.7)', 'rgba(184, 84, 80, 0.7)', 'rgba(74, 154, 138, 0.7)',
+    'rgba(166, 75, 138, 0.7)', 'rgba(107, 163, 204, 0.7)', 'rgba(124, 182, 104, 0.7)',
+    'rgba(232, 192, 106, 0.7)', 'rgba(150, 100, 160, 0.7)', 'rgba(100, 180, 180, 0.7)',
+  ];
+
+  charts.councilThemes = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: entries.map(e => e[0]),
+      datasets: [{
+        label: 'Consultations',
+        data: entries.map(e => e[1]),
+        backgroundColor: defaultColors.slice(0, entries.length),
+        borderRadius: 4,
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: { ticks: { color: '#7A7264', stepSize: 1 }, grid: { color: 'rgba(200,180,140,0.08)' } },
+        y: { ticks: { color: '#B8AE98', font: { size: 11 } }, grid: { display: false } },
+      },
+      plugins: { legend: { display: false } }
+    }
+  });
+}
+
+// ============================================================
+// RENDER: FACEBOOK GROUPS (integrated into Organizations)
+// ============================================================
+
+function renderFacebookGroups() {
+  if (!appData.facebook || !appData.facebook.groups || appData.facebook.groups.length === 0) return;
+
+  const orgList = document.getElementById('org-list');
+  if (!orgList) return;
+
+  // Add section header
+  const header = document.createElement('div');
+  header.style.cssText = 'grid-column: 1 / -1; margin-top: 20px;';
+  header.innerHTML = '<h3 style="font-family:Montserrat,sans-serif;font-weight:600;font-size:16px;margin-bottom:4px;">Facebook Community Groups</h3><p style="font-size:13px;color:var(--text-muted);margin-bottom:12px;">Online communities relevant to the Maleny/Witta area</p>';
+  orgList.appendChild(header);
+
+  appData.facebook.groups.forEach(g => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+        <h3 style="flex:1;margin-bottom:0;">${escapeHtml(g.name || 'Unknown')}</h3>
+        <span class="badge badge-blue">${escapeHtml((g.type || '').replace(/_/g, ' '))}</span>
+      </div>
+      ${g.description ? `<p>${escapeHtml(g.description)}</p>` : ''}
+      <div style="margin-top:6px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+        ${g.estimatedMembers ? `<span style="font-size:12px;color:var(--text-muted);">~${g.estimatedMembers.toLocaleString()} members</span>` : ''}
+        ${g.activityLevel ? `<span class="badge badge-green">${escapeHtml(g.activityLevel.replace(/_/g, ' '))}</span>` : ''}
+        ${g.url ? `<a href="${escapeHtml(g.url)}" target="_blank" style="color:var(--accent-blue-light);font-size:12px;text-decoration:none;">View group</a>` : ''}
+      </div>
+    `;
+    orgList.appendChild(card);
+  });
+}
+
+// ============================================================
+// RENDER: AI INSIGHTS
+// ============================================================
+
+let analysisData = null;
+
+function renderInsights() {
+  if (!appData.analysis) {
+    document.getElementById('insight-tabs').style.display = 'none';
+    document.getElementById('insight-content').style.display = 'none';
+    document.querySelector('#panel-insights .btn-outline')?.style && (document.getElementById('btn-download-report').style.display = 'none');
+    document.getElementById('insights-nodata').style.display = 'block';
+    return;
+  }
+
+  document.getElementById('insights-nodata').style.display = 'none';
+  document.getElementById('insight-tabs').style.display = 'flex';
+  document.getElementById('insight-content').style.display = 'block';
+  document.getElementById('btn-download-report').style.display = 'inline-flex';
+
+  analysisData = appData.analysis;
+
+  // Build tabs from analysis sections
+  const tabsEl = document.getElementById('insight-tabs');
+  let sections = [];
+
+  if (analysisData.sections && Array.isArray(analysisData.sections)) {
+    sections = analysisData.sections;
+  } else if (typeof analysisData === 'object') {
+    // Try to extract sections from top-level keys
+    const skipKeys = ['metadata', 'generated_at', 'model', 'version', 'summary', 'key_findings'];
+    Object.keys(analysisData).forEach(key => {
+      if (!skipKeys.includes(key)) {
+        const val = analysisData[key];
+        if (typeof val === 'string' || typeof val === 'object') {
+          sections.push({
+            title: key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
+            key: key,
+            content: val,
+          });
+        }
+      }
+    });
+  }
+
+  if (sections.length === 0) {
+    // Show the whole thing as one section
+    sections = [{ title: 'Full Report', key: 'full', content: analysisData }];
+  }
+
+  tabsEl.innerHTML = sections.map((s, i) => `
+    <div class="insight-tab${i === 0 ? ' active' : ''}" data-index="${i}" onclick="showInsightTab(${i})">
+      ${escapeHtml(s.title)}
+    </div>
+  `).join('');
+
+  // Store sections globally
+  window._insightSections = sections;
+
+  // Show first tab
+  showInsightTab(0);
+}
+
+function showInsightTab(index) {
+  // Update tab active state
+  document.querySelectorAll('.insight-tab').forEach((tab, i) => {
+    tab.classList.toggle('active', i === index);
+  });
+
+  const section = window._insightSections[index];
+  const contentEl = document.getElementById('insight-content');
+
+  if (!section) {
+    contentEl.innerHTML = '<p>No content available.</p>';
+    return;
+  }
+
+  let content = section.content || section;
+
+  if (typeof content === 'string') {
+    // Render as markdown-like HTML
+    contentEl.innerHTML = renderMarkdownish(content);
+  } else if (typeof content === 'object') {
+    contentEl.innerHTML = renderObjectAsHTML(content);
+  }
+}
+
+function renderMarkdownish(text) {
+  // Simple markdown-ish rendering
+  let html = escapeHtml(text);
+
+  // Headers
+  html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+  html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+  html = html.replace(/^# (.+)$/gm, '<h2>$1</h2>');
+
+  // Bold
+  html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+
+  // Lists
+  html = html.replace(/^- (.+)$/gm, '<li>$1</li>');
+  html = html.replace(/(<li>.*<\/li>)/gs, '<ul>$1</ul>');
+  // Fix nested ul
+  html = html.replace(/<\/ul>\s*<ul>/g, '');
+
+  // Paragraphs (double newlines)
+  html = html.replace(/\n\n/g, '</p><p>');
+  html = '<p>' + html + '</p>';
+
+  // Clean up empty p tags
+  html = html.replace(/<p>\s*<\/p>/g, '');
+  html = html.replace(/<p>\s*(<h[23]>)/g, '$1');
+  html = html.replace(/(<\/h[23]>)\s*<\/p>/g, '$1');
+  html = html.replace(/<p>\s*(<ul>)/g, '$1');
+  html = html.replace(/(<\/ul>)\s*<\/p>/g, '$1');
+
+  return html;
+}
+
+function renderObjectAsHTML(obj, depth = 0) {
+  if (typeof obj === 'string') return `<p>${escapeHtml(obj)}</p>`;
+  if (typeof obj !== 'object' || obj === null) return `<p>${String(obj)}</p>`;
+
+  if (Array.isArray(obj)) {
+    return '<ul>' + obj.map(item => {
+      if (typeof item === 'string') return `<li>${escapeHtml(item)}</li>`;
+      if (typeof item === 'object') return `<li>${renderObjectAsHTML(item, depth + 1)}</li>`;
+      return `<li>${String(item)}</li>`;
+    }).join('') + '</ul>';
+  }
+
+  let html = '';
+  for (const [key, val] of Object.entries(obj)) {
+    const title = key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+    if (depth === 0) {
+      html += `<h3>${escapeHtml(title)}</h3>`;
+    } else {
+      html += `<strong>${escapeHtml(title)}:</strong> `;
+    }
+
+    if (typeof val === 'string') {
+      html += `<p>${escapeHtml(val)}</p>`;
+    } else if (typeof val === 'number' || typeof val === 'boolean') {
+      html += `<p>${val}</p>`;
+    } else {
+      html += renderObjectAsHTML(val, depth + 1);
+    }
+  }
+  return html;
+}
+
+function downloadReport() {
+  if (!analysisData) return;
+  const blob = new Blob([JSON.stringify(analysisData, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'community-profile-analysis.json';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ============================================================
+// RENDER: DATA SOURCES
+// ============================================================
+
+function renderDataSources() {
+  const tbody = document.getElementById('sources-table-body');
+
+  tbody.innerHTML = DATA_SOURCES.map(source => {
+    const isLoaded = source.key === 'analysis' ? appData.analysis !== null : appData[source.key] !== null;
+    const statusHtml = isLoaded
+      ? '<span class="status-dot status-loaded"></span>Loaded'
+      : '<span class="status-dot status-missing"></span>Not loaded';
+
+    return `
+      <tr>
+        <td>
+          <strong>${escapeHtml(source.name)}</strong>
+          ${source.url !== 'Various' && source.url !== 'Generated locally' ? `<br><a href="${escapeHtml(source.url)}" target="_blank">${escapeHtml(source.url)}</a>` : ''}
+        </td>
+        <td>${escapeHtml(source.description)}</td>
+        <td>${escapeHtml(source.license)}</td>
+        <td style="white-space:nowrap;">${statusHtml}</td>
+      </tr>
+    `;
+  }).join('');
+}
+
+// ============================================================
+// UTILITIES
+// ============================================================
+
+function escapeHtml(str) {
+  if (!str) return '';
+  const div = document.createElement('div');
+  div.textContent = String(str);
+  return div.innerHTML;
+}
+
+function getBadgeClass(type) {
+  const t = (type || '').toLowerCase();
+  if (t.includes('sport') || t.includes('recreation') || t.includes('garden')) return 'badge-green';
+  if (t.includes('art') || t.includes('culture') || t.includes('heritage') || t.includes('museum')) return 'badge-amber';
+  if (t.includes('market') || t.includes('business') || t.includes('enterprise')) return 'badge-orange';
+  if (t.includes('environment') || t.includes('conservation') || t.includes('wildlife')) return 'badge-teal';
+  if (t.includes('social') || t.includes('community') || t.includes('volunteer')) return 'badge-blue';
+  if (t.includes('health') || t.includes('emergency')) return 'badge-red';
+  if (t.includes('festival') || t.includes('annual') || t.includes('event')) return 'badge-amber';
+  return 'badge-blue';
+}
+
+// ============================================================
+// CHART.JS GLOBAL DEFAULTS
+// ============================================================
+
+function configureChartDefaults() {
+  if (typeof Chart === 'undefined') return;
+
+  Chart.defaults.color = '#B8AE98';
+  Chart.defaults.borderColor = 'rgba(200, 180, 140, 0.08)';
+  Chart.defaults.font.family = "'Inter', -apple-system, sans-serif";
+  Chart.defaults.plugins.tooltip.backgroundColor = '#222D1F';
+  Chart.defaults.plugins.tooltip.borderColor = 'rgba(200,180,140,0.2)';
+  Chart.defaults.plugins.tooltip.borderWidth = 1;
+  Chart.defaults.plugins.tooltip.cornerRadius = 6;
+  Chart.defaults.plugins.tooltip.titleFont = { weight: '600' };
+  Chart.defaults.plugins.tooltip.padding = 10;
+}
+
+// ============================================================
+// INITIALIZATION
+// ============================================================
+
+async function init() {
+  configureChartDefaults();
+
+  const statusEl = document.getElementById('data-status');
+  statusEl.textContent = 'Loading data...';
+
+  const results = await loadAllData();
+
+  const loadedCount = results.loaded;
+  const totalCount = DATA_SOURCES.length;
+  statusEl.textContent = `${loadedCount}/${totalCount} sources loaded`;
+
+  if (loadedCount === 0) {
+    statusEl.textContent = 'No data loaded';
+    document.getElementById('freshness-indicator').querySelector('.status-dot').className = 'status-dot status-missing';
+    document.getElementById('freshness-date').textContent = 'no data files found';
+  }
+
+  // Render all panels
+  renderOverview();
+  renderDemographics();
+  renderOrganizations();
+  renderFacebookGroups();
+  renderEvents();
+  renderHeritage();
+  renderBiodiversity();
+  renderMedia();
+  renderReviews();
+  renderCouncil();
+  renderInsights();
+  renderDataSources();
+}
+
+// Start
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>

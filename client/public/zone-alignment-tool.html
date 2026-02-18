@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zone Alignment Tool — The Harvest</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #1c1917; color: #e7e5e4; overflow-x: hidden; }
+
+  .toolbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: #292524; border-bottom: 1px solid #44403c;
+    padding: 8px 16px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  }
+  .toolbar button {
+    padding: 6px 14px; border-radius: 6px; border: 1px solid #57534e;
+    background: #44403c; color: #e7e5e4; cursor: pointer; font-size: 13px;
+  }
+  .toolbar button:hover { background: #57534e; }
+  .toolbar button.primary { background: #d97706; border-color: #d97706; color: #000; font-weight: 600; }
+  .toolbar button.primary:hover { background: #f59e0b; }
+  .toolbar button.danger { background: #dc2626; border-color: #dc2626; color: white; }
+  .toolbar .sep { width: 1px; height: 24px; background: #57534e; }
+  .toolbar label { font-size: 12px; color: #a8a29e; }
+  .toolbar select { padding: 4px 8px; border-radius: 4px; border: 1px solid #57534e; background: #44403c; color: #e7e5e4; font-size: 13px; }
+
+  #canvas-wrap {
+    margin-top: 52px; position: relative; display: inline-block;
+    cursor: crosshair;
+  }
+  #canvas-wrap img {
+    display: block; max-width: 100vw; height: auto;
+    user-select: none; -webkit-user-drag: none;
+  }
+
+  .zone {
+    position: absolute; border: 2px dashed rgba(251,191,36,0.7);
+    background: rgba(251,191,36,0.08); cursor: move;
+    transition: background 0.15s;
+  }
+  .zone:hover, .zone.selected { background: rgba(251,191,36,0.2); border-color: #fbbf24; }
+  .zone .label {
+    position: absolute; top: 2px; left: 2px;
+    background: rgba(0,0,0,0.7); color: #fbbf24; padding: 1px 6px;
+    font-size: 11px; font-weight: 600; border-radius: 3px; white-space: nowrap;
+    pointer-events: none;
+  }
+  .zone .resize-handle {
+    position: absolute; bottom: -4px; right: -4px;
+    width: 12px; height: 12px; background: #fbbf24; border-radius: 2px;
+    cursor: se-resize;
+  }
+
+  /* Output panel */
+  #output-panel {
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+    background: #1c1917; border-top: 1px solid #44403c;
+    max-height: 40vh; overflow-y: auto; display: none;
+  }
+  #output-panel.visible { display: block; }
+  #output-panel pre {
+    padding: 12px 16px; font-size: 12px; line-height: 1.5;
+    color: #a8a29e; font-family: 'SF Mono', Monaco, monospace;
+    white-space: pre-wrap;
+  }
+  #output-panel .copy-btn {
+    position: sticky; top: 0; right: 0; float: right;
+    padding: 4px 12px; margin: 8px; border-radius: 4px;
+    background: #d97706; color: #000; border: none; cursor: pointer; font-size: 12px; font-weight: 600;
+  }
+
+  /* Edit dialog */
+  .edit-dialog {
+    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    z-index: 200; background: #292524; border: 1px solid #57534e;
+    border-radius: 12px; padding: 20px; min-width: 360px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+  .edit-dialog .backdrop {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: -1;
+  }
+  .edit-dialog label { display: block; font-size: 12px; color: #a8a29e; margin-bottom: 4px; margin-top: 12px; }
+  .edit-dialog label:first-child { margin-top: 0; }
+  .edit-dialog input, .edit-dialog textarea {
+    width: 100%; padding: 8px 10px; border-radius: 6px; border: 1px solid #57534e;
+    background: #1c1917; color: #e7e5e4; font-size: 14px;
+  }
+  .edit-dialog textarea { height: 60px; resize: vertical; }
+  .edit-dialog .actions { display: flex; gap: 8px; margin-top: 16px; justify-content: flex-end; }
+  .edit-dialog .actions button { padding: 6px 16px; border-radius: 6px; border: none; cursor: pointer; font-size: 13px; }
+  .edit-dialog .save-btn { background: #d97706; color: #000; font-weight: 600; }
+  .edit-dialog .cancel-btn { background: #44403c; color: #e7e5e4; }
+
+  /* Overlay toggle */
+  #overlay-img {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    object-fit: cover; pointer-events: none; opacity: 0; transition: opacity 0.3s;
+  }
+  #overlay-img.visible { opacity: 0.5; }
+
+  .instructions {
+    position: fixed; top: 56px; right: 12px; z-index: 50;
+    background: #292524; border: 1px solid #44403c; border-radius: 8px;
+    padding: 10px 14px; font-size: 11px; color: #a8a29e; max-width: 240px; line-height: 1.5;
+  }
+  .instructions strong { color: #fbbf24; }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <button class="primary" onclick="addZone()">+ Add Zone</button>
+  <div class="sep"></div>
+  <button onclick="exportZones()">Export JSON</button>
+  <button onclick="copyExport()">Copy to Clipboard</button>
+  <div class="sep"></div>
+  <label>
+    Overlay:
+    <select id="overlay-select" onchange="changeOverlay()">
+      <option value="">None</option>
+      <option value="/images/plans/site-plan-colour-labelled.jpeg">Labelled Plan</option>
+      <option value="/images/plans/site-plan-colour.jpeg">Colour Plan</option>
+      <option value="/images/plans/site-analysis-zones.jpeg">Element Zones</option>
+    </select>
+  </label>
+  <label>
+    Opacity: <input type="range" id="overlay-opacity" min="0" max="100" value="50" style="width:80px;vertical-align:middle" oninput="updateOverlayOpacity()">
+  </label>
+  <div class="sep"></div>
+  <button onclick="importZones()">Import JSON</button>
+  <button class="danger" onclick="deleteSelected()">Delete Selected</button>
+  <div class="sep"></div>
+  <span style="font-size:11px;color:#78716c">Zones: <span id="zone-count">0</span></span>
+</div>
+
+<div class="instructions" id="instructions">
+  <strong>How to use:</strong><br>
+  1. Click <strong>+ Add Zone</strong> to create a rectangle<br>
+  2. <strong>Drag</strong> to move, <strong>corner handle</strong> to resize<br>
+  3. <strong>Double-click</strong> a zone to edit name &amp; details<br>
+  4. Toggle <strong>overlay</strong> to compare with architect plan<br>
+  5. <strong>Export JSON</strong> when done — paste into code<br>
+  <br><em>Click to dismiss</em>
+</div>
+
+<div id="canvas-wrap">
+  <img id="base-img" src="/images/site-plan/cropped/photo-wide.jpg" alt="Aerial photo" draggable="false">
+  <img id="overlay-img" src="" alt="" draggable="false">
+  <!-- zones rendered here -->
+</div>
+
+<div id="output-panel">
+  <button class="copy-btn" onclick="copyExport()">Copy</button>
+  <pre id="output-code"></pre>
+</div>
+
+<!-- Edit dialog (hidden) -->
+<div class="edit-dialog" id="edit-dialog" style="display:none">
+  <div class="backdrop" onclick="closeEditDialog()"></div>
+  <label>Zone Name</label>
+  <input type="text" id="edit-name" placeholder="e.g. The Pavilion">
+  <label>Now (current state)</label>
+  <textarea id="edit-now" placeholder="What's here right now"></textarea>
+  <label>Becoming (vision)</label>
+  <textarea id="edit-becoming" placeholder="What this area will become"></textarea>
+  <label>Status</label>
+  <select id="edit-status">
+    <option value="active">Active</option>
+    <option value="in-progress">In Progress</option>
+    <option value="planned">Planned</option>
+  </select>
+  <div class="actions">
+    <button class="cancel-btn" onclick="closeEditDialog()">Cancel</button>
+    <button class="save-btn" onclick="saveEditDialog()">Save</button>
+  </div>
+</div>
+
+<script>
+let zones = [];
+let selectedId = null;
+let editingId = null;
+let nextId = 1;
+
+// Drag state
+let dragState = null; // { id, type: 'move'|'resize', startX, startY, origX, origY, origW, origH }
+
+const wrap = document.getElementById('canvas-wrap');
+const baseImg = document.getElementById('base-img');
+
+// Dismiss instructions
+document.getElementById('instructions').onclick = function() { this.style.display = 'none'; };
+
+function getImageRect() {
+  return baseImg.getBoundingClientRect();
+}
+
+function pxToPercent(px, dim) {
+  return (px / dim) * 100;
+}
+
+function addZone(data) {
+  const id = 'zone-' + nextId++;
+  const zone = {
+    id: data?.id || id,
+    name: data?.name || 'New Zone',
+    now: data?.now || '',
+    becoming: data?.becoming || '',
+    status: data?.status || 'planned',
+    x: data?.x ?? 30,
+    y: data?.y ?? 30,
+    width: data?.width ?? 15,
+    height: data?.height ?? 15,
+  };
+  zones.push(zone);
+  renderZones();
+  selectedId = zone.id;
+  renderZones();
+  updateCount();
+  return zone;
+}
+
+function renderZones() {
+  // Remove old zone elements
+  wrap.querySelectorAll('.zone').forEach(el => el.remove());
+
+  zones.forEach(zone => {
+    const el = document.createElement('div');
+    el.className = 'zone' + (selectedId === zone.id ? ' selected' : '');
+    el.dataset.id = zone.id;
+    el.style.left = zone.x + '%';
+    el.style.top = zone.y + '%';
+    el.style.width = zone.width + '%';
+    el.style.height = zone.height + '%';
+
+    // Status colors
+    const colors = {
+      'active': { border: 'rgba(16,185,129,0.7)', bg: 'rgba(16,185,129,0.08)', bgHover: 'rgba(16,185,129,0.2)' },
+      'in-progress': { border: 'rgba(251,191,36,0.7)', bg: 'rgba(251,191,36,0.08)', bgHover: 'rgba(251,191,36,0.2)' },
+      'planned': { border: 'rgba(168,162,158,0.7)', bg: 'rgba(168,162,158,0.08)', bgHover: 'rgba(168,162,158,0.2)' },
+    };
+    const c = colors[zone.status] || colors['planned'];
+    el.style.borderColor = c.border;
+    el.style.background = selectedId === zone.id ? c.bgHover : c.bg;
+
+    const label = document.createElement('span');
+    label.className = 'label';
+    label.textContent = zone.name;
+    el.appendChild(label);
+
+    const handle = document.createElement('div');
+    handle.className = 'resize-handle';
+    el.appendChild(handle);
+
+    // Move drag
+    el.addEventListener('mousedown', (e) => {
+      if (e.target === handle) return;
+      e.preventDefault();
+      selectedId = zone.id;
+      renderZones();
+      const rect = getImageRect();
+      dragState = {
+        id: zone.id,
+        type: 'move',
+        startX: e.clientX,
+        startY: e.clientY,
+        origX: zone.x,
+        origY: zone.y,
+        imgW: rect.width,
+        imgH: rect.height,
+      };
+    });
+
+    // Resize drag
+    handle.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      selectedId = zone.id;
+      renderZones();
+      const rect = getImageRect();
+      dragState = {
+        id: zone.id,
+        type: 'resize',
+        startX: e.clientX,
+        startY: e.clientY,
+        origW: zone.width,
+        origH: zone.height,
+        imgW: rect.width,
+        imgH: rect.height,
+      };
+    });
+
+    // Double click to edit
+    el.addEventListener('dblclick', (e) => {
+      e.preventDefault();
+      openEditDialog(zone.id);
+    });
+
+    wrap.appendChild(el);
+  });
+}
+
+// Mouse move/up for dragging
+document.addEventListener('mousemove', (e) => {
+  if (!dragState) return;
+  const zone = zones.find(z => z.id === dragState.id);
+  if (!zone) return;
+
+  const dx = pxToPercent(e.clientX - dragState.startX, dragState.imgW);
+  const dy = pxToPercent(e.clientY - dragState.startY, dragState.imgH);
+
+  if (dragState.type === 'move') {
+    zone.x = Math.max(0, Math.min(100 - zone.width, dragState.origX + dx));
+    zone.y = Math.max(0, Math.min(100 - zone.height, dragState.origY + dy));
+  } else if (dragState.type === 'resize') {
+    zone.width = Math.max(3, dragState.origW + dx);
+    zone.height = Math.max(3, dragState.origH + dy);
+  }
+  renderZones();
+});
+
+document.addEventListener('mouseup', () => {
+  dragState = null;
+});
+
+// Click on canvas background to deselect
+wrap.addEventListener('mousedown', (e) => {
+  if (e.target === baseImg || e.target === wrap) {
+    selectedId = null;
+    renderZones();
+  }
+});
+
+// Edit dialog
+function openEditDialog(id) {
+  editingId = id;
+  const zone = zones.find(z => z.id === id);
+  if (!zone) return;
+  document.getElementById('edit-name').value = zone.name;
+  document.getElementById('edit-now').value = zone.now;
+  document.getElementById('edit-becoming').value = zone.becoming;
+  document.getElementById('edit-status').value = zone.status;
+  document.getElementById('edit-dialog').style.display = 'block';
+  document.getElementById('edit-name').focus();
+}
+
+function closeEditDialog() {
+  editingId = null;
+  document.getElementById('edit-dialog').style.display = 'none';
+}
+
+function saveEditDialog() {
+  const zone = zones.find(z => z.id === editingId);
+  if (!zone) return;
+  zone.name = document.getElementById('edit-name').value || 'Unnamed';
+  zone.now = document.getElementById('edit-now').value;
+  zone.becoming = document.getElementById('edit-becoming').value;
+  zone.status = document.getElementById('edit-status').value;
+  closeEditDialog();
+  renderZones();
+}
+
+// Keyboard: Enter to save dialog, Escape to close, Delete/Backspace to delete zone
+document.addEventListener('keydown', (e) => {
+  if (editingId) {
+    if (e.key === 'Escape') closeEditDialog();
+    if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') saveEditDialog();
+    return;
+  }
+  if ((e.key === 'Delete' || e.key === 'Backspace') && selectedId && document.activeElement === document.body) {
+    e.preventDefault();
+    deleteSelected();
+  }
+});
+
+function deleteSelected() {
+  if (!selectedId) return;
+  zones = zones.filter(z => z.id !== selectedId);
+  selectedId = null;
+  renderZones();
+  updateCount();
+}
+
+// Export
+function exportZones() {
+  const output = zones.map(z => ({
+    id: z.id.replace(/^zone-\d+$/, z.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+$/, '')),
+    name: z.name,
+    now: z.now,
+    becoming: z.becoming,
+    status: z.status,
+    x: Math.round(z.x * 10) / 10,
+    y: Math.round(z.y * 10) / 10,
+    width: Math.round(z.width * 10) / 10,
+    height: Math.round(z.height * 10) / 10,
+  }));
+
+  const code = JSON.stringify(output, null, 2);
+  document.getElementById('output-code').textContent = code;
+  document.getElementById('output-panel').classList.add('visible');
+}
+
+function copyExport() {
+  exportZones();
+  const text = document.getElementById('output-code').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.querySelector('.copy-btn');
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy', 1500);
+  });
+}
+
+// Import
+function importZones() {
+  const json = prompt('Paste zone JSON array:');
+  if (!json) return;
+  try {
+    const data = JSON.parse(json);
+    if (!Array.isArray(data)) throw new Error('Expected array');
+    zones = [];
+    data.forEach(d => {
+      const zone = {
+        id: d.id || 'zone-' + nextId++,
+        name: d.name || 'Unnamed',
+        now: d.now || '',
+        becoming: d.becoming || '',
+        status: d.status || 'planned',
+        x: d.x ?? 30,
+        y: d.y ?? 30,
+        width: d.width ?? 15,
+        height: d.height ?? 15,
+      };
+      zones.push(zone);
+    });
+    renderZones();
+    updateCount();
+  } catch (e) {
+    alert('Invalid JSON: ' + e.message);
+  }
+}
+
+// Overlay
+function changeOverlay() {
+  const src = document.getElementById('overlay-select').value;
+  const img = document.getElementById('overlay-img');
+  if (src) {
+    img.src = src;
+    img.classList.add('visible');
+  } else {
+    img.classList.remove('visible');
+    img.src = '';
+  }
+}
+
+function updateOverlayOpacity() {
+  const val = document.getElementById('overlay-opacity').value;
+  document.getElementById('overlay-img').style.opacity = val / 100;
+}
+
+function updateCount() {
+  document.getElementById('zone-count').textContent = zones.length;
+}
+
+// Load existing zones from SiteZoneExplorer as starting point
+// Rough starting positions for the cropped landscape photo
+const existingZones = [
+  { id: "main-building", name: "Main Building", now: "Rammed earth building, empty interior being fitted out", becoming: "Community hub — kitchen, gathering space, workshop area", status: "in-progress", x: 48, y: 12, width: 28, height: 42 },
+  { id: "nursery", name: "The Nursery", now: "Decades of native species, established plants", becoming: "Preserved as-is — the heart of the property", status: "active", x: 15, y: 15, width: 35, height: 50 },
+  { id: "front-lawn", name: "Front Lawn", now: "Open grass with driveway loop", becoming: "Event lawn, markets, overflow gathering", status: "planned", x: 25, y: 68, width: 35, height: 28 },
+  { id: "parking", name: "Parking / Driveway", now: "Gravel driveway and parking area", becoming: "Visitor parking with overflow for event days", status: "active", x: 62, y: 58, width: 22, height: 35 },
+  { id: "gardens", name: "Gardens", now: "Established fruit trees, overgrown beds around building", becoming: "Restored market gardens — produce for the kitchen and community", status: "in-progress", x: 78, y: 12, width: 18, height: 42 },
+  { id: "road-frontage", name: "Road Frontage", now: "Road and entry point", becoming: "Visible entry signage, welcoming arrival", status: "planned", x: 0, y: 0, width: 12, height: 55 },
+];
+
+// Load existing zones
+existingZones.forEach(z => {
+  zones.push({ ...z });
+  nextId++;
+});
+renderZones();
+updateCount();
+</script>
+
+</body>
+</html>
