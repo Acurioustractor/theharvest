@@ -1,6 +1,6 @@
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { useLocation, Redirect } from "wouter";
+import { useLocation } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { SeasonalProvider } from "./contexts/SeasonalContext";
@@ -13,6 +13,7 @@ import CommunityPulse from "./pages/CommunityPulse";
 import EventFeedback from "./pages/EventFeedback";
 import BrandGuide from "./pages/BrandGuide";
 import ZoneWorkshop from "./pages/ZoneWorkshop";
+import NotFound from "./pages/NotFound";
 
 function Router() {
   const [location] = useLocation();
@@ -31,8 +32,7 @@ function Router() {
     return <EventFeedback eventId={eventId} />;
   }
 
-  // Everything else redirects to home
-  return <Redirect to="/" />;
+  return <NotFound />;
 }
 
 function App() {

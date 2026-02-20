@@ -6,6 +6,8 @@ import FadeIn from "@/components/FadeIn";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { rootStyle, colors, fonts } from "@/styles/brand";
 
+const GATHERING_DATE = new Date("2026-03-07T11:00:00+10:00");
+
 const barryImages = [
   { src: "/images/compendium/barry/IMG_5764.jpg", caption: "Barry at golden hour" },
   { src: "/images/compendium/barry/IMG_5777.jpg", caption: "Looking out" },
@@ -13,10 +15,25 @@ const barryImages = [
   { src: "/images/compendium/barry/IMG_5819.jpg", caption: "With the Blue Heelers" },
 ];
 
+function useCountdownDays(target: Date) {
+  const [now, setNow] = useState(new Date());
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 60_000);
+    return () => clearInterval(id);
+  }, []);
+  const diff = target.getTime() - now.getTime();
+  if (diff <= 0) return null;
+  return Math.ceil(diff / 86400000);
+}
+
 export default function BauhausHome() {
   const isMobile = useMediaQuery("(max-width: 768px)");
   const [scrollVisible, setScrollVisible] = useState(false);
   const [currentBarryPhoto, setCurrentBarryPhoto] = useState(0);
+  const [tractorTooltip, setTractorTooltip] = useState(false);
+  const [tractorX, setTractorX] = useState(-40);
+
+  const daysLeft = useCountdownDays(GATHERING_DATE);
 
   useEffect(() => {
     document.title = "The Harvest / Art. Food. Community.";
@@ -47,10 +64,49 @@ export default function BauhausHome() {
     return () => clearInterval(interval);
   }, [nextBarryPhoto]);
 
+  // Tractor scroll animation
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPct = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+      setTractorX(-40 + scrollPct * (window.innerWidth + 40));
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
     <div style={rootStyle}>
 
-      {/* ─── 1. THE OPENING ─── */}
+      {/* --- GATHERING COUNTDOWN BANNER --- */}
+      {daysLeft !== null && (
+        <Link href="/gather#rsvp" style={{ textDecoration: "none" }}>
+          <motion.div
+            initial={{ y: -40 }}
+            animate={{ y: 0 }}
+            transition={{ delay: 1, duration: 0.5, ease: "easeOut" }}
+            style={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              right: 0,
+              zIndex: 100,
+              backgroundColor: colors.yellow,
+              color: colors.black,
+              textAlign: "center",
+              padding: "10px 20px",
+              fontFamily: fonts.display,
+              fontWeight: 700,
+              fontSize: isMobile ? 12 : 14,
+              letterSpacing: "0.08em",
+              cursor: "pointer",
+            }}
+          >
+            FIRST GATHERING IN {daysLeft} {daysLeft === 1 ? "DAY" : "DAYS"} &mdash; SAVE YOUR SPOT
+          </motion.div>
+        </Link>
+      )}
+
+      {/* --- 1. THE OPENING --- */}
       <section style={{
         position: "relative",
         height: "100vh",
@@ -148,7 +204,7 @@ export default function BauhausHome() {
         </motion.div>
       </section>
 
-      {/* ─── 2. THE STATEMENT + PRINCIPLES ─── */}
+      {/* --- 2. THE STATEMENT + PRINCIPLES --- */}
       <section style={{
         backgroundColor: colors.black,
         color: colors.cream,
@@ -181,7 +237,7 @@ export default function BauhausHome() {
             maxWidth: 120,
           }} />
 
-          {/* The Principles — centered, stacked */}
+          {/* The Principles -centered, stacked */}
           <div>
             <FadeIn delay={0.15}>
               <div style={principleStyle}>
@@ -208,7 +264,7 @@ export default function BauhausHome() {
         </div>
       </section>
 
-      {/* ─── 2B. WHAT IS THIS? ─── */}
+      {/* --- 2B. WHAT IS THIS? --- */}
       <section style={{
         backgroundColor: colors.cream,
         color: colors.black,
@@ -264,7 +320,7 @@ export default function BauhausHome() {
               opacity: 0.7,
               margin: "0 0 20px",
             }}>
-              We're imagining three zones — a <strong>garden</strong> to grow in, a <strong>kitchen</strong> to feed from, and an <strong>art space</strong> to make in. But what those become depends on who shows up and what they bring.
+              We're imagining three zones: a <strong>garden</strong> to grow in, a <strong>kitchen</strong> to feed from, and an <strong>art space</strong> to make in. But what those become depends on who shows up and what they bring.
             </p>
           </FadeIn>
           <FadeIn delay={0.25}>
@@ -275,7 +331,7 @@ export default function BauhausHome() {
               opacity: 0.5,
               margin: "0 0 36px",
             }}>
-              If you're a grower, a maker, a cook, an artist, a builder, a thinker, a neighbour — there's a seat at this table. Come along to a gathering, bring an idea, or just come see the place.
+              If you're a grower, a maker, a cook, an artist, a builder, a thinker, a neighbour. There's a seat at this table. Come along to a gathering, bring an idea, or just come see the place.
             </p>
           </FadeIn>
           <FadeIn delay={0.3}>
@@ -317,7 +373,7 @@ export default function BauhausHome() {
         </div>
       </section>
 
-      {/* ─── 3. WHAT'S HAPPENING — Event CTA (oyster video background) ─── */}
+      {/* --- 3. WHAT'S HAPPENING -Event CTA (oyster video background) --- */}
       <section style={{
         position: "relative",
         overflow: "hidden",
@@ -410,7 +466,7 @@ export default function BauhausHome() {
         </div>
       </section>
 
-      {/* ─── 4. HERITAGE PROJECT ─── */}
+      {/* --- 4. HERITAGE PROJECT --- */}
       <section style={{
         backgroundColor: colors.cream,
         color: colors.black,
@@ -454,7 +510,7 @@ export default function BauhausHome() {
               opacity: 0.7,
               margin: "0 0 16px",
             }}>
-              This ridge has three heritage stories — the dairy farmers who worked the land, the timber workers who milled the cedar, and the co-operatives that held it all together. We've been funded to explore these stories through photography, oral history, and community-built installations.
+              This ridge has three heritage stories: the dairy farmers who worked the land, the timber workers who milled the cedar, and the co-operatives that held it all together. We've been funded to explore these stories through photography, oral history, and community-built installations.
             </p>
           </FadeIn>
           <FadeIn delay={0.2}>
@@ -465,7 +521,7 @@ export default function BauhausHome() {
               opacity: 0.5,
               margin: "0 0 32px",
             }}>
-              This is the first chapter of a longer project — collecting what's here before it's gone, and making something from it together.
+              This is the first chapter of a longer project. Collecting what's here before it's gone, and making something from it together.
             </p>
           </FadeIn>
           <FadeIn delay={0.25}>
@@ -486,7 +542,7 @@ export default function BauhausHome() {
         </div>
       </section>
 
-      {/* ─── 5. STORIES FROM THE RIDGE — Barry ─── */}
+      {/* --- 5. STORIES FROM THE RIDGE -Barry --- */}
       <section style={{
         position: "relative",
         minHeight: isMobile ? "70vh" : "80vh",
@@ -627,7 +683,7 @@ export default function BauhausHome() {
         </AnimatePresence>
       </section>
 
-      {/* ─── 6. THE CLOSE ─── */}
+      {/* --- 6. THE CLOSE --- */}
       <section style={{
         backgroundColor: colors.indigo,
         color: colors.cream,
@@ -698,7 +754,43 @@ export default function BauhausHome() {
         </div>
       </section>
 
-      {/* ─── FOOTER ─── */}
+      {/* --- TRACTOR EASTER EGG --- */}
+      <div
+        onClick={() => setTractorTooltip(!tractorTooltip)}
+        style={{
+          position: "fixed",
+          bottom: 8,
+          left: tractorX,
+          zIndex: 50,
+          cursor: "pointer",
+          opacity: 0.15,
+          transition: "opacity 0.3s",
+          userSelect: "none",
+        }}
+        onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.opacity = "0.6"; }}
+        onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.opacity = "0.15"; }}
+        title="A Curious Tractor"
+      >
+        {tractorTooltip ? (
+          <span style={{
+            fontFamily: fonts.body,
+            fontSize: 11,
+            color: colors.cream,
+            backgroundColor: colors.black,
+            padding: "6px 12px",
+            position: "absolute",
+            bottom: 28,
+            left: 0,
+            whiteSpace: "nowrap",
+            opacity: 1,
+          }}>
+            A Curious Tractor - preparing ground, not controlling what grows
+          </span>
+        ) : null}
+        <img src="/images/icon-tractor.png" alt="" style={{ width: 32, height: 22 }} />
+      </div>
+
+      {/* --- FOOTER --- */}
       <BauhausFooter isMobile={isMobile} />
     </div>
   );

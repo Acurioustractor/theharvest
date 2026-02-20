@@ -7,6 +7,60 @@ import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { rootStyle, colors, fonts, detailLabelStyle, detailTextStyle, formLabelStyle, formInputStyle } from "@/styles/brand";
 import { trpc } from "@/lib/trpc";
 
+const GATHERING_DATE = new Date("2026-03-07T11:00:00+10:00");
+
+const SUCCESS_MESSAGES = [
+  { headline: "You're in. See you March 7.", sub: "We'll send you a few details before the day. Where to park, what's happening, who else is coming." },
+  { headline: "Spot saved. Bring your appetite.", sub: "Shaun's shucking oysters, pizza's firing, and we'll have a seat for you." },
+  { headline: "Done. Now tell a friend.", sub: "The best gatherings happen when neighbours bring neighbours." },
+];
+
+const INTEREST_OPTIONS = [
+  { id: "kids-play", label: "Kids play area" },
+  { id: "cafe", label: "Cafe" },
+  { id: "garden", label: "Garden" },
+  { id: "pop-up-events", label: "Pop up events" },
+  { id: "art-exhibitions", label: "Art exhibitions" },
+  { id: "something-else", label: "Something else" },
+];
+
+function useCountdown(target: Date) {
+  const [now, setNow] = useState(new Date());
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(id);
+  }, []);
+  const diff = target.getTime() - now.getTime();
+  if (diff <= 0) return null;
+  const days = Math.floor(diff / 86400000);
+  const hours = Math.floor((diff % 86400000) / 3600000);
+  const minutes = Math.floor((diff % 3600000) / 60000);
+  const seconds = Math.floor((diff % 60000) / 1000);
+  return { days, hours, minutes, seconds, isUnder24h: days === 0 };
+}
+
+function AnimatedCount({ target }: { target: number }) {
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    if (target <= 0) return;
+    const duration = 1200;
+    const steps = 30;
+    const increment = target / steps;
+    let current = 0;
+    const id = setInterval(() => {
+      current += increment;
+      if (current >= target) {
+        setCount(target);
+        clearInterval(id);
+      } else {
+        setCount(Math.floor(current));
+      }
+    }, duration / steps);
+    return () => clearInterval(id);
+  }, [target]);
+  return <>{count}</>;
+}
+
 export default function Gather() {
   const isMobile = useMediaQuery("(max-width: 768px)");
   const [eoiData, setEoiData] = useState({
@@ -16,10 +70,41 @@ export default function Gather() {
     source: "",
   });
   const [submitted, setSubmitted] = useState(false);
+  const [successMsg] = useState(() => SUCCESS_MESSAGES[Math.floor(Math.random() * SUCCESS_MESSAGES.length)]);
+  const [selectedInterests, setSelectedInterests] = useState<Set<string>>(new Set());
+  const [otherText, setOtherText] = useState("");
+  const [pollSubmitted, setPollSubmitted] = useState(false);
+  const [pollCounts, setPollCounts] = useState<Record<string, number>>({});
+  const [pollTotal, setPollTotal] = useState(0);
+  const [shared, setShared] = useState(false);
+
+  const countdown = useCountdown(GATHERING_DATE);
+  const isPast = countdown === null;
 
   const eoiMutation = trpc.eoi.submit.useMutation({
     onSuccess: () => setSubmitted(true),
   });
+
+  const eoiCountQuery = trpc.eoi.count.useQuery(undefined, {
+    staleTime: 60_000,
+  });
+
+  const pollResultsQuery = trpc.interestPoll.results.useQuery(undefined, {
+    staleTime: 30_000,
+  });
+
+  const pollVoteMutation = trpc.interestPoll.vote.useMutation({
+    onSuccess: () => {
+      pollResultsQuery.refetch();
+    },
+  });
+
+  useEffect(() => {
+    if (pollResultsQuery.data) {
+      setPollCounts(pollResultsQuery.data.counts ?? {});
+      setPollTotal(pollResultsQuery.data.total ?? 0);
+    }
+  }, [pollResultsQuery.data]);
 
   useEffect(() => {
     document.title = "First Gathering / Saturday 7 March | The Harvest";
@@ -35,7 +120,6 @@ export default function Gather() {
     meta("og:title", "First Gathering / Saturday 7 March");
     meta("og:description", "Oysters, a milk crate pavilion, and the beginning of something. 9 Gumland Drive, Witta.");
 
-    // Scroll to hash anchor (e.g. #rsvp)
     if (window.location.hash) {
       setTimeout(() => {
         const el = document.querySelector(window.location.hash);
@@ -54,10 +138,49 @@ export default function Gather() {
     });
   };
 
+  const toggleInterest = (id: string) => {
+    if (pollSubmitted) return;
+    setSelectedInterests(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  };
+
+  const handlePollSubmit = () => {
+    if (selectedInterests.size === 0 || pollSubmitted) return;
+    pollVoteMutation.mutate({
+      interests: Array.from(selectedInterests),
+      other: selectedInterests.has("something-else") ? otherText || undefined : undefined,
+    });
+    setPollSubmitted(true);
+  };
+
+  const handleShare = async () => {
+    const shareData = {
+      title: "The Harvest -First Gathering",
+      text: "I'm going to The Harvest's First Gathering. March 7, Witta. Free entry, oysters, music, building things together.",
+      url: "https://theharvestwitta.com.au/gather",
+    };
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+        setShared(true);
+      } else {
+        await navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`);
+        setShared(true);
+      }
+    } catch {
+      // User cancelled share
+    }
+  };
+
+  const rsvpCount = eoiCountQuery.data?.count ?? 0;
+
   return (
     <div style={rootStyle}>
 
-      {/* ─── 1. HERO ─── */}
+      {/* --- 1. HERO --- */}
       <section style={{
         position: "relative",
         height: "100vh",
@@ -130,37 +253,116 @@ export default function Gather() {
           }}>
             9 Gumland Drive, Witta &middot; Free entry
           </p>
-          <p style={{
-            fontFamily: fonts.body,
-            fontWeight: 400,
-            fontSize: isMobile ? 16 : 18,
-            margin: "28px 0 0",
-            opacity: 0.8,
-            fontStyle: "italic",
-          }}>
-            Come as you are.
-          </p>
-          <a
-            href="#rsvp"
-            style={{
-              fontFamily: fonts.display,
-              fontWeight: 700,
-              fontSize: 14,
-              letterSpacing: "0.1em",
-              color: colors.black,
-              backgroundColor: colors.yellow,
-              padding: "16px 40px",
-              textDecoration: "none",
-              display: "inline-block",
-              marginTop: 28,
-            }}
-          >
-            SAVE MY SPOT
-          </a>
+
+          {/* Countdown Timer */}
+          {countdown && !countdown.isUnder24h && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5, duration: 0.8 }}
+              style={{
+                marginTop: 32,
+                display: "flex",
+                justifyContent: "center",
+                gap: isMobile ? 16 : 24,
+              }}
+            >
+              {[
+                { value: countdown.days, label: "days" },
+                { value: countdown.hours, label: "hours" },
+                { value: countdown.minutes, label: "min" },
+                { value: countdown.seconds, label: "sec" },
+              ].map((unit) => (
+                <div key={unit.label} style={{ textAlign: "center" }}>
+                  <div style={{
+                    fontFamily: fonts.display,
+                    fontWeight: 900,
+                    fontSize: isMobile ? 28 : 40,
+                    lineHeight: 1,
+                  }}>
+                    {unit.value}
+                  </div>
+                  <div style={{
+                    fontFamily: fonts.display,
+                    fontWeight: 700,
+                    fontSize: 9,
+                    letterSpacing: "0.2em",
+                    opacity: 0.5,
+                    marginTop: 4,
+                  }}>
+                    {unit.label.toUpperCase()}
+                  </div>
+                </div>
+              ))}
+            </motion.div>
+          )}
+
+          {countdown?.isUnder24h && (
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              style={{
+                fontFamily: fonts.display,
+                fontWeight: 900,
+                fontSize: isMobile ? 20 : 28,
+                letterSpacing: "0.06em",
+                margin: "32px 0 0",
+              }}
+            >
+              Tomorrow. See you there.
+            </motion.p>
+          )}
+
+          {isPast ? (
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              style={{
+                fontFamily: fonts.body,
+                fontStyle: "italic",
+                fontSize: isMobile ? 16 : 18,
+                margin: "28px 0 0",
+                opacity: 0.8,
+              }}
+            >
+              We gathered. Here's what happened.
+            </motion.p>
+          ) : (
+            <p style={{
+              fontFamily: fonts.body,
+              fontWeight: 400,
+              fontSize: isMobile ? 16 : 18,
+              margin: "28px 0 0",
+              opacity: 0.8,
+              fontStyle: "italic",
+            }}>
+              Come as you are.
+            </p>
+          )}
+
+          {!isPast && (
+            <a
+              href="#rsvp"
+              style={{
+                fontFamily: fonts.display,
+                fontWeight: 700,
+                fontSize: 14,
+                letterSpacing: "0.1em",
+                color: colors.black,
+                backgroundColor: colors.yellow,
+                padding: "16px 40px",
+                textDecoration: "none",
+                display: "inline-block",
+                marginTop: 28,
+              }}
+            >
+              SAVE MY SPOT
+            </a>
+          )}
         </div>
       </section>
 
-      {/* ─── 2. THE INVITATION ─── */}
+      {/* --- 2. THE INVITATION --- */}
       <section style={{
         backgroundColor: colors.black,
         color: colors.cream,
@@ -195,7 +397,7 @@ export default function Gather() {
         </div>
       </section>
 
-      {/* ─── 3. WHAT'S HAPPENING — Color bands ─── */}
+      {/* --- 3. WHAT'S HAPPENING -Color bands --- */}
       {([
         {
           word: "FEED",
@@ -204,7 +406,7 @@ export default function Gather() {
           lines: [
             "Oysters fresh from Minjerribah.",
             "",
-            "Shaun Fisher — Quandamooka man, oyster farmer — was the first person to say yes to this place. We're honoured he's bringing his harvest to ours.",
+            "Shaun Fisher, Quandamooka man and oyster farmer, was the first person to say yes to this place. We're honoured he's bringing his harvest to ours.",
             "",
             "Pizza from the trailer. BYO picnic.",
           ],
@@ -277,7 +479,169 @@ export default function Gather() {
         </section>
       ))}
 
-      {/* ─── 4. PRACTICAL DETAILS ─── */}
+      {/* --- INTEREST POLL --- */}
+      {!isPast && (
+        <section style={{
+          backgroundColor: colors.black,
+          color: colors.cream,
+          padding: isMobile ? "60px 28px" : "80px 40px",
+        }}>
+          <div style={{ maxWidth: 520, margin: "0 auto", textAlign: "center" }}>
+            <FadeIn>
+              <h3 style={{
+                fontFamily: fonts.display,
+                fontWeight: 900,
+                fontSize: isMobile ? 20 : 26,
+                letterSpacing: "0.06em",
+                margin: "0 0 8px",
+              }}>
+                WHAT EXCITES YOU MOST?
+              </h3>
+              <p style={{
+                fontFamily: fonts.body,
+                fontSize: 14,
+                opacity: 0.5,
+                margin: "0 0 32px",
+              }}>
+                Pick as many as you like. Helps us know what to build first.
+              </p>
+
+              {pollSubmitted ? (
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 10, textAlign: "left" }}>
+                    {INTEREST_OPTIONS.filter(o => o.id !== "something-else").map((opt) => {
+                      const dbCount = pollCounts[opt.id] ?? 0;
+                      const count = dbCount + (selectedInterests.has(opt.id) ? 1 : 0);
+                      const allCounts = INTEREST_OPTIONS
+                        .filter(o => o.id !== "something-else")
+                        .map(o => (pollCounts[o.id] ?? 0) + (selectedInterests.has(o.id) ? 1 : 0));
+                      const maxCount = Math.max(1, ...allCounts);
+                      const pct = Math.round((count / maxCount) * 100);
+                      return (
+                        <div key={opt.id}>
+                          <div style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            fontFamily: fonts.display,
+                            fontWeight: 700,
+                            fontSize: 12,
+                            letterSpacing: "0.05em",
+                            marginBottom: 4,
+                          }}>
+                            <span style={{ opacity: selectedInterests.has(opt.id) ? 1 : 0.6 }}>{opt.label}</span>
+                            <span style={{ opacity: 0.5 }}>{count}</span>
+                          </div>
+                          <div style={{
+                            height: 4,
+                            backgroundColor: "rgba(244,244,242,0.1)",
+                            overflow: "hidden",
+                          }}>
+                            <motion.div
+                              initial={{ width: 0 }}
+                              animate={{ width: `${pct}%` }}
+                              transition={{ duration: 0.8, ease: "easeOut" }}
+                              style={{
+                                height: "100%",
+                                backgroundColor: selectedInterests.has(opt.id) ? colors.yellow : "rgba(244,244,242,0.4)",
+                              }}
+                            />
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <p style={{
+                    fontFamily: fonts.body,
+                    fontSize: 13,
+                    opacity: 0.4,
+                    marginTop: 20,
+                  }}>
+                    {pollTotal + 1} {pollTotal + 1 === 1 ? "person has" : "people have"} voted
+                  </p>
+                </motion.div>
+              ) : (
+                <>
+                  <div style={{
+                    display: "grid",
+                    gridTemplateColumns: isMobile ? "1fr 1fr" : "1fr 1fr 1fr",
+                    gap: 10,
+                  }}>
+                    {INTEREST_OPTIONS.map((opt) => {
+                      const isSelected = selectedInterests.has(opt.id);
+                      return (
+                        <motion.button
+                          key={opt.id}
+                          onClick={() => toggleInterest(opt.id)}
+                          whileHover={{ scale: 1.03 }}
+                          whileTap={{ scale: 0.97 }}
+                          style={{
+                            fontFamily: fonts.display,
+                            fontWeight: 700,
+                            fontSize: 12,
+                            letterSpacing: "0.05em",
+                            color: isSelected ? colors.black : colors.cream,
+                            backgroundColor: isSelected ? colors.yellow : "transparent",
+                            border: `1px solid ${isSelected ? colors.yellow : "rgba(244,244,242,0.2)"}`,
+                            padding: "14px 12px",
+                            cursor: "pointer",
+                            transition: "background-color 0.2s, color 0.2s",
+                          }}
+                        >
+                          {opt.label}
+                        </motion.button>
+                      );
+                    })}
+                  </div>
+
+                  {selectedInterests.has("something-else") && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      style={{ marginTop: 12 }}
+                    >
+                      <input
+                        type="text"
+                        placeholder="Tell us what you'd love to see"
+                        value={otherText}
+                        onChange={(e) => setOtherText(e.target.value)}
+                        style={{
+                          ...formInputStyle,
+                          width: "100%",
+                        }}
+                      />
+                    </motion.div>
+                  )}
+
+                  <motion.button
+                    onClick={handlePollSubmit}
+                    disabled={selectedInterests.size === 0}
+                    whileHover={selectedInterests.size > 0 ? { scale: 1.02 } : {}}
+                    whileTap={selectedInterests.size > 0 ? { scale: 0.98 } : {}}
+                    style={{
+                      fontFamily: fonts.display,
+                      fontWeight: 700,
+                      fontSize: 13,
+                      letterSpacing: "0.08em",
+                      color: selectedInterests.size > 0 ? colors.black : colors.cream,
+                      backgroundColor: selectedInterests.size > 0 ? colors.yellow : "transparent",
+                      border: `1px solid ${selectedInterests.size > 0 ? colors.yellow : "rgba(244,244,242,0.15)"}`,
+                      padding: "14px 32px",
+                      cursor: selectedInterests.size > 0 ? "pointer" : "default",
+                      marginTop: 20,
+                      opacity: selectedInterests.size > 0 ? 1 : 0.3,
+                      transition: "all 0.2s",
+                    }}
+                  >
+                    SUBMIT
+                  </motion.button>
+                </>
+              )}
+            </FadeIn>
+          </div>
+        </section>
+      )}
+
+      {/* --- 4. PRACTICAL DETAILS --- */}
       <section style={{
         backgroundColor: colors.cream,
         color: colors.black,
@@ -355,7 +719,7 @@ export default function Gather() {
                 <h3 style={detailLabelStyle}>WHAT TO BRING</h3>
                 <p style={detailTextStyle}>A chair or picnic blanket</p>
                 <p style={detailTextStyle}>BYO drinks (we'll have water and coffee)</p>
-                <p style={detailTextStyle}>Something to share — food, story, skill. Or nothing. Either's fine.</p>
+                <p style={detailTextStyle}>Something to share. Food, story, skill. Or nothing. Either's fine.</p>
                 <p style={detailTextStyle}>Kids, dogs (on leads), neighbours</p>
               </div>
             </FadeIn>
@@ -363,7 +727,7 @@ export default function Gather() {
             <FadeIn delay={0.4}>
               <div>
                 <h3 style={detailLabelStyle}>WHAT WE'RE PROVIDING</h3>
-                <p style={detailTextStyle}>Oysters — pay what you feel</p>
+                <p style={detailTextStyle}>Oysters, pay what you feel</p>
                 <p style={detailTextStyle}>Pizza from the trailer</p>
                 <p style={detailTextStyle}>Music, fire, good light</p>
                 <p style={{ ...detailTextStyle, fontWeight: 600, marginTop: 8 }}>
@@ -375,7 +739,7 @@ export default function Gather() {
         </div>
       </section>
 
-      {/* ─── 5. EOI FORM ─── */}
+      {/* --- 5. EOI FORM --- */}
       <section id="rsvp" style={{
         backgroundColor: colors.black,
         color: colors.cream,
@@ -398,10 +762,29 @@ export default function Gather() {
               fontSize: isMobile ? 14 : 16,
               opacity: 0.6,
               textAlign: "center",
-              margin: "0 0 40px",
+              margin: "0 0 12px",
             }}>
-              No commitment — it just helps Shaun know how many to shuck.
+              No commitment. It just helps Shaun know how many to shuck.
             </p>
+            {rsvpCount > 0 && !submitted && (
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                style={{
+                  fontFamily: fonts.body,
+                  fontSize: isMobile ? 14 : 16,
+                  opacity: 0.5,
+                  textAlign: "center",
+                  margin: "0 0 32px",
+                }}
+              >
+                <strong style={{ fontFamily: fonts.display, fontWeight: 700 }}>
+                  <AnimatedCount target={rsvpCount} />
+                </strong>{" "}
+                neighbours coming so far
+              </motion.p>
+            )}
+            {rsvpCount === 0 && !submitted && <div style={{ marginBottom: 32 }} />}
           </FadeIn>
 
           {submitted ? (
@@ -414,16 +797,37 @@ export default function Gather() {
                   letterSpacing: "0.04em",
                   margin: "0 0 12px",
                 }}>
-                  You're in. See you March 7.
+                  {successMsg.headline}
                 </p>
                 <p style={{
                   fontFamily: fonts.body,
                   fontSize: 16,
                   lineHeight: 1.7,
                   opacity: 0.6,
+                  margin: "0 0 32px",
                 }}>
-                  We'll send you a few details before the day — where to park, what's happening, who else is coming.
+                  {successMsg.sub}
                 </p>
+
+                {/* Share Button */}
+                <motion.button
+                  onClick={handleShare}
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.97 }}
+                  style={{
+                    fontFamily: fonts.display,
+                    fontWeight: 700,
+                    fontSize: 13,
+                    letterSpacing: "0.08em",
+                    color: colors.cream,
+                    backgroundColor: "transparent",
+                    border: `1px solid rgba(244,244,242,0.3)`,
+                    padding: "14px 32px",
+                    cursor: "pointer",
+                  }}
+                >
+                  {shared ? "LINK COPIED" : "TELL A NEIGHBOUR?"}
+                </motion.button>
               </div>
             </FadeIn>
           ) : (
@@ -436,11 +840,11 @@ export default function Gather() {
                   marginBottom: 20,
                 }}>
                   <div>
-                    <label style={formLabelStyle} htmlFor="eoi-name">Your Name</label>
+                    <label style={formLabelStyle} htmlFor="eoi-name">YOUR NAME</label>
                     <input
                       id="eoi-name"
                       type="text"
-                      placeholder="Jane Smith"
+                      placeholder="What do people call you?"
                       value={eoiData.name}
                       onChange={(e) => setEoiData((prev) => ({ ...prev, name: e.target.value }))}
                       required
@@ -448,11 +852,11 @@ export default function Gather() {
                     />
                   </div>
                   <div>
-                    <label style={formLabelStyle} htmlFor="eoi-email">Email</label>
+                    <label style={formLabelStyle} htmlFor="eoi-email">EMAIL</label>
                     <input
                       id="eoi-email"
                       type="email"
-                      placeholder="jane@example.com"
+                      placeholder="Best email for updates"
                       value={eoiData.email}
                       onChange={(e) => setEoiData((prev) => ({ ...prev, email: e.target.value }))}
                       required
@@ -498,7 +902,38 @@ export default function Gather() {
         </div>
       </section>
 
-      {/* ─── 6. REGIONAL ARTS CONTEXT ─── */}
+      {/* --- POST-EVENT GALLERY PLACEHOLDER --- */}
+      {isPast && (
+        <section style={{
+          backgroundColor: colors.cream,
+          color: colors.black,
+          padding: isMobile ? "80px 28px" : "100px 40px",
+          textAlign: "center",
+        }}>
+          <FadeIn>
+            <h2 style={{
+              fontFamily: fonts.display,
+              fontWeight: 900,
+              fontSize: isMobile ? 24 : 32,
+              letterSpacing: "0.06em",
+              margin: "0 0 16px",
+            }}>
+              GALLERY
+            </h2>
+            <p style={{
+              fontFamily: fonts.body,
+              fontSize: 16,
+              opacity: 0.6,
+              maxWidth: 400,
+              margin: "0 auto",
+            }}>
+              Photos from the day are coming soon. Check back or follow us for updates.
+            </p>
+          </FadeIn>
+        </section>
+      )}
+
+      {/* --- 6. REGIONAL ARTS CONTEXT --- */}
       <section style={{
         backgroundColor: colors.cream,
         color: colors.black,
@@ -555,7 +990,7 @@ export default function Gather() {
         </div>
       </section>
 
-      {/* ─── FOOTER ─── */}
+      {/* --- FOOTER --- */}
       <BauhausFooter isMobile={isMobile} />
     </div>
   );

@@ -2,7 +2,10 @@ import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
 import { createEvent, getApprovedEvents, getPendingEvents, updateEventStatus, createBusiness, getApprovedBusinesses, getPendingBusinesses, updateBusinessStatus, getBusinessByUserId, getBusinessById, claimBusiness, updateBusinessProfile, getUnclaimedApprovedBusinesses, getProgressImages, createProgressImage, updateProgressImage, deleteProgressImage, promoteUserToAdmin, getAllUsers, getContent, getContentForPage, upsertContent, getAnnotationsForPoint, createAnnotation, deleteAnnotation, createPulseResponse, getPulseResults, createEventFeedbackEntry, getEventFeedbackByEventId, getAllEventFeedback } from "./db";
 import { storagePut } from "./storage";
-import { upsertGHLContact, addGHLContactNote } from "./gohighlevel";
+import { getDb } from "./db";
+import { pulseResponses } from "../drizzle/schema";
+import { eq } from "drizzle-orm";
+import { upsertGHLContact, addGHLContactNote, getGHLContactCountByTag } from "./gohighlevel";
 import { empathyLedgerClient } from "./empathyLedgerClient";
 import {
   loadTimeline,
@@ -18,6 +21,8 @@ import {
   getWikiStatus,
 } from "./wiki";
 import { z } from "zod";
+
+const INTEREST_OPTIONS = ["kids-play", "cafe", "garden", "pop-up-events", "art-exhibitions", "something-else"] as const;
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -243,6 +248,48 @@ export const appRouter = router({
 
         return { success: true };
       }),
+
+    count: publicProcedure.query(async () => {
+      const count = await getGHLContactCountByTag("eoi-gathering-march-2026");
+      return { count };
+    }),
+  }),
+
+  // Interest Poll - what excites you about The Harvest?
+  interestPoll: router({
+    vote: publicProcedure
+      .input(z.object({
+        interests: z.array(z.string()).min(1),
+        other: z.string().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        const db = await getDb();
+        if (!db) return { success: false };
+        await db.insert(pulseResponses).values({
+          wouldUse: input.interests,
+          skillsToShare: input.other ?? undefined,
+          source: "interest-poll",
+        });
+        return { success: true };
+      }),
+
+    results: publicProcedure.query(async () => {
+      const db = await getDb();
+      if (!db) return { counts: {}, total: 0 };
+      const rows = await db.select({ wouldUse: pulseResponses.wouldUse })
+        .from(pulseResponses)
+        .where(eq(pulseResponses.source, "interest-poll"));
+      const counts: Record<string, number> = {};
+      for (const row of rows) {
+        const interests = row.wouldUse as string[] | null;
+        if (interests) {
+          for (const interest of interests) {
+            counts[interest] = (counts[interest] || 0) + 1;
+          }
+        }
+      }
+      return { counts, total: rows.length };
+    }),
   }),
 
   newsletter: router({

@@ -193,6 +193,54 @@ export async function addGHLContactNote(contactId: string, noteBody: string): Pr
 }
 
 /**
+ * Search contacts by tag and return count
+ * Used for RSVP social proof counter
+ */
+let _eoiCountCache: { count: number; fetchedAt: number } | null = null;
+const EOI_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
+export async function getGHLContactCountByTag(tag: string): Promise<number> {
+  // Return cached value if fresh
+  if (_eoiCountCache && Date.now() - _eoiCountCache.fetchedAt < EOI_CACHE_TTL) {
+    return _eoiCountCache.count;
+  }
+
+  const apiKey = process.env.GHL_API_KEY;
+  const locationId = process.env.GHL_LOCATION_ID;
+
+  if (!apiKey || !locationId) {
+    return 0;
+  }
+
+  try {
+    const response = await fetch(
+      `${GHL_API_BASE}/contacts/?locationId=${locationId}&query=${encodeURIComponent(tag)}&limit=1`,
+      {
+        method: "GET",
+        headers: {
+          "Accept": "application/json",
+          "Authorization": `Bearer ${apiKey}`,
+          "Version": GHL_API_VERSION,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      console.error("GHL search error:", response.status);
+      return _eoiCountCache?.count ?? 0;
+    }
+
+    const data = await response.json() as { meta?: { total?: number }; contacts?: unknown[] };
+    const count = data.meta?.total ?? data.contacts?.length ?? 0;
+    _eoiCountCache = { count, fetchedAt: Date.now() };
+    return count;
+  } catch (error) {
+    console.error("GHL search failed:", error);
+    return _eoiCountCache?.count ?? 0;
+  }
+}
+
+/**
  * Trigger a workflow for a contact in Go High Level
  * Used to automate follow-up sequences and nurturing campaigns
  */

@@ -1,12 +1,24 @@
+import { useState } from "react";
 import { Link } from "wouter";
 import type { CSSProperties } from "react";
 import { colors, fonts } from "@/styles/brand";
+
+const FOOTER_LINES = [
+  "Built on Jinibara Country",
+  "10 acres. 6 heritage layers. 1 table.",
+  "No tickets. No agenda. No speeches.",
+  "Come as you are.",
+  "We build to hand over.",
+  "The space is always becoming.",
+];
 
 interface BauhausFooterProps {
   isMobile: boolean;
 }
 
 export default function BauhausFooter({ isMobile }: BauhausFooterProps) {
+  const [line] = useState(() => FOOTER_LINES[Math.floor(Math.random() * FOOTER_LINES.length)]);
+
   return (
     <footer style={{
       backgroundColor: colors.black,
@@ -29,9 +41,19 @@ export default function BauhausFooter({ isMobile }: BauhausFooterProps) {
         fontSize: 13,
         color: colors.cream,
         opacity: 0.4,
-        margin: "0 0 24px",
+        margin: "0 0 12px",
       }}>
         Witta, Blackall Range. Jinibara Country.
+      </p>
+      <p style={{
+        fontFamily: fonts.body,
+        fontStyle: "italic",
+        fontSize: 12,
+        color: colors.cream,
+        opacity: 0.25,
+        margin: "0 0 24px",
+      }}>
+        {line}
       </p>
       <div style={{
         display: "flex",
