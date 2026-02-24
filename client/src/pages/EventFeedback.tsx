@@ -11,8 +11,8 @@ const C = {
   gold: "rgba(217,169,78,1)",
   goldDim: "rgba(217,169,78,0.3)",
   cream: "#F4F4F2",
-  creamDim: "rgba(244,244,242,0.5)",
-  creamFaint: "rgba(244,244,242,0.12)",
+  creamDim: "rgba(245,240,232,0.5)",
+  creamFaint: "rgba(245,240,232,0.12)",
 };
 
 function useMediaQuery(query: string) {
@@ -141,7 +141,7 @@ export default function EventFeedback({ eventId }: { eventId?: string }) {
                     width: 64,
                     height: 64,
                     fontSize: 32,
-                    background: rating === e.value ? C.goldDim : "rgba(244,244,242,0.05)",
+                    background: rating === e.value ? C.goldDim : "rgba(245,240,232,0.05)",
                     border: `2px solid ${rating === e.value ? C.gold : C.creamFaint}`,
                     borderRadius: 16,
                     cursor: "pointer",
@@ -176,7 +176,7 @@ export default function EventFeedback({ eventId }: { eventId?: string }) {
                 style={{
                   width: "100%",
                   padding: 14,
-                  background: "rgba(244,244,242,0.05)",
+                  background: "rgba(245,240,232,0.05)",
                   border: `1px solid ${C.creamFaint}`,
                   borderRadius: 10,
                   color: C.cream,
@@ -207,7 +207,7 @@ export default function EventFeedback({ eventId }: { eventId?: string }) {
                     style={{
                       flex: 1,
                       padding: "12px 8px",
-                      background: wouldReturn === opt.value ? C.gold : "rgba(244,244,242,0.05)",
+                      background: wouldReturn === opt.value ? C.gold : "rgba(245,240,232,0.05)",
                       border: `1px solid ${wouldReturn === opt.value ? C.gold : C.creamFaint}`,
                       borderRadius: 10,
                       color: wouldReturn === opt.value ? C.bg : C.cream,
@@ -237,7 +237,7 @@ export default function EventFeedback({ eventId }: { eventId?: string }) {
                 fontSize: 14,
                 letterSpacing: "0.15em",
                 color: (!rating || !wouldReturn) ? C.creamDim : C.bg,
-                background: (!rating || !wouldReturn) ? "rgba(244,244,242,0.08)" : C.gold,
+                background: (!rating || !wouldReturn) ? "rgba(245,240,232,0.08)" : C.gold,
                 border: "none",
                 borderRadius: 10,
                 cursor: (!rating || !wouldReturn) ? "default" : "pointer",

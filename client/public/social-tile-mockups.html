@@ -1,0 +1,1767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Harvest — Social Tile Planner</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --shed: #2C1810; --milk: #F5F0E8; --rammed-earth: #8B6914;
+    --golden-hour: #D4A843; --workshirt: #3B5998; --canopy: #4A7C59;
+    --calendula: #E8A317; --hardwood: #6B4226; --lilly-pilly: #7B2D5F;
+    --crane: #C25B28;
+  }
+  body { background: #1a1a1a; color: var(--milk); font-family: 'Montserrat', sans-serif; }
+
+  .app { display: grid; grid-template-columns: 1fr 380px; min-height: 100vh; }
+  .main { padding: 2rem; overflow-y: auto; }
+  .sidebar { background: #111; border-left: 1px solid #333; overflow-y: auto; position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column; }
+
+  h1 { font-size: 1.8rem; font-weight: 900; text-transform: uppercase; margin-bottom: 0.25rem; letter-spacing: 0.05em; }
+  .subtitle { color: var(--golden-hour); font-size: 0.85rem; margin-bottom: 1.5rem; }
+
+  /* Main tabs */
+  .main-tabs { display: flex; gap: 0; margin-bottom: 1.5rem; border-bottom: 2px solid #333; }
+  .main-tab { padding: 0.6rem 1.2rem; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #666; cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -2px; transition: all 0.2s; }
+  .main-tab:hover { color: var(--milk); }
+  .main-tab.active { color: var(--golden-hour); border-bottom-color: var(--golden-hour); }
+  .main-panel { display: none; }
+  .main-panel.active { display: block; }
+
+  /* Sidebar tabs */
+  .sidebar-tabs { display: flex; border-bottom: 1px solid #333; flex-shrink: 0; }
+  .sidebar-tab { flex: 1; padding: 0.75rem; text-align: center; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #666; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; }
+  .sidebar-tab:hover { color: var(--milk); }
+  .sidebar-tab.active { color: var(--golden-hour); border-bottom-color: var(--golden-hour); }
+  .sidebar-content { flex: 1; overflow-y: auto; }
+  .stab-panel { display: none; padding: 1rem; }
+  .stab-panel.active { display: block; }
+
+  /* Tile grid */
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 1.5rem; }
+  .tile-wrapper { background: #222; border-radius: 12px; overflow: hidden; padding: 1rem; transition: box-shadow 0.2s; }
+  .tile-wrapper.active { box-shadow: 0 0 0 3px var(--golden-hour); }
+  .tile-wrapper:hover { cursor: pointer; }
+  .tile-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
+  .tile-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--golden-hour); font-weight: 700; }
+  .tile-date { font-size: 0.65rem; color: #666; }
+  .tile-caption { font-size: 0.75rem; color: #888; margin-top: 0.5rem; line-height: 1.4; }
+  .tile-photo-info { font-size: 0.6rem; color: #555; margin-top: 0.25rem; font-style: italic; }
+
+  .tile { width: 100%; aspect-ratio: 1/1; position: relative; overflow: hidden; border-radius: 4px; background: #333; }
+  .tile img, .tile video { width: 100%; height: 100%; object-fit: cover; display: block; transition: opacity 0.3s; }
+  .tile .overlay { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; padding: 1.5rem; pointer-events: none; }
+  .style-gradient .overlay { background: linear-gradient(to top, rgba(44,24,16,0.95) 0%, rgba(44,24,16,0.7) 35%, transparent 70%); }
+  .style-sketch .overlay { background: linear-gradient(to top, var(--milk) 0%, rgba(245,240,232,0.8) 30%, transparent 60%); }
+  .style-typo { background: var(--milk); display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 2rem; }
+  .style-typo .overlay { position: relative; inset: auto; background: none; justify-content: center; align-items: center; text-align: center; }
+  .tile .headline { font-weight: 900; text-transform: uppercase; line-height: 1.0; letter-spacing: 0.02em; }
+  .tile .headline.large { font-size: 2.2rem; }
+  .tile .headline.medium { font-size: 1.6rem; }
+  .tile .subtext { font-weight: 400; font-size: 0.85rem; line-height: 1.4; margin-top: 0.5rem; }
+  .tile .branding { font-weight: 700; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.15em; margin-top: 1rem; opacity: 0.8; }
+  .tile .color-bar { display: flex; gap: 4px; margin-top: 0.75rem; }
+  .tile .color-bar span { width: 24px; height: 6px; display: block; }
+  .tile .media-type-badge { position: absolute; top: 8px; right: 8px; background: rgba(0,0,0,0.6); color: white; font-size: 0.55rem; padding: 2px 6px; border-radius: 3px; font-weight: 700; z-index: 2; pointer-events: none; }
+  .text-milk { color: var(--milk); } .text-shed { color: var(--shed); }
+  .text-golden { color: var(--golden-hour); } .text-crane { color: var(--crane); }
+
+  /* Photo picker */
+  .sidebar h2 { font-size: 0.85rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; color: var(--golden-hour); margin-bottom: 0.75rem; }
+  .sidebar .instruction { font-size: 0.75rem; color: #666; margin-bottom: 1rem; line-height: 1.4; }
+  .photo-group { margin-bottom: 1.5rem; }
+  .photo-group-label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em; color: #555; margin-bottom: 0.5rem; font-weight: 700; cursor: pointer; display: flex; justify-content: space-between; align-items: center; padding: 0.25rem 0; }
+  .photo-group-label:hover { color: var(--golden-hour); }
+  .photo-group-label .count { font-size: 0.55rem; color: #444; font-weight: 400; }
+  .photo-group-label .toggle { font-size: 0.7rem; transition: transform 0.2s; }
+  .photo-group.collapsed .photo-grid { display: none; }
+  .photo-group.collapsed .toggle { transform: rotate(-90deg); }
+  .photo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .photo-thumb { aspect-ratio: 1/1; border-radius: 4px; overflow: hidden; cursor: pointer; border: 2px solid transparent; transition: all 0.2s; position: relative; }
+  .photo-thumb:hover { border-color: var(--golden-hour); transform: scale(1.05); z-index: 1; }
+  .photo-thumb.used { border-color: var(--canopy); }
+  .photo-thumb.used::after { content: 'USED'; position: absolute; top: 2px; right: 2px; background: var(--canopy); color: white; font-size: 0.45rem; padding: 1px 4px; border-radius: 2px; font-weight: 700; }
+  .photo-thumb img, .photo-thumb video { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .photo-thumb .photo-name { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.7); font-size: 0.5rem; padding: 2px 4px; color: #ccc; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .photo-thumb .video-badge { position: absolute; top: 3px; left: 3px; background: rgba(0,0,0,0.7); color: white; font-size: 0.5rem; padding: 1px 5px; border-radius: 2px; font-weight: 700; }
+
+  /* Drop zone */
+  .drop-zone { border: 2px dashed #444; border-radius: 8px; padding: 1.5rem 1rem; text-align: center; margin-bottom: 1rem; transition: all 0.3s; cursor: pointer; }
+  .drop-zone:hover, .drop-zone.dragover { border-color: var(--golden-hour); background: rgba(212,168,67,0.05); }
+  .drop-zone.dragover { background: rgba(212,168,67,0.15); }
+  .drop-zone h3 { font-size: 0.8rem; font-weight: 700; color: var(--golden-hour); margin-bottom: 0.25rem; }
+  .drop-zone p { font-size: 0.65rem; color: #666; line-height: 1.4; }
+  .drop-zone input { display: none; }
+  .upload-status { font-size: 0.7rem; padding: 0.5rem; border-radius: 4px; margin-bottom: 0.75rem; display: none; }
+  .upload-status.success { display: block; background: rgba(74,124,89,0.2); color: var(--canopy); }
+  .upload-status.error { display: block; background: rgba(194,91,40,0.2); color: var(--crane); }
+  .upload-status.uploading { display: block; background: rgba(212,168,67,0.2); color: var(--golden-hour); }
+
+  /* Tag input */
+  .tag-form { margin-top: 0.75rem; }
+  .tag-row { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; align-items: center; }
+  .tag-row label { font-size: 0.65rem; color: #888; width: 50px; flex-shrink: 0; }
+  .tag-row select, .tag-row input { flex: 1; background: #222; border: 1px solid #333; border-radius: 4px; padding: 0.3rem 0.5rem; color: var(--milk); font-size: 0.7rem; font-family: inherit; }
+  .tag-row select:focus, .tag-row input:focus { border-color: var(--golden-hour); outline: none; }
+
+  /* Search */
+  .search-bar { margin-bottom: 1rem; }
+  .search-bar input { width: 100%; background: #222; border: 1px solid #333; border-radius: 6px; padding: 0.5rem 0.75rem; color: var(--milk); font-size: 0.8rem; font-family: inherit; outline: none; }
+  .search-bar input:focus { border-color: var(--golden-hour); }
+  .search-bar input::placeholder { color: #555; }
+
+  /* Usage log */
+  .usage-entry { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem; background: #1a1a1a; border-radius: 6px; margin-bottom: 0.5rem; font-size: 0.7rem; }
+  .usage-entry img, .usage-entry video { width: 36px; height: 36px; object-fit: cover; border-radius: 3px; flex-shrink: 0; }
+  .usage-entry .info { flex: 1; min-width: 0; }
+  .usage-entry .tile-name { color: var(--golden-hour); font-weight: 700; font-size: 0.65rem; text-transform: uppercase; }
+  .usage-entry .photo-path { color: #666; font-size: 0.6rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .usage-entry .timestamp { color: #444; font-size: 0.55rem; }
+  .no-usage { color: #444; font-size: 0.75rem; font-style: italic; text-align: center; padding: 2rem 0; }
+
+  /* === CALENDAR === */
+  .cal-month { margin-bottom: 1rem; }
+  .cal-month-label { font-size: 1rem; font-weight: 900; text-transform: uppercase; color: var(--golden-hour); margin-bottom: 0.75rem; }
+  .cal-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 4px; }
+  .cal-weekday { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; color: #555; text-align: center; padding: 0.25rem; }
+  .cal-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+  .cal-day { min-height: 90px; background: #222; border-radius: 6px; padding: 0.4rem; position: relative; border: 1px solid #2a2a2a; }
+  .cal-day.empty { background: transparent; border: none; }
+  .cal-day.today { border-color: var(--golden-hour); }
+  .cal-day.has-post { border-color: var(--crane); }
+  .cal-day-num { font-size: 0.65rem; font-weight: 700; color: #555; margin-bottom: 0.25rem; }
+  .cal-day.has-post .cal-day-num { color: var(--golden-hour); }
+  .cal-post { background: rgba(194,91,40,0.15); border-radius: 3px; padding: 3px 5px; margin-bottom: 3px; cursor: pointer; }
+  .cal-post:hover { background: rgba(194,91,40,0.3); }
+  .cal-post-title { font-size: 0.55rem; font-weight: 700; color: var(--crane); line-height: 1.2; }
+  .cal-post-platforms { margin-top: 2px; display: flex; gap: 2px; flex-wrap: wrap; }
+  .cal-post-platforms .badge { font-size: 0.45rem; padding: 1px 3px; }
+
+  /* Media table */
+  .media-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; }
+  .media-table th { background: #333; padding: 0.5rem 0.75rem; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--golden-hour); text-align: left; font-weight: 700; }
+  .media-table td { padding: 0.5rem 0.75rem; border-bottom: 1px solid #2a2a2a; vertical-align: middle; }
+  .media-table tr:hover { background: #252525; }
+  .media-table .thumb { width: 48px; height: 48px; object-fit: cover; border-radius: 4px; }
+  .media-table .type-badge { font-size: 0.55rem; padding: 2px 6px; border-radius: 3px; font-weight: 700; text-transform: uppercase; }
+  .type-photo { background: var(--workshirt); color: white; }
+  .type-video { background: var(--crane); color: white; }
+  .media-table .tags { display: flex; gap: 3px; flex-wrap: wrap; }
+  .media-table .tag { font-size: 0.55rem; background: #333; color: #aaa; padding: 1px 5px; border-radius: 2px; }
+  .media-table .actions { display: flex; gap: 4px; }
+  .media-table .btn-sm { font-size: 0.55rem; padding: 3px 6px; border-radius: 3px; border: none; cursor: pointer; font-weight: 700; font-family: inherit; text-transform: uppercase; }
+  .btn-tag { background: var(--workshirt); color: white; }
+  .btn-tag:hover { opacity: 0.8; }
+  .btn-del { background: #444; color: #999; }
+  .btn-del:hover { background: #c0392b; color: white; }
+  .btn-claim { background: var(--canopy); color: white; }
+  .btn-claim:hover { opacity: 0.8; }
+  /* Tag editor modal */
+  .tag-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 100; }
+  .tag-modal-content { background: #222; border-radius: 12px; padding: 1.5rem; width: 380px; max-width: 90vw; }
+  .tag-modal-content h3 { font-size: 0.9rem; font-weight: 900; text-transform: uppercase; color: var(--golden-hour); margin-bottom: 1rem; }
+  .tag-modal-content .tag-row { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; align-items: center; }
+  .tag-modal-content label { font-size: 0.65rem; color: #888; width: 60px; flex-shrink: 0; }
+  .tag-modal-content input, .tag-modal-content select { flex: 1; background: #1a1a1a; border: 1px solid #333; border-radius: 4px; padding: 0.4rem 0.5rem; color: var(--milk); font-size: 0.75rem; font-family: inherit; }
+  .tag-modal-content input:focus, .tag-modal-content select:focus { border-color: var(--golden-hour); outline: none; }
+  .tag-modal-actions { display: flex; gap: 0.5rem; margin-top: 1rem; justify-content: flex-end; }
+  .tag-modal-actions button { padding: 0.5rem 1rem; border-radius: 4px; border: none; font-size: 0.7rem; font-weight: 700; cursor: pointer; font-family: inherit; }
+  .tag-modal-actions .save { background: var(--golden-hour); color: var(--shed); }
+  .tag-modal-actions .cancel { background: #333; color: #888; }
+
+  /* Supabase items */
+  .supa-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; }
+  .supa-item { aspect-ratio: 1/1; border-radius: 6px; overflow: hidden; position: relative; cursor: pointer; border: 2px solid transparent; transition: all 0.2s; }
+  .supa-item:hover { border-color: var(--golden-hour); transform: scale(1.03); }
+  .supa-item img, .supa-item video { width: 100%; height: 100%; object-fit: cover; }
+  .supa-item .supa-name { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.7); font-size: 0.55rem; padding: 3px 5px; color: #ccc; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  /* Status bar */
+  .status-bar { background: #111; border-top: 1px solid #333; padding: 0.5rem 1rem; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+  .status-bar .stat { font-size: 0.65rem; color: #555; }
+  .status-bar .stat strong { color: var(--golden-hour); }
+  .status-bar button { background: var(--crane); color: white; border: none; padding: 0.4rem 0.75rem; border-radius: 4px; font-size: 0.65rem; font-weight: 700; cursor: pointer; font-family: inherit; text-transform: uppercase; }
+  .status-bar button:hover { opacity: 0.9; }
+
+  #selectedInfo { background: rgba(194,91,40,0.15); border: 1px solid var(--crane); border-radius: 6px; padding: 0.5rem 0.75rem; margin-bottom: 1rem; font-size: 0.75rem; color: var(--crane); display: none; }
+  #selectedInfo strong { color: var(--milk); }
+
+  /* Tracking */
+  .tracking { margin-top: 2rem; border-top: 1px solid #333; padding-top: 2rem; }
+  .tracking h2 { font-size: 1.2rem; font-weight: 900; text-transform: uppercase; color: var(--golden-hour); margin-bottom: 0.5rem; }
+  .tracking p { font-size: 0.85rem; color: #aaa; line-height: 1.6; margin-bottom: 1rem; }
+  .tracking code { background: #333; padding: 2px 6px; border-radius: 3px; font-size: 0.8rem; color: var(--calendula); }
+  .tracking ul { margin: 0.5rem 0 1rem 1.5rem; font-size: 0.85rem; color: #aaa; line-height: 1.8; }
+  .tracking strong { color: var(--milk); }
+
+  /* Publish tab */
+  .publish-card { background: #222; border-radius: 8px; padding: 1rem; margin-bottom: 0.75rem; display: grid; grid-template-columns: 80px 1fr auto; gap: 1rem; align-items: center; }
+  .publish-card img, .publish-card video { width: 80px; height: 80px; object-fit: cover; border-radius: 6px; }
+  .publish-card .info { min-width: 0; }
+  .publish-card .info h4 { font-size: 0.8rem; font-weight: 900; text-transform: uppercase; color: var(--milk); margin-bottom: 0.25rem; }
+  .publish-card .info .caption { font-size: 0.7rem; color: #888; margin-bottom: 0.5rem; line-height: 1.4; }
+  .publish-card .platforms { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 0.5rem; }
+  .publish-card .plat-btn { font-size: 0.55rem; padding: 3px 8px; border-radius: 3px; border: 1px solid #444; background: transparent; color: #888; cursor: pointer; font-weight: 700; font-family: inherit; text-transform: uppercase; transition: all 0.2s; }
+  .publish-card .plat-btn:hover { border-color: var(--golden-hour); color: var(--golden-hour); }
+  .publish-card .plat-btn.selected { background: var(--workshirt); border-color: var(--workshirt); color: white; }
+  .publish-card .plat-btn.selected.fb { background: #1877F2; border-color: #1877F2; }
+  .publish-card .plat-btn.selected.ig { background: #E4405F; border-color: #E4405F; }
+  .publish-card .plat-btn.selected.gbp { background: #4285F4; border-color: #4285F4; }
+  .publish-card .plat-btn.selected.li { background: #0A66C2; border-color: #0A66C2; }
+  .publish-card .plat-btn.selected.yt { background: #FF0000; border-color: #FF0000; }
+  .publish-card .schedule-col { display: flex; flex-direction: column; gap: 0.5rem; align-items: flex-end; }
+  .publish-card .schedule-col input { background: #1a1a1a; border: 1px solid #333; border-radius: 4px; padding: 0.3rem 0.5rem; color: var(--milk); font-size: 0.7rem; font-family: inherit; }
+  .publish-card .schedule-col input:focus { border-color: var(--golden-hour); outline: none; }
+  .btn-schedule { background: var(--crane); color: white; border: none; padding: 0.4rem 0.75rem; border-radius: 4px; font-size: 0.65rem; font-weight: 700; cursor: pointer; font-family: inherit; text-transform: uppercase; }
+  .btn-schedule:hover { opacity: 0.85; }
+  .btn-schedule:disabled { opacity: 0.4; cursor: not-allowed; }
+  .ghl-account-card { background: #1a1a1a; border-radius: 8px; padding: 0.75rem; display: flex; align-items: center; gap: 0.5rem; border: 1px solid #2a2a2a; }
+  .ghl-account-card .platform-icon { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 900; color: white; flex-shrink: 0; }
+  .ghl-account-card .account-info { min-width: 0; }
+  .ghl-account-card .account-name { font-size: 0.7rem; font-weight: 700; color: var(--milk); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ghl-account-card .account-platform { font-size: 0.55rem; color: #666; text-transform: uppercase; letter-spacing: 0.05em; }
+  .queue-item { background: #1a1a1a; border-radius: 6px; padding: 0.75rem; margin-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center; font-size: 0.7rem; }
+  .queue-item .qi-title { font-weight: 700; color: var(--milk); }
+  .queue-item .qi-platforms { color: var(--workshirt); font-size: 0.6rem; }
+  .queue-item .qi-date { color: #555; font-size: 0.6rem; }
+  .queue-item .qi-status { font-size: 0.55rem; padding: 2px 6px; border-radius: 3px; font-weight: 700; text-transform: uppercase; }
+  .qi-status.draft { background: #333; color: #888; }
+  .qi-status.scheduled { background: rgba(212,168,67,0.2); color: var(--golden-hour); }
+  .qi-status.published { background: rgba(74,124,89,0.2); color: var(--canopy); }
+
+  /* Tile edit button */
+  .tile-edit-btn { background: none; border: 1px solid #444; color: #888; font-size: 0.6rem; padding: 2px 8px; border-radius: 3px; cursor: pointer; font-family: inherit; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; transition: all 0.2s; }
+  .tile-edit-btn:hover { border-color: var(--golden-hour); color: var(--golden-hour); }
+
+  /* Copy editor modal */
+  .copy-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 100; }
+  .copy-modal-content { background: #222; border-radius: 12px; padding: 1.5rem; width: 440px; max-width: 90vw; max-height: 85vh; overflow-y: auto; }
+  .copy-modal-content h3 { font-size: 0.9rem; font-weight: 900; text-transform: uppercase; color: var(--golden-hour); margin-bottom: 1rem; }
+  .copy-field { margin-bottom: 0.75rem; }
+  .copy-field label { display: block; font-size: 0.65rem; color: #888; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.3rem; font-weight: 700; }
+  .copy-field input, .copy-field textarea { width: 100%; background: #1a1a1a; border: 1px solid #333; border-radius: 4px; padding: 0.5rem; color: var(--milk); font-size: 0.8rem; font-family: inherit; resize: vertical; }
+  .copy-field input:focus, .copy-field textarea:focus { border-color: var(--golden-hour); outline: none; }
+  .copy-field textarea { min-height: 60px; }
+  .copy-modal-actions { display: flex; gap: 0.5rem; margin-top: 1rem; justify-content: flex-end; }
+  .copy-modal-actions button { padding: 0.5rem 1rem; border-radius: 4px; border: none; font-size: 0.7rem; font-weight: 700; cursor: pointer; font-family: inherit; }
+  .copy-modal-actions .save { background: var(--golden-hour); color: var(--shed); }
+  .copy-modal-actions .cancel { background: #333; color: #888; }
+
+  /* Media gallery improvements */
+  .media-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 0.75rem; }
+  .media-card { background: #222; border-radius: 8px; overflow: hidden; position: relative; transition: all 0.2s; border: 2px solid transparent; }
+  .media-card:hover { border-color: var(--golden-hour); transform: translateY(-2px); }
+  .media-card .media-card-thumb { width: 100%; aspect-ratio: 1/1; object-fit: cover; display: block; }
+  .media-card .media-card-body { padding: 0.5rem; }
+  .media-card .media-card-name { font-size: 0.7rem; font-weight: 700; color: var(--milk); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 0.25rem; }
+  .media-card .media-card-tags { display: flex; gap: 3px; flex-wrap: wrap; margin-bottom: 0.4rem; }
+  .media-card .media-card-tag { font-size: 0.5rem; background: #333; color: #aaa; padding: 1px 5px; border-radius: 2px; }
+  .media-card .media-card-actions { display: flex; gap: 4px; }
+  .media-card .media-card-actions button { flex: 1; font-size: 0.55rem; padding: 4px; border-radius: 3px; border: none; cursor: pointer; font-weight: 700; font-family: inherit; text-transform: uppercase; transition: opacity 0.2s; }
+  .media-card .media-card-actions .btn-tag { background: #333; color: var(--golden-hour); }
+  .media-card .media-card-actions .btn-del { background: #2a1515; color: #c44; }
+  .media-card .media-card-actions button:hover { opacity: 0.8; }
+  .media-card .media-card-type { position: absolute; top: 6px; right: 6px; font-size: 0.5rem; padding: 2px 6px; border-radius: 3px; font-weight: 700; text-transform: uppercase; background: rgba(0,0,0,0.7); color: var(--milk); }
+  .media-card .media-card-source { position: absolute; top: 6px; left: 6px; font-size: 0.45rem; padding: 2px 5px; border-radius: 2px; font-weight: 700; background: rgba(0,0,0,0.6); color: #888; text-transform: uppercase; }
+  .pub-plat-btn { padding: 0.2rem 0.5rem; font-size: 0.55rem; font-weight: 700; border-radius: 3px; border: 1px solid #444; cursor: pointer; font-family: inherit; transition: all 0.15s; background: #333; color: #888; }
+  .pub-plat-btn.active { background: var(--workshirt); color: white; border-color: var(--workshirt); }
+  .pub-plat-btn:hover { border-color: var(--golden-hour); }
+  .view-toggle { display: flex; gap: 2px; }
+  .view-toggle button { background: #333; border: none; color: #666; padding: 0.3rem 0.5rem; font-size: 0.65rem; cursor: pointer; font-family: inherit; font-weight: 700; }
+  .view-toggle button:first-child { border-radius: 4px 0 0 4px; }
+  .view-toggle button:last-child { border-radius: 0 4px 4px 0; }
+  .view-toggle button.active { background: var(--golden-hour); color: var(--shed); }
+
+  @media (max-width: 900px) {
+    .app { grid-template-columns: 1fr; }
+    .sidebar { position: static; height: auto; border-left: none; border-top: 1px solid #333; }
+    .grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+<div class="main">
+
+<h1>The Harvest — Social Planner</h1>
+<p class="subtitle">Design tiles, plan posts on a calendar, manage your media library. Everything saved to Supabase.</p>
+
+<!-- MAIN TABS -->
+<div class="main-tabs">
+  <div class="main-tab active" onclick="switchMainTab('tiles')">Tiles</div>
+  <div class="main-tab" onclick="switchMainTab('calendar')">Calendar</div>
+  <div class="main-tab" onclick="switchMainTab('media')">All Media</div>
+  <div class="main-tab" onclick="switchMainTab('publish')">Publish</div>
+  <div class="main-tab" onclick="switchMainTab('tracking')">Tracking</div>
+</div>
+
+<!-- TAB: Tiles -->
+<div class="main-panel active" id="mtab-tiles">
+<div class="grid" id="tileGrid">
+  <div class="tile-wrapper" data-tile="0" onclick="selectTile(0)">
+    <div class="tile-header"><span class="tile-label">Post 1 — Origin Story</span><span style="display:flex;gap:0.5rem;align-items:center;"><button class="tile-edit-btn" onclick="event.stopPropagation();openCopyEditor(0)">Edit Copy</button><span class="tile-date">Feb 18</span></span></div>
+    <div class="tile style-gradient">
+      <img id="tile-img-0" src="/images/social/01-origin-story.png" alt="">
+      <div class="overlay">
+        <div class="headline medium text-milk">Something is<br>forming in Witta</div>
+        <div class="subtext text-golden">Art. Food. Community.</div>
+        <div class="branding text-milk">The Harvest, Witta</div>
+      </div>
+    </div>
+    <div class="tile-caption">PIN THIS FIRST. Launch post for Facebook &amp; Instagram. Link: /</div>
+    <div class="tile-photo-info" id="tile-info-0">01-origin-story.png</div>
+  </div>
+
+  <div class="tile-wrapper" data-tile="1" onclick="selectTile(1)">
+    <div class="tile-header"><span class="tile-label">Post 2 — First Gathering</span><span style="display:flex;gap:0.5rem;align-items:center;"><button class="tile-edit-btn" onclick="event.stopPropagation();openCopyEditor(1)">Edit Copy</button><span class="tile-date">Feb 20</span></span></div>
+    <div class="tile style-gradient">
+      <img id="tile-img-1" src="/images/social/02-event-announcement.png" alt="">
+      <div class="overlay">
+        <div class="headline medium text-milk">First<br>Gathering</div>
+        <div class="subtext text-golden">Saturday 7 March &bull; 11am–4pm</div>
+        <div class="subtext text-milk" style="opacity:0.8; font-size:0.75rem;">Oysters &bull; Flight Bar &bull; Neighbours</div>
+        <div class="branding text-milk">The Harvest, Witta</div>
+      </div>
+    </div>
+    <div class="tile-caption">Facebook Event image. Share in Maleny, Witta, Hinterland groups. Link: /gather</div>
+    <div class="tile-photo-info" id="tile-info-1">02-event-announcement.png</div>
+  </div>
+
+  <div class="tile-wrapper" data-tile="2" onclick="selectTile(2)">
+    <div class="tile-header"><span class="tile-label">Post 3 — Shaun Fisher</span><span style="display:flex;gap:0.5rem;align-items:center;"><button class="tile-edit-btn" onclick="event.stopPropagation();openCopyEditor(2)">Edit Copy</button><span class="tile-date">Feb 22</span></span></div>
+    <div class="tile style-gradient">
+      <img id="tile-img-2" src="/images/social/03-shaun-fisher.png" alt="">
+      <div class="overlay">
+        <div class="subtext text-golden" style="font-style:italic; margin-bottom:0.5rem;">From sea country to the hinterland.</div>
+        <div class="headline medium text-milk">Shaun<br>Fisher</div>
+        <div class="subtext text-milk" style="opacity:0.8;">Mununjali, Gorenpul Man &bull; Moreton Bay</div>
+        <div class="branding text-milk">The Harvest, Witta</div>
+      </div>
+    </div>
+    <div class="tile-caption">Trust signal + food story. Post 3-4 days before. Link: /gather</div>
+    <div class="tile-photo-info" id="tile-info-2">03-shaun-fisher.png</div>
+  </div>
+
+  <div class="tile-wrapper" data-tile="3" onclick="selectTile(3)">
+    <div class="tile-header"><span class="tile-label">Post 4 — Radical Scoops</span><span style="display:flex;gap:0.5rem;align-items:center;"><button class="tile-edit-btn" onclick="event.stopPropagation();openCopyEditor(3)">Edit Copy</button><span class="tile-date">Feb 24</span></span></div>
+    <div class="tile style-gradient">
+      <img id="tile-img-3" src="/images/social/04-radical-scoops.png" alt="">
+      <div class="overlay">
+        <div class="headline medium text-milk">Radical<br>Scoops</div>
+        <div class="subtext text-golden">12-month residency &bull; Regional Arts Australia</div>
+        <div class="subtext text-milk" style="opacity:0.8; font-size:0.75rem;">Dairy, timber, co-ops, and Jinibara Country.</div>
+        <div class="branding text-milk">The Harvest, Witta</div>
+      </div>
+    </div>
+    <div class="tile-caption">Regional Arts framing. Credibility + depth. Post early in sequence. Link: /</div>
+    <div class="tile-photo-info" id="tile-info-3">04-radical-scoops.png</div>
+  </div>
+
+  <div class="tile-wrapper" data-tile="4" onclick="selectTile(4)">
+    <div class="tile-header"><span class="tile-label">Post 5 — Zone: Garden</span><span style="display:flex;gap:0.5rem;align-items:center;"><button class="tile-edit-btn" onclick="event.stopPropagation();openCopyEditor(4)">Edit Copy</button><span class="tile-date">Feb 26</span></span></div>
+    <div class="tile style-gradient">
+      <img id="tile-img-4" src="/images/social/05-zone-garden.png" alt="">
+      <div class="overlay">
+        <div class="headline large text-milk">Garden</div>
+        <div class="subtext text-golden">Growing food, learning from the land, getting hands dirty.</div>
+        <div class="branding text-milk">The Harvest, Witta</div>
+      </div>
+    </div>
+    <div class="tile-caption">Garden zone intro. Ask a question to drive comments.</div>
+    <div class="tile-photo-info" id="tile-info-4">05-zone-garden.png</div>
+  </div>
+
+  <div class="tile-wrapper" data-tile="5" onclick="selectTile(5)">
+    <div class="tile-header"><span class="tile-label">Post 6 — Zone: Art</span><span style="display:flex;gap:0.5rem;align-items:center;"><button class="tile-edit-btn" onclick="event.stopPropagation();openCopyEditor(5)">Edit Copy</button><span class="tile-date">Feb 27</span></span></div>
+    <div class="tile style-gradient">
+      <img id="tile-img-5" src="/images/social/06-zone-art.png" alt="">
+      <div class="overlay">
+        <div class="headline large text-milk">Art</div>
+        <div class="subtext text-golden">Workshops, residencies, and creative practice.</div>
+        <div class="branding text-milk">The Harvest, Witta</div>
+      </div>
+    </div>
+    <div class="tile-caption">Art zone intro. Creative audience.</div>
+    <div class="tile-photo-info" id="tile-info-5">06-zone-art.png</div>
+  </div>
+
+  <div class="tile-wrapper" data-tile="6" onclick="selectTile(6)">
+    <div class="tile-header"><span class="tile-label">Post 7 — Zone: Food</span><span style="display:flex;gap:0.5rem;align-items:center;"><button class="tile-edit-btn" onclick="event.stopPropagation();openCopyEditor(6)">Edit Copy</button><span class="tile-date">Feb 28</span></span></div>
+    <div class="tile style-gradient">
+      <img id="tile-img-6" src="/images/social/07-zone-food.png" alt="">
+      <div class="overlay">
+        <div class="headline large text-milk">Food</div>
+        <div class="subtext text-golden">Shared tables, local produce, and conversations.</div>
+        <div class="subtext text-milk" style="opacity:0.8; font-size:0.75rem;">Oysters from Moreton Bay &bull; Flight Bar Witta</div>
+        <div class="branding text-milk">The Harvest, Witta</div>
+      </div>
+    </div>
+    <div class="tile-caption">Food zone intro. Post 1/day between zones.</div>
+    <div class="tile-photo-info" id="tile-info-6">07-zone-food.png</div>
+  </div>
+
+  <div class="tile-wrapper" data-tile="7" onclick="selectTile(7)">
+    <div class="tile-header"><span class="tile-label">Post 8 — Countdown 7 Days</span><span style="display:flex;gap:0.5rem;align-items:center;"><button class="tile-edit-btn" onclick="event.stopPropagation();openCopyEditor(7)">Edit Copy</button><span class="tile-date">Mar 1</span></span></div>
+    <div class="tile style-gradient">
+      <img id="tile-img-7" src="/images/social/08-countdown-7days.png" alt="">
+      <div class="overlay">
+        <div class="headline large text-milk">7 Days</div>
+        <div class="subtext text-golden">Saturday 7 March &bull; 11am–4pm &bull; Witta</div>
+        <div class="subtext text-milk" style="opacity:0.8; font-size:0.75rem;">Oysters. Music. Neighbours. Free.</div>
+        <div class="branding text-milk">The Harvest, Witta</div>
+      </div>
+    </div>
+    <div class="tile-caption">One week out. Urgency post. Boost this one. Link: /gather</div>
+    <div class="tile-photo-info" id="tile-info-7">08-countdown-7days.png</div>
+  </div>
+
+  <div class="tile-wrapper" data-tile="8" onclick="selectTile(8)">
+    <div class="tile-header"><span class="tile-label">Post 9 — Locals Day</span><span style="display:flex;gap:0.5rem;align-items:center;"><button class="tile-edit-btn" onclick="event.stopPropagation();openCopyEditor(8)">Edit Copy</button><span class="tile-date">Mar 3</span></span></div>
+    <div class="tile style-gradient">
+      <img id="tile-img-8" src="/images/social/09-locals-day.png" alt="">
+      <div class="overlay">
+        <div class="headline medium text-milk">Locals Day</div>
+        <div class="subtext text-golden">Friday 6 March, afternoon.</div>
+        <div class="subtext text-milk" style="opacity:0.8; font-size:0.75rem;">Meet the neighbours. Build with milk crates. Just locals.</div>
+        <div class="branding text-milk">The Harvest, Witta</div>
+      </div>
+    </div>
+    <div class="tile-caption">Witta locals only. Share in local groups and next-door apps. Link: /gather</div>
+    <div class="tile-photo-info" id="tile-info-8">09-locals-day.png</div>
+  </div>
+
+  <div class="tile-wrapper" data-tile="9" onclick="selectTile(9)">
+    <div class="tile-header"><span class="tile-label">Post 10 — Save Your Spot</span><span style="display:flex;gap:0.5rem;align-items:center;"><button class="tile-edit-btn" onclick="event.stopPropagation();openCopyEditor(9)">Edit Copy</button><span class="tile-date">Mar 5</span></span></div>
+    <div class="tile style-gradient">
+      <img id="tile-img-9" src="/images/social/10-save-your-spot.png" alt="">
+      <div class="overlay">
+        <div class="headline medium text-milk">Save Your<br>Spot</div>
+        <div class="subtext text-golden">Saturday 7 March &bull; 11am–4pm &bull; Free</div>
+        <div class="subtext text-milk" style="opacity:0.8; font-size:0.75rem;">Oysters &bull; Flight Bar &bull; Neighbours on the lawn.</div>
+        <div class="branding text-milk">The Harvest, Witta</div>
+      </div>
+    </div>
+    <div class="tile-caption">Final CTA. Post day before + use as paid boost. Link: /gather</div>
+    <div class="tile-photo-info" id="tile-info-9">10-save-your-spot.png</div>
+  </div>
+
+  <div class="tile-wrapper" data-tile="10" onclick="selectTile(10)">
+    <div class="tile-header"><span class="tile-label">Post 11 — Facebook Cover</span><span style="display:flex;gap:0.5rem;align-items:center;"><button class="tile-edit-btn" onclick="event.stopPropagation();openCopyEditor(10)">Edit Copy</button><span class="tile-date">—</span></span></div>
+    <div class="tile style-gradient" style="aspect-ratio:16/9;">
+      <img id="tile-img-10" src="/images/social/11-facebook-cover.png" alt="">
+      <div class="overlay">
+        <div class="headline medium text-milk">The Harvest</div>
+        <div class="subtext text-golden">Art. Food. Community.</div>
+        <div class="branding text-milk">9 Gumland Drive, Witta</div>
+      </div>
+    </div>
+    <div class="tile-caption">Facebook page cover or event cover. 16:9 landscape format.</div>
+    <div class="tile-photo-info" id="tile-info-10">11-facebook-cover.png</div>
+  </div>
+
+  <div class="tile-wrapper" data-tile="11" onclick="selectTile(11)">
+    <div class="tile-header"><span class="tile-label">Post 12 — Story: Invite</span><span style="display:flex;gap:0.5rem;align-items:center;"><button class="tile-edit-btn" onclick="event.stopPropagation();openCopyEditor(11)">Edit Copy</button><span class="tile-date">Mar 5</span></span></div>
+    <div class="tile style-gradient" style="aspect-ratio:9/16; max-height:500px;">
+      <img id="tile-img-11" src="/images/social/12-story-invite.png" alt="">
+      <div class="overlay">
+        <div class="headline medium text-milk">Saturday<br>7 March</div>
+        <div class="subtext text-golden">Art. Food. Community.</div>
+        <div class="branding text-milk">The Harvest, Witta</div>
+      </div>
+    </div>
+    <div class="tile-caption">Instagram/Facebook story. Swipe-up or link sticker to /gather.</div>
+    <div class="tile-photo-info" id="tile-info-11">12-story-invite.png</div>
+  </div>
+
+  <div class="tile-wrapper" data-tile="12" onclick="selectTile(12)">
+    <div class="tile-header"><span class="tile-label">Post 13 — Story: Shaun</span><span style="display:flex;gap:0.5rem;align-items:center;"><button class="tile-edit-btn" onclick="event.stopPropagation();openCopyEditor(12)">Edit Copy</button><span class="tile-date">Mar 4</span></span></div>
+    <div class="tile style-gradient" style="aspect-ratio:9/16; max-height:500px;">
+      <img id="tile-img-12" src="/images/social/13-story-shaun.png" alt="">
+      <div class="overlay">
+        <div class="subtext text-golden" style="font-style:italic;">From sea country to the hinterland.</div>
+        <div class="headline medium text-milk">Shaun<br>Fisher</div>
+        <div class="branding text-milk">The Harvest, Witta</div>
+      </div>
+    </div>
+    <div class="tile-caption">Instagram/Facebook story. Food provenance angle. Pair with oyster-lease video.</div>
+    <div class="tile-photo-info" id="tile-info-12">13-story-shaun.png</div>
+  </div>
+
+  <div class="tile-wrapper" data-tile="13" onclick="selectTile(13)">
+    <div class="tile-header"><span class="tile-label">Post 14 — Countdown 3 Days</span><span style="display:flex;gap:0.5rem;align-items:center;"><button class="tile-edit-btn" onclick="event.stopPropagation();openCopyEditor(13)">Edit Copy</button><span class="tile-date">Mar 4</span></span></div>
+    <div class="tile style-gradient">
+      <img id="tile-img-13" src="/images/social/14-countdown-3days.png" alt="">
+      <div class="overlay">
+        <div class="headline large text-milk">3 Days</div>
+        <div class="subtext text-golden">Saturday 7 March &bull; Witta</div>
+        <div class="subtext text-milk" style="opacity:0.8; font-size:0.75rem;">Art. Food. Community. Free.</div>
+        <div class="branding text-milk">The Harvest, Witta</div>
+      </div>
+    </div>
+    <div class="tile-caption">Three days out. Pair with 7-day countdown. Story + feed. Link: /gather</div>
+    <div class="tile-photo-info" id="tile-info-13">14-countdown-3days.png</div>
+  </div>
+</div>
+</div>
+
+<!-- TAB: Calendar -->
+<div class="main-panel" id="mtab-calendar">
+  <div id="calendarView"></div>
+</div>
+
+<!-- TAB: All Media -->
+<div class="main-panel" id="mtab-media">
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+    <h2 style="font-size:1rem; font-weight:900; text-transform:uppercase; color:var(--golden-hour);">Harvest Media Library</h2>
+    <div style="display:flex; gap:0.5rem;">
+      <button onclick="loadSupabaseMedia()" style="background:var(--workshirt); color:white; border:none; padding:0.4rem 0.75rem; border-radius:4px; font-size:0.65rem; font-weight:700; cursor:pointer; font-family:inherit;">Refresh from Supabase</button>
+    </div>
+  </div>
+  <div style="display:flex; gap:0.5rem; margin-bottom:1rem; align-items:center;">
+    <select id="mediaFilterType" onchange="renderMediaTable()" style="background:#222; border:1px solid #333; border-radius:4px; padding:0.3rem; color:var(--milk); font-size:0.7rem;">
+      <option value="all">All Types</option>
+      <option value="photo">Photos</option>
+      <option value="video">Videos</option>
+    </select>
+    <select id="mediaFilterTag" onchange="renderMediaTable()" style="background:#222; border:1px solid #333; border-radius:4px; padding:0.3rem; color:var(--milk); font-size:0.7rem;">
+      <option value="all">All Tags</option>
+    </select>
+    <input type="text" id="mediaSearch" placeholder="Search media..." oninput="renderMediaTable()" style="flex:1; background:#222; border:1px solid #333; border-radius:4px; padding:0.3rem 0.5rem; color:var(--milk); font-size:0.7rem; font-family:inherit;">
+    <div class="view-toggle">
+      <button class="active" onclick="setMediaView('grid')" id="viewGrid" title="Grid view">&#9638;</button>
+      <button onclick="setMediaView('table')" id="viewTable" title="Table view">&#9776;</button>
+    </div>
+  </div>
+  <div id="mediaGrid" class="media-grid"></div>
+  <table class="media-table" id="mediaTableWrap" style="display:none;">
+    <thead><tr><th></th><th>Name</th><th>Type</th><th>Tags</th><th>Used In</th><th>Source</th><th>Actions</th></tr></thead>
+    <tbody id="mediaTableBody"></tbody>
+  </table>
+</div>
+
+<!-- TAB: Publish -->
+<div class="main-panel" id="mtab-publish">
+  <div style="max-width:800px;">
+    <!-- GHL Status -->
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+      <h2 style="font-size:1rem; font-weight:900; text-transform:uppercase; color:var(--golden-hour);">GHL Social Planner</h2>
+      <button onclick="checkGHLAccounts()" style="background:var(--workshirt); color:white; border:none; padding:0.4rem 0.75rem; border-radius:4px; font-size:0.65rem; font-weight:700; cursor:pointer; font-family:inherit;">Check Accounts</button>
+    </div>
+
+    <div id="ghlStatus" style="background:#222; border-radius:8px; padding:1rem; margin-bottom:1.5rem;">
+      <div style="font-size:0.75rem; color:#666;">Click "Check Accounts" to see connected social platforms, or see setup instructions below.</div>
+    </div>
+
+    <!-- Connected accounts grid -->
+    <div id="ghlAccounts" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(180px,1fr)); gap:0.75rem; margin-bottom:1.5rem;"></div>
+
+    <!-- Post queue -->
+    <h3 style="font-size:0.85rem; font-weight:900; text-transform:uppercase; color:var(--golden-hour); margin-bottom:0.75rem;">Post Queue</h3>
+    <div id="publishQueue" style="margin-bottom:1.5rem;"></div>
+
+    <!-- Tile publish cards -->
+    <h3 style="font-size:0.85rem; font-weight:900; text-transform:uppercase; color:var(--golden-hour); margin-bottom:0.75rem;">Schedule Tiles</h3>
+    <div id="publishCards"></div>
+  </div>
+</div>
+
+<!-- TAB: Tracking -->
+<div class="main-panel" id="mtab-tracking">
+<div class="tracking" style="border-top:none; padding-top:0;">
+  <h2>Tracking Architecture — GHL + UTM</h2>
+  <p><strong>Every link in every post</strong> uses this format:</p>
+  <p style="margin-bottom:1rem;"><code>theharvestwitta.com.au/gather?utm_source=instagram&amp;utm_medium=social&amp;utm_campaign=first-gathering&amp;utm_content=post-1-announcement</code></p>
+  <p><strong>What this gives you:</strong></p>
+  <ul>
+    <li><strong>utm_source</strong> — which platform (instagram, facebook, google-business)</li>
+    <li><strong>utm_medium</strong> — always "social" for organic posts</li>
+    <li><strong>utm_campaign</strong> — always "first-gathering" for this event</li>
+    <li><strong>utm_content</strong> — which specific post (post-1-announcement, post-3-shaun, etc.)</li>
+  </ul>
+  <p><strong>GHL tracking flow:</strong></p>
+  <ul>
+    <li>Person sees post &rarr; clicks link &rarr; lands on <code>/gather</code> with UTM params</li>
+    <li>Person fills RSVP form &rarr; creates GHL contact with <strong>source = utm_source</strong></li>
+    <li>GHL shows: <strong>which posts drive RSVPs</strong>, which platform works best</li>
+  </ul>
+  <p><strong>Setup steps:</strong></p>
+  <ul>
+    <li>1. Connect FB + IG in GHL (dashboard &rarr; Marketing &rarr; Social Planner)</li>
+    <li>2. Add UTM capture to the Harvest RSVP form</li>
+    <li>3. Schedule posts through GHL with UTM-tagged links</li>
+    <li>4. After event: pull GHL report &rarr; see attribution</li>
+  </ul>
+</div>
+</div>
+
+</div><!-- end main -->
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sidebar-tabs">
+    <div class="sidebar-tab active" onclick="switchSideTab('photos')">Photos</div>
+    <div class="sidebar-tab" onclick="switchSideTab('upload')">Upload</div>
+    <div class="sidebar-tab" onclick="switchSideTab('usage')">Log</div>
+  </div>
+  <div class="sidebar-content">
+    <div class="stab-panel active" id="stab-photos">
+      <div id="selectedInfo">Swapping photo for: <strong id="selectedName"></strong></div>
+      <div class="search-bar"><input type="text" id="photoSearch" placeholder="Search photos & videos..." oninput="filterPhotos()"></div>
+      <div id="photoLibrary"></div>
+    </div>
+
+    <div class="stab-panel" id="stab-upload">
+      <h2>Upload to Supabase</h2>
+      <p class="instruction">Files are uploaded to Supabase storage and saved to <code style="font-size:0.6rem; background:#222; padding:1px 4px; border-radius:3px; color:var(--calendula)">media_items</code> with tags. They persist forever and are available across all tools.</p>
+      <div id="uploadStatus" class="upload-status"></div>
+      <div class="drop-zone" id="dropZone">
+        <h3>Drop photos & videos here</h3>
+        <p>JPG, PNG, WebP, MP4, MOV — saved to Supabase</p>
+        <input type="file" id="fileInput" multiple accept="image/*,video/*">
+      </div>
+      <div class="tag-form">
+        <p class="instruction" style="margin-bottom:0.5rem;"><strong style="color:var(--milk)">Tag uploads (optional)</strong></p>
+        <div class="tag-row">
+          <label>Theme</label>
+          <select id="tagTheme">
+            <option value="">— none —</option>
+            <option value="eat">Eat</option>
+            <option value="grow">Grow</option>
+            <option value="make">Make</option>
+            <option value="gather">Gather</option>
+          </select>
+        </div>
+        <div class="tag-row">
+          <label>Page</label>
+          <select id="tagPage">
+            <option value="">— none —</option>
+            <option value="home">Home</option>
+            <option value="journey">Journey</option>
+            <option value="stories">Stories</option>
+            <option value="explore">Explore</option>
+            <option value="gather">Gather</option>
+          </select>
+        </div>
+        <div class="tag-row">
+          <label>Custom</label>
+          <input type="text" id="tagCustom" placeholder="e.g. barry, oysters, aerial">
+        </div>
+      </div>
+      <div id="uploadedPhotos" style="margin-top:1rem;"></div>
+    </div>
+
+    <div class="stab-panel" id="stab-usage">
+      <h2>Photo Usage Log</h2>
+      <p class="instruction">Track which photos are used in which tiles over time.</p>
+      <div id="usageLog"></div>
+      <button onclick="exportUsageLog()" style="margin-top:1rem; background:var(--workshirt); color:white; border:none; padding:0.5rem 1rem; border-radius:4px; font-size:0.7rem; font-weight:700; cursor:pointer; font-family:inherit; width:100%;">Export Usage Log</button>
+    </div>
+  </div>
+  <div class="status-bar">
+    <span class="stat"><strong id="totalPhotos">0</strong> photos</span>
+    <span class="stat"><strong id="usedPhotos">0</strong> used</span>
+    <button onclick="exportTileAssignments()">Export Tiles</button>
+  </div>
+</div>
+
+</div>
+
+<script>
+// ============================================================
+// CONFIG
+// ============================================================
+const SUPABASE_URL = 'https://tednluwflfhxyucgwigh.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRlZG5sdXdmbGZoeHl1Y2d3aWdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTIzNDYyMjksImV4cCI6MjA2NzkyMjIyOX0.PG0iGZQR2d8yo4y3q1e2tEIMa3J0AdFkI1Q6P7IDgrg';
+const STORAGE_BUCKET = 'media-uploads';
+
+// ============================================================
+// STATE
+// ============================================================
+let selectedTile = null;
+const tileNames = ['Origin Story','First Gathering','Shaun Fisher','Radical Scoops','Zone: Garden','Zone: Art','Zone: Food','Countdown 7 Days','Locals Day','Save Your Spot','Facebook Cover','Story: Invite','Story: Shaun','Countdown 3 Days'];
+const tileAssignments = {};
+let usageLog = [];
+let supabaseMedia = [];
+let uploadedThisSession = [];
+
+// Social posts for calendar
+const socialPosts = [
+  { date: '2026-02-18', title: 'Origin Story', tile: 0, platforms: ['IG','FB'], link: '/' },
+  { date: '2026-02-20', title: 'First Gathering', tile: 1, platforms: ['IG','FB','GBP'], link: '/gather' },
+  { date: '2026-02-22', title: 'Shaun Fisher', tile: 2, platforms: ['IG','FB'], link: '/gather' },
+  { date: '2026-02-24', title: 'Radical Scoops', tile: 3, platforms: ['IG','FB'], link: '/' },
+  { date: '2026-02-26', title: 'Zone: Garden', tile: 4, platforms: ['IG','FB'], link: '/' },
+  { date: '2026-02-27', title: 'Zone: Art', tile: 5, platforms: ['IG','FB'], link: '/' },
+  { date: '2026-02-28', title: 'Zone: Food', tile: 6, platforms: ['IG','FB'], link: '/' },
+  { date: '2026-03-01', title: 'Countdown 7 Days', tile: 7, platforms: ['IG','FB','GBP'], link: '/gather' },
+  { date: '2026-03-03', title: 'Locals Day', tile: 8, platforms: ['FB'], link: '/gather' },
+  { date: '2026-03-04', title: 'Story: Shaun', tile: 12, platforms: ['IG'], link: '/gather' },
+  { date: '2026-03-04', title: 'Countdown 3 Days', tile: 13, platforms: ['IG','FB'], link: '/gather' },
+  { date: '2026-03-05', title: 'Save Your Spot', tile: 9, platforms: ['IG','FB','GBP'], link: '/gather' },
+  { date: '2026-03-05', title: 'Story: Invite', tile: 11, platforms: ['IG'], link: '/gather' },
+];
+
+// Photo library
+const photoLibrary = {
+  "Barry Series": [
+    { src: "/images/compendium/barry/IMG_5613.jpg", name: "5613 — machinery" },
+    { src: "/images/compendium/barry/IMG_5618.jpg", name: "5618" },
+    { src: "/images/compendium/barry/IMG_5633.jpg", name: "5633" },
+    { src: "/images/compendium/barry/IMG_5659.jpg", name: "5659" },
+    { src: "/images/compendium/barry/IMG_5687.jpg", name: "5687" },
+    { src: "/images/compendium/barry/IMG_5699.jpg", name: "5699" },
+    { src: "/images/compendium/barry/IMG_5727.jpg", name: "5727 — workshop" },
+    { src: "/images/compendium/barry/IMG_5745.jpg", name: "5745" },
+    { src: "/images/compendium/barry/IMG_5758.jpg", name: "5758" },
+    { src: "/images/compendium/barry/IMG_5764.jpg", name: "5764 — portrait" },
+    { src: "/images/compendium/barry/IMG_5777.jpg", name: "5777" },
+    { src: "/images/compendium/barry/IMG_5819.jpg", name: "5819 — dogs" },
+  ],
+  "Videos": [
+    { src: "/images/compendium/hero-aerial.mp4", name: "aerial drone fly-over", type: "video" },
+    { src: "/images/compendium/oyster-lease.mp4", name: "oyster lease drone", type: "video" },
+  ],
+  "Aerial / Drone": [
+    { src: "/images/compendium/hero-aerial.jpg", name: "hero aerial" },
+    { src: "/images/compendium/oyster-lease-poster.jpg", name: "oyster lease" },
+    { src: "/images/site-plan/cropped/photo-wide.jpg", name: "aerial wide" },
+  ],
+  "Hand-drawn Plans": [
+    { src: "/images/compendium/canvas-drawing.jpg", name: "canvas plan" },
+    { src: "/images/compendium/canvas-drawing-dark.jpg", name: "canvas dark" },
+    { src: "/images/compendium/canvas-drawing-full.jpg", name: "canvas full" },
+    { src: "/images/compendium/MASTER FLOOR PLAN.png", name: "master plan" },
+    { src: "/images/compendium/MASTER FLOOR PLAN_1.jpeg", name: "floor plan 1" },
+    { src: "/images/compendium/MASTER FLOOR PLAN_2.jpeg", name: "floor plan 2" },
+    { src: "/images/compendium/MASTER FLOOR PLAN_3.jpeg", name: "floor plan 3" },
+  ],
+  "Site Plans": [
+    { src: "/images/plans/site-plan-colour-labelled.jpeg", name: "colour labelled" },
+    { src: "/images/plans/site-plan-colour-annotated.jpeg", name: "annotated" },
+    { src: "/images/plans/site-plan-colour.jpeg", name: "colour" },
+    { src: "/images/plans/site-plan-linework.jpeg", name: "linework" },
+    { src: "/images/plans/site-analysis-zones.jpeg", name: "zones" },
+    { src: "/images/plans/site-analysis-sun-path.jpeg", name: "sun path" },
+  ],
+  "Sketches": [
+    { src: "/images/sketches/dairy-illustration.png", name: "milk can" },
+    { src: "/images/sketches/coop-illustration.png", name: "table setting" },
+    { src: "/images/sketches/timber-illustration.png", name: "timber" },
+    { src: "/images/sketches/hinterland-ornament.png", name: "hinterland" },
+    { src: "/images/sketches/bauhaus-frame.png", name: "bauhaus frame" },
+    { src: "/images/sketches/milk-crate-pavilion-01.jpg", name: "crate pavilion 1" },
+    { src: "/images/sketches/milk-crate-pavilion-02.jpg", name: "crate pavilion 2" },
+  ],
+  "Social Posts (Current)": [
+    { src: "/images/social/01-origin-story.png", name: "01 origin story" },
+    { src: "/images/social/02-event-announcement.png", name: "02 first gathering" },
+    { src: "/images/social/03-shaun-fisher.png", name: "03 shaun fisher" },
+    { src: "/images/social/04-radical-scoops.png", name: "04 radical scoops" },
+    { src: "/images/social/05-zone-garden.png", name: "05 zone garden" },
+    { src: "/images/social/06-zone-art.png", name: "06 zone art" },
+    { src: "/images/social/07-zone-food.png", name: "07 zone food" },
+    { src: "/images/social/08-countdown-7days.png", name: "08 countdown 7d" },
+    { src: "/images/social/09-locals-day.png", name: "09 locals day" },
+    { src: "/images/social/10-save-your-spot.png", name: "10 save your spot" },
+    { src: "/images/social/11-facebook-cover.png", name: "11 facebook cover" },
+    { src: "/images/social/12-story-invite.png", name: "12 story invite" },
+    { src: "/images/social/13-story-shaun.png", name: "13 story shaun" },
+    { src: "/images/social/14-countdown-3days.png", name: "14 countdown 3d" },
+  ],
+  "Graphite Sketches": [
+    { src: "/images/zone-garden-sketch.png", name: "zone garden sketch" },
+    { src: "/images/zone-art-sketch.png", name: "zone art sketch" },
+    { src: "/images/zone-food-sketch.png", name: "zone food sketch" },
+    { src: "/images/sketch-listen.png", name: "gather listen" },
+    { src: "/images/sketch-make.png", name: "gather make" },
+    { src: "/images/sketch-share.png", name: "gather share" },
+    { src: "/images/sketches/01-origin-story.png", name: "sketch 01 origin" },
+    { src: "/images/sketches/02-event-announcement.png", name: "sketch 02 event" },
+    { src: "/images/sketches/03-shaun-fisher-voice.png", name: "sketch 03 shaun" },
+    { src: "/images/sketches/04-barry-voice.png", name: "sketch 04 barry" },
+    { src: "/images/sketches/05-zone-garden.png", name: "sketch 05 garden" },
+    { src: "/images/sketches/06-zone-kitchen.png", name: "sketch 06 kitchen" },
+    { src: "/images/sketches/07-zone-artspace.png", name: "sketch 07 artspace" },
+    { src: "/images/sketches/08-countdown-1week.png", name: "sketch 08 countdown" },
+    { src: "/images/sketches/09-facebook-cover.png", name: "sketch 09 fb cover" },
+    { src: "/images/sketches/10-save-your-spot.png", name: "sketch 10 save spot" },
+  ],
+  "Palette": [
+    { src: "/images/palette/calendula.jpg", name: "calendula" },
+    { src: "/images/palette/lilly-pilly.jpg", name: "lilly pilly" },
+    { src: "/images/palette/rammed-earth.jpg", name: "rammed earth" },
+  ],
+  "Inspiration": [
+    { src: "/images/site-plan/inspiration/accessible-garden.jpeg", name: "accessible garden" },
+    { src: "/images/site-plan/inspiration/crate-cube.jpeg", name: "crate cube" },
+    { src: "/images/site-plan/inspiration/crate-wall.jpeg", name: "crate wall" },
+    { src: "/images/site-plan/inspiration/curved-pavilion.jpeg", name: "curved pavilion" },
+    { src: "/images/site-plan/inspiration/log-climbing-frame.jpeg", name: "log climbing" },
+  ],
+  "Historical Witta": [
+    { src: "/images/witta/history/teutoburg-farm-couple-corn-1899.png", name: "farm 1899" },
+    { src: "/images/witta/history/teutoburg-cheese-making-1899.png", name: "cheese 1899" },
+    { src: "/images/witta/history/teutoburg-children-grapevines-1899.png", name: "children 1899" },
+    { src: "/images/witta/history/teutoburg-man-hoe-1899.png", name: "man hoe 1899" },
+    { src: "/images/witta/history/teutoburg-nothling-cottage-1899.png", name: "cottage 1899" },
+    { src: "/images/witta/history/mary-cairncross-glasshouse-mountains.jpg", name: "glass house mtns" },
+    { src: "/images/witta/history/bullock-team-eudlo-1905.jpg", name: "bullock 1905" },
+    { src: "/images/witta/history/maleny-sawmill-workers.jpg", name: "sawmill workers" },
+    { src: "/images/witta/history/mapleton-tramway-passengers.jpg", name: "tramway" },
+    { src: "/images/witta/history/bunya-pines-witta-1931.png", name: "bunya pines" },
+    { src: "/images/witta/history/witta-towards-conondale-1931.png", name: "witta 1931" },
+  ],
+  "Accommodation": [
+    { src: "/images/accommodation/blue-summit.jpg", name: "blue summit" },
+    { src: "/images/accommodation/jacaranda.jpg", name: "jacaranda" },
+    { src: "/images/accommodation/wattle-gully.jpg", name: "wattle gully" },
+    { src: "/images/accommodation/whispering-valley.jpg", name: "whispering valley" },
+    { src: "/images/accommodation/witta-escape.jpg", name: "witta escape" },
+    { src: "/images/accommodation/zarina.jpg", name: "zarina" },
+  ],
+};
+
+// ============================================================
+// IndexedDB (local cache + usage log)
+// ============================================================
+const DB_NAME = 'HarvestPhotoLibrary';
+let db = null;
+
+function openDB() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(DB_NAME, 2);
+    req.onupgradeneeded = (e) => {
+      const d = e.target.result;
+      if (!d.objectStoreNames.contains('photos')) d.createObjectStore('photos', { keyPath: 'id', autoIncrement: true });
+      if (!d.objectStoreNames.contains('usage')) d.createObjectStore('usage', { keyPath: 'id', autoIncrement: true });
+    };
+    req.onsuccess = (e) => { db = e.target.result; resolve(db); };
+    req.onerror = reject;
+  });
+}
+
+async function saveUsageEntry(entry) {
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction('usage', 'readwrite');
+    tx.objectStore('usage').add(entry).onsuccess = resolve;
+  });
+}
+
+async function getAllUsage() {
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction('usage', 'readonly');
+    tx.objectStore('usage').getAll().onsuccess = (e) => resolve(e.target.result);
+  });
+}
+
+async function clearUsageStore() {
+  return new Promise((resolve) => {
+    db.transaction('usage', 'readwrite').objectStore('usage').clear().onsuccess = resolve;
+  });
+}
+
+// ============================================================
+// SUPABASE UPLOAD
+// ============================================================
+async function supaFetch(path, opts = {}) {
+  const res = await fetch(`${SUPABASE_URL}${path}`, {
+    ...opts,
+    headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}`, ...opts.headers },
+  });
+  return res;
+}
+
+async function uploadToSupabase(file) {
+  const status = document.getElementById('uploadStatus');
+  const ext = file.name.split('.').pop().toLowerCase();
+  const timestamp = Date.now();
+  const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+  const storagePath = `harvest-social/${timestamp}-${safeName}`;
+
+  status.className = 'upload-status uploading';
+  status.textContent = `Uploading ${file.name}...`;
+
+  // 1. Upload to storage
+  const uploadRes = await supaFetch(`/storage/v1/object/${STORAGE_BUCKET}/${storagePath}`, {
+    method: 'POST',
+    headers: { 'Content-Type': file.type },
+    body: file,
+  });
+
+  if (!uploadRes.ok) {
+    const err = await uploadRes.text();
+    status.className = 'upload-status error';
+    status.textContent = `Upload failed: ${err}`;
+    return null;
+  }
+
+  const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/${STORAGE_BUCKET}/${storagePath}`;
+
+  // 2. Get tags
+  const theme = document.getElementById('tagTheme').value;
+  const page = document.getElementById('tagPage').value;
+  const custom = document.getElementById('tagCustom').value.trim();
+  const manualTags = [];
+  if (theme) manualTags.push(`theme:${theme}`);
+  if (page) manualTags.push(`page:${page}`);
+  if (custom) custom.split(',').forEach(t => manualTags.push(t.trim()));
+
+  // 3. Create media_items record
+  const isVideo = file.type.startsWith('video/');
+  const record = {
+    file_url: publicUrl,
+    file_type: file.type,
+    title: file.name.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' '),
+    manual_tags: manualTags,
+    project_slugs: ['the-harvest'],
+    source: 'social-planner',
+    file_size: file.size,
+  };
+
+  const insertRes = await supaFetch('/rest/v1/media_items', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Prefer': 'return=representation' },
+    body: JSON.stringify(record),
+  });
+
+  if (insertRes.ok) {
+    const [item] = await insertRes.json();
+    status.className = 'upload-status success';
+    status.textContent = `Saved: ${file.name} → Supabase (${manualTags.length} tags)`;
+    return { ...item, publicUrl, isVideo };
+  } else {
+    // Storage uploaded but DB record failed — still usable
+    status.className = 'upload-status success';
+    status.textContent = `Uploaded to storage (DB record skipped): ${file.name}`;
+    return { publicUrl, title: file.name, isVideo, file_type: file.type };
+  }
+}
+
+async function loadSupabaseMedia() {
+  // Only load Harvest-tagged media (project_slugs contains 'the-harvest' OR uploaded via social-planner)
+  const res = await supaFetch('/rest/v1/media_items?select=id,title,file_url,file_type,manual_tags,project_slugs,source,created_at&or=(project_slugs.cs.{the-harvest},source.eq.social-planner)&order=created_at.desc&limit=200');
+  if (res.ok) {
+    supabaseMedia = await res.json();
+    renderMediaTable();
+    // Also add Supabase items to photo library sidebar
+    renderPhotoLibrary(document.getElementById('photoSearch').value.toLowerCase().trim());
+  }
+}
+
+// ============================================================
+// MAIN TABS
+// ============================================================
+function switchMainTab(tab) {
+  document.querySelectorAll('.main-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.main-panel').forEach(p => p.classList.remove('active'));
+  document.querySelector(`.main-tab[onclick="switchMainTab('${tab}')"]`).classList.add('active');
+  document.getElementById(`mtab-${tab}`).classList.add('active');
+  if (tab === 'calendar') renderCalendar();
+  if (tab === 'media') renderMediaTable();
+  if (tab === 'publish' && ghlAccounts.length > 0) renderPublishCards();
+}
+
+function switchSideTab(tab) {
+  document.querySelectorAll('.sidebar-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.stab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelector(`.sidebar-tab[onclick="switchSideTab('${tab}')"]`).classList.add('active');
+  document.getElementById(`stab-${tab}`).classList.add('active');
+  if (tab === 'usage') renderUsageLog();
+}
+
+// ============================================================
+// CALENDAR
+// ============================================================
+function renderCalendar() {
+  const container = document.getElementById('calendarView');
+  const months = [
+    { year: 2026, month: 1, label: 'February 2026' },
+    { year: 2026, month: 2, label: 'March 2026' },
+  ];
+
+  let html = '';
+  for (const m of months) {
+    html += `<div class="cal-month"><div class="cal-month-label">${m.label}</div>`;
+    html += '<div class="cal-weekdays">';
+    ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].forEach(d => html += `<div class="cal-weekday">${d}</div>`);
+    html += '</div><div class="cal-days">';
+
+    const firstDay = new Date(m.year, m.month, 1);
+    const lastDay = new Date(m.year, m.month + 1, 0);
+    let startDow = firstDay.getDay(); // 0=Sun
+    startDow = startDow === 0 ? 6 : startDow - 1; // Convert to Mon=0
+
+    for (let i = 0; i < startDow; i++) html += '<div class="cal-day empty"></div>';
+
+    const today = new Date().toISOString().slice(0, 10);
+
+    for (let d = 1; d <= lastDay.getDate(); d++) {
+      const dateStr = `${m.year}-${String(m.month + 1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      const dayPosts = socialPosts.filter(p => p.date === dateStr);
+      const isToday = dateStr === today;
+      const hasPost = dayPosts.length > 0;
+
+      html += `<div class="cal-day${isToday ? ' today' : ''}${hasPost ? ' has-post' : ''}">`;
+      html += `<div class="cal-day-num">${d}</div>`;
+
+      for (const post of dayPosts) {
+        const badgeClass = { IG: 'badge-ig', FB: 'badge-fb', GBP: 'badge-gbp' };
+        html += `<div class="cal-post" onclick="scrollToTile(${post.tile})">`;
+        html += `<div class="cal-post-title">${post.title}</div>`;
+        html += '<div class="cal-post-platforms">';
+        post.platforms.forEach(p => html += `<span class="badge ${badgeClass[p] || ''}">${p}</span>`);
+        html += '</div></div>';
+      }
+
+      html += '</div>';
+    }
+
+    html += '</div></div>';
+  }
+
+  container.innerHTML = html;
+}
+
+function scrollToTile(index) {
+  if (index === null) return;
+  switchMainTab('tiles');
+  setTimeout(() => {
+    const wrapper = document.querySelector(`[data-tile="${index}"]`);
+    if (wrapper) {
+      wrapper.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      selectTile(index);
+    }
+  }, 100);
+}
+
+// ============================================================
+// MEDIA TABLE
+// ============================================================
+let mediaViewMode = 'grid';
+
+function setMediaView(mode) {
+  mediaViewMode = mode;
+  document.getElementById('viewGrid').classList.toggle('active', mode === 'grid');
+  document.getElementById('viewTable').classList.toggle('active', mode === 'table');
+  document.getElementById('mediaGrid').style.display = mode === 'grid' ? 'grid' : 'none';
+  document.getElementById('mediaTableWrap').style.display = mode === 'table' ? 'table' : 'none';
+  renderMediaTable();
+}
+
+function buildMediaList() {
+  let allMedia = [];
+  for (const [group, photos] of Object.entries(photoLibrary)) {
+    for (const p of photos) {
+      const isVideo = p.type === 'video' || /\.(mp4|mov|webm)$/i.test(p.src);
+      allMedia.push({ src: p.src, name: p.name, type: isVideo ? 'video' : 'photo', tags: [group], source: 'local', used: Object.values(tileAssignments).includes(p.src), supaId: null });
+    }
+  }
+  for (const item of supabaseMedia) {
+    const isVideo = item.file_type?.startsWith('video/');
+    allMedia.push({ src: item.file_url, name: item.title || 'Untitled', type: isVideo ? 'video' : 'photo', tags: item.manual_tags || [], source: 'supabase', used: Object.values(tileAssignments).includes(item.file_url), supaId: item.id });
+  }
+  for (const item of uploadedThisSession) {
+    allMedia.push({ src: item.publicUrl, name: item.title || 'Upload', type: item.isVideo ? 'video' : 'photo', tags: ['uploaded'], source: 'supabase', used: Object.values(tileAssignments).includes(item.publicUrl), supaId: item.id || null });
+  }
+  const seen = new Set();
+  return allMedia.filter(m => { if (seen.has(m.src)) return false; seen.add(m.src); return true; });
+}
+
+function populateTagFilter(allMedia) {
+  const tagSet = new Set();
+  allMedia.forEach(m => m.tags.forEach(t => tagSet.add(t)));
+  const sel = document.getElementById('mediaFilterTag');
+  const current = sel.value;
+  sel.innerHTML = '<option value="all">All Tags</option>';
+  [...tagSet].sort().forEach(t => {
+    sel.innerHTML += `<option value="${t}"${current === t ? ' selected' : ''}>${t}</option>`;
+  });
+}
+
+function renderMediaTable() {
+  const typeFilter = document.getElementById('mediaFilterType').value;
+  const tagFilter = document.getElementById('mediaFilterTag').value;
+  const search = document.getElementById('mediaSearch').value.toLowerCase().trim();
+
+  let allMedia = buildMediaList();
+  populateTagFilter(allMedia);
+
+  // Filter
+  if (typeFilter !== 'all') allMedia = allMedia.filter(m => m.type === typeFilter);
+  if (tagFilter !== 'all') allMedia = allMedia.filter(m => m.tags.includes(tagFilter));
+  if (search) allMedia = allMedia.filter(m => m.name.toLowerCase().includes(search) || m.tags.some(t => t.toLowerCase().includes(search)));
+
+  if (mediaViewMode === 'grid') {
+    renderMediaGrid(allMedia);
+  } else {
+    renderMediaTableRows(allMedia);
+  }
+}
+
+function renderMediaGrid(allMedia) {
+  const grid = document.getElementById('mediaGrid');
+  if (!allMedia.length) {
+    grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:#444; padding:3rem;">No media matches filters</div>';
+    return;
+  }
+  let html = '';
+  for (const m of allMedia) {
+    const thumbEl = m.type === 'video'
+      ? `<video class="media-card-thumb" src="${m.src}" muted preload="metadata"></video>`
+      : `<img class="media-card-thumb" src="${m.src}" loading="lazy">`;
+    const tagsHtml = m.tags.map(t => `<span class="tag">${t}</span>`).join('');
+    const usedBadge = m.used ? '<span class="media-card-type" style="background:var(--canopy);">In Use</span>' : '';
+    const typeBadge = `<span class="media-card-type">${m.type === 'video' ? 'Video' : 'Photo'}</span>`;
+    const sourceLabel = `<span class="media-card-source">${m.source}</span>`;
+    const actionsHtml = m.supaId
+      ? `<div class="media-card-actions">
+          <button class="btn-sm btn-tag" onclick="event.stopPropagation();openTagEditor(${m.supaId}, '${m.name.replace(/'/g,"\\'")}', ${JSON.stringify(m.tags).replace(/"/g,'&quot;')})">Tags</button>
+          <button class="btn-sm btn-del" onclick="event.stopPropagation();deleteMedia(${m.supaId}, '${m.name.replace(/'/g,"\\'")}')">Delete</button>
+        </div>`
+      : '<div class="media-card-actions"><span style="color:#555; font-size:0.55rem;">local file</span></div>';
+
+    html += `<div class="media-card" onclick="window.open('${m.src}','_blank')">
+      ${thumbEl}
+      ${typeBadge}${usedBadge}${sourceLabel}
+      <div class="media-card-body">
+        <div class="media-card-name">${m.name}</div>
+        <div class="media-card-tags">${tagsHtml}</div>
+        ${actionsHtml}
+      </div>
+    </div>`;
+  }
+  grid.innerHTML = html;
+}
+
+function renderMediaTableRows(allMedia) {
+  const tbody = document.getElementById('mediaTableBody');
+  let html = '';
+  for (const m of allMedia) {
+    const thumbEl = m.type === 'video'
+      ? `<video class="thumb" src="${m.src}" muted preload="metadata"></video>`
+      : `<img class="thumb" src="${m.src}" loading="lazy">`;
+    const typeBadge = m.type === 'video' ? '<span class="type-badge type-video">Video</span>' : '<span class="type-badge type-photo">Photo</span>';
+    const tagsHtml = m.tags.map(t => `<span class="tag">${t}</span>`).join('');
+    const usedHtml = m.used ? '<span style="color:var(--canopy); font-weight:700; font-size:0.65rem;">In Use</span>' : '<span style="color:#444; font-size:0.65rem;">—</span>';
+
+    const actionsHtml = m.supaId
+      ? `<div class="actions">
+          <button class="btn-sm btn-tag" onclick="openTagEditor(${m.supaId}, '${m.name.replace(/'/g,"\\'")}', ${JSON.stringify(m.tags).replace(/"/g,'&quot;')})">Tags</button>
+          <button class="btn-sm btn-del" onclick="deleteMedia(${m.supaId}, '${m.name.replace(/'/g,"\\'")}')">Del</button>
+        </div>`
+      : '<span style="color:#444; font-size:0.55rem;">local file</span>';
+
+    html += `<tr>
+      <td>${thumbEl}</td>
+      <td style="font-size:0.75rem;">${m.name}</td>
+      <td>${typeBadge}</td>
+      <td><div class="tags">${tagsHtml}</div></td>
+      <td>${usedHtml}</td>
+      <td style="font-size:0.6rem; color:#555;">${m.source}</td>
+      <td>${actionsHtml}</td>
+    </tr>`;
+  }
+  tbody.innerHTML = html || '<tr><td colspan="7" style="text-align:center; color:#444; padding:2rem;">No Harvest media yet — upload photos in the sidebar or drag & drop onto the page</td></tr>';
+}
+
+// ============================================================
+// PHOTO LIBRARY (sidebar)
+// ============================================================
+function renderPhotoLibrary(filter = '') {
+  const container = document.getElementById('photoLibrary');
+  let html = '';
+  let totalCount = 0;
+  const usedSrcs = new Set(Object.values(tileAssignments));
+
+  for (const [group, photos] of Object.entries(photoLibrary)) {
+    const filtered = photos.filter(p => !filter || p.name.toLowerCase().includes(filter) || group.toLowerCase().includes(filter));
+    if (filtered.length === 0) continue;
+    totalCount += filtered.length;
+
+    html += `<div class="photo-group${filtered.length > 9 ? ' collapsed' : ''}" data-group="${group}">`;
+    html += `<div class="photo-group-label" onclick="toggleGroup(this)">${group} <span class="count">${filtered.length}</span> <span class="toggle">&#9660;</span></div>`;
+    html += '<div class="photo-grid">';
+    for (const photo of filtered) {
+      const usedClass = usedSrcs.has(photo.src) ? ' used' : '';
+      const isVideo = photo.type === 'video' || /\.(mp4|mov|webm)$/i.test(photo.src);
+      const videoBadge = isVideo ? '<span class="video-badge">VID</span>' : '';
+      const mediaEl = isVideo
+        ? `<video src="${photo.src}" muted preload="metadata"></video>`
+        : `<img src="${photo.src}" loading="lazy">`;
+      html += `<div class="photo-thumb${usedClass}" onclick="swapPhoto('${photo.src}', '${photo.name.replace(/'/g, "\\'")}')">
+        ${mediaEl}${videoBadge}<div class="photo-name">${photo.name}</div>
+      </div>`;
+    }
+    html += '</div></div>';
+  }
+
+  // Supabase media as a group
+  if (supabaseMedia.length > 0) {
+    const filtered = supabaseMedia.filter(m => !filter || (m.title || '').toLowerCase().includes(filter));
+    if (filtered.length > 0) {
+      totalCount += filtered.length;
+      html += `<div class="photo-group collapsed"><div class="photo-group-label" onclick="toggleGroup(this)">Supabase Library <span class="count">${filtered.length}</span> <span class="toggle">&#9660;</span></div><div class="photo-grid">`;
+      for (const m of filtered) {
+        const isVid = m.file_type?.startsWith('video/');
+        const el = isVid ? `<video src="${m.file_url}" muted preload="metadata"></video>` : `<img src="${m.file_url}" loading="lazy">`;
+        const badge = isVid ? '<span class="video-badge">VID</span>' : '';
+        html += `<div class="photo-thumb" onclick="swapPhoto('${m.file_url}', '${(m.title||'').replace(/'/g, "\\'")}')">
+          ${el}${badge}<div class="photo-name">${m.title || 'untitled'}</div></div>`;
+      }
+      html += '</div></div>';
+    }
+  }
+
+  // Uploaded this session
+  if (uploadedThisSession.length > 0) {
+    totalCount += uploadedThisSession.length;
+    html += `<div class="photo-group"><div class="photo-group-label" onclick="toggleGroup(this)">Uploaded This Session <span class="count">${uploadedThisSession.length}</span> <span class="toggle">&#9660;</span></div><div class="photo-grid">`;
+    for (const m of uploadedThisSession) {
+      const el = m.isVideo ? `<video src="${m.publicUrl}" muted preload="metadata"></video>` : `<img src="${m.publicUrl}" loading="lazy">`;
+      const badge = m.isVideo ? '<span class="video-badge">VID</span>' : '';
+      html += `<div class="photo-thumb" onclick="swapPhoto('${m.publicUrl}', '${(m.title||'').replace(/'/g, "\\'")}')">
+        ${el}${badge}<div class="photo-name">${m.title || 'upload'}</div></div>`;
+    }
+    html += '</div></div>';
+  }
+
+  container.innerHTML = html || '<p style="color:#444; text-align:center; padding:2rem;">No photos match</p>';
+  document.getElementById('totalPhotos').textContent = totalCount;
+  document.getElementById('usedPhotos').textContent = usedSrcs.size;
+}
+
+function toggleGroup(label) { label.parentElement.classList.toggle('collapsed'); }
+function filterPhotos() { renderPhotoLibrary(document.getElementById('photoSearch').value.toLowerCase().trim()); }
+
+// ============================================================
+// TILE SWAP
+// ============================================================
+function selectTile(index) {
+  document.querySelectorAll('.tile-wrapper').forEach(w => w.classList.remove('active'));
+  const wrapper = document.querySelector(`[data-tile="${index}"]`);
+  if (wrapper) {
+    wrapper.classList.add('active');
+    selectedTile = index;
+    document.getElementById('selectedInfo').style.display = 'block';
+    document.getElementById('selectedName').textContent = tileNames[index] || `Tile ${index + 1}`;
+    switchSideTab('photos');
+  }
+}
+
+async function swapPhoto(src, name) {
+  if (selectedTile === null) { alert('Click a tile first, then click a photo to swap.'); return; }
+  const isVideo = /\.(mp4|mov|webm)$/i.test(src) || src.startsWith('data:video');
+  const existing = document.getElementById(`tile-img-${selectedTile}`);
+  const tile = existing ? existing.parentElement : null;
+  if (!existing || !tile) return;
+
+  existing.style.opacity = '0';
+  setTimeout(() => {
+    const oldBadge = tile.querySelector('.media-type-badge');
+    if (oldBadge) oldBadge.remove();
+
+    if (isVideo) {
+      const video = document.createElement('video');
+      video.id = `tile-img-${selectedTile}`;
+      video.src = src;
+      video.autoplay = true; video.loop = true; video.muted = true; video.playsInline = true;
+      Object.assign(video.style, { width:'100%', height:'100%', objectFit:'cover', display:'block', opacity:'1' });
+      existing.replaceWith(video);
+      const badge = document.createElement('div');
+      badge.className = 'media-type-badge'; badge.textContent = 'VIDEO';
+      tile.insertBefore(badge, tile.querySelector('.overlay'));
+    } else if (existing.tagName === 'VIDEO') {
+      const img = document.createElement('img');
+      img.id = `tile-img-${selectedTile}`;
+      img.src = src;
+      Object.assign(img.style, { width:'100%', height:'100%', objectFit:'cover', display:'block', opacity:'1' });
+      existing.replaceWith(img);
+    } else {
+      existing.src = src; existing.style.opacity = '1';
+    }
+  }, 200);
+
+  tileAssignments[selectedTile] = src;
+  const label = isVideo ? `${name || src.split('/').pop()} (video)` : (name || src.split('/').pop());
+  document.getElementById(`tile-info-${selectedTile}`).textContent = label;
+
+  const entry = { tile: selectedTile, tileName: tileNames[selectedTile], photoSrc: src, photoName: label, timestamp: new Date().toISOString() };
+  usageLog.push(entry);
+  if (db) await saveUsageEntry(entry);
+  renderPhotoLibrary(document.getElementById('photoSearch').value.toLowerCase().trim());
+}
+
+// ============================================================
+// DRAG & DROP UPLOAD
+// ============================================================
+function setupDropZone() {
+  const zone = document.getElementById('dropZone');
+  const input = document.getElementById('fileInput');
+  zone.addEventListener('click', () => input.click());
+  zone.addEventListener('dragover', (e) => { e.preventDefault(); zone.classList.add('dragover'); });
+  zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+  zone.addEventListener('drop', async (e) => { e.preventDefault(); zone.classList.remove('dragover'); await handleFiles(e.dataTransfer.files); });
+  input.addEventListener('change', async (e) => { await handleFiles(e.target.files); input.value = ''; });
+
+  document.body.addEventListener('dragover', (e) => { e.preventDefault(); switchSideTab('upload'); zone.classList.add('dragover'); });
+  document.body.addEventListener('drop', async (e) => { e.preventDefault(); zone.classList.remove('dragover'); await handleFiles(e.dataTransfer.files); });
+}
+
+async function handleFiles(files) {
+  for (const file of files) {
+    if (!file.type.startsWith('image/') && !file.type.startsWith('video/')) continue;
+    const result = await uploadToSupabase(file);
+    if (result) uploadedThisSession.push(result);
+  }
+  renderPhotoLibrary(document.getElementById('photoSearch').value.toLowerCase().trim());
+}
+
+// ============================================================
+// USAGE LOG
+// ============================================================
+async function renderUsageLog() {
+  const container = document.getElementById('usageLog');
+  const entries = db ? await getAllUsage() : usageLog;
+  if (entries.length === 0) { container.innerHTML = '<p class="no-usage">No swaps yet.</p>'; return; }
+
+  const sorted = [...entries].reverse();
+  let html = '';
+  for (const e of sorted) {
+    const isVid = /\.(mp4|mov|webm)$/i.test(e.photoSrc);
+    const thumbEl = isVid ? `<video src="${e.photoSrc}" muted preload="metadata"></video>` : `<img src="${e.photoSrc}" loading="lazy">`;
+    const time = new Date(e.timestamp).toLocaleString('en-AU', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' });
+    html += `<div class="usage-entry">${thumbEl}<div class="info">
+      <div class="tile-name">${e.tileName || 'Tile ' + (e.tile+1)}</div>
+      <div class="photo-path">${e.photoName || e.photoSrc.split('/').pop()}</div>
+      <div class="timestamp">${time}</div>
+    </div></div>`;
+  }
+  container.innerHTML = html;
+}
+
+function exportUsageLog() {
+  getAllUsage().then(entries => {
+    const blob = new Blob([JSON.stringify(entries, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+    a.download = `harvest-usage-${new Date().toISOString().slice(0,10)}.json`; a.click();
+  });
+}
+
+function exportTileAssignments() {
+  const assignments = {};
+  for (let i = 0; i < tileNames.length; i++) {
+    const el = document.getElementById(`tile-img-${i}`);
+    assignments[tileNames[i]] = { photo: el?.src || null, info: document.getElementById(`tile-info-${i}`)?.textContent || '' };
+  }
+  const blob = new Blob([JSON.stringify(assignments, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = `harvest-tiles-${new Date().toISOString().slice(0,10)}.json`; a.click();
+}
+
+// ============================================================
+// COPY EDITOR (edit tile text in-place)
+// ============================================================
+function openCopyEditor(tileIdx) {
+  const wrapper = document.querySelector(`.tile-wrapper[data-tile="${tileIdx}"]`);
+  if (!wrapper) return;
+  const overlay = wrapper.querySelector('.overlay');
+  const headlineEl = overlay?.querySelector('.headline');
+  const subtextEls = overlay?.querySelectorAll('.subtext') || [];
+  const brandingEl = overlay?.querySelector('.branding');
+  const captionEl = wrapper.querySelector('.tile-caption');
+
+  // Gather subtext — may have multiple .subtext elements
+  const subtexts = Array.from(subtextEls).map(el => el.innerHTML.replace(/<br\s*\/?>/gi, '\n').replace(/&bull;/g, '\u2022')).join('\n---\n');
+
+  const headlineText = headlineEl ? headlineEl.innerHTML.replace(/<br\s*\/?>/gi, '\n') : '';
+  const brandingText = brandingEl ? brandingEl.textContent : '';
+  const captionText = captionEl ? captionEl.textContent : '';
+
+  const modal = document.createElement('div');
+  modal.className = 'copy-modal';
+  modal.innerHTML = `<div class="copy-modal-content">
+    <h3>Edit Copy — ${tileNames[tileIdx]}</h3>
+    <div class="copy-field">
+      <label>Headline</label>
+      <textarea id="copyHeadline" rows="2">${headlineText}</textarea>
+    </div>
+    <div class="copy-field">
+      <label>Subtext <span style="color:#555; font-weight:400; font-size:0.6rem;">(separate blocks with ---)</span></label>
+      <textarea id="copySubtext" rows="4">${subtexts}</textarea>
+    </div>
+    <div class="copy-field">
+      <label>Branding Line</label>
+      <input type="text" id="copyBranding" value="${brandingText.replace(/"/g, '&quot;')}">
+    </div>
+    <div class="copy-field">
+      <label>Caption (appears below tile)</label>
+      <textarea id="copyCaption" rows="2">${captionText}</textarea>
+    </div>
+    <div class="copy-modal-actions">
+      <button class="cancel" onclick="this.closest('.copy-modal').remove()">Cancel</button>
+      <button class="save" onclick="saveCopyEdit(${tileIdx})">Save</button>
+    </div>
+  </div>`;
+  document.body.appendChild(modal);
+  modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
+}
+
+function saveCopyEdit(tileIdx) {
+  const wrapper = document.querySelector(`.tile-wrapper[data-tile="${tileIdx}"]`);
+  if (!wrapper) return;
+  const overlay = wrapper.querySelector('.overlay');
+  const headlineEl = overlay?.querySelector('.headline');
+  const subtextEls = overlay?.querySelectorAll('.subtext') || [];
+  const brandingEl = overlay?.querySelector('.branding');
+  const captionEl = wrapper.querySelector('.tile-caption');
+
+  const headlineVal = document.getElementById('copyHeadline').value;
+  const subtextVal = document.getElementById('copySubtext').value;
+  const brandingVal = document.getElementById('copyBranding').value;
+  const captionVal = document.getElementById('copyCaption').value;
+
+  // Update headline
+  if (headlineEl) headlineEl.innerHTML = headlineVal.replace(/\n/g, '<br>');
+
+  // Update subtexts — split by --- separator
+  const subtextBlocks = subtextVal.split(/\n---\n/).map(s => s.trim()).filter(Boolean);
+  const subtextArr = Array.from(subtextEls);
+  subtextArr.forEach((el, i) => {
+    if (i < subtextBlocks.length) {
+      el.innerHTML = subtextBlocks[i].replace(/\n/g, '<br>').replace(/\u2022/g, '&bull;');
+    }
+  });
+
+  // Update branding
+  if (brandingEl) brandingEl.textContent = brandingVal;
+
+  // Update caption
+  if (captionEl) captionEl.textContent = captionVal;
+
+  document.querySelector('.copy-modal')?.remove();
+}
+
+// ============================================================
+// TAG EDITOR & DELETE (Supabase media management)
+// ============================================================
+function openTagEditor(id, name, currentTags) {
+  const tags = currentTags || [];
+  const themeTag = tags.find(t => t.startsWith('theme:'))?.replace('theme:', '') || '';
+  const pageTag = tags.find(t => t.startsWith('page:'))?.replace('page:', '') || '';
+  const customTags = tags.filter(t => !t.startsWith('theme:') && !t.startsWith('page:')).join(', ');
+
+  const modal = document.createElement('div');
+  modal.className = 'tag-modal';
+  modal.innerHTML = `<div class="tag-modal-content">
+    <h3>Edit Tags — ${name}</h3>
+    <div class="tag-row">
+      <label>Theme</label>
+      <select id="editTheme">
+        <option value="">— none —</option>
+        <option value="eat"${themeTag==='eat'?' selected':''}>Eat</option>
+        <option value="grow"${themeTag==='grow'?' selected':''}>Grow</option>
+        <option value="make"${themeTag==='make'?' selected':''}>Make</option>
+        <option value="gather"${themeTag==='gather'?' selected':''}>Gather</option>
+      </select>
+    </div>
+    <div class="tag-row">
+      <label>Page</label>
+      <select id="editPage">
+        <option value="">— none —</option>
+        <option value="home"${pageTag==='home'?' selected':''}>Home</option>
+        <option value="journey"${pageTag==='journey'?' selected':''}>Journey</option>
+        <option value="stories"${pageTag==='stories'?' selected':''}>Stories</option>
+        <option value="explore"${pageTag==='explore'?' selected':''}>Explore</option>
+        <option value="gather"${pageTag==='gather'?' selected':''}>Gather</option>
+      </select>
+    </div>
+    <div class="tag-row">
+      <label>Custom</label>
+      <input type="text" id="editCustom" value="${customTags}" placeholder="e.g. barry, oysters, aerial">
+    </div>
+    <div class="tag-modal-actions">
+      <button class="cancel" onclick="this.closest('.tag-modal').remove()">Cancel</button>
+      <button class="save" onclick="saveTagEdit(${id})">Save Tags</button>
+    </div>
+  </div>`;
+  document.body.appendChild(modal);
+  modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
+}
+
+async function saveTagEdit(id) {
+  const theme = document.getElementById('editTheme').value;
+  const page = document.getElementById('editPage').value;
+  const custom = document.getElementById('editCustom').value.trim();
+  const newTags = [];
+  if (theme) newTags.push(`theme:${theme}`);
+  if (page) newTags.push(`page:${page}`);
+  if (custom) custom.split(',').forEach(t => { if (t.trim()) newTags.push(t.trim()); });
+
+  const res = await supaFetch(`/rest/v1/media_items?id=eq.${id}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+    body: JSON.stringify({ manual_tags: newTags }),
+  });
+
+  document.querySelector('.tag-modal')?.remove();
+  if (res.ok) {
+    await loadSupabaseMedia();
+  } else {
+    alert('Failed to update tags: ' + await res.text());
+  }
+}
+
+async function deleteMedia(id, name) {
+  if (!confirm(`Delete "${name}" from the Harvest gallery?\n\nThis removes the database record. The file stays in storage.`)) return;
+
+  const res = await supaFetch(`/rest/v1/media_items?id=eq.${id}`, {
+    method: 'DELETE',
+    headers: { 'Prefer': 'return=minimal' },
+  });
+
+  if (res.ok) {
+    await loadSupabaseMedia();
+  } else {
+    alert('Failed to delete: ' + await res.text());
+  }
+}
+
+// ============================================================
+// PUBLISH TAB — GHL Social Planner
+// ============================================================
+// When served from the Harvest dev server (any port), use relative path; from external python server, try common dev ports
+const TRPC_BASE = (() => {
+  if (location.pathname.includes('social-tile-mockups') && !location.origin.includes('vercel')) {
+    return '/api/trpc'; // Vite dev server serves this file and proxies tRPC
+  }
+  return '/api/trpc';
+})();
+let ghlAccounts = [];
+
+async function trpcQuery(path) {
+  const res = await fetch(`${TRPC_BASE}/${path}`, { headers: { 'Content-Type': 'application/json' } });
+  if (!res.ok) throw new Error(`tRPC error: ${res.status}`);
+  const data = await res.json();
+  return data.result?.data?.json ?? data.result?.data ?? data;
+}
+
+async function trpcMutation(path, input) {
+  const res = await fetch(`${TRPC_BASE}/${path}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ json: input }),
+  });
+  if (!res.ok) {
+    const errText = await res.text().catch(() => '');
+    throw new Error(`tRPC error: ${res.status} — ${errText}`);
+  }
+  const data = await res.json();
+  return data.result?.data?.json ?? data.result?.data ?? data;
+}
+
+async function checkGHLAccounts() {
+  const statusEl = document.getElementById('ghlStatus');
+  const accountsEl = document.getElementById('ghlAccounts');
+  statusEl.innerHTML = '<div style="color:var(--golden-hour); font-size:0.75rem;">Checking connected accounts...</div>';
+  accountsEl.innerHTML = '';
+
+  try {
+    const result = await trpcQuery('social.accounts');
+    if (!result.success) {
+      statusEl.innerHTML = `<div style="color:var(--crane); font-size:0.75rem;">Error: ${result.error || 'Could not reach GHL API'}</div>
+        <div style="color:#555; font-size:0.65rem; margin-top:0.5rem;">Check that Social Planner API scopes are enabled — see setup guide below.</div>`;
+      return;
+    }
+
+    ghlAccounts = result.accounts || [];
+    if (ghlAccounts.length === 0) {
+      statusEl.innerHTML = `<div style="color:var(--calendula); font-size:0.75rem;">No social accounts connected yet.</div>
+        <div style="color:#555; font-size:0.65rem; margin-top:0.5rem;">Connect accounts in GHL → Marketing → Social Planner, and enable API scopes. See guide below.</div>`;
+      return;
+    }
+
+    statusEl.innerHTML = `<div style="color:var(--canopy); font-size:0.75rem; font-weight:700;">${ghlAccounts.length} account${ghlAccounts.length !== 1 ? 's' : ''} connected</div>`;
+
+    const platformIcons = { facebook: 'FB', instagram: 'IG', google: 'GBP', linkedin: 'LI', youtube: 'YT' };
+    const platformColors = { facebook: '#1877F2', instagram: '#E1306C', google: '#4285F4', linkedin: '#0A66C2', youtube: '#FF0000' };
+
+    accountsEl.innerHTML = ghlAccounts.map(acc => `
+      <div style="background:#2a2a2a; border-radius:8px; padding:0.75rem; display:flex; align-items:center; gap:0.75rem;">
+        <div style="width:36px; height:36px; border-radius:50%; background:${platformColors[acc.platform] || '#555'}; display:flex; align-items:center; justify-content:center; font-size:0.65rem; font-weight:900; color:white; flex-shrink:0;">${platformIcons[acc.platform] || '?'}</div>
+        <div>
+          <div style="font-size:0.75rem; font-weight:700; color:var(--milk);">${acc.name}</div>
+          <div style="font-size:0.6rem; color:#666; text-transform:capitalize;">${acc.platform}${acc.type ? ' · ' + acc.type : ''}</div>
+        </div>
+      </div>
+    `).join('');
+
+    renderPublishCards();
+    loadPostQueue();
+  } catch (err) {
+    statusEl.innerHTML = `<div style="color:var(--crane); font-size:0.75rem;">Connection failed: ${err.message}</div>
+      <div style="color:#555; font-size:0.65rem; margin-top:0.5rem;">Make sure the Harvest dev server is running on port 3000.</div>`;
+  }
+}
+
+function togglePlatBtn(btn) {
+  btn.classList.toggle('active');
+}
+
+function renderPublishCards() {
+  const container = document.getElementById('publishCards');
+  const platformIcons = { facebook: 'FB', instagram: 'IG', google: 'GBP', linkedin: 'LI', youtube: 'YT' };
+
+  let html = '';
+  for (let i = 0; i < tileNames.length; i++) {
+    const post = socialPosts.find(p => p.tile === i);
+    const tileEl = document.getElementById(`tile-img-${i}`);
+    const thumbSrc = tileEl?.src || '';
+    const suggestedDate = post?.date || '';
+    const suggestedPlatforms = post?.platforms || ['IG', 'FB'];
+
+    // Map calendar platform codes to GHL platform names
+    const platMap = { IG: 'instagram', FB: 'facebook', GBP: 'google', LI: 'linkedin', YT: 'youtube' };
+
+    html += `<div style="background:#222; border-radius:8px; padding:1rem; margin-bottom:0.75rem; display:grid; grid-template-columns:80px 1fr; gap:1rem; align-items:start;" id="pub-card-${i}">
+      <div style="width:80px; height:80px; border-radius:4px; overflow:hidden; background:#333;">
+        ${thumbSrc ? `<img src="${thumbSrc}" style="width:100%; height:100%; object-fit:cover;">` : `<div style="display:flex; align-items:center; justify-content:center; height:100%; font-size:0.6rem; color:#555;">No photo</div>`}
+      </div>
+      <div>
+        <div style="font-size:0.8rem; font-weight:700; color:var(--milk); margin-bottom:0.5rem;">${tileNames[i]}</div>
+        <div style="display:flex; gap:0.35rem; flex-wrap:wrap; margin-bottom:0.5rem;">
+          ${ghlAccounts.map(acc => {
+            const code = platformIcons[acc.platform] || '?';
+            const isDefault = suggestedPlatforms.includes(code);
+            return `<button class="pub-plat-btn${isDefault ? ' active' : ''}" data-tile="${i}" data-account-id="${acc.id}" data-platform="${acc.platform}" onclick="togglePlatBtn(this)">${code} · ${acc.name.length > 12 ? acc.name.slice(0, 12) + '…' : acc.name}</button>`;
+          }).join('')}
+        </div>
+        <div style="display:flex; gap:0.5rem; align-items:center;">
+          <input type="date" id="pub-date-${i}" value="${suggestedDate}" style="background:#333; border:1px solid #444; border-radius:4px; padding:0.25rem 0.4rem; color:var(--milk); font-size:0.65rem; font-family:inherit;">
+          <input type="time" id="pub-time-${i}" value="09:00" style="background:#333; border:1px solid #444; border-radius:4px; padding:0.25rem 0.4rem; color:var(--milk); font-size:0.65rem; font-family:inherit;">
+          <button onclick="scheduleToGHL(${i})" style="background:var(--canopy); color:white; border:none; padding:0.3rem 0.6rem; border-radius:4px; font-size:0.6rem; font-weight:700; cursor:pointer; font-family:inherit; white-space:nowrap;">Schedule</button>
+          <button onclick="draftToGHL(${i})" style="background:#555; color:white; border:none; padding:0.3rem 0.6rem; border-radius:4px; font-size:0.6rem; font-weight:700; cursor:pointer; font-family:inherit; white-space:nowrap;">Draft</button>
+        </div>
+      </div>
+    </div>`;
+  }
+  container.innerHTML = html;
+}
+
+function getTileCaption(index) {
+  const wrapper = document.querySelector(`[data-tile="${index}"]`);
+  if (!wrapper) return tileNames[index];
+  const caption = wrapper.querySelector('.tile-caption');
+  return caption?.textContent || tileNames[index];
+}
+
+async function scheduleToGHL(tileIndex) {
+  const dateVal = document.getElementById(`pub-date-${tileIndex}`).value;
+  const timeVal = document.getElementById(`pub-time-${tileIndex}`).value;
+  if (!dateVal) { alert('Pick a date first.'); return; }
+
+  const selectedBtns = document.querySelectorAll(`#pub-card-${tileIndex} .pub-plat-btn.active`);
+  const accountIds = [...selectedBtns].map(b => b.dataset.accountId);
+  if (accountIds.length === 0) { alert('Select at least one platform.'); return; }
+
+  const scheduledAt = new Date(`${dateVal}T${timeVal || '09:00'}:00+10:00`).toISOString();
+  const caption = getTileCaption(tileIndex);
+  const tileEl = document.getElementById(`tile-img-${tileIndex}`);
+  const mediaUrls = tileEl?.src ? [tileEl.src] : [];
+
+  const post = socialPosts.find(p => p.tile === tileIndex);
+  const link = post?.link ? `\n\ntheharvestwitta.com.au${post.link}?utm_source=social&utm_medium=social&utm_campaign=first-gathering&utm_content=post-${tileIndex + 1}` : '';
+
+  try {
+    const result = await trpcMutation('social.post', {
+      summary: caption + link,
+      accountIds,
+      mediaUrls: mediaUrls.length ? mediaUrls : undefined,
+      scheduledAt,
+    });
+
+    if (result.success) {
+      alert(`Scheduled! Post ID: ${result.postId}`);
+      loadPostQueue();
+    } else {
+      alert(`Failed: ${result.error}`);
+    }
+  } catch (err) {
+    alert(`Error: ${err.message}`);
+  }
+}
+
+async function draftToGHL(tileIndex) {
+  const selectedBtns = document.querySelectorAll(`#pub-card-${tileIndex} .pub-plat-btn.active`);
+  const accountIds = [...selectedBtns].map(b => b.dataset.accountId);
+  if (accountIds.length === 0) { alert('Select at least one platform.'); return; }
+
+  const caption = getTileCaption(tileIndex);
+  const tileEl = document.getElementById(`tile-img-${tileIndex}`);
+  const mediaUrls = tileEl?.src ? [tileEl.src] : [];
+
+  const post = socialPosts.find(p => p.tile === tileIndex);
+  const link = post?.link ? `\n\ntheharvestwitta.com.au${post.link}?utm_source=social&utm_medium=social&utm_campaign=first-gathering&utm_content=post-${tileIndex + 1}` : '';
+
+  try {
+    const result = await trpcMutation('social.post', {
+      summary: caption + link,
+      accountIds,
+      mediaUrls: mediaUrls.length ? mediaUrls : undefined,
+    });
+
+    if (result.success) {
+      alert(`Draft saved! Post ID: ${result.postId}`);
+      loadPostQueue();
+    } else {
+      alert(`Failed: ${result.error}`);
+    }
+  } catch (err) {
+    alert(`Error: ${err.message}`);
+  }
+}
+
+async function loadPostQueue() {
+  const container = document.getElementById('publishQueue');
+  try {
+    const result = await trpcQuery('social.list');
+    if (!result.success || !result.posts?.length) {
+      container.innerHTML = '<div style="font-size:0.7rem; color:#555;">No posts in queue yet. Schedule tiles above to see them here.</div>';
+      return;
+    }
+
+    const statusColors = { draft: '#666', scheduled: 'var(--workshirt)', published: 'var(--canopy)', failed: 'var(--crane)' };
+
+    container.innerHTML = result.posts.map(p => {
+      const st = p.status || 'draft';
+      const when = p.scheduledAt ? new Date(p.scheduledAt).toLocaleString('en-AU', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' }) : 'No date';
+      const summary = (p.summary || '').slice(0, 80) + ((p.summary || '').length > 80 ? '…' : '');
+      return `<div style="background:#2a2a2a; border-radius:6px; padding:0.75rem; margin-bottom:0.5rem; display:flex; justify-content:space-between; align-items:center; border-left:3px solid ${statusColors[st] || '#444'};">
+        <div>
+          <div style="font-size:0.7rem; color:var(--milk); margin-bottom:0.2rem;">${summary}</div>
+          <div style="font-size:0.6rem; color:#555;">${when}</div>
+        </div>
+        <span style="font-size:0.55rem; font-weight:700; text-transform:uppercase; padding:0.15rem 0.4rem; border-radius:3px; background:${statusColors[st]}22; color:${statusColors[st]}; letter-spacing:0.05em;">${st}</span>
+      </div>`;
+    }).join('');
+  } catch (err) {
+    container.innerHTML = `<div style="font-size:0.7rem; color:var(--crane);">Could not load queue: ${err.message}</div>`;
+  }
+}
+
+// ============================================================
+// INIT
+// ============================================================
+async function init() {
+  await openDB();
+  usageLog = await getAllUsage();
+  renderPhotoLibrary();
+  renderUsageLog();
+  setupDropZone();
+  loadSupabaseMedia(); // async, populates in background
+}
+init();
+</script>
+</body>
+</html>

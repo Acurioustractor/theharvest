@@ -143,6 +143,143 @@ async function startServer() {
     }
   });
 
+  // ── GHL OAuth2 flow ──────────────────────────────────────────
+  // Step 1: Visit /api/social-auth/start to begin authorization
+  // Step 2: GHL redirects back to /api/social-auth/callback with code
+  // Step 3: We exchange the code for access + refresh tokens and store them
+  app.get("/api/social-auth/start", (_req, res) => {
+    const clientId = process.env.GHL_OAUTH_CLIENT_ID;
+    if (!clientId) {
+      return res.status(500).send("GHL_OAUTH_CLIENT_ID not set in .env.local");
+    }
+    const redirectUri = process.env.NODE_ENV === "development"
+      ? `http://localhost:3000/api/social-auth/callback`
+      : `https://theharvestwitta.com.au/api/social-auth/callback`;
+    const scopes = [
+      "socialplanner/oauth.readonly",
+      "socialplanner/oauth.write",
+      "socialplanner/post.readonly",
+      "socialplanner/post.write",
+      "socialplanner/account.readonly",
+      "socialplanner/account.write",
+      "socialplanner/csv.readonly",
+      "socialplanner/csv.write",
+      "socialplanner/category.readonly",
+      "socialplanner/tag.readonly",
+      "socialplanner/statistics.readonly",
+    ].join(" ");
+    const versionId = clientId.split("-").slice(0, -1).join("-"); // 699964a6c5d1fa2bdfc3c187
+    const url = `https://marketplace.leadconnectorhq.com/oauth/chooselocation?response_type=code&redirect_uri=${encodeURIComponent(redirectUri)}&client_id=${clientId}&scope=${encodeURIComponent(scopes)}&version_id=${versionId}`;
+    res.redirect(url);
+  });
+
+  app.get("/api/social-auth/callback", async (req, res) => {
+    const { code } = req.query;
+    if (!code || typeof code !== "string") {
+      return res.status(400).send("Missing authorization code");
+    }
+    const clientId = process.env.GHL_OAUTH_CLIENT_ID;
+    const clientSecret = process.env.GHL_OAUTH_CLIENT_SECRET;
+    if (!clientId || !clientSecret) {
+      return res.status(500).send("GHL OAuth credentials not configured");
+    }
+    try {
+      const response = await fetch("https://services.leadconnectorhq.com/oauth/token", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({
+          client_id: clientId,
+          client_secret: clientSecret,
+          grant_type: "authorization_code",
+          code,
+          user_type: "Location",
+          redirect_uri: process.env.NODE_ENV === "development"
+              ? `http://localhost:3000/api/social-auth/callback`
+              : `https://theharvestwitta.com.au/api/social-auth/callback`,
+        }),
+      });
+      const data = await response.json() as Record<string, unknown>;
+      if (!response.ok) {
+        console.error("GHL OAuth token error:", data);
+        return res.status(400).json({ error: "Token exchange failed", details: data });
+      }
+      // Store tokens — write to .env.local-style file for persistence
+      const fs = await import("fs");
+      const envPath = path.resolve(import.meta.dirname, "../..", ".env.social-auth");
+      const tokenData = {
+        access_token: data.access_token as string,
+        refresh_token: data.refresh_token as string,
+        expires_in: data.expires_in as number,
+        location_id: data.locationId as string,
+        user_id: (data.userId as string) || undefined,
+        fetched_at: new Date().toISOString(),
+      };
+      fs.writeFileSync(envPath, JSON.stringify(tokenData, null, 2));
+      // Also set in current process so it works immediately
+      process.env.GHL_OAUTH_ACCESS_TOKEN = tokenData.access_token;
+      process.env.GHL_OAUTH_REFRESH_TOKEN = tokenData.refresh_token;
+      if (tokenData.user_id) process.env.GHL_USER_ID = tokenData.user_id;
+      console.log("[GHL OAuth] Tokens saved to .env.social-auth");
+      res.send(`
+        <html><body style="font-family:sans-serif;text-align:center;padding:60px">
+          <h1>GHL Connected!</h1>
+          <p>Social Planner access token saved. You can close this tab.</p>
+          <p style="color:#666;font-size:14px">Token expires in ~24 hours. Refresh token saved for renewal.</p>
+          <p><a href="/social-tile-mockups.html">Back to Social Tile Planner</a></p>
+        </body></html>
+      `);
+    } catch (err) {
+      console.error("GHL OAuth callback error:", err);
+      res.status(500).send("OAuth callback failed");
+    }
+  });
+
+  // Token refresh endpoint (call periodically or on 401)
+  app.post("/api/social-auth/refresh", async (_req, res) => {
+    const clientId = process.env.GHL_OAUTH_CLIENT_ID;
+    const clientSecret = process.env.GHL_OAUTH_CLIENT_SECRET;
+    const refreshToken = process.env.GHL_OAUTH_REFRESH_TOKEN;
+    if (!clientId || !clientSecret || !refreshToken) {
+      return res.status(400).json({ error: "Missing OAuth credentials or refresh token" });
+    }
+    try {
+      const response = await fetch("https://services.leadconnectorhq.com/oauth/token", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({
+          client_id: clientId,
+          client_secret: clientSecret,
+          grant_type: "refresh_token",
+          refresh_token: refreshToken,
+          user_type: "Location",
+        }),
+      });
+      const data = await response.json() as Record<string, unknown>;
+      if (!response.ok) {
+        return res.status(400).json({ error: "Refresh failed", details: data });
+      }
+      const fs = await import("fs");
+      const envPath = path.resolve(import.meta.dirname, "../..", ".env.social-auth");
+      const tokenData = {
+        access_token: data.access_token as string,
+        refresh_token: data.refresh_token as string,
+        expires_in: data.expires_in as number,
+        location_id: data.locationId as string,
+        user_id: (data.userId as string) || undefined,
+        fetched_at: new Date().toISOString(),
+      };
+      fs.writeFileSync(envPath, JSON.stringify(tokenData, null, 2));
+      process.env.GHL_OAUTH_ACCESS_TOKEN = tokenData.access_token;
+      process.env.GHL_OAUTH_REFRESH_TOKEN = tokenData.refresh_token;
+      if (tokenData.user_id) process.env.GHL_USER_ID = tokenData.user_id;
+      console.log("[GHL OAuth] Tokens refreshed");
+      res.json({ success: true, expires_in: data.expires_in });
+    } catch (err) {
+      console.error("GHL OAuth refresh error:", err);
+      res.status(500).json({ error: "Refresh failed" });
+    }
+  });
+
   // tRPC API
   app.use(
     "/api/trpc",

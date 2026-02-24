@@ -5,7 +5,7 @@ import { storagePut } from "./storage";
 import { getDb } from "./db";
 import { pulseResponses } from "../drizzle/schema";
 import { eq } from "drizzle-orm";
-import { upsertGHLContact, addGHLContactNote, getGHLContactCountByTag } from "./gohighlevel";
+import { upsertGHLContact, addGHLContactNote, getGHLContactCountByTag, getGHLSocialAccounts, createGHLSocialPost, getGHLSocialPosts, searchGHLContactsByTag, batchTriggerWorkflow } from "./gohighlevel";
 import { empathyLedgerClient } from "./empathyLedgerClient";
 import {
   loadTimeline,
@@ -253,6 +253,26 @@ export const appRouter = router({
       const count = await getGHLContactCountByTag("eoi-gathering-march-2026");
       return { count };
     }),
+
+    submitLocalsDay: publicProcedure
+      .input(z.object({
+        name: z.string().min(1),
+        email: z.string().email(),
+      }))
+      .mutation(async ({ input }) => {
+        const [firstName, ...rest] = input.name.split(" ");
+        const lastName = rest.join(" ") || undefined;
+
+        await upsertGHLContact({
+          email: input.email,
+          firstName,
+          lastName,
+          source: "EOI Form - Locals Day",
+          tags: ["locals-day-march-2026", "eoi-gathering-march-2026", "website-eoi"],
+        });
+
+        return { success: true };
+      }),
   }),
 
   // Interest Poll - what excites you about The Harvest?
@@ -330,6 +350,41 @@ export const appRouter = router({
         return {
           success: true,
           message: "Successfully subscribed to the newsletter!",
+        };
+      }),
+
+    // Get subscriber count
+    subscriberCount: publicProcedure
+      .query(async () => {
+        const count = await getGHLContactCountByTag("newsletter");
+        return { count };
+      }),
+
+    // Send campaign: find contacts by tag, trigger workflow for each
+    sendCampaign: publicProcedure
+      .input(z.object({
+        tag: z.string().min(1).default("newsletter"),
+        workflowId: z.string().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        const workflowId = input.workflowId || process.env.GHL_NEWSLETTER_WORKFLOW_ID;
+        if (!workflowId) {
+          return { success: false, error: "Newsletter workflow ID not configured. Set GHL_NEWSLETTER_WORKFLOW_ID env var.", contactCount: 0 };
+        }
+
+        const searchResult = await searchGHLContactsByTag(input.tag);
+        if (!searchResult.success || !searchResult.contacts?.length) {
+          return { success: false, error: searchResult.error || "No subscribers found.", contactCount: 0 };
+        }
+
+        const contactIds = searchResult.contacts.map(c => c.id);
+        const batchResult = await batchTriggerWorkflow(workflowId, contactIds);
+
+        return {
+          success: batchResult.success,
+          contactCount: batchResult.triggered,
+          failed: batchResult.failed,
+          error: batchResult.error,
         };
       }),
   }),
@@ -740,6 +795,39 @@ export const appRouter = router({
           ctx.user.id
         );
         return { success: true, content: result };
+      }),
+  }),
+
+  // Social media posting via GHL Social Planner
+  social: router({
+    // Get connected social accounts
+    accounts: publicProcedure
+      .query(async () => {
+        const result = await getGHLSocialAccounts();
+        return result;
+      }),
+
+    // Create/schedule a social post
+    post: publicProcedure
+      .input(z.object({
+        summary: z.string().min(1).max(5000),
+        accountIds: z.array(z.string()).min(1),
+        mediaUrls: z.array(z.string()).optional(), // public URLs to images/videos
+        scheduledAt: z.string().optional(), // ISO datetime
+      }))
+      .mutation(async ({ input }) => {
+        const result = await createGHLSocialPost(input);
+        return result;
+      }),
+
+    // List posts from GHL
+    list: publicProcedure
+      .input(z.object({
+        status: z.enum(["draft", "scheduled", "published"]).optional(),
+      }).optional())
+      .query(async ({ input }) => {
+        const result = await getGHLSocialPosts(input?.status);
+        return result;
       }),
   }),
 });

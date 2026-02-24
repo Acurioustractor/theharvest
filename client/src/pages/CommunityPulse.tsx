@@ -15,8 +15,8 @@ const C = {
   green: "#3A6E47",
   red: "#D62C2C",
   cream: "#F4F4F2",
-  creamDim: "rgba(244,244,242,0.5)",
-  creamFaint: "rgba(244,244,242,0.12)",
+  creamDim: "rgba(245,240,232,0.5)",
+  creamFaint: "rgba(245,240,232,0.12)",
 };
 
 /* ─────────────────────────────────────
@@ -156,7 +156,7 @@ function RadioGroup({ options, value, onChange, isMobile }: {
           onClick={() => onChange(opt.value)}
           style={{
             padding: "14px 18px",
-            background: value === opt.value ? C.gold : "rgba(244,244,242,0.05)",
+            background: value === opt.value ? C.gold : "rgba(245,240,232,0.05)",
             border: `1px solid ${value === opt.value ? C.gold : C.creamFaint}`,
             borderRadius: 10,
             color: value === opt.value ? C.bg : C.cream,
@@ -204,7 +204,7 @@ function MultiSelect({ options, selected, onChange, isMobile }: {
             onClick={() => toggle(opt)}
             style={{
               padding: "10px 18px",
-              background: active ? C.gold : "rgba(244,244,242,0.05)",
+              background: active ? C.gold : "rgba(245,240,232,0.05)",
               border: `1px solid ${active ? C.gold : C.creamFaint}`,
               borderRadius: 24,
               color: active ? C.bg : C.cream,
@@ -237,7 +237,7 @@ function TextArea({ value, onChange, placeholder }: {
       style={{
         width: "100%",
         padding: 16,
-        background: "rgba(244,244,242,0.05)",
+        background: "rgba(245,240,232,0.05)",
         border: `1px solid ${C.creamFaint}`,
         borderRadius: 10,
         color: C.cream,
@@ -267,7 +267,7 @@ function TextInput({ value, onChange, placeholder, type = "text" }: {
       style={{
         width: "100%",
         padding: "14px 16px",
-        background: "rgba(244,244,242,0.05)",
+        background: "rgba(245,240,232,0.05)",
         border: `1px solid ${C.creamFaint}`,
         borderRadius: 10,
         color: C.cream,

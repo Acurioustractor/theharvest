@@ -21,9 +21,9 @@ export default function BauhausFooter({ isMobile }: BauhausFooterProps) {
 
   return (
     <footer style={{
-      backgroundColor: colors.black,
+      backgroundColor: colors.shed,
       padding: isMobile ? "40px 28px" : "48px 40px",
-      borderTop: `1px solid rgba(244,244,242,0.08)`,
+      borderTop: `1px solid rgba(245,240,232,0.08)`,
       textAlign: "center",
     }}>
       <p style={{
@@ -31,7 +31,7 @@ export default function BauhausFooter({ isMobile }: BauhausFooterProps) {
         fontWeight: 900,
         fontSize: 14,
         letterSpacing: "0.12em",
-        color: colors.cream,
+        color: colors.milk,
         margin: "0 0 8px",
       }}>
         THE HARVEST
@@ -39,7 +39,7 @@ export default function BauhausFooter({ isMobile }: BauhausFooterProps) {
       <p style={{
         fontFamily: fonts.body,
         fontSize: 13,
-        color: colors.cream,
+        color: colors.milk,
         opacity: 0.4,
         margin: "0 0 12px",
       }}>
@@ -49,7 +49,7 @@ export default function BauhausFooter({ isMobile }: BauhausFooterProps) {
         fontFamily: fonts.body,
         fontStyle: "italic",
         fontSize: 12,
-        color: colors.cream,
+        color: colors.milk,
         opacity: 0.25,
         margin: "0 0 24px",
       }}>
@@ -75,7 +75,7 @@ const linkStyle: CSSProperties = {
   fontWeight: 700,
   fontSize: 12,
   letterSpacing: "0.1em",
-  color: colors.cream,
+  color: colors.milk,
   textDecoration: "none",
   opacity: 0.7,
 };

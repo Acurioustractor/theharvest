@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 260">
+  <!-- Stage 06: The Return — bars thinning, leaves falling, compost at base, new seed -->
+
+  <!-- Left trunk — still solid, unchanged -->
+  <path d="
+    M 58,228 C 54,205 52,175 54,145 C 56,115 54,85 56,55 C 57,42 54,32 48,22
+    L 56,18 C 62,28 66,40 64,55 C 62,85 64,115 62,145 C 60,175 64,205 68,228 Z
+  " fill="#B58B70"/>
+  <path d="M 62,56 C 64,44 70,32 78,22 L 84,26 C 76,36 70,46 68,56 Z" fill="#B58B70"/>
+
+  <!-- Right trunk — still solid -->
+  <path d="
+    M 132,228 C 136,205 138,175 136,145 C 134,115 136,85 134,55 C 133,42 136,32 142,22
+    L 150,26 C 144,36 140,46 142,56 C 144,85 142,115 144,145 C 146,175 142,205 138,228 Z
+  " fill="#B58B70"/>
+  <path d="M 136,58 C 134,46 128,34 120,24 L 114,28 C 122,38 128,48 130,58 Z" fill="#B58B70"/>
+
+  <!-- Bottom bar — thinning, fading -->
+  <path d="
+    M 58,186 C 66,183 85,181 100,182 C 115,181 134,183 142,186
+    L 143,196 C 135,198 116,199 100,198 C 84,199 65,198 57,196 Z
+  " fill="#4A6741" opacity="0.35"/>
+
+  <!-- Middle bar — thinning -->
+  <path d="
+    M 56,134 C 64,131 84,129 100,130 C 116,129 136,131 144,134
+    L 145,144 C 137,146 117,147 100,146 C 83,147 63,146 55,144 Z
+  " fill="#C4922A" opacity="0.4"/>
+
+  <!-- Top bar — thinning -->
+  <path d="
+    M 58,82 C 66,79 84,77 100,78 C 116,77 134,79 142,82
+    L 143,92 C 135,94 117,95 100,94 C 83,95 65,94 57,92 Z
+  " fill="#8B4A2A" opacity="0.45"/>
+
+  <!-- Compost mound at base -->
+  <path d="
+    M 55,232 C 65,226 80,224 100,225 C 120,224 135,226 145,232
+    C 140,236 125,240 100,241 C 75,240 60,236 55,232 Z
+  " fill="#B58B70" opacity="0.2"/>
+
+  <!-- Fallen leaves in the compost -->
+  <ellipse cx="80" cy="230" rx="3.5" ry="1.5" fill="#4A6741" opacity="0.25" transform="rotate(-20 80 230)"/>
+  <ellipse cx="95" cy="234" rx="3" ry="1.2" fill="#C4922A" opacity="0.2" transform="rotate(15 95 234)"/>
+  <ellipse cx="112" cy="231" rx="2.5" ry="1.3" fill="#8B4A2A" opacity="0.2" transform="rotate(-10 112 231)"/>
+  <ellipse cx="125" cy="235" rx="2" ry="1" fill="#4A6741" opacity="0.15" transform="rotate(25 125 235)"/>
+
+  <!-- More falling leaves in the air -->
+  <ellipse cx="44" cy="120" rx="3" ry="1.5" fill="#C4922A" opacity="0.15" transform="rotate(-40 44 120)"/>
+  <ellipse cx="158" cy="155" rx="2.5" ry="1.2" fill="#4A6741" opacity="0.15" transform="rotate(30 158 155)"/>
+  <ellipse cx="48" cy="190" rx="2" ry="1" fill="#8B4A2A" opacity="0.12" transform="rotate(-25 48 190)"/>
+
+  <!-- THE NEW SEED — the cycle begins again -->
+  <path d="
+    M 100,238
+    C 96,236 93,233 92,230
+    C 91,227 93,224 96,222
+    C 98,221 100,221 102,222
+    C 105,223 107,226 108,229
+    C 109,232 107,235 104,237
+    C 102,238 101,239 100,238 Z
+  " fill="#4A6741" opacity="0.7"/>
+</svg>

@@ -1,0 +1,124 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500" fill="none">
+  <!-- THE HARVEST — Organic H Mark
+       Two tree-trunk posts, three branch crossbars.
+       Posts: Rammed Earth #B58B70
+       Bottom bar: Canopy #4A6741 (Garden / Grow)
+       Middle bar: Golden Hour #C4922A (Kitchen / Feed)
+       Top bar: Crane #8B4A2A (Art Space / Make)
+  -->
+
+  <!-- Left post — organic trunk with slight taper and fork at top -->
+  <path d="
+    M 82,420
+    C 78,400 74,360 76,320
+    C 78,280 80,240 78,200
+    C 76,160 80,120 82,80
+    C 83,60 78,45 72,32
+    M 82,80
+    C 84,60 90,42 98,28
+    M 76,320
+    C 74,280 76,240 78,200
+  " stroke="#B58B70" stroke-width="0" fill="none"/>
+
+  <path d="
+    M 68,420
+    C 64,380 62,340 64,300
+    C 66,260 64,220 66,180
+    C 68,140 66,100 68,70
+    C 69,55 66,42 60,30
+    L 72,26
+    C 78,38 82,52 80,68
+    C 78,100 80,140 78,180
+    C 76,220 78,260 76,300
+    C 74,340 78,380 80,420
+    Z
+  " fill="#B58B70"/>
+
+  <!-- Left post — small fork/branch stub at top -->
+  <path d="
+    M 78,72
+    C 80,58 86,44 94,30
+    L 100,34
+    C 92,46 86,58 84,72
+    Z
+  " fill="#B58B70"/>
+
+  <!-- Right post — organic trunk, slightly different character -->
+  <path d="
+    M 318,420
+    C 322,380 324,340 322,300
+    C 320,260 322,220 320,180
+    C 318,140 320,100 318,70
+    C 317,55 322,40 328,28
+    L 336,32
+    C 330,44 326,58 328,72
+    C 330,100 328,140 330,180
+    C 332,220 330,260 332,300
+    C 334,340 330,380 332,420
+    Z
+  " fill="#B58B70"/>
+
+  <!-- Right post — small branch stub -->
+  <path d="
+    M 320,74
+    C 318,60 312,46 304,34
+    L 298,38
+    C 306,50 312,62 314,74
+    Z
+  " fill="#B58B70"/>
+
+  <!-- Bottom bar — Canopy green (Garden / Grow) -->
+  <path d="
+    M 72,340
+    C 78,336 120,332 160,334
+    C 200,336 240,332 280,334
+    C 310,335 326,338 334,340
+    L 336,356
+    C 328,358 310,360 280,358
+    C 240,356 200,360 160,358
+    C 120,356 78,360 70,358
+    Z
+  " fill="#4A6741"/>
+
+  <!-- Small twig on bottom bar -->
+  <path d="
+    M 130,334
+    C 126,328 120,320 116,314
+    L 120,312
+    C 126,318 130,326 134,334
+  " fill="#4A6741"/>
+
+  <!-- Middle bar — Golden Hour (Kitchen / Feed) -->
+  <path d="
+    M 74,236
+    C 80,232 120,230 160,232
+    C 200,234 240,230 280,232
+    C 310,233 324,236 332,238
+    L 334,254
+    C 326,256 310,258 280,256
+    C 240,254 200,258 160,256
+    C 120,254 80,256 72,254
+    Z
+  " fill="#C4922A"/>
+
+  <!-- Top bar — Crane brown (Art Space / Make) -->
+  <path d="
+    M 76,136
+    C 82,132 120,128 160,130
+    C 200,132 240,128 280,130
+    C 310,131 322,134 330,136
+    L 332,152
+    C 324,154 310,156 280,154
+    C 240,152 200,156 160,154
+    C 120,152 82,154 74,152
+    Z
+  " fill="#8B4A2A"/>
+
+  <!-- Small twig on top bar -->
+  <path d="
+    M 276,130
+    C 280,124 286,116 290,110
+    L 294,112
+    C 290,118 284,126 280,132
+  " fill="#8B4A2A"/>
+</svg>

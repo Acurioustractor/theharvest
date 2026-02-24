@@ -13,6 +13,10 @@ import CommunityPulse from "./pages/CommunityPulse";
 import EventFeedback from "./pages/EventFeedback";
 import BrandGuide from "./pages/BrandGuide";
 import ZoneWorkshop from "./pages/ZoneWorkshop";
+import SocialPlanner from "./pages/SocialPlanner";
+import LogoStory from "./pages/LogoStory";
+import GrowingH from "./pages/GrowingH";
+import LogoLab from "./pages/LogoLab";
 import NotFound from "./pages/NotFound";
 
 function Router() {
@@ -27,6 +31,10 @@ function Router() {
   if (location === "/pulse") return <CommunityPulse />;
   if (location === "/brand-guide") return <BrandGuide />;
   if (location === "/zone-workshop") return <ZoneWorkshop />;
+  if (location === "/social-planner") return <SocialPlanner />;
+  if (location === "/logo-story") return <LogoStory />;
+  if (location === "/growing-h") return <GrowingH />;
+  if (location === "/logo-lab") return <LogoLab />;
   if (location.startsWith("/feedback")) {
     const eventId = location.split("/feedback/")[1];
     return <EventFeedback eventId={eventId} />;

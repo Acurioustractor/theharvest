@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 260">
+  <!-- Stage 01: The Seed — a single mark in the soil -->
+
+  <!-- Soil line — subtle ground -->
+  <path d="M 40,195 C 60,192 90,194 100,193 C 110,194 140,192 160,195"
+        stroke="#B58B70" stroke-width="1.5" fill="none" opacity="0.25"/>
+
+  <!-- The seed — almond shape, cracked, root tip emerging -->
+  <path d="
+    M 100,178
+    C 92,174 86,168 84,160
+    C 82,152 86,144 92,140
+    C 96,137 100,136 104,137
+    C 110,139 116,146 118,154
+    C 120,162 116,170 110,176
+    C 106,179 102,180 100,178
+    Z
+  " fill="#B58B70" opacity="0.8"/>
+
+  <!-- Crack in seed -->
+  <path d="M 98,144 C 100,150 99,158 97,166"
+        stroke="#F5F0E8" stroke-width="1.2" fill="none" opacity="0.5"/>
+
+  <!-- Tiny root tip -->
+  <path d="M 97,176 C 96,182 94,188 92,192"
+        stroke="#4A6741" stroke-width="1.5" fill="none" opacity="0.6" stroke-linecap="round"/>
+</svg>

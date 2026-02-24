@@ -1,19 +1,12 @@
-import { useEffect, useState, useCallback, type CSSProperties } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "wouter";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import BauhausFooter from "@/components/BauhausFooter";
 import FadeIn from "@/components/FadeIn";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { rootStyle, colors, fonts } from "@/styles/brand";
 
 const GATHERING_DATE = new Date("2026-03-07T11:00:00+10:00");
-
-const barryImages = [
-  { src: "/images/compendium/barry/IMG_5764.jpg", caption: "Barry at golden hour" },
-  { src: "/images/compendium/barry/IMG_5777.jpg", caption: "Looking out" },
-  { src: "/images/compendium/barry/IMG_5745.jpg", caption: "On the workbench telling stories" },
-  { src: "/images/compendium/barry/IMG_5819.jpg", caption: "With the Blue Heelers" },
-];
 
 function useCountdownDays(target: Date) {
   const [now, setNow] = useState(new Date());
@@ -26,17 +19,55 @@ function useCountdownDays(target: Date) {
   return Math.ceil(diff / 86400000);
 }
 
+const zones = [
+  {
+    title: "GROW",
+    desc: "Garden, soil, seasonal rhythms.",
+    image: "/images/sketch-garden.png",
+  },
+  {
+    title: "MAKE",
+    desc: "Art, creative practice, residencies.",
+    image: "/images/sketch-art.png",
+  },
+  {
+    title: "FEED",
+    desc: "Shared tables, local produce, good conversation.",
+    image: "/images/sketch-food.png",
+  },
+];
+
+const events = [
+  {
+    tag: "Community",
+    date: "Friday 6 March, afternoon",
+    title: "LOCALS DAY",
+    desc: "Meet the neighbours, build with milk crates, share your vision for this space. Just locals.",
+    href: "/gather",
+  },
+  {
+    tag: "Event",
+    date: "Saturday 7 March, 11am - 4pm",
+    title: "FIRST GATHERING",
+    desc: "Local history, making things together, oysters from Moreton Bay, drinks from Flight Bar. 9 Gumland Drive, Witta. Free.",
+    href: "/gather",
+  },
+  {
+    tag: "Fellowship",
+    date: "12-month fellowship",
+    title: "RADICAL SCOOPS",
+    desc: "A Regional Arts Australia creative residency connecting agriculture, food, and community on Kabi Kabi and Jinibara Country.",
+    href: "https://regionalarts.com.au/resources/radical-scoops",
+  },
+];
+
 export default function BauhausHome() {
   const isMobile = useMediaQuery("(max-width: 768px)");
   const [scrollVisible, setScrollVisible] = useState(false);
-  const [currentBarryPhoto, setCurrentBarryPhoto] = useState(0);
-  const [tractorTooltip, setTractorTooltip] = useState(false);
-  const [tractorX, setTractorX] = useState(-40);
-
   const daysLeft = useCountdownDays(GATHERING_DATE);
 
   useEffect(() => {
-    document.title = "The Harvest / Art. Food. Community.";
+    document.title = "The Harvest - Witta, Sunshine Coast Hinterland";
     const meta = (name: string, content: string) => {
       let el = document.querySelector(`meta[property="${name}"]`) as HTMLMetaElement | null;
       if (!el) {
@@ -46,32 +77,13 @@ export default function BauhausHome() {
       }
       el.content = content;
     };
-    meta("og:title", "The Harvest / Art. Food. Community.");
-    meta("og:description", "A community space forming in Witta, Sunshine Coast Hinterland. Jinibara Country.");
+    meta("og:title", "The Harvest - Witta, Sunshine Coast Hinterland");
+    meta("og:description", "A community space for garden, art, and food. Witta, Sunshine Coast Hinterland. Jinibara Country.");
   }, []);
 
   useEffect(() => {
     const timer = setTimeout(() => setScrollVisible(true), 2000);
     return () => clearTimeout(timer);
-  }, []);
-
-  const nextBarryPhoto = useCallback(() => {
-    setCurrentBarryPhoto((prev) => (prev + 1) % barryImages.length);
-  }, []);
-
-  useEffect(() => {
-    const interval = setInterval(nextBarryPhoto, 6000);
-    return () => clearInterval(interval);
-  }, [nextBarryPhoto]);
-
-  // Tractor scroll animation
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollPct = window.scrollY / (document.body.scrollHeight - window.innerHeight);
-      setTractorX(-40 + scrollPct * (window.innerWidth + 40));
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
@@ -90,8 +102,8 @@ export default function BauhausHome() {
               left: 0,
               right: 0,
               zIndex: 100,
-              backgroundColor: colors.yellow,
-              color: colors.black,
+              backgroundColor: colors.goldenHour,
+              color: colors.shed,
               textAlign: "center",
               padding: "10px 20px",
               fontFamily: fonts.display,
@@ -101,12 +113,12 @@ export default function BauhausHome() {
               cursor: "pointer",
             }}
           >
-            FIRST GATHERING IN {daysLeft} {daysLeft === 1 ? "DAY" : "DAYS"} &mdash; SAVE YOUR SPOT
+            FIRST GATHERING IN {daysLeft} {daysLeft === 1 ? "DAY" : "DAYS"} / SAVE YOUR SPOT
           </motion.div>
         </Link>
       )}
 
-      {/* --- 1. THE OPENING --- */}
+      {/* --- 1. HERO --- */}
       <section style={{
         position: "relative",
         height: "100vh",
@@ -138,36 +150,48 @@ export default function BauhausHome() {
           position: "relative",
           zIndex: 2,
           textAlign: "center",
-          color: colors.cream,
+          color: colors.milk,
+          padding: "0 24px",
         }}>
+          <div style={{
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: isMobile ? 100 : 130,
+            height: isMobile ? 100 : 130,
+            borderRadius: "50%",
+            backgroundColor: "rgba(28,25,23,0.3)",
+            backdropFilter: "blur(4px)",
+            marginBottom: 24,
+          }}>
+            <img
+              src="/images/logo-harvest-seed.png"
+              alt="The Harvest — seed mark"
+              style={{
+                width: isMobile ? 60 : 80,
+                height: "auto",
+              }}
+            />
+          </div>
           <h1 style={{
             fontFamily: fonts.display,
             fontWeight: 900,
-            fontSize: isMobile ? "clamp(36px, 10vw, 56px)" : "clamp(56px, 6vw, 80px)",
-            letterSpacing: "0.18em",
+            fontSize: isMobile ? "clamp(40px, 12vw, 64px)" : "clamp(64px, 8vw, 96px)",
+            letterSpacing: "0.2em",
             margin: 0,
-            lineHeight: 1.1,
+            lineHeight: 1,
           }}>
             THE HARVEST
           </h1>
           <p style={{
             fontFamily: fonts.body,
-            fontWeight: 400,
-            fontSize: isMobile ? 16 : 20,
-            letterSpacing: "0.3em",
-            margin: "24px 0 0",
+            fontStyle: "italic",
+            fontSize: isMobile ? 18 : 24,
+            margin: "32px auto 0",
+            maxWidth: 800,
             opacity: 0.9,
           }}>
-            Art. Food. Community.
-          </p>
-          <p style={{
-            fontFamily: fonts.body,
-            fontWeight: 400,
-            fontSize: isMobile ? 12 : 14,
-            margin: "16px 0 0",
-            opacity: 0.5,
-          }}>
-            Witta, Sunshine Coast Hinterland. Jinibara Country.
+            Grow. Make. Feed.<br />A community space on Jinibara Country, Witta.
           </p>
         </div>
         {/* Scroll indicator */}
@@ -177,7 +201,7 @@ export default function BauhausHome() {
           transition={{ duration: 1 }}
           style={{
             position: "absolute",
-            bottom: 40,
+            bottom: 48,
             zIndex: 2,
             display: "flex",
             flexDirection: "column",
@@ -189,8 +213,8 @@ export default function BauhausHome() {
             fontFamily: fonts.display,
             fontWeight: 700,
             fontSize: 10,
-            letterSpacing: "0.2em",
-            color: colors.cream,
+            letterSpacing: "0.3em",
+            color: colors.milk,
           }}>
             SCROLL
           </span>
@@ -199,617 +223,313 @@ export default function BauhausHome() {
             animate={{ y: [0, 6, 0] }}
             transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
           >
-            <path d="M8 4v16M3 15l5 5 5-5" stroke={colors.cream} strokeWidth="1.5" fill="none" strokeLinecap="round" />
+            <path d="M8 4v16M3 15l5 5 5-5" stroke={colors.milk} strokeWidth="1.5" fill="none" strokeLinecap="round" />
           </motion.svg>
         </motion.div>
       </section>
 
-      {/* --- 2. THE STATEMENT + PRINCIPLES --- */}
+      {/* --- 2. ZONE CARDS --- */}
       <section style={{
-        backgroundColor: colors.black,
-        color: colors.cream,
-        padding: isMobile ? "96px 28px" : "140px 40px",
+        padding: isMobile ? "80px 28px" : "140px 40px",
+        maxWidth: 1440,
+        margin: "0 auto",
+        width: "100%",
       }}>
         <div style={{
-          maxWidth: 640,
-          margin: "0 auto",
-          textAlign: "center",
+          display: "grid",
+          gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr 1fr",
+          gap: isMobile ? 48 : 64,
         }}>
-          {/* The Quote */}
-          <FadeIn>
-            <blockquote style={{
-              fontFamily: fonts.body,
-              fontSize: isMobile ? "clamp(18px, 4.5vw, 24px)" : "clamp(22px, 2.2vw, 28px)",
-              lineHeight: 1.8,
-              fontStyle: "italic",
-              margin: 0,
-              opacity: 0.9,
-            }}>
-              "Art is how we make sense of being alive. Food is how we sustain each other. Community is what happens when those two things share a table."
-            </blockquote>
-          </FadeIn>
-
-          {/* Divider */}
-          <hr style={{
-            border: "none",
-            borderTop: "1px solid rgba(244,244,242,0.1)",
-            margin: "48px auto",
-            maxWidth: 120,
-          }} />
-
-          {/* The Principles -centered, stacked */}
-          <div>
-            <FadeIn delay={0.15}>
-              <div style={principleStyle}>
-                <strong style={principleBoldStyle}>Nothing is permanent.</strong>
-                <br />
-                Like a gallery. The space is always becoming.
+          {zones.map((zone, i) => (
+            <FadeIn key={zone.title} delay={i * 0.1}>
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" }}>
+                <img
+                  src={zone.image}
+                  alt={zone.title}
+                  style={{
+                    width: 100,
+                    height: 100,
+                    objectFit: "contain",
+                    marginBottom: 24,
+                  }}
+                />
+                <h3 style={{
+                  fontFamily: fonts.display,
+                  fontWeight: 900,
+                  fontSize: 24,
+                  letterSpacing: "0.1em",
+                  margin: "0 0 12px",
+                }}>
+                  {zone.title}
+                </h3>
+                <p style={{
+                  fontFamily: fonts.body,
+                  fontSize: 18,
+                  opacity: 0.7,
+                  lineHeight: 1.7,
+                  margin: 0,
+                  maxWidth: 320,
+                }}>
+                  {zone.desc}
+                </p>
               </div>
             </FadeIn>
-            <FadeIn delay={0.3}>
-              <div style={{ ...principleStyle, marginTop: 48 }}>
-                <strong style={principleBoldStyle}>Community-built.</strong>
-                <br />
-                We don't build for people. We build with them.
-              </div>
-            </FadeIn>
-            <FadeIn delay={0.45}>
-              <div style={{ ...principleStyle, marginTop: 48 }}>
-                <strong style={principleBoldStyle}>Custodianship.</strong>
-                <br />
-                We build to hand over.
-              </div>
-            </FadeIn>
-          </div>
+          ))}
         </div>
       </section>
 
-      {/* --- 2B. WHAT IS THIS? --- */}
+      {/* --- 3. WHAT'S ON --- */}
       <section style={{
-        backgroundColor: colors.cream,
-        color: colors.black,
-        padding: isMobile ? "80px 28px" : "100px 40px",
+        backgroundColor: colors.shed,
+        color: colors.milk,
+        padding: isMobile ? "80px 28px" : "140px 40px",
       }}>
-        <div style={{
-          maxWidth: 640,
-          margin: "0 auto",
-        }}>
+        <div style={{ maxWidth: 1440, margin: "0 auto", width: "100%" }}>
           <FadeIn>
-            <span style={{
-              fontFamily: fonts.display,
-              fontWeight: 700,
-              fontSize: 11,
-              letterSpacing: "0.2em",
-              opacity: 0.4,
-              display: "block",
-              marginBottom: 20,
-              textAlign: "center",
-            }}>
-              RIGHT NOW
-            </span>
-          </FadeIn>
-          <FadeIn delay={0.1}>
-            <h2 style={{
-              fontFamily: fonts.display,
-              fontWeight: 900,
-              fontSize: isMobile ? "clamp(22px, 6vw, 30px)" : "clamp(26px, 2.8vw, 34px)",
-              letterSpacing: "0.04em",
-              lineHeight: 1.3,
-              margin: "0 0 28px",
-              textAlign: "center",
-            }}>
-              The Harvest is a 10-acre site in Witta, on Jinibara Country.
-            </h2>
-          </FadeIn>
-          <FadeIn delay={0.15}>
-            <p style={{
-              fontFamily: fonts.body,
-              fontSize: isMobile ? 15 : 17,
-              lineHeight: 1.9,
-              opacity: 0.7,
-              margin: "0 0 20px",
-            }}>
-              It's not finished. It's not a venue yet. Right now it's a paddock, a shed, a few big ideas, and a growing group of people who want to build something together.
-            </p>
-          </FadeIn>
-          <FadeIn delay={0.2}>
-            <p style={{
-              fontFamily: fonts.body,
-              fontSize: isMobile ? 15 : 17,
-              lineHeight: 1.9,
-              opacity: 0.7,
-              margin: "0 0 20px",
-            }}>
-              We're imagining three zones: a <strong>garden</strong> to grow in, a <strong>kitchen</strong> to feed from, and an <strong>art space</strong> to make in. But what those become depends on who shows up and what they bring.
-            </p>
-          </FadeIn>
-          <FadeIn delay={0.25}>
-            <p style={{
-              fontFamily: fonts.body,
-              fontSize: isMobile ? 14 : 15,
-              lineHeight: 1.8,
-              opacity: 0.5,
-              margin: "0 0 36px",
-            }}>
-              If you're a grower, a maker, a cook, an artist, a builder, a thinker, a neighbour. There's a seat at this table. Come along to a gathering, bring an idea, or just come see the place.
-            </p>
-          </FadeIn>
-          <FadeIn delay={0.3}>
             <div style={{
               display: "flex",
-              gap: 16,
-              flexWrap: "wrap",
-              justifyContent: "center",
+              flexDirection: isMobile ? "column" : "row",
+              alignItems: isMobile ? "flex-start" : "flex-end",
+              justifyContent: "space-between",
+              marginBottom: 64,
+              gap: 24,
             }}>
-              <Link href="/gather#rsvp" style={{
+              <h2 style={{
                 fontFamily: fonts.display,
-                fontWeight: 700,
-                fontSize: 13,
+                fontWeight: 900,
+                fontSize: isMobile ? 36 : 48,
                 letterSpacing: "0.1em",
-                color: colors.cream,
-                backgroundColor: colors.black,
-                padding: "14px 32px",
-                textDecoration: "none",
-                display: "inline-block",
+                margin: 0,
               }}>
-                COME TO A GATHERING
-              </Link>
-              <Link href="/contact" style={{
-                fontFamily: fonts.display,
-                fontWeight: 700,
-                fontSize: 13,
-                letterSpacing: "0.1em",
-                color: colors.black,
-                backgroundColor: "transparent",
-                border: `2px solid ${colors.black}`,
-                padding: "12px 32px",
-                textDecoration: "none",
-                display: "inline-block",
-              }}>
-                GET INVOLVED
-              </Link>
-            </div>
-          </FadeIn>
-        </div>
-      </section>
-
-      {/* --- 3. WHAT'S HAPPENING -Event CTA (oyster video background) --- */}
-      <section style={{
-        position: "relative",
-        overflow: "hidden",
-        color: colors.cream,
-        padding: isMobile ? "100px 28px" : "140px 40px",
-      }}>
-        <video
-          src="/images/compendium/oyster-lease.mp4"
-          poster="/images/compendium/oyster-lease-poster.jpg"
-          autoPlay muted loop playsInline
-          style={{
-            position: "absolute",
-            inset: 0,
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            zIndex: 0,
-          }}
-        />
-        <div style={{
-          position: "absolute",
-          inset: 0,
-          backgroundColor: "rgba(0,0,0,0.55)",
-          zIndex: 1,
-        }} />
-        <div style={{
-          position: "relative",
-          zIndex: 2,
-          maxWidth: 640,
-          margin: "0 auto",
-          textAlign: "center",
-        }}>
-          <FadeIn>
-            <span style={{
-              fontFamily: fonts.display,
-              fontWeight: 700,
-              fontSize: 11,
-              letterSpacing: "0.2em",
-              opacity: 0.6,
-              display: "block",
-              marginBottom: 16,
-            }}>
-              WHAT'S HAPPENING
-            </span>
-            <h2 style={{
-              fontFamily: fonts.display,
-              fontWeight: 900,
-              fontSize: isMobile ? "clamp(28px, 7vw, 40px)" : "clamp(36px, 4vw, 52px)",
-              letterSpacing: "0.08em",
-              margin: "0 0 20px",
-              lineHeight: 1.1,
-            }}>
-              FIRST GATHERING
-            </h2>
-            <p style={{
-              fontFamily: fonts.body,
-              fontSize: isMobile ? 16 : 20,
-              letterSpacing: "0.06em",
-              opacity: 0.8,
-              margin: "0 0 28px",
-            }}>
-              Saturday 7 March, 11am – 4pm
-            </p>
-            <p style={{
-              fontFamily: fonts.body,
-              fontSize: isMobile ? 15 : 18,
-              lineHeight: 1.8,
-              opacity: 0.8,
-              margin: "0 0 36px",
-              maxWidth: 480,
-              marginLeft: "auto",
-              marginRight: "auto",
-            }}>
-              Oysters from Minjerribah. A milk crate pavilion we'll build together. The launch of something we've been working toward.
-            </p>
-            <Link href="/gather#rsvp" style={{
-              fontFamily: fonts.display,
-              fontWeight: 700,
-              fontSize: 14,
-              letterSpacing: "0.1em",
-              color: colors.black,
-              backgroundColor: colors.yellow,
-              padding: "16px 40px",
-              textDecoration: "none",
-              display: "inline-block",
-            }}>
-              SAVE MY SPOT
-            </Link>
-          </FadeIn>
-        </div>
-      </section>
-
-      {/* --- 4. HERITAGE PROJECT --- */}
-      <section style={{
-        backgroundColor: colors.cream,
-        color: colors.black,
-        padding: isMobile ? "80px 28px" : "100px 40px",
-      }}>
-        <div style={{
-          maxWidth: 640,
-          margin: "0 auto",
-          textAlign: "center",
-        }}>
-          <FadeIn>
-            <span style={{
-              fontFamily: fonts.display,
-              fontWeight: 700,
-              fontSize: 11,
-              letterSpacing: "0.2em",
-              opacity: 0.4,
-              display: "block",
-              marginBottom: 20,
-            }}>
-              SUPPORTED BY REGIONAL ARTS AUSTRALIA
-            </span>
-          </FadeIn>
-          <FadeIn delay={0.1}>
-            <h2 style={{
-              fontFamily: fonts.display,
-              fontWeight: 900,
-              fontSize: isMobile ? "clamp(22px, 6vw, 32px)" : "clamp(28px, 3vw, 38px)",
-              letterSpacing: "0.06em",
-              lineHeight: 1.2,
-              margin: "0 0 24px",
-            }}>
-              DAIRY, TIMBER &amp; CO-OP
-            </h2>
-          </FadeIn>
-          <FadeIn delay={0.15}>
-            <p style={{
-              fontFamily: fonts.body,
-              fontSize: isMobile ? 15 : 17,
-              lineHeight: 1.9,
-              opacity: 0.7,
-              margin: "0 0 16px",
-            }}>
-              This ridge has three heritage stories: the dairy farmers who worked the land, the timber workers who milled the cedar, and the co-operatives that held it all together. We've been funded to explore these stories through photography, oral history, and community-built installations.
-            </p>
-          </FadeIn>
-          <FadeIn delay={0.2}>
-            <p style={{
-              fontFamily: fonts.body,
-              fontSize: isMobile ? 14 : 15,
-              lineHeight: 1.8,
-              opacity: 0.5,
-              margin: "0 0 32px",
-            }}>
-              This is the first chapter of a longer project. Collecting what's here before it's gone, and making something from it together.
-            </p>
-          </FadeIn>
-          <FadeIn delay={0.25}>
-            <Link href="/compendium" style={{
-              fontFamily: fonts.display,
-              fontWeight: 700,
-              fontSize: 14,
-              letterSpacing: "0.1em",
-              color: colors.cream,
-              backgroundColor: colors.black,
-              padding: "14px 36px",
-              textDecoration: "none",
-              display: "inline-block",
-            }}>
-              EXPLORE THE PROJECT
-            </Link>
-          </FadeIn>
-        </div>
-      </section>
-
-      {/* --- 5. STORIES FROM THE RIDGE -Barry --- */}
-      <section style={{
-        position: "relative",
-        minHeight: isMobile ? "70vh" : "80vh",
-        overflow: "hidden",
-        backgroundColor: colors.black,
-        color: colors.cream,
-      }}>
-        {/* Crossfading background photos */}
-        {barryImages.map((img, i) => (
-          <motion.div
-            key={img.src}
-            style={{ position: "absolute", inset: 0 }}
-            initial={false}
-            animate={{ opacity: currentBarryPhoto === i ? 1 : 0 }}
-            transition={{ duration: 1.5, ease: "easeInOut" }}
-          >
-            <img
-              src={img.src}
-              alt=""
-              style={{ width: "100%", height: "100%", objectFit: "cover" }}
-            />
-          </motion.div>
-        ))}
-
-        {/* Gradient overlays */}
-        <div style={{
-          position: "absolute",
-          inset: 0,
-          background: isMobile
-            ? "linear-gradient(to top, rgba(0,0,0,0.85), rgba(0,0,0,0.5), rgba(0,0,0,0.3))"
-            : "linear-gradient(to right, rgba(0,0,0,0.85), rgba(0,0,0,0.6), rgba(0,0,0,0.15))",
-        }} />
-        <div style={{
-          position: "absolute",
-          inset: 0,
-          background: "linear-gradient(to top, rgba(0,0,0,0.6), transparent, transparent)",
-        }} />
-
-        {/* Content */}
-        <div style={{
-          position: "relative",
-          zIndex: 10,
-          display: "flex",
-          alignItems: isMobile ? "flex-end" : "center",
-          minHeight: isMobile ? "70vh" : "80vh",
-        }}>
-          <div style={{
-            padding: isMobile ? "0 28px 60px" : "80px 40px",
-            maxWidth: 540,
-          }}>
-            <FadeIn>
-              <span style={{
+                WHAT'S ON
+              </h2>
+              <Link href="/gather" style={{
                 fontFamily: fonts.display,
                 fontWeight: 700,
                 fontSize: 11,
                 letterSpacing: "0.2em",
-                opacity: 0.5,
-                display: "block",
-                marginBottom: 20,
-              }}>
-                STORIES FROM THE RIDGE
-              </span>
-            </FadeIn>
-            <FadeIn delay={0.1}>
-              <blockquote style={{
-                fontFamily: fonts.body,
-                fontSize: isMobile ? "clamp(18px, 4.5vw, 24px)" : 24,
-                lineHeight: 1.7,
-                fontStyle: "italic",
-                margin: 0,
-                opacity: 0.9,
-              }}>
-                "Timber workers, dairy farmers, red soil. We're not starting from nothing."
-              </blockquote>
-            </FadeIn>
-            <FadeIn delay={0.2}>
-              <p style={{
-                fontFamily: fonts.display,
-                fontWeight: 700,
-                fontSize: 12,
-                letterSpacing: "0.15em",
-                opacity: 0.5,
-                margin: "20px 0 0",
-              }}>
-                BARRY RODGERIG, WITTA SINCE 1972
-              </p>
-            </FadeIn>
-            <FadeIn delay={0.3}>
-              <p style={{
-                fontFamily: fonts.body,
-                fontSize: isMobile ? 15 : 17,
-                lineHeight: 1.9,
-                opacity: 0.7,
-                margin: "28px 0 0",
-              }}>
-                Barry's shed is full of machines that built this hinterland. Log trucks, dairy equipment, engines from the war. Every rusted blade is a chapter. The land remembers what was here before.
-              </p>
-            </FadeIn>
-            <FadeIn delay={0.4}>
-              <Link href="/compendium" style={{
-                fontFamily: fonts.display,
-                fontWeight: 700,
-                fontSize: 13,
-                letterSpacing: "0.1em",
-                color: colors.cream,
+                color: colors.milk,
                 textDecoration: "none",
-                borderBottom: `1px solid rgba(244,244,242,0.3)`,
-                paddingBottom: 2,
-                display: "inline-block",
-                marginTop: 28,
+                borderBottom: `1px solid rgba(245,240,232,0.3)`,
+                paddingBottom: 8,
               }}>
-                Read the full story &rarr;
-              </Link>
-            </FadeIn>
-          </div>
-        </div>
-
-        {/* Photo counter */}
-        <AnimatePresence mode="wait">
-          <motion.span
-            key={currentBarryPhoto}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            style={{
-              position: "absolute",
-              bottom: isMobile ? 20 : 24,
-              right: isMobile ? 20 : 32,
-              zIndex: 10,
-              fontFamily: "monospace",
-              fontSize: 12,
-              color: "rgba(244,244,242,0.35)",
-            }}
-          >
-            {currentBarryPhoto + 1}/{barryImages.length}
-          </motion.span>
-        </AnimatePresence>
-      </section>
-
-      {/* --- 6. THE CLOSE --- */}
-      <section style={{
-        backgroundColor: colors.indigo,
-        color: colors.cream,
-        padding: isMobile ? "80px 28px" : "100px 40px",
-      }}>
-        <div style={{
-          maxWidth: 640,
-          margin: "0 auto",
-          textAlign: "center",
-        }}>
-          <FadeIn>
-            <p style={{
-              fontFamily: fonts.body,
-              fontStyle: "italic",
-              fontSize: isMobile ? 18 : 22,
-              lineHeight: 1.7,
-              opacity: 0.85,
-              margin: "0 0 12px",
-            }}>
-              Come by. Say hello. Bring something to share.
-            </p>
-            <p style={{
-              fontFamily: fonts.body,
-              fontSize: isMobile ? 14 : 16,
-              opacity: 0.5,
-              margin: "0 0 40px",
-            }}>
-              hello@theharvestwitta.com.au
-            </p>
-          </FadeIn>
-
-          <FadeIn delay={0.2}>
-            <div style={{
-              display: "flex",
-              justifyContent: "center",
-              gap: isMobile ? 16 : 24,
-              flexWrap: "wrap",
-            }}>
-              <Link href="/contact" style={{
-                fontFamily: fonts.display,
-                fontWeight: 700,
-                fontSize: 14,
-                letterSpacing: "0.1em",
-                color: colors.black,
-                backgroundColor: colors.yellow,
-                padding: "14px 36px",
-                textDecoration: "none",
-                display: "inline-block",
-              }}>
-                GET IN TOUCH
-              </Link>
-              <Link href="/compendium" style={{
-                fontFamily: fonts.display,
-                fontWeight: 700,
-                fontSize: 14,
-                letterSpacing: "0.1em",
-                color: colors.cream,
-                backgroundColor: "transparent",
-                border: `1px solid rgba(244,244,242,0.3)`,
-                padding: "14px 36px",
-                textDecoration: "none",
-                display: "inline-block",
-              }}>
-                THE STORY
+                VIEW FULL PROGRAM
               </Link>
             </div>
           </FadeIn>
+
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr 1fr",
+            gap: 32,
+          }}>
+            {events.map((event, i) => (
+              <FadeIn key={event.title} delay={i * 0.1}>
+                <Link
+                  href={event.href}
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    padding: 32,
+                    border: "1px solid rgba(245,240,232,0.1)",
+                    backgroundColor: "rgba(255,255,255,0.05)",
+                    textDecoration: "none",
+                    color: colors.milk,
+                    transition: "border-color 0.3s",
+                    minHeight: 240,
+                  }}
+                  onMouseEnter={(e) => (e.currentTarget.style.borderColor = `${colors.goldenHour}80`)}
+                  onMouseLeave={(e) => (e.currentTarget.style.borderColor = "rgba(245,240,232,0.1)")}
+                >
+                  <span style={{
+                    fontFamily: fonts.display,
+                    fontWeight: 700,
+                    fontSize: 10,
+                    letterSpacing: "0.2em",
+                    color: colors.goldenHour,
+                    marginBottom: 16,
+                  }}>
+                    {event.tag.toUpperCase()}
+                  </span>
+                  <p style={{
+                    fontFamily: fonts.body,
+                    fontSize: 14,
+                    opacity: 0.6,
+                    margin: "0 0 8px",
+                  }}>
+                    {event.date}
+                  </p>
+                  <h4 style={{
+                    fontFamily: fonts.display,
+                    fontWeight: 900,
+                    fontSize: 20,
+                    margin: "0 0 16px",
+                    letterSpacing: "0.02em",
+                  }}>
+                    {event.title}
+                  </h4>
+                  <p style={{
+                    fontFamily: fonts.body,
+                    fontSize: 16,
+                    opacity: 0.75,
+                    lineHeight: 1.7,
+                    margin: 0,
+                    flex: 1,
+                  }}>
+                    {event.desc}
+                  </p>
+                  <span style={{
+                    fontFamily: fonts.display,
+                    fontWeight: 700,
+                    fontSize: 11,
+                    letterSpacing: "0.15em",
+                    marginTop: 24,
+                    opacity: 0.8,
+                  }}>
+                    DETAILS +
+                  </span>
+                </Link>
+              </FadeIn>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* --- TRACTOR EASTER EGG --- */}
-      <div
-        onClick={() => setTractorTooltip(!tractorTooltip)}
-        style={{
-          position: "fixed",
-          bottom: 8,
-          left: tractorX,
-          zIndex: 50,
-          cursor: "pointer",
-          opacity: 0.15,
-          transition: "opacity 0.3s",
-          userSelect: "none",
-        }}
-        onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.opacity = "0.6"; }}
-        onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.opacity = "0.15"; }}
-        title="A Curious Tractor"
-      >
-        {tractorTooltip ? (
-          <span style={{
-            fontFamily: fonts.body,
-            fontSize: 11,
-            color: colors.cream,
-            backgroundColor: colors.black,
-            padding: "6px 12px",
-            position: "absolute",
-            bottom: 28,
-            left: 0,
-            whiteSpace: "nowrap",
-            opacity: 1,
-          }}>
-            A Curious Tractor - preparing ground, not controlling what grows
-          </span>
-        ) : null}
-        <img src="/images/icon-tractor.png" alt="" style={{ width: 32, height: 22 }} />
-      </div>
+      {/* --- 4. RADICAL SCOOPS --- */}
+      <section style={{
+        backgroundColor: colors.milk,
+        color: colors.shed,
+        padding: isMobile ? "100px 28px" : "180px 40px",
+      }}>
+        <div style={{ maxWidth: 900, margin: "0 auto", textAlign: "center" }}>
+          <FadeIn>
+            <span style={{
+              fontFamily: fonts.display,
+              fontWeight: 700,
+              fontSize: 12,
+              letterSpacing: "0.4em",
+              color: colors.goldenHour,
+              marginBottom: 32,
+              display: "block",
+            }}>
+              REGIONAL ARTS FELLOWSHIP
+            </span>
+            <blockquote style={{
+              fontFamily: fonts.body,
+              fontStyle: "italic",
+              fontSize: isMobile ? "clamp(24px, 5vw, 36px)" : "clamp(28px, 3.5vw, 42px)",
+              lineHeight: 1.4,
+              margin: "0 0 48px",
+            }}>
+              "A place where those from every facet of the arts and sciences could get together."
+            </blockquote>
+          </FadeIn>
+          <FadeIn delay={0.1}>
+            <p style={{
+              fontFamily: fonts.body,
+              fontSize: isMobile ? 18 : 21,
+              opacity: 0.8,
+              lineHeight: 1.8,
+              maxWidth: 720,
+              margin: "0 auto 48px",
+            }}>
+              The Harvest is part of Radical Scoops, a 12-month creative residency through Regional Arts Australia. Witta sits on land shaped by generations. Jinibara Country first, then cedar-getters, dairy farmers, timber workers, and the cooperative movement that defined this hinterland. We are exploring what happens when you bring creative practice into a place with that kind of history.
+            </p>
+          </FadeIn>
+          <FadeIn delay={0.2}>
+            <a
+              href="https://regionalarts.com.au/resources/radical-scoops"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: "inline-block",
+                border: `2px solid ${colors.shed}`,
+                fontFamily: fonts.display,
+                fontWeight: 700,
+                fontSize: 13,
+                letterSpacing: "0.2em",
+                padding: "20px 48px",
+                color: colors.shed,
+                textDecoration: "none",
+                transition: "all 0.3s",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = colors.shed;
+                e.currentTarget.style.color = colors.milk;
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = "transparent";
+                e.currentTarget.style.color = colors.shed;
+              }}
+            >
+              LEARN MORE AT REGIONAL ARTS AUSTRALIA
+            </a>
+          </FadeIn>
+        </div>
+      </section>
+
+      {/* --- 5. CLOSE --- */}
+      <section style={{
+        backgroundColor: colors.hardwood,
+        color: colors.milk,
+        padding: isMobile ? "80px 28px" : "120px 40px",
+      }}>
+        <div style={{ maxWidth: 640, margin: "0 auto", textAlign: "center" }}>
+          <FadeIn>
+            <span style={{
+              fontFamily: fonts.display,
+              fontWeight: 700,
+              fontSize: 12,
+              letterSpacing: "0.3em",
+              opacity: 0.5,
+              display: "block",
+              marginBottom: 24,
+            }}>
+              GET IN TOUCH
+            </span>
+            <p style={{
+              fontFamily: fonts.body,
+              fontStyle: "italic",
+              fontSize: isMobile ? 24 : 32,
+              lineHeight: 1.5,
+              margin: "0 0 48px",
+            }}>
+              Come by. Say hello. Bring something to share.
+            </p>
+          </FadeIn>
+          <FadeIn delay={0.1}>
+            <a
+              href="mailto:hello@theharvestwitta.com.au"
+              style={{
+                fontFamily: fonts.display,
+                fontWeight: 900,
+                fontSize: isMobile ? 20 : 28,
+                color: colors.milk,
+                textDecoration: "none",
+                borderBottom: `2px solid ${colors.goldenHour}`,
+                paddingBottom: 8,
+                display: "inline-block",
+                marginBottom: 24,
+              }}
+            >
+              hello@theharvestwitta.com.au
+            </a>
+            <p style={{
+              fontFamily: fonts.display,
+              fontWeight: 700,
+              fontSize: 14,
+              letterSpacing: "0.2em",
+              opacity: 0.8,
+              margin: 0,
+            }}>
+              9 GUMLAND DRIVE, WITTA QLD 4552
+            </p>
+          </FadeIn>
+        </div>
+      </section>
 
       {/* --- FOOTER --- */}
       <BauhausFooter isMobile={isMobile} />
     </div>
   );
 }
-
-/* ─────────────────────────────────────
-   STYLES
-   ───────────────────────────────────── */
-
-const principleStyle: CSSProperties = {
-  fontFamily: fonts.body,
-  fontSize: 17,
-  lineHeight: 1.8,
-  opacity: 0.8,
-  textAlign: "center",
-};
-
-const principleBoldStyle: CSSProperties = {
-  fontFamily: fonts.display,
-  fontWeight: 900,
-  letterSpacing: "0.02em",
-};

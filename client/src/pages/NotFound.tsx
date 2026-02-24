@@ -9,8 +9,8 @@ export default function NotFound() {
   return (
     <div style={rootStyle}>
       <section style={{
-        backgroundColor: colors.black,
-        color: colors.cream,
+        backgroundColor: colors.shed,
+        color: colors.milk,
         minHeight: "80vh",
         display: "flex",
         flexDirection: "column",
@@ -49,8 +49,8 @@ export default function NotFound() {
           fontWeight: 700,
           fontSize: 14,
           letterSpacing: "0.1em",
-          color: colors.black,
-          backgroundColor: colors.yellow,
+          color: colors.shed,
+          backgroundColor: colors.goldenHour,
           padding: "16px 40px",
           textDecoration: "none",
           display: "inline-block",

@@ -27,36 +27,36 @@ const threes = [
     label: "Art. Food. Community.",
     type: "Tagline",
     items: [
-      { word: "Art", desc: "Making, expressing, creating meaning", color: colors.red },
-      { word: "Food", desc: "Growing, cooking, sharing a table", color: colors.yellow },
-      { word: "Community", desc: "Gathering, belonging, building together", color: colors.blue },
+      { word: "Art", desc: "Making, expressing, creating meaning", color: colors.crane, colorName: "Crane" },
+      { word: "Food", desc: "Growing, cooking, sharing a table", color: colors.goldenHour, colorName: "Golden Hour" },
+      { word: "Community", desc: "Gathering, belonging, building together", color: colors.workshirt, colorName: "Workshirt" },
     ],
   },
   {
     label: "Art Space. Kitchen. Garden.",
     type: "The Rooms",
     items: [
-      { word: "Art Space", desc: "Gallery, studio, maker workshop", color: colors.red },
-      { word: "Kitchen", desc: "Commercial kitchen, shared meals, food projects", color: colors.yellow },
-      { word: "Garden", desc: "Growing food, gathering outdoors, kids area", color: colors.green },
+      { word: "Art Space", desc: "Gallery, studio, maker workshop", color: colors.crane, colorName: "Crane" },
+      { word: "Kitchen", desc: "Commercial kitchen, shared meals, food projects", color: colors.goldenHour, colorName: "Golden Hour" },
+      { word: "Garden", desc: "Growing food, gathering outdoors, kids area", color: colors.canopy, colorName: "Canopy" },
     ],
   },
   {
     label: "Make. Feed. Grow.",
     type: "Verbs",
     items: [
-      { word: "Make", desc: "What you do in the Art Space", color: colors.red },
-      { word: "Feed", desc: "What you do in the Kitchen", color: colors.yellow },
-      { word: "Grow", desc: "What you do in the Garden", color: colors.green },
+      { word: "Make", desc: "What you do in the Art Space", color: colors.crane, colorName: "Crane" },
+      { word: "Feed", desc: "What you do in the Kitchen", color: colors.goldenHour, colorName: "Golden Hour" },
+      { word: "Grow", desc: "What you do in the Garden", color: colors.canopy, colorName: "Canopy" },
     ],
   },
   {
-    label: "Feed. Build. Gather.",
-    type: "Event (current Gather page)",
+    label: "Listen. Make. Share.",
+    type: "Event (Gather page)",
     items: [
-      { word: "Feed", desc: "Oysters, pizza, shared food", color: colors.yellow },
-      { word: "Build", desc: "Milk crate pavilion, hands-on", color: colors.orange },
-      { word: "Gather", desc: "Music, drinks, kids, dogs, neighbours", color: colors.blue },
+      { word: "Listen", desc: "Stories from the ridge, local history, the land", color: colors.canopy, colorName: "Canopy" },
+      { word: "Make", desc: "Milk crate pavilion, hands-on, collaborative", color: colors.crane, colorName: "Crane" },
+      { word: "Share", desc: "Oysters, Flight Bar, neighbours on the lawn", color: colors.goldenHour, colorName: "Golden Hour" },
     ],
   },
 ];
@@ -64,7 +64,7 @@ const threes = [
 const rooms = [
   {
     name: "The Art Space",
-    color: colors.red,
+    color: colors.crane,
     verb: "Make",
     tagline: "Art",
     what: "Gallery wall. Maker workshop. Studio residencies. Exhibition space.",
@@ -78,8 +78,8 @@ const rooms = [
   },
   {
     name: "The Kitchen",
-    color: colors.yellow,
-    textColor: colors.black,
+    color: colors.goldenHour,
+    textColor: colors.shed,
     verb: "Feed",
     tagline: "Food",
     what: "Commercial kitchen. Shared meals. Food preservation. Cooking classes.",
@@ -93,7 +93,7 @@ const rooms = [
   },
   {
     name: "The Garden",
-    color: colors.green,
+    color: colors.canopy,
     verb: "Grow",
     tagline: "Community",
     what: "Food garden. Kids area. Outdoor gathering space. Fire pit.",
@@ -339,7 +339,7 @@ export default function BrandGuide() {
               fontSize: 18,
               textAlign: "center",
               padding: "14px 24px",
-              border: `2px solid ${colors.black}`,
+              border: `2px solid ${colors.shed}`,
               borderRadius: 0,
               background: "transparent",
               outline: "none",
@@ -357,8 +357,8 @@ export default function BrandGuide() {
     <div style={rootStyle}>
       {/* Header */}
       <header style={{
-        backgroundColor: colors.black,
-        color: colors.cream,
+        backgroundColor: colors.shed,
+        color: colors.milk,
         padding: isMobile ? "60px 24px 40px" : "80px 40px 48px",
         textAlign: "center",
       }}>
@@ -389,8 +389,8 @@ export default function BrandGuide() {
           position: "sticky",
           top: 0,
           zIndex: 50,
-          backgroundColor: colors.black,
-          borderBottom: "1px solid rgba(244,244,242,0.08)",
+          backgroundColor: colors.shed,
+          borderBottom: "1px solid rgba(245,240,232,0.08)",
           overflowX: "auto",
           WebkitOverflowScrolling: "touch",
         }}
@@ -412,11 +412,11 @@ export default function BrandGuide() {
                 fontWeight: 700,
                 fontSize: 10,
                 letterSpacing: "0.12em",
-                color: colors.cream,
+                color: colors.milk,
                 opacity: activeChapter === ch.id ? 1 : 0.35,
                 backgroundColor: "transparent",
                 border: "none",
-                borderBottom: activeChapter === ch.id ? `2px solid ${colors.yellow}` : "2px solid transparent",
+                borderBottom: activeChapter === ch.id ? `2px solid ${colors.goldenHour}` : "2px solid transparent",
                 padding: isMobile ? "12px 10px" : "14px 16px",
                 cursor: "pointer",
                 transition: "opacity 0.15s, border-color 0.15s",
@@ -448,7 +448,7 @@ export default function BrandGuide() {
               border: `1px solid rgba(26,26,26,0.1)`,
               padding: 28,
             }}>
-              <span style={{ ...smallLabelStyle, color: colors.black, opacity: 0.4 }}>
+              <span style={{ ...smallLabelStyle, color: colors.shed, opacity: 0.4 }}>
                 {set.type.toUpperCase()}
               </span>
               <h3 style={{
@@ -476,6 +476,9 @@ export default function BrandGuide() {
                       <span style={{ fontFamily: fonts.body, fontSize: 14, opacity: 0.6, marginLeft: 8 }}>
                         {item.desc}
                       </span>
+                      <span style={{ fontFamily: fonts.display, fontSize: 11, opacity: 0.35, marginLeft: 8, letterSpacing: "0.05em" }}>
+                        {item.colorName}
+                      </span>
                     </div>
                   </div>
                 ))}
@@ -491,7 +494,7 @@ export default function BrandGuide() {
           border: `1px solid rgba(26,26,26,0.1)`,
           padding: 28,
         }}>
-          <span style={{ ...smallLabelStyle, color: colors.black, opacity: 0.4 }}>
+          <span style={{ ...smallLabelStyle, color: colors.shed, opacity: 0.4 }}>
             HOW THEY MAP
           </span>
           <table style={{
@@ -503,7 +506,7 @@ export default function BrandGuide() {
           }}>
             <thead>
               <tr>
-                {["Tagline", "Room", "Verb", "Color", "Event"].map((h) => (
+                {["Tagline", "Room", "Verb", "Color (Place)", "Event"].map((h) => (
                   <th key={h} style={{
                     textAlign: "left",
                     fontFamily: fonts.display,
@@ -521,22 +524,25 @@ export default function BrandGuide() {
             </thead>
             <tbody>
               {[
-                { tagline: "Art", room: "Art Space", verb: "Make", color: colors.red, event: "Build" },
-                { tagline: "Food", room: "Kitchen", verb: "Feed", color: colors.yellow, event: "Feed" },
-                { tagline: "Community", room: "Garden", verb: "Grow", color: colors.green, event: "Gather" },
+                { tagline: "Art", room: "Art Space", verb: "Make", color: colors.crane, colorName: "Crane", event: "Make" },
+                { tagline: "Food", room: "Kitchen", verb: "Feed", color: colors.goldenHour, colorName: "Golden Hour", event: "Share" },
+                { tagline: "Community", room: "Garden", verb: "Grow", color: colors.canopy, colorName: "Canopy", event: "Listen" },
               ].map((row) => (
                 <tr key={row.tagline}>
                   <td style={tableCellStyle}>{row.tagline}</td>
                   <td style={tableCellStyle}>{row.room}</td>
                   <td style={tableCellStyle}>{row.verb}</td>
                   <td style={tableCellStyle}>
-                    <div style={{
-                      width: 16,
-                      height: 16,
-                      backgroundColor: row.color,
-                      display: "inline-block",
-                      verticalAlign: "middle",
-                    }} />
+                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                      <div style={{
+                        width: 16,
+                        height: 16,
+                        backgroundColor: row.color,
+                        display: "inline-block",
+                        flexShrink: 0,
+                      }} />
+                      <span style={{ fontSize: 12, opacity: 0.6 }}>{row.colorName}</span>
+                    </div>
                   </td>
                   <td style={tableCellStyle}>{row.event}</td>
                 </tr>
@@ -548,12 +554,12 @@ export default function BrandGuide() {
 
       {/* ─── THE ROOMS ─── */}
       <section id="rooms" style={{
-        backgroundColor: colors.black,
-        color: colors.cream,
+        backgroundColor: colors.shed,
+        color: colors.milk,
         padding: isMobile ? "60px 24px" : "80px 40px",
       }}>
-        <h2 style={{ ...sectionHeadingStyle, color: colors.cream }}>THE ROOMS</h2>
-        <p style={{ ...sectionDescStyle, color: colors.cream, opacity: 0.6 }}>
+        <h2 style={{ ...sectionHeadingStyle, color: colors.milk }}>THE ROOMS</h2>
+        <p style={{ ...sectionDescStyle, color: colors.milk, opacity: 0.6 }}>
           Three zones. Each has a name, a verb, a color, and an open question.
         </p>
 
@@ -619,7 +625,7 @@ export default function BrandGuide() {
                 </div>
                 <div style={{
                   flex: isMobile ? "auto" : "0 0 280px",
-                  backgroundColor: "rgba(244,244,242,0.05)",
+                  backgroundColor: "rgba(245,240,232,0.05)",
                   padding: 20,
                 }}>
                   <span style={{
@@ -656,8 +662,8 @@ export default function BrandGuide() {
             fontWeight: 700,
             fontSize: 13,
             letterSpacing: "0.1em",
-            color: colors.black,
-            backgroundColor: colors.yellow,
+            color: colors.shed,
+            backgroundColor: colors.goldenHour,
             padding: "14px 32px",
             textDecoration: "none",
             display: "inline-block",
@@ -669,7 +675,7 @@ export default function BrandGuide() {
             fontSize: 12,
             opacity: 0.4,
             margin: "10px 0 0",
-            color: colors.cream,
+            color: colors.milk,
           }}>
             Sketch, plan, and collect ideas for each zone
           </p>
@@ -721,12 +727,12 @@ export default function BrandGuide() {
 
       {/* ─── WRITING STYLE ─── */}
       <section id="writing" style={{
-        backgroundColor: colors.black,
-        color: colors.cream,
+        backgroundColor: colors.shed,
+        color: colors.milk,
         padding: isMobile ? "60px 24px" : "80px 40px",
       }}>
-        <h2 style={{ ...sectionHeadingStyle, color: colors.cream }}>WRITING STYLE</h2>
-        <p style={{ ...sectionDescStyle, color: colors.cream, opacity: 0.6 }}>
+        <h2 style={{ ...sectionHeadingStyle, color: colors.milk }}>WRITING STYLE</h2>
+        <p style={{ ...sectionDescStyle, color: colors.milk, opacity: 0.6 }}>
           Barry's story as published on the Empathy Ledger. This is the voice and tone we're aiming for. Matter-of-fact, grounded, no flourish.
         </p>
 
@@ -736,7 +742,7 @@ export default function BrandGuide() {
         }}>
           <Collapsible title="Barry's Article" defaultOpen={false}>
             <div style={{
-              borderLeft: `3px solid ${colors.red}`,
+              borderLeft: `3px solid ${colors.crane}`,
               paddingLeft: 24,
               marginBottom: 32,
             }}>
@@ -777,7 +783,7 @@ export default function BrandGuide() {
                   fontWeight: 700,
                   fontSize: 11,
                   letterSpacing: "0.12em",
-                  color: colors.yellow,
+                  color: colors.goldenHour,
                   opacity: 0.7,
                   textDecoration: "none",
                   display: "inline-block",
@@ -822,7 +828,7 @@ export default function BrandGuide() {
           <Collapsible title="Voice Notes" defaultOpen={true}>
             <div style={{
               padding: 24,
-              backgroundColor: "rgba(244,244,242,0.05)",
+              backgroundColor: "rgba(245,240,232,0.05)",
             }}>
               <ul style={{
                 fontFamily: fonts.body,
@@ -936,7 +942,7 @@ export default function BrandGuide() {
             <span style={{
               fontFamily: fonts.body,
               fontSize: 13,
-              color: colors.cream,
+              color: colors.milk,
               opacity: 0.6,
             }}>
               {lightbox.label}
@@ -946,7 +952,7 @@ export default function BrandGuide() {
               fontWeight: 700,
               fontSize: 12,
               letterSpacing: "0.1em",
-              color: colors.cream,
+              color: colors.milk,
               opacity: 0.5,
             }}>
               ESC / CLICK TO CLOSE
@@ -968,12 +974,12 @@ export default function BrandGuide() {
 
       {/* ─── SKETCH PAD ─── */}
       <section id="sketchpad" style={{
-        backgroundColor: colors.black,
-        color: colors.cream,
+        backgroundColor: colors.shed,
+        color: colors.milk,
         padding: isMobile ? "60px 24px" : "80px 40px",
       }}>
-        <h2 style={{ ...sectionHeadingStyle, color: colors.cream }}>SKETCH PAD</h2>
-        <p style={{ ...sectionDescStyle, color: colors.cream, opacity: 0.6 }}>
+        <h2 style={{ ...sectionHeadingStyle, color: colors.milk }}>SKETCH PAD</h2>
+        <p style={{ ...sectionDescStyle, color: colors.milk, opacity: 0.6 }}>
           Use Gemini to conceptualize. Describe what you're thinking and it'll draw it.
         </p>
 
@@ -982,12 +988,12 @@ export default function BrandGuide() {
 
       {/* ─── SOCIAL KIT ─── */}
       <section id="social" style={{
-        backgroundColor: colors.black,
-        color: colors.cream,
+        backgroundColor: colors.shed,
+        color: colors.milk,
         padding: isMobile ? "60px 24px" : "80px 40px",
       }}>
-        <h2 style={{ ...sectionHeadingStyle, color: colors.cream }}>SOCIAL KIT</h2>
-        <p style={{ ...sectionDescStyle, color: colors.cream, opacity: 0.6 }}>
+        <h2 style={{ ...sectionHeadingStyle, color: colors.milk }}>SOCIAL KIT</h2>
+        <p style={{ ...sectionDescStyle, color: colors.milk, opacity: 0.6 }}>
           Everything a social media manager needs. Images, captions, posting order, and channel guidance.
         </p>
 
@@ -997,41 +1003,124 @@ export default function BrandGuide() {
       {/* ─── COLOR PALETTE ─── */}
       <section id="palette" style={{ padding: isMobile ? "60px 24px" : "80px 40px" }}>
         <h2 style={sectionHeadingStyle}>PALETTE</h2>
+        <p style={sectionDescStyle}>
+          Every colour drawn from the place itself. Named after what you can see and touch on the property.
+        </p>
+
         <div style={{
-          display: "flex",
-          flexWrap: "wrap",
-          gap: 0,
-          maxWidth: 900,
-          margin: "32px auto 0",
+          display: "grid",
+          gridTemplateColumns: isMobile ? "1fr" : "repeat(2, 1fr)",
+          gap: 24,
+          maxWidth: 1000,
+          margin: "40px auto 0",
         }}>
-          {Object.entries(colors).map(([name, hex]) => (
-            <div key={name} style={{
-              flex: isMobile ? "1 1 50%" : "1 1 0",
-              minWidth: isMobile ? "50%" : 0,
-              backgroundColor: hex,
-              padding: "32px 20px",
-              color: name === "yellow" || name === "cream" || name === "orange" ? colors.black : colors.cream,
+          {[
+            { name: "shed", hex: colors.shed, img: "/images/compendium/barry/IMG_5687.jpg", desc: "Barry's shed interior. Dark timber shadow, corrugated iron walls, decades of oil and sawdust.", light: false },
+            { name: "milk", hex: colors.milk, img: "/images/witta/history/teutoburg-cheese-making-1899.png", desc: "Raw milk, aged paper, sandstone render. The dairy heritage of Witta, 1899.", light: true },
+            { name: "rammedEarth", hex: colors.rammedEarth, img: "/images/palette/rammed-earth.jpg", desc: "The rammed earth walls of The Harvest building. Local soil compressed into architecture.", light: true },
+            { name: "goldenHour", hex: colors.goldenHour, img: "/images/compendium/barry/IMG_5764.jpg", desc: "Late afternoon on the ridge. Honey timber, warm light through the shed door.", light: false },
+            { name: "workshirt", hex: colors.workshirt, img: "/images/compendium/barry/IMG_5758.jpg", desc: "Barry's navy work shirt. Hinterland dusk, the blue you see every afternoon.", light: false },
+            { name: "calendula", hex: colors.calendula, img: "/images/palette/calendula.jpg", desc: "Calendula in the garden beds. Warm permaculture orange, companion planting.", light: false },
+            { name: "canopy", hex: colors.canopy, img: "/images/compendium/barry/IMG_5613.jpg", desc: "Paddock green, ridge eucalyptus canopy. The colour behind everything.", light: false },
+            { name: "hardwood", hex: colors.hardwood, img: "/images/compendium/barry/IMG_5699.jpg", desc: "Blackbutt beams, shed framing, dark bark. The structure holding it all together.", light: false },
+            { name: "lillyPilly", hex: colors.lillyPilly, img: "/images/palette/lilly-pilly.jpg", desc: "Syzygium new growth. The tree at the front gate of The Harvest, burgundy flush.", light: false },
+            { name: "crane", hex: colors.crane, img: "/images/compendium/barry/IMG_5613.jpg", desc: "Rusted iron on Barry's crane. Corrugated iron patina, oxidized by decades of weather.", light: false },
+          ].map((c) => (
+            <div key={c.name} style={{
+              display: "flex",
+              flexDirection: "column",
+              overflow: "hidden",
+              border: `1px solid rgba(26,26,26,0.08)`,
             }}>
-              <span style={{
-                fontFamily: fonts.display,
-                fontWeight: 700,
-                fontSize: 11,
-                letterSpacing: "0.12em",
-                display: "block",
+              {/* Reference photo */}
+              <div style={{
+                height: 180,
+                backgroundImage: `url(${c.img})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }} />
+              {/* Color swatch + info */}
+              <div style={{
+                backgroundColor: c.hex,
+                padding: "20px 24px",
+                color: c.light ? colors.shed : colors.milk,
+                flex: 1,
               }}>
-                {name.toUpperCase()}
-              </span>
-              <span style={{
-                fontFamily: "monospace",
-                fontSize: 12,
-                opacity: 0.6,
-                display: "block",
-                marginTop: 4,
-              }}>
-                {hex}
-              </span>
+                <div style={{
+                  fontFamily: fonts.display,
+                  fontWeight: 900,
+                  fontSize: 13,
+                  letterSpacing: "0.15em",
+                  marginBottom: 8,
+                }}>
+                  {c.name.replace(/([A-Z])/g, " $1").trim().toUpperCase()}
+                </div>
+                <div style={{
+                  fontFamily: fonts.body,
+                  fontSize: 13,
+                  lineHeight: 1.6,
+                  opacity: 0.85,
+                  marginBottom: 12,
+                }}>
+                  {c.desc}
+                </div>
+                <div style={{
+                  fontFamily: "monospace",
+                  fontSize: 12,
+                  opacity: 0.5,
+                }}>
+                  {c.hex}
+                </div>
+              </div>
             </div>
           ))}
+        </div>
+
+        {/* Compact alias reference */}
+        <div style={{
+          maxWidth: 1000,
+          margin: "40px auto 0",
+          padding: 24,
+          backgroundColor: colors.shed,
+          color: colors.milk,
+        }}>
+          <div style={{
+            fontFamily: fonts.display,
+            fontWeight: 700,
+            fontSize: 11,
+            letterSpacing: "0.12em",
+            opacity: 0.4,
+            marginBottom: 16,
+          }}>
+            CSS ALIASES (BACKWARD COMPATIBLE)
+          </div>
+          <div style={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: 12,
+          }}>
+            {(["black", "cream", "red", "yellow", "blue", "orange", "green", "indigo", "magenta"] as const).map((alias) => (
+              <div key={alias} style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+              }}>
+                <div style={{
+                  width: 16,
+                  height: 16,
+                  backgroundColor: colors[alias],
+                  border: alias === "cream" ? `1px solid rgba(245,240,232,0.3)` : "none",
+                }} />
+                <span style={{
+                  fontFamily: "monospace",
+                  fontSize: 11,
+                  opacity: 0.6,
+                }}>
+                  {alias}
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -1049,7 +1138,7 @@ export default function BrandGuide() {
           gap: 40,
         }}>
           <div>
-            <span style={{ ...smallLabelStyle, color: colors.black, opacity: 0.4 }}>
+            <span style={{ ...smallLabelStyle, color: colors.shed, opacity: 0.4 }}>
               DISPLAY / MONTSERRAT
             </span>
             <p style={{
@@ -1073,7 +1162,7 @@ export default function BrandGuide() {
             </p>
           </div>
           <div>
-            <span style={{ ...smallLabelStyle, color: colors.black, opacity: 0.4 }}>
+            <span style={{ ...smallLabelStyle, color: colors.shed, opacity: 0.4 }}>
               BODY / INTER
             </span>
             <p style={{
@@ -1100,27 +1189,27 @@ export default function BrandGuide() {
 
       {/* ─── VOICE RULES ─── */}
       <section id="voice" style={{
-        backgroundColor: colors.black,
-        color: colors.cream,
+        backgroundColor: colors.shed,
+        color: colors.milk,
         padding: isMobile ? "60px 24px" : "80px 40px",
       }}>
-        <h2 style={{ ...sectionHeadingStyle, color: colors.cream }}>VOICE RULES</h2>
-        <p style={{ ...sectionDescStyle, color: colors.cream, opacity: 0.6 }}>
+        <h2 style={{ ...sectionHeadingStyle, color: colors.milk }}>VOICE RULES</h2>
+        <p style={{ ...sectionDescStyle, color: colors.milk, opacity: 0.6 }}>
           Write like you're talking to a neighbor over the fence. If it sounds like a council newsletter, start again.
         </p>
 
         <div style={{ maxWidth: 800, margin: "40px auto 0" }}>
           {/* The Rule */}
           <div style={{
-            border: `2px solid ${colors.yellow}`,
+            border: `2px solid ${colors.goldenHour}`,
             padding: isMobile ? "24px 20px" : "32px 40px",
             marginBottom: 40,
             textAlign: "center",
           }}>
-            <span style={{ fontFamily: fonts.display, fontWeight: 900, fontSize: isMobile ? 14 : 18, letterSpacing: "0.08em", color: colors.yellow }}>
+            <span style={{ fontFamily: fonts.display, fontWeight: 900, fontSize: isMobile ? 14 : 18, letterSpacing: "0.08em", color: colors.goldenHour }}>
               THE 3-SECOND RULE
             </span>
-            <p style={{ fontFamily: fonts.body, fontSize: isMobile ? 15 : 17, lineHeight: 1.7, color: colors.cream, opacity: 0.7, margin: "12px 0 0" }}>
+            <p style={{ fontFamily: fonts.body, fontSize: isMobile ? 15 : 17, lineHeight: 1.7, color: colors.milk, opacity: 0.7, margin: "12px 0 0" }}>
               Read it out loud. If you wouldn't say it to someone standing in the garden, rewrite it.
             </p>
           </div>
@@ -1134,11 +1223,11 @@ export default function BrandGuide() {
               gap: 0,
               marginTop: 16,
             }}>
-              <div style={{ padding: "12px 16px", backgroundColor: "rgba(58,110,71,0.15)", borderBottom: "1px solid rgba(244,244,242,0.06)" }}>
-                <span style={{ fontFamily: fonts.display, fontWeight: 700, fontSize: 10, letterSpacing: "0.15em", color: colors.green, opacity: 0.8 }}>SAY THIS</span>
+              <div style={{ padding: "12px 16px", backgroundColor: "rgba(58,110,71,0.15)", borderBottom: "1px solid rgba(245,240,232,0.06)" }}>
+                <span style={{ fontFamily: fonts.display, fontWeight: 700, fontSize: 10, letterSpacing: "0.15em", color: colors.canopy, opacity: 0.8 }}>SAY THIS</span>
               </div>
-              <div style={{ padding: "12px 16px", backgroundColor: "rgba(214,44,44,0.1)", borderBottom: "1px solid rgba(244,244,242,0.06)" }}>
-                <span style={{ fontFamily: fonts.display, fontWeight: 700, fontSize: 10, letterSpacing: "0.15em", color: colors.red, opacity: 0.8 }}>NOT THAT</span>
+              <div style={{ padding: "12px 16px", backgroundColor: "rgba(214,44,44,0.1)", borderBottom: "1px solid rgba(245,240,232,0.06)" }}>
+                <span style={{ fontFamily: fonts.display, fontWeight: 700, fontSize: 10, letterSpacing: "0.15em", color: colors.crane, opacity: 0.8 }}>NOT THAT</span>
               </div>
               {[
                 ["gather", "event"],
@@ -1155,10 +1244,10 @@ export default function BrandGuide() {
                 ["Saturday morning", "upcoming activation"],
               ].map(([yes, no], i) => (
                 <div key={i} style={{ display: "contents" }}>
-                  <div style={{ padding: "10px 16px", borderBottom: "1px solid rgba(244,244,242,0.06)", fontFamily: fonts.body, fontSize: 14, color: colors.cream }}>
+                  <div style={{ padding: "10px 16px", borderBottom: "1px solid rgba(245,240,232,0.06)", fontFamily: fonts.body, fontSize: 14, color: colors.milk }}>
                     {yes}
                   </div>
-                  <div style={{ padding: "10px 16px", borderBottom: "1px solid rgba(244,244,242,0.06)", fontFamily: fonts.body, fontSize: 14, color: colors.cream, opacity: 0.35, textDecoration: "line-through" }}>
+                  <div style={{ padding: "10px 16px", borderBottom: "1px solid rgba(245,240,232,0.06)", fontFamily: fonts.body, fontSize: 14, color: colors.milk, opacity: 0.35, textDecoration: "line-through" }}>
                     {no}
                   </div>
                 </div>
@@ -1172,25 +1261,25 @@ export default function BrandGuide() {
             {[
               {
                 channel: "SOCIAL CAPTION",
-                color: colors.blue,
+                color: colors.workshirt,
                 good: "Saturday 7 March. Oysters, pizza, music. Come as you are.\nSave your spot → theharvestwitta.com.au/gather",
                 bad: "Join us for our inaugural community gathering event! We're excited to announce The Harvest's first open day featuring local food, live music and more. RSVP via the link in our bio. #community #sundayvibes",
               },
               {
                 channel: "NEWSLETTER SUBJECT",
-                color: colors.yellow,
+                color: colors.goldenHour,
                 good: "Something's growing in Witta",
                 bad: "The Harvest Community Hub — March Newsletter & Upcoming Events",
               },
               {
                 channel: "EVENT SIGNAGE",
-                color: colors.orange,
+                color: colors.calendula,
                 good: "FOOD THIS WAY →\nOysters. Pizza. BYO.",
                 bad: "Welcome to The Harvest Community Hub First Gathering Event — Food Service Area Located Ahead",
               },
               {
                 channel: "INSTAGRAM STORY",
-                color: colors.red,
+                color: colors.crane,
                 good: "Shaun's shucking 200 oysters on Saturday.\nHe was the first person to say yes to this place.",
                 bad: "Meet our amazing community partner @shaunfisher who will be providing fresh locally-sourced oysters at our upcoming event! 🦪✨ Don't miss out!",
               },
@@ -1217,8 +1306,8 @@ export default function BrandGuide() {
                     border: `1px solid rgba(58,110,71,0.3)`,
                     borderRadius: 2,
                   }}>
-                    <span style={{ fontFamily: fonts.display, fontWeight: 700, fontSize: 9, letterSpacing: "0.15em", color: colors.green, display: "block", marginBottom: 8 }}>ON-BRAND</span>
-                    <p style={{ fontFamily: fonts.body, fontSize: 14, lineHeight: 1.7, color: colors.cream, margin: 0, whiteSpace: "pre-line" }}>{ex.good}</p>
+                    <span style={{ fontFamily: fonts.display, fontWeight: 700, fontSize: 9, letterSpacing: "0.15em", color: colors.canopy, display: "block", marginBottom: 8 }}>ON-BRAND</span>
+                    <p style={{ fontFamily: fonts.body, fontSize: 14, lineHeight: 1.7, color: colors.milk, margin: 0, whiteSpace: "pre-line" }}>{ex.good}</p>
                   </div>
                   <div style={{
                     padding: "16px 20px",
@@ -1226,8 +1315,8 @@ export default function BrandGuide() {
                     borderRadius: 2,
                     opacity: 0.5,
                   }}>
-                    <span style={{ fontFamily: fonts.display, fontWeight: 700, fontSize: 9, letterSpacing: "0.15em", color: colors.red, display: "block", marginBottom: 8 }}>OFF-BRAND</span>
-                    <p style={{ fontFamily: fonts.body, fontSize: 14, lineHeight: 1.7, color: colors.cream, margin: 0, whiteSpace: "pre-line" }}>{ex.bad}</p>
+                    <span style={{ fontFamily: fonts.display, fontWeight: 700, fontSize: 9, letterSpacing: "0.15em", color: colors.crane, display: "block", marginBottom: 8 }}>OFF-BRAND</span>
+                    <p style={{ fontFamily: fonts.body, fontSize: 14, lineHeight: 1.7, color: colors.milk, margin: 0, whiteSpace: "pre-line" }}>{ex.bad}</p>
                   </div>
                 </div>
               </div>
@@ -1241,10 +1330,10 @@ export default function BrandGuide() {
             backgroundColor: "rgba(214,44,44,0.06)",
             border: "1px solid rgba(214,44,44,0.15)",
           }}>
-            <span style={{ fontFamily: fonts.display, fontWeight: 700, fontSize: 11, letterSpacing: "0.12em", color: colors.red }}>
+            <span style={{ fontFamily: fonts.display, fontWeight: 700, fontSize: 11, letterSpacing: "0.12em", color: colors.crane }}>
               NEVER USE THESE WORDS
             </span>
-            <p style={{ fontFamily: fonts.body, fontSize: 14, lineHeight: 2, color: colors.cream, opacity: 0.5, margin: "12px 0 0" }}>
+            <p style={{ fontFamily: fonts.body, fontSize: 14, lineHeight: 2, color: colors.milk, opacity: 0.5, margin: "12px 0 0" }}>
               synergy — leverage — stakeholder — activation — holistic — scalable — innovative — curated — bespoke — journey — ecosystem — empower — uplift — vibrant — world-class — cutting-edge — best practice — thought leader — paradigm — reimagine
             </p>
           </div>
@@ -1263,12 +1352,12 @@ export default function BrandGuide() {
         <div style={{ maxWidth: 900, margin: "40px auto 0" }}>
           {/* Core Rule */}
           <div style={{
-            border: `2px solid ${colors.green}`,
+            border: `2px solid ${colors.canopy}`,
             padding: isMobile ? "24px 20px" : "32px 40px",
             marginBottom: 40,
             textAlign: "center",
           }}>
-            <span style={{ fontFamily: fonts.display, fontWeight: 900, fontSize: isMobile ? 14 : 18, letterSpacing: "0.08em", color: colors.green }}>
+            <span style={{ fontFamily: fonts.display, fontWeight: 900, fontSize: isMobile ? 14 : 18, letterSpacing: "0.08em", color: colors.canopy }}>
               THE PHOTO TEST
             </span>
             <p style={{ fontFamily: fonts.body, fontSize: isMobile ? 15 : 17, lineHeight: 1.7, opacity: 0.7, margin: "12px 0 0" }}>
@@ -1287,32 +1376,32 @@ export default function BrandGuide() {
               {
                 title: "LIGHT",
                 rule: "Natural light only. Golden hour, overcast, dappled shade through trees. Never flash, never studio.",
-                color: colors.yellow,
+                color: colors.goldenHour,
               },
               {
                 title: "SUBJECTS",
                 rule: "People doing things — hands in soil, fire cooking, painting, building. Not posed. Not looking at camera. Action over portrait.",
-                color: colors.red,
+                color: colors.crane,
               },
               {
                 title: "LANDSCAPE",
                 rule: "Hinterland greens, morning mist on ridgelines, red soil, timber grain. Wide and atmospheric or tight and textural.",
-                color: colors.green,
+                color: colors.canopy,
               },
               {
                 title: "TONE",
                 rule: "Warm. Earthy. Slightly desaturated. Think morning light on timber, not Instagram sunset filter. Honest, not aspirational.",
-                color: colors.orange,
+                color: colors.calendula,
               },
               {
                 title: "COMPOSITION",
                 rule: "Off-center, environmental. Show the place around the person. Leave breathing room. Don't crop tight like a headshot.",
-                color: colors.blue,
+                color: colors.workshirt,
               },
               {
                 title: "TEXTURE",
                 rule: "Close-ups of materials matter: timber grain, soil, clay, canvas, rust, woven fabric, handwritten notes, well-used tools.",
-                color: colors.magenta,
+                color: colors.lillyPilly,
               },
             ].map((r) => (
               <div key={r.title} style={{
@@ -1331,7 +1420,7 @@ export default function BrandGuide() {
           </div>
 
           {/* Reference Pairs */}
-          <span style={{ ...smallLabelStyle, color: colors.black, opacity: 0.4, marginBottom: 16 }}>REFERENCE — ON-BRAND PHOTOGRAPHY</span>
+          <span style={{ ...smallLabelStyle, color: colors.shed, opacity: 0.4, marginBottom: 16 }}>REFERENCE — ON-BRAND PHOTOGRAPHY</span>
           <div style={{
             display: "grid",
             gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)",
@@ -1371,7 +1460,7 @@ export default function BrandGuide() {
             backgroundColor: "rgba(214,44,44,0.04)",
             border: "1px solid rgba(214,44,44,0.1)",
           }}>
-            <span style={{ fontFamily: fonts.display, fontWeight: 700, fontSize: 11, letterSpacing: "0.12em", color: colors.red }}>
+            <span style={{ fontFamily: fonts.display, fontWeight: 700, fontSize: 11, letterSpacing: "0.12em", color: colors.crane }}>
               NEVER USE
             </span>
             <div style={{
@@ -1393,7 +1482,7 @@ export default function BrandGuide() {
                 <div key={dont} style={{
                   fontFamily: fonts.body,
                   fontSize: 13,
-                  color: colors.red,
+                  color: colors.crane,
                   opacity: 0.6,
                   padding: "4px 0",
                 }}>
@@ -1407,12 +1496,12 @@ export default function BrandGuide() {
 
       {/* ─── DO / DON'T ─── */}
       <section id="donts" style={{
-        backgroundColor: colors.black,
-        color: colors.cream,
+        backgroundColor: colors.shed,
+        color: colors.milk,
         padding: isMobile ? "60px 24px" : "80px 40px",
       }}>
-        <h2 style={{ ...sectionHeadingStyle, color: colors.cream }}>DO / DON'T</h2>
-        <p style={{ ...sectionDescStyle, color: colors.cream, opacity: 0.6 }}>
+        <h2 style={{ ...sectionHeadingStyle, color: colors.milk }}>DO / DON'T</h2>
+        <p style={{ ...sectionDescStyle, color: colors.milk, opacity: 0.6 }}>
           When in doubt, check here. On-brand vs off-brand at a glance.
         </p>
 
@@ -1420,7 +1509,7 @@ export default function BrandGuide() {
           {[
             {
               category: "COLOR",
-              color: colors.yellow,
+              color: colors.goldenHour,
               doList: [
                 "Use zone colors for their zone only (red = Art Space, yellow = Kitchen, green = Garden)",
                 "Black backgrounds with cream text for digital",
@@ -1436,7 +1525,7 @@ export default function BrandGuide() {
             },
             {
               category: "TYPE",
-              color: colors.blue,
+              color: colors.workshirt,
               doList: [
                 "Montserrat 900 for display headlines, always uppercase",
                 "Montserrat 700 for labels, buttons, and small caps",
@@ -1452,7 +1541,7 @@ export default function BrandGuide() {
             },
             {
               category: "PHOTOGRAPHY",
-              color: colors.green,
+              color: colors.canopy,
               doList: [
                 "Natural light, warm tones, real people doing real things",
                 "Show the place — hinterland, timber, soil, garden",
@@ -1468,7 +1557,7 @@ export default function BrandGuide() {
             },
             {
               category: "COPY",
-              color: colors.orange,
+              color: colors.calendula,
               doList: [
                 "Short sentences. Full stops. Let silence do the work.",
                 "Name real things — Saturday, oysters, Barry, Witta",
@@ -1484,7 +1573,7 @@ export default function BrandGuide() {
             },
             {
               category: "LAYOUT",
-              color: colors.red,
+              color: colors.crane,
               doList: [
                 "Lots of whitespace — let things breathe",
                 "Strong grid with one focal point per composition",
@@ -1500,7 +1589,7 @@ export default function BrandGuide() {
             },
             {
               category: "TONE",
-              color: colors.magenta,
+              color: colors.lillyPilly,
               doList: [
                 "Warm, direct, honest — like a conversation",
                 "Acknowledge uncertainty: \"we're figuring it out together\"",
@@ -1537,9 +1626,9 @@ export default function BrandGuide() {
                   border: "1px solid rgba(58,110,71,0.25)",
                   borderRadius: 2,
                 }}>
-                  <span style={{ fontFamily: fonts.display, fontWeight: 700, fontSize: 10, letterSpacing: "0.15em", color: colors.green, display: "block", marginBottom: 12 }}>DO</span>
+                  <span style={{ fontFamily: fonts.display, fontWeight: 700, fontSize: 10, letterSpacing: "0.15em", color: colors.canopy, display: "block", marginBottom: 12 }}>DO</span>
                   {section.doList.map((item, i) => (
-                    <p key={i} style={{ fontFamily: fonts.body, fontSize: 13, lineHeight: 1.6, color: colors.cream, opacity: 0.7, margin: i === 0 ? 0 : "8px 0 0" }}>
+                    <p key={i} style={{ fontFamily: fonts.body, fontSize: 13, lineHeight: 1.6, color: colors.milk, opacity: 0.7, margin: i === 0 ? 0 : "8px 0 0" }}>
                       {"\u2713"} {item}
                     </p>
                   ))}
@@ -1550,9 +1639,9 @@ export default function BrandGuide() {
                   borderRadius: 2,
                   opacity: 0.6,
                 }}>
-                  <span style={{ fontFamily: fonts.display, fontWeight: 700, fontSize: 10, letterSpacing: "0.15em", color: colors.red, display: "block", marginBottom: 12 }}>DON'T</span>
+                  <span style={{ fontFamily: fonts.display, fontWeight: 700, fontSize: 10, letterSpacing: "0.15em", color: colors.crane, display: "block", marginBottom: 12 }}>DON'T</span>
                   {section.dontList.map((item, i) => (
-                    <p key={i} style={{ fontFamily: fonts.body, fontSize: 13, lineHeight: 1.6, color: colors.cream, margin: i === 0 ? 0 : "8px 0 0" }}>
+                    <p key={i} style={{ fontFamily: fonts.body, fontSize: 13, lineHeight: 1.6, color: colors.milk, margin: i === 0 ? 0 : "8px 0 0" }}>
                       {"\u2717"} {item}
                     </p>
                   ))}
@@ -1564,11 +1653,11 @@ export default function BrandGuide() {
           {/* Decision Tree */}
           <div style={{
             marginTop: 24,
-            border: `2px solid ${colors.yellow}`,
+            border: `2px solid ${colors.goldenHour}`,
             padding: isMobile ? "24px 20px" : "32px 40px",
             textAlign: "center",
           }}>
-            <span style={{ fontFamily: fonts.display, fontWeight: 900, fontSize: isMobile ? 14 : 18, letterSpacing: "0.08em", color: colors.yellow }}>
+            <span style={{ fontFamily: fonts.display, fontWeight: 900, fontSize: isMobile ? 14 : 18, letterSpacing: "0.08em", color: colors.goldenHour }}>
               WHEN IN DOUBT
             </span>
             <div style={{
@@ -1588,7 +1677,7 @@ export default function BrandGuide() {
                 "Are you using a word from the 'never' list? → Rewrite.",
                 "Still not sure? → Ask: does this feel like Witta, or like a brochure?",
               ].map((rule, i) => (
-                <p key={i} style={{ fontFamily: fonts.body, fontSize: 14, lineHeight: 1.7, color: colors.cream, opacity: 0.7, margin: 0 }}>
+                <p key={i} style={{ fontFamily: fonts.body, fontSize: 14, lineHeight: 1.7, color: colors.milk, opacity: 0.7, margin: 0 }}>
                   {rule}
                 </p>
               ))}
@@ -1643,9 +1732,9 @@ function SketchPad({ isMobile }: { isMobile: boolean }) {
           style={{
             fontFamily: fonts.body,
             fontSize: 15,
-            color: colors.cream,
-            backgroundColor: "rgba(244,244,242,0.05)",
-            border: "1px solid rgba(244,244,242,0.15)",
+            color: colors.milk,
+            backgroundColor: "rgba(245,240,232,0.05)",
+            border: "1px solid rgba(245,240,232,0.15)",
             borderRadius: 0,
             padding: "14px 16px",
             width: "100%",
@@ -1666,9 +1755,9 @@ function SketchPad({ isMobile }: { isMobile: boolean }) {
             style={{
               fontFamily: fonts.body,
               fontSize: 13,
-              color: colors.cream,
-              backgroundColor: "rgba(244,244,242,0.08)",
-              border: "1px solid rgba(244,244,242,0.15)",
+              color: colors.milk,
+              backgroundColor: "rgba(245,240,232,0.08)",
+              border: "1px solid rgba(245,240,232,0.15)",
               borderRadius: 0,
               padding: "10px 12px",
               outline: "none",
@@ -1689,8 +1778,8 @@ function SketchPad({ isMobile }: { isMobile: boolean }) {
               fontWeight: 700,
               fontSize: 13,
               letterSpacing: "0.1em",
-              color: colors.black,
-              backgroundColor: loading ? "rgba(242,201,0,0.5)" : colors.yellow,
+              color: colors.shed,
+              backgroundColor: loading ? "rgba(242,201,0,0.5)" : colors.goldenHour,
               border: "none",
               padding: "10px 28px",
               cursor: loading ? "not-allowed" : "pointer",
@@ -1702,7 +1791,7 @@ function SketchPad({ isMobile }: { isMobile: boolean }) {
       </div>
 
       {error && (
-        <p style={{ fontFamily: fonts.body, fontSize: 14, color: colors.red, marginTop: 16 }}>
+        <p style={{ fontFamily: fonts.body, fontSize: 14, color: colors.crane, marginTop: 16 }}>
           {error}
         </p>
       )}
@@ -1733,7 +1822,7 @@ function SketchPad({ isMobile }: { isMobile: boolean }) {
                   width: "100%",
                   maxWidth: 600,
                   display: "block",
-                  border: "1px solid rgba(244,244,242,0.1)",
+                  border: "1px solid rgba(245,240,232,0.1)",
                 }}
               />
             </div>
@@ -1755,69 +1844,73 @@ function SocialTemplates({ isMobile, onImageClick }: {
   const [activeTab, setActiveTab] = useState("generated");
 
   const tabs = [
-    { id: "generated", label: "Social Examples", color: colors.yellow },
-    { id: "zones", label: "Zone Tiles", color: colors.yellow },
-    { id: "principles", label: "Principles", color: colors.blue },
-    { id: "stories", label: "Story Cards", color: colors.green },
-    { id: "cta", label: "Invites", color: colors.magenta },
-    { id: "heritage", label: "Heritage", color: colors.orange },
-    { id: "video", label: "Video", color: colors.red },
+    { id: "generated", label: "Social Examples", color: colors.goldenHour },
+    { id: "zones", label: "Zone Tiles", color: colors.goldenHour },
+    { id: "principles", label: "Principles", color: colors.workshirt },
+    { id: "stories", label: "Story Cards", color: colors.canopy },
+    { id: "cta", label: "Invites", color: colors.lillyPilly },
+    { id: "heritage", label: "Heritage", color: colors.calendula },
+    { id: "video", label: "Video", color: colors.crane },
   ];
 
   const generatedAssets = [
-    { src: "/images/social/01-origin-story.png", label: "Origin Story", use: "PIN THIS FIRST. Launch post for Facebook & Instagram.", caption: "Something is growing in Witta.\n\nArt. Food. Community.\nAn old dairy property in the hinterland. A kitchen, a garden, a gallery. Neighbours sharing a table.\n\nMore soon → theharvestwitta.com.au" },
-    { src: "/images/social/02-event-announcement.png", label: "First Gathering", use: "Facebook Event image. Share in Maleny, Witta, Hinterland groups.", caption: "Saturday 7 March. 11am – 4pm.\nOysters, pizza, music. Come for an hour or stay all afternoon.\nFree. 9 Gumland Drive, Witta.\n\nSave your spot → theharvestwitta.com.au/gather" },
-    { src: "/images/social/03-shaun-fisher-voice.png", label: "Voices: Shaun Fisher", use: "Trust signal + food story. Post 3–4 days before.", caption: "Shaun Fisher was the first person to say yes to this place.\n\nHe's shucking 200 oysters from Minjerribah for the first gathering. You'll find him near the fire.\n\nSaturday 7 March → theharvestwitta.com.au/gather" },
-    { src: "/images/social/04-barry-voice.png", label: "Voices: Barry", use: "Heritage story. Connection to place. High engagement.", caption: "\"This was all timber country. Everyone knew each other.\"\n\nBarry's lived next door for decades. Dairy farms, pit sawyers, red soil. We're not starting from nothing.\n\n→ theharvestwitta.com.au/compendium" },
-    { src: "/images/social/05-zone-garden.png", label: "Zone: GROW", use: "Garden zone intro. Ask a question to drive comments.", caption: "GROW.\n\nThe garden is open to everyone. Plant something. Pick something. Bring the kids.\n\nIf you had a row in a community garden, what would you grow? ↓" },
-    { src: "/images/social/06-zone-kitchen.png", label: "Zone: FEED", use: "Kitchen zone intro. Post 1/day between zones.", caption: "FEED.\n\nA shared kitchen. Neighbours cooking together, learning from each other, sharing a table.\n\nWhat would you bring to a shared meal?" },
-    { src: "/images/social/07-zone-artspace.png", label: "Zone: MAKE", use: "Art Space intro. Creative audience.", caption: "MAKE.\n\nGallery. Studio. Workshop. Nothing is permanent — the space is always becoming, like a gallery.\n\nWhat would you make if you had the space?" },
-    { src: "/images/social/08-countdown-1week.png", label: "Countdown — 7 Days", use: "One week out. Urgency post. Boost this one.", caption: "7 days.\n\nSaturday 7 March. 11am – 4pm. Witta.\nOysters. Pizza. Music. Free.\n\nSave your spot → theharvestwitta.com.au/gather" },
-    { src: "/images/social/09-facebook-cover.png", label: "Facebook Cover", use: "Page header image. 820×312. Don't add text — it's on the image." },
-    { src: "/images/social/10-save-your-spot.png", label: "Save Your Spot", use: "Final CTA. Post day before + use as paid boost.", caption: "Come see the place for yourself.\n\nSaturday 7 March. 11am – 4pm. Witta.\nOysters, pizza, music, neighbours. Free.\n\nSave your spot → theharvestwitta.com.au/gather" },
+    { src: "/images/social/01-origin-story.png", label: "Origin Story", use: "PIN THIS FIRST. Launch post for Facebook & Instagram.", caption: "Something is forming in Witta.\n\nArt. Food. Community.\nAn old dairy property on the Blackall Range. A garden, a gallery, a kitchen. Neighbours sharing a table.\n\nMore soon → theharvestwitta.com.au" },
+    { src: "/images/social/02-event-announcement.png", label: "First Gathering", use: "Facebook Event image. Share in Maleny, Witta, Hinterland groups.", caption: "Saturday 7 March. 11am - 4pm.\nOysters from Moreton Bay. Drinks by Flight Bar Witta. Come for an hour or stay all afternoon.\nFree. 9 Gumland Drive, Witta.\n\nSave your spot → theharvestwitta.com.au/gather" },
+    { src: "/images/social/03-shaun-fisher.png", label: "Shaun Fisher", use: "Trust signal + food story. Post 3-4 days before.", caption: "From sea country to the hinterland.\n\nShaun Fisher, a Mununjali, Gorenpul Man, grows oysters from his leases in Moreton Bay on Quandamooka Country. He's bringing his harvest to share.\n\nSaturday 7 March → theharvestwitta.com.au/gather" },
+    { src: "/images/social/04-radical-scoops.png", label: "Radical Scoops", use: "Regional Arts framing. Credibility + depth. Post early in sequence.", caption: "What happens when you bring creative practice into a place shaped by generations?\n\nRadical Scoops. A 12-month residency through Regional Arts Australia. Dairy, timber, co-ops, and Jinibara Country.\n\nThe Harvest, Witta → theharvestwitta.com.au" },
+    { src: "/images/social/05-zone-garden.png", label: "Zone: Garden", use: "Garden zone intro. Ask a question to drive comments.", caption: "GARDEN.\n\nGrowing food, learning from the land, getting hands dirty. Community plots, workshops, seasonal rhythms.\n\nWhat would you grow if you had the space? ↓" },
+    { src: "/images/social/06-zone-art.png", label: "Zone: Art", use: "Art zone intro. Creative audience.", caption: "ART.\n\nA space for making. Workshops, residencies, and creative practice through the Radical Scoops fellowship.\n\nWhat would you make if you had the space?" },
+    { src: "/images/social/07-zone-food.png", label: "Zone: Food", use: "Food zone intro. Post 1/day between zones.", caption: "FOOD.\n\nShared tables, local produce, and the conversations that happen around them. Oysters from Moreton Bay, drinks from Flight Bar Witta.\n\nWhat would you bring to a shared meal?" },
+    { src: "/images/social/08-countdown-7days.png", label: "Countdown - 7 Days", use: "One week out. Urgency post. Boost this one.", caption: "7 days.\n\nSaturday 7 March. 11am - 4pm. Witta.\nOysters. Music. Neighbours. Free.\n\nSave your spot → theharvestwitta.com.au/gather" },
+    { src: "/images/social/09-locals-day.png", label: "Locals Day", use: "Witta locals only. Share in local groups and next-door apps.", caption: "The day before.\n\nLocals Day. Friday 6 March, afternoon.\nMeet the neighbours, build with milk crates, share your vision for this space. Just locals.\n\nSign up → theharvestwitta.com.au/gather" },
+    { src: "/images/social/10-save-your-spot.png", label: "Save Your Spot", use: "Final CTA. Post day before + use as paid boost.", caption: "Come see the place for yourself.\n\nSaturday 7 March. 11am - 4pm. Witta.\nOysters from Moreton Bay. Drinks by Flight Bar. Neighbours on the lawn. Free.\n\nSave your spot → theharvestwitta.com.au/gather" },
+    { src: "/images/social/11-facebook-cover.png", label: "Facebook Cover (16:9)", use: "Facebook page cover image or event cover. 16:9 landscape format.", caption: "The Harvest — Art. Food. Community.\n9 Gumland Drive, Witta. Sunshine Coast Hinterland.\ntheharvestwitta.com.au" },
+    { src: "/images/social/12-story-invite.png", label: "Story: Invite (9:16)", use: "Instagram/Facebook story. Swipe-up or link sticker to /gather.", caption: "Saturday 7 March. 11am - 4pm.\nArt. Food. Community.\nOysters. Flight Bar. Neighbours on the lawn.\n\nSave your spot → theharvestwitta.com.au/gather" },
+    { src: "/images/social/13-story-shaun.png", label: "Story: Shaun Fisher (9:16)", use: "Instagram/Facebook story. Food provenance angle. Pair with oyster-lease video.", caption: "From sea country to the hinterland.\nShaun Fisher grows oysters on Moreton Bay. He's bringing his harvest to share.\n\nSaturday 7 March → theharvestwitta.com.au/gather" },
+    { src: "/images/social/14-countdown-3days.png", label: "Countdown - 3 Days", use: "Three days out. Pair with 7-day countdown. Story + feed.", caption: "3 days.\n\nSaturday 7 March. Witta.\nArt. Food. Community. Free.\n\nSave your spot → theharvestwitta.com.au/gather" },
   ];
 
   // Zone identity tiles — rendered as HTML compositions
   const zoneTiles = [
-    { verb: "MAKE", zone: "The Art Space", tagline: "Gallery. Studio. Workshop.", color: colors.red, img: "/images/harvest-make.jpg" },
-    { verb: "FEED", zone: "The Kitchen", tagline: "Cook. Share. Gather around the table.", color: colors.yellow, img: "/images/harvest-eat.jpg" },
-    { verb: "GROW", zone: "The Garden", tagline: "Plant. Harvest. Open 24/7.", color: colors.green, img: "/images/harvest-grow.jpg" },
-    { verb: "FIRE", zone: "Timber & Fire", tagline: "Cook on flame. Reclaimed timber. DIY.", color: colors.orange, img: "/images/site-plan/inspiration/curved-pavilion.jpeg" },
-    { verb: "BUILD", zone: "The Pavilion", tagline: "1,000 milk crates. Built by community.", color: colors.blue, img: "/images/site-plan/inspiration/crate-wall.jpeg" },
-    { verb: "PLAY", zone: "Kids Area", tagline: "Co-designed by children.", color: colors.magenta, img: "/images/site-plan/inspiration/log-climbing-frame.jpeg" },
-    { verb: "SEE", zone: "The Gallery", tagline: "Art meets food. Residency launches.", color: colors.red, img: "/images/compendium/MASTER FLOOR PLAN_5.jpeg" },
-    { verb: "CREATE", zone: "Outdoor Art", tagline: "Make in the open air.", color: colors.indigo, img: "/images/site-plan/inspiration/pen-sketch-portrait.jpeg" },
-    { verb: "GATHER", zone: "Community", tagline: "Music. Food. Dogs. Neighbours.", color: colors.blue, img: "/images/harvest-gather.jpg" },
+    { verb: "MAKE", zone: "The Art Space", tagline: "Gallery. Studio. Workshop.", color: colors.crane, img: "/images/harvest-make.jpg" },
+    { verb: "FEED", zone: "The Kitchen", tagline: "Cook. Share. Gather around the table.", color: colors.goldenHour, img: "/images/harvest-eat.jpg" },
+    { verb: "GROW", zone: "The Garden", tagline: "Plant. Harvest. Open 24/7.", color: colors.canopy, img: "/images/harvest-grow.jpg" },
+    { verb: "FIRE", zone: "Timber & Fire", tagline: "Cook on flame. Reclaimed timber. DIY.", color: colors.calendula, img: "/images/site-plan/inspiration/curved-pavilion.jpeg" },
+    { verb: "BUILD", zone: "The Pavilion", tagline: "1,000 milk crates. Built by community.", color: colors.workshirt, img: "/images/site-plan/inspiration/crate-wall.jpeg" },
+    { verb: "PLAY", zone: "Kids Area", tagline: "Co-designed by children.", color: colors.lillyPilly, img: "/images/site-plan/inspiration/log-climbing-frame.jpeg" },
+    { verb: "SEE", zone: "The Gallery", tagline: "Art meets food. Residency launches.", color: colors.crane, img: "/images/compendium/MASTER FLOOR PLAN_5.jpeg" },
+    { verb: "CREATE", zone: "Outdoor Art", tagline: "Make in the open air.", color: colors.hardwood, img: "/images/site-plan/inspiration/pen-sketch-portrait.jpeg" },
+    { verb: "GATHER", zone: "Community", tagline: "Music. Food. Dogs. Neighbours.", color: colors.workshirt, img: "/images/harvest-gather.jpg" },
   ];
 
   const principleTiles = [
-    { principle: "Nothing is permanent.", sub: "Like a gallery. The space is always becoming.", color: colors.red, img: "/images/compendium/canvas-drawing.jpg" },
-    { principle: "Community-built.", sub: "We don't build for people. We build with them.", color: colors.blue, img: "/images/site-plan/inspiration/crate-cube.jpeg" },
-    { principle: "Custodianship.", sub: "We build to hand over.", color: colors.green, img: "/images/compendium/barry/IMG_5764.jpg" },
+    { principle: "Nothing is permanent.", sub: "Like a gallery. The space is always becoming.", color: colors.crane, img: "/images/compendium/canvas-drawing.jpg" },
+    { principle: "Community-built.", sub: "We don't build for people. We build with them.", color: colors.workshirt, img: "/images/site-plan/inspiration/crate-cube.jpeg" },
+    { principle: "Custodianship.", sub: "We build to hand over.", color: colors.canopy, img: "/images/compendium/barry/IMG_5764.jpg" },
   ];
 
   const storyCards = [
-    { quote: "This was all timber country.", attribution: "Barry", img: "/images/compendium/barry/IMG_5745.jpg", color: colors.orange },
-    { quote: "We used to all know each other.", attribution: "Barry", img: "/images/compendium/barry/IMG_5727.jpg", color: colors.yellow },
-    { quote: "The dogs know this land better than anyone.", attribution: "Barry", img: "/images/compendium/barry/IMG_5819.jpg", color: colors.green },
-    { quote: "Art is how we make sense of being alive.", attribution: "The Harvest", img: "/images/compendium/canvas-drawing-dark.jpg", color: colors.red },
-    { quote: "Food is how we sustain each other.", attribution: "The Harvest", img: "/images/harvest-eat.jpg", color: colors.yellow },
-    { quote: "Community is what happens when those two things share a table.", attribution: "The Harvest", img: "/images/harvest-gather.jpg", color: colors.blue },
+    { quote: "This was all timber country.", attribution: "Barry", img: "/images/compendium/barry/IMG_5745.jpg", color: colors.calendula },
+    { quote: "We used to all know each other.", attribution: "Barry", img: "/images/compendium/barry/IMG_5727.jpg", color: colors.goldenHour },
+    { quote: "The dogs know this land better than anyone.", attribution: "Barry", img: "/images/compendium/barry/IMG_5819.jpg", color: colors.canopy },
+    { quote: "Art is how we make sense of being alive.", attribution: "The Harvest", img: "/images/compendium/canvas-drawing-dark.jpg", color: colors.crane },
+    { quote: "Food is how we sustain each other.", attribution: "The Harvest", img: "/images/harvest-eat.jpg", color: colors.goldenHour },
+    { quote: "Community is what happens when those two things share a table.", attribution: "The Harvest", img: "/images/harvest-gather.jpg", color: colors.workshirt },
   ];
 
   const ctaTiles = [
-    { cta: "COME COOK\nWITH FIRE", sub: "Pizza. Flame. Reclaimed timber.", color: colors.orange, img: "/images/site-plan/inspiration/curved-pavilion.jpeg" },
-    { cta: "COME PLANT\nWITH US", sub: "Community garden. Open to all.", color: colors.green, img: "/images/site-plan/inspiration/accessible-garden.jpeg" },
-    { cta: "COME BUILD\nWITH US", sub: "1,000 milk crates. One pavilion.", color: colors.blue, img: "/images/site-plan/inspiration/crate-wall.jpeg" },
-    { cta: "COME MAKE\nWITH US", sub: "Art. Clay. Print. Whatever you want.", color: colors.red, img: "/images/harvest-make.jpg" },
-    { cta: "COME GATHER\nWITH US", sub: "Food. Music. Kids. Dogs. Everyone.", color: colors.yellow, img: "/images/harvest-gather.jpg" },
+    { cta: "COME COOK\nWITH FIRE", sub: "Pizza. Flame. Reclaimed timber.", color: colors.calendula, img: "/images/site-plan/inspiration/curved-pavilion.jpeg" },
+    { cta: "COME PLANT\nWITH US", sub: "Community garden. Open to all.", color: colors.canopy, img: "/images/site-plan/inspiration/accessible-garden.jpeg" },
+    { cta: "COME BUILD\nWITH US", sub: "1,000 milk crates. One pavilion.", color: colors.workshirt, img: "/images/site-plan/inspiration/crate-wall.jpeg" },
+    { cta: "COME MAKE\nWITH US", sub: "Art. Clay. Print. Whatever you want.", color: colors.crane, img: "/images/harvest-make.jpg" },
+    { cta: "COME GATHER\nWITH US", sub: "Food. Music. Kids. Dogs. Everyone.", color: colors.goldenHour, img: "/images/harvest-gather.jpg" },
   ];
 
   const heritageTiles = [
-    { era: "1899", now: "2026", then: "Pit sawyers", future: "Fire cooking station", imgThen: "/images/witta/history/teutoburg-pit-sawyers-1899.png", imgNow: "/images/site-plan/inspiration/curved-pavilion.jpeg", color: colors.orange },
-    { era: "1899", now: "2026", then: "Cheese making", future: "Community kitchen", imgThen: "/images/witta/history/teutoburg-cheese-making-1899.png", imgNow: "/images/harvest-eat.jpg", color: colors.yellow },
-    { era: "1899", now: "2026", then: "Farm cottage", future: "Art gallery + kitchen", imgThen: "/images/witta/history/teutoburg-nothling-cottage-1899.png", imgNow: "/images/compendium/MASTER FLOOR PLAN_5.jpeg", color: colors.red },
-    { era: "1931", now: "2026", then: "Bunya pines", future: "Community garden", imgThen: "/images/witta/history/bunya-pines-witta-1931.png", imgNow: "/images/site-plan/inspiration/accessible-garden.jpeg", color: colors.green },
+    { era: "1899", now: "2026", then: "Pit sawyers", future: "Fire cooking station", imgThen: "/images/witta/history/teutoburg-pit-sawyers-1899.png", imgNow: "/images/site-plan/inspiration/curved-pavilion.jpeg", color: colors.calendula },
+    { era: "1899", now: "2026", then: "Cheese making", future: "Community kitchen", imgThen: "/images/witta/history/teutoburg-cheese-making-1899.png", imgNow: "/images/harvest-eat.jpg", color: colors.goldenHour },
+    { era: "1899", now: "2026", then: "Farm cottage", future: "Art gallery + kitchen", imgThen: "/images/witta/history/teutoburg-nothling-cottage-1899.png", imgNow: "/images/compendium/MASTER FLOOR PLAN_5.jpeg", color: colors.crane },
+    { era: "1931", now: "2026", then: "Bunya pines", future: "Community garden", imgThen: "/images/witta/history/bunya-pines-witta-1931.png", imgNow: "/images/site-plan/inspiration/accessible-garden.jpeg", color: colors.canopy },
   ];
 
   const videoAssets = [
@@ -1829,7 +1922,7 @@ function SocialTemplates({ isMobile, onImageClick }: {
     position: "relative",
     overflow: "hidden",
     borderRadius: 2,
-    border: "1px solid rgba(244,244,242,0.08)",
+    border: "1px solid rgba(245,240,232,0.08)",
   };
 
   return (
@@ -1840,7 +1933,7 @@ function SocialTemplates({ isMobile, onImageClick }: {
         gap: 0,
         overflowX: "auto",
         WebkitOverflowScrolling: "touch",
-        borderBottom: "1px solid rgba(244,244,242,0.1)",
+        borderBottom: "1px solid rgba(245,240,232,0.1)",
         marginBottom: 32,
       }}>
         {tabs.map((t) => (
@@ -1852,7 +1945,7 @@ function SocialTemplates({ isMobile, onImageClick }: {
               fontWeight: 700,
               fontSize: isMobile ? 9 : 11,
               letterSpacing: "0.1em",
-              color: colors.cream,
+              color: colors.milk,
               opacity: activeTab === t.id ? 1 : 0.35,
               backgroundColor: "transparent",
               border: "none",
@@ -1872,18 +1965,27 @@ function SocialTemplates({ isMobile, onImageClick }: {
       {/* ── GENERATED SOCIAL EXAMPLES ── */}
       {activeTab === "generated" && (
         <div>
-          <p style={{ fontFamily: fonts.body, fontSize: 13, color: colors.cream, opacity: 0.4, margin: "0 0 8px" }}>
-            Ready-to-post social assets with captions. Right-click to save images. Copy captions below each one.
-          </p>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+            <p style={{ fontFamily: fonts.body, fontSize: 13, color: colors.milk, opacity: 0.4, margin: 0 }}>
+              Ready-to-post social assets with captions. Right-click to save images. Copy captions below each one.
+            </p>
+            <Link href="/social-planner" style={{
+              fontFamily: fonts.display, fontWeight: 700, fontSize: 10, letterSpacing: "0.1em",
+              color: colors.shed, backgroundColor: colors.goldenHour,
+              padding: "8px 16px", borderRadius: 4, textDecoration: "none", whiteSpace: "nowrap", flexShrink: 0, marginLeft: 16,
+            }}>
+              OPEN SOCIAL PLANNER
+            </Link>
+          </div>
           <div style={{
             padding: "12px 16px",
             backgroundColor: "rgba(242,201,0,0.08)",
             border: `1px solid rgba(242,201,0,0.15)`,
             marginBottom: 24,
           }}>
-            <span style={{ fontFamily: fonts.display, fontWeight: 700, fontSize: 10, letterSpacing: "0.12em", color: colors.yellow }}>POSTING ORDER</span>
-            <p style={{ fontFamily: fonts.body, fontSize: 13, color: colors.cream, opacity: 0.5, margin: "6px 0 0", lineHeight: 1.6 }}>
-              Origin story (pin) → Event announcement → Zone teasers (1/day for 3 days) → Voices (Shaun, then Barry) → Countdown → Save Your Spot
+            <span style={{ fontFamily: fonts.display, fontWeight: 700, fontSize: 10, letterSpacing: "0.12em", color: colors.goldenHour }}>POSTING ORDER</span>
+            <p style={{ fontFamily: fonts.body, fontSize: 13, color: colors.milk, opacity: 0.5, margin: "6px 0 0", lineHeight: 1.6 }}>
+              Origin story (pin) → Radical Scoops → Event announcement → Zone teasers (1/day for 3 days) → Shaun Fisher → Locals Day → Countdown → Save Your Spot
             </p>
           </div>
           <div style={{
@@ -1909,7 +2011,7 @@ function SocialTemplates({ isMobile, onImageClick }: {
                       fontWeight: 900,
                       fontSize: 14,
                       letterSpacing: "0.08em",
-                      color: colors.cream,
+                      color: colors.milk,
                       marginBottom: 4,
                     }}>
                       {asset.label}
@@ -1919,7 +2021,7 @@ function SocialTemplates({ isMobile, onImageClick }: {
                       fontWeight: 700,
                       fontSize: 10,
                       letterSpacing: "0.1em",
-                      color: colors.yellow,
+                      color: colors.goldenHour,
                       opacity: 0.8,
                       marginBottom: 16,
                       lineHeight: 1.5,
@@ -1931,13 +2033,13 @@ function SocialTemplates({ isMobile, onImageClick }: {
                         <div style={{
                           fontFamily: fonts.body,
                           fontSize: 13,
-                          color: colors.cream,
+                          color: colors.milk,
                           opacity: 0.8,
                           lineHeight: 1.7,
                           whiteSpace: "pre-line",
                           padding: "14px 16px",
-                          backgroundColor: "rgba(244,244,242,0.04)",
-                          border: "1px solid rgba(244,244,242,0.08)",
+                          backgroundColor: "rgba(245,240,232,0.04)",
+                          border: "1px solid rgba(245,240,232,0.08)",
                         }}>
                           {asset.caption}
                         </div>
@@ -1948,8 +2050,8 @@ function SocialTemplates({ isMobile, onImageClick }: {
                             fontWeight: 700,
                             fontSize: 10,
                             letterSpacing: "0.12em",
-                            color: colors.black,
-                            backgroundColor: colors.yellow,
+                            color: colors.shed,
+                            backgroundColor: colors.goldenHour,
                             border: "none",
                             padding: "8px 20px",
                             cursor: "pointer",
@@ -1967,7 +2069,7 @@ function SocialTemplates({ isMobile, onImageClick }: {
                       <div style={{
                         fontFamily: fonts.body,
                         fontSize: 12,
-                        color: colors.cream,
+                        color: colors.milk,
                         opacity: 0.3,
                         fontStyle: "italic",
                       }}>
@@ -1985,7 +2087,7 @@ function SocialTemplates({ isMobile, onImageClick }: {
       {/* ── ZONE TILES ── */}
       {activeTab === "zones" && (
         <div>
-          <p style={{ fontFamily: fonts.body, fontSize: 13, color: colors.cream, opacity: 0.4, margin: "0 0 8px" }}>
+          <p style={{ fontFamily: fonts.body, fontSize: 13, color: colors.milk, opacity: 0.4, margin: "0 0 8px" }}>
             Each zone has a verb, a color, and a photo. Post the core three first (Make, Feed, Grow), then the rest.
           </p>
           <div style={{
@@ -1994,8 +2096,8 @@ function SocialTemplates({ isMobile, onImageClick }: {
             border: `1px solid rgba(242,201,0,0.15)`,
             marginBottom: 20,
           }}>
-            <span style={{ fontFamily: fonts.display, fontWeight: 700, fontSize: 10, letterSpacing: "0.12em", color: colors.yellow }}>CAPTION FORMAT</span>
-            <p style={{ fontFamily: fonts.body, fontSize: 13, color: colors.cream, opacity: 0.5, margin: "6px 0 0", lineHeight: 1.6 }}>
+            <span style={{ fontFamily: fonts.display, fontWeight: 700, fontSize: 10, letterSpacing: "0.12em", color: colors.goldenHour }}>CAPTION FORMAT</span>
+            <p style={{ fontFamily: fonts.body, fontSize: 13, color: colors.milk, opacity: 0.5, margin: "6px 0 0", lineHeight: 1.6 }}>
               [VERB].<br/>The [Zone Name]. [Tagline].<br/>Art. Food. Community. → theharvestwitta.com.au
             </p>
           </div>
@@ -2018,7 +2120,7 @@ function SocialTemplates({ isMobile, onImageClick }: {
                     fontWeight: 900,
                     fontSize: isMobile ? 32 : 40,
                     letterSpacing: "0.08em",
-                    color: colors.cream,
+                    color: colors.milk,
                     lineHeight: 1,
                     textShadow: "0 2px 12px rgba(0,0,0,0.4)",
                   }}>
@@ -2029,7 +2131,7 @@ function SocialTemplates({ isMobile, onImageClick }: {
                     fontWeight: 700,
                     fontSize: 11,
                     letterSpacing: "0.12em",
-                    color: colors.cream,
+                    color: colors.milk,
                     opacity: 0.8,
                     marginTop: 6,
                   }}>
@@ -2038,7 +2140,7 @@ function SocialTemplates({ isMobile, onImageClick }: {
                   <div style={{
                     fontFamily: fonts.body,
                     fontSize: 12,
-                    color: colors.cream,
+                    color: colors.milk,
                     opacity: 0.6,
                     marginTop: 4,
                   }}>
@@ -2054,7 +2156,7 @@ function SocialTemplates({ isMobile, onImageClick }: {
                   fontWeight: 900,
                   fontSize: 9,
                   letterSpacing: "0.2em",
-                  color: colors.cream,
+                  color: colors.milk,
                   opacity: 0.6,
                   textShadow: "0 1px 4px rgba(0,0,0,0.5)",
                 }}>
@@ -2069,7 +2171,7 @@ function SocialTemplates({ isMobile, onImageClick }: {
       {/* ── PRINCIPLES ── */}
       {activeTab === "principles" && (
         <div>
-          <p style={{ fontFamily: fonts.body, fontSize: 13, color: colors.cream, opacity: 0.4, margin: "0 0 8px" }}>
+          <p style={{ fontFamily: fonts.body, fontSize: 13, color: colors.milk, opacity: 0.4, margin: "0 0 8px" }}>
             Three operating principles. Use as standalone posts, or as a carousel series.
           </p>
           <div style={{
@@ -2078,8 +2180,8 @@ function SocialTemplates({ isMobile, onImageClick }: {
             border: `1px solid rgba(242,201,0,0.15)`,
             marginBottom: 20,
           }}>
-            <span style={{ fontFamily: fonts.display, fontWeight: 700, fontSize: 10, letterSpacing: "0.12em", color: colors.yellow }}>BEST AS A CAROUSEL</span>
-            <p style={{ fontFamily: fonts.body, fontSize: 13, color: colors.cream, opacity: 0.5, margin: "6px 0 0", lineHeight: 1.6 }}>
+            <span style={{ fontFamily: fonts.display, fontWeight: 700, fontSize: 10, letterSpacing: "0.12em", color: colors.goldenHour }}>BEST AS A CAROUSEL</span>
+            <p style={{ fontFamily: fonts.body, fontSize: 13, color: colors.milk, opacity: 0.5, margin: "6px 0 0", lineHeight: 1.6 }}>
               Post all three as one carousel. Caption: "Three rules we build by."<br/>
               Or use individually when the principle is relevant — e.g. "Nothing is permanent" alongside a gallery changeover.
             </p>
@@ -2113,7 +2215,7 @@ function SocialTemplates({ isMobile, onImageClick }: {
                       fontWeight: 900,
                       fontSize: 9,
                       letterSpacing: "0.2em",
-                      color: colors.cream,
+                      color: colors.milk,
                       opacity: 0.6,
                       marginBottom: 12,
                     }}>
@@ -2124,7 +2226,7 @@ function SocialTemplates({ isMobile, onImageClick }: {
                       fontWeight: 900,
                       fontSize: isMobile ? 22 : 28,
                       letterSpacing: "0.04em",
-                      color: colors.cream,
+                      color: colors.milk,
                       lineHeight: 1.2,
                     }}>
                       {tile.principle}
@@ -2132,7 +2234,7 @@ function SocialTemplates({ isMobile, onImageClick }: {
                     <div style={{
                       fontFamily: fonts.body,
                       fontSize: 14,
-                      color: colors.cream,
+                      color: colors.milk,
                       opacity: 0.7,
                       marginTop: 10,
                       lineHeight: 1.6,
@@ -2150,7 +2252,7 @@ function SocialTemplates({ isMobile, onImageClick }: {
       {/* ── STORY CARDS ── */}
       {activeTab === "stories" && (
         <div>
-          <p style={{ fontFamily: fonts.body, fontSize: 13, color: colors.cream, opacity: 0.4, margin: "0 0 8px" }}>
+          <p style={{ fontFamily: fonts.body, fontSize: 13, color: colors.milk, opacity: 0.4, margin: "0 0 8px" }}>
             Quote tiles for stories, reels, and carousel posts. The voice of the land and the people.
           </p>
           <div style={{
@@ -2159,8 +2261,8 @@ function SocialTemplates({ isMobile, onImageClick }: {
             border: `1px solid rgba(242,201,0,0.15)`,
             marginBottom: 20,
           }}>
-            <span style={{ fontFamily: fonts.display, fontWeight: 700, fontSize: 10, letterSpacing: "0.12em", color: colors.yellow }}>CAPTION FORMAT</span>
-            <p style={{ fontFamily: fonts.body, fontSize: 13, color: colors.cream, opacity: 0.5, margin: "6px 0 0", lineHeight: 1.6 }}>
+            <span style={{ fontFamily: fonts.display, fontWeight: 700, fontSize: 10, letterSpacing: "0.12em", color: colors.goldenHour }}>CAPTION FORMAT</span>
+            <p style={{ fontFamily: fonts.body, fontSize: 13, color: colors.milk, opacity: 0.5, margin: "6px 0 0", lineHeight: 1.6 }}>
               Let the quote speak. Caption = one line of context, then the link.<br/>
               e.g. "Barry's lived next door for decades. → theharvestwitta.com.au/compendium"
             </p>
@@ -2189,7 +2291,7 @@ function SocialTemplates({ isMobile, onImageClick }: {
                     fontFamily: fonts.body,
                     fontStyle: "italic",
                     fontSize: isMobile ? 16 : 19,
-                    color: colors.cream,
+                    color: colors.milk,
                     lineHeight: 1.5,
                     textShadow: "0 1px 8px rgba(0,0,0,0.5)",
                   }}>
@@ -2215,7 +2317,7 @@ function SocialTemplates({ isMobile, onImageClick }: {
       {/* ── CTA / INVITE TILES ── */}
       {activeTab === "cta" && (
         <div>
-          <p style={{ fontFamily: fonts.body, fontSize: 13, color: colors.cream, opacity: 0.4, margin: "0 0 8px" }}>
+          <p style={{ fontFamily: fonts.body, fontSize: 13, color: colors.milk, opacity: 0.4, margin: "0 0 8px" }}>
             Story-format tiles (9:16) for Instagram Stories and Facebook Stories. One activity per tile.
           </p>
           <div style={{
@@ -2224,8 +2326,8 @@ function SocialTemplates({ isMobile, onImageClick }: {
             border: `1px solid rgba(242,201,0,0.15)`,
             marginBottom: 20,
           }}>
-            <span style={{ fontFamily: fonts.display, fontWeight: 700, fontSize: 10, letterSpacing: "0.12em", color: colors.yellow }}>ALWAYS ADD</span>
-            <p style={{ fontFamily: fonts.body, fontSize: 13, color: colors.cream, opacity: 0.5, margin: "6px 0 0", lineHeight: 1.6 }}>
+            <span style={{ fontFamily: fonts.display, fontWeight: 700, fontSize: 10, letterSpacing: "0.12em", color: colors.goldenHour }}>ALWAYS ADD</span>
+            <p style={{ fontFamily: fonts.body, fontSize: 13, color: colors.milk, opacity: 0.5, margin: "6px 0 0", lineHeight: 1.6 }}>
               Saturday 7 March. 11am – 4pm. Free entry.<br/>
               Save your spot → theharvestwitta.com.au/gather<br/>
               Add a "link" sticker on Instagram Stories pointing to the RSVP page.
@@ -2253,7 +2355,7 @@ function SocialTemplates({ isMobile, onImageClick }: {
                   fontWeight: 900,
                   fontSize: 8,
                   letterSpacing: "0.2em",
-                  color: colors.cream,
+                  color: colors.milk,
                   opacity: 0.7,
                   textShadow: "0 1px 4px rgba(0,0,0,0.5)",
                 }}>
@@ -2265,7 +2367,7 @@ function SocialTemplates({ isMobile, onImageClick }: {
                     fontWeight: 900,
                     fontSize: 22,
                     letterSpacing: "0.06em",
-                    color: colors.cream,
+                    color: colors.milk,
                     lineHeight: 1.15,
                     whiteSpace: "pre-line",
                     textShadow: "0 2px 8px rgba(0,0,0,0.3)",
@@ -2275,7 +2377,7 @@ function SocialTemplates({ isMobile, onImageClick }: {
                   <div style={{
                     fontFamily: fonts.body,
                     fontSize: 11,
-                    color: colors.cream,
+                    color: colors.milk,
                     opacity: 0.7,
                     marginTop: 8,
                   }}>
@@ -2291,7 +2393,7 @@ function SocialTemplates({ isMobile, onImageClick }: {
       {/* ── HERITAGE ── */}
       {activeTab === "heritage" && (
         <div>
-          <p style={{ fontFamily: fonts.body, fontSize: 13, color: colors.cream, opacity: 0.4, margin: "0 0 8px" }}>
+          <p style={{ fontFamily: fonts.body, fontSize: 13, color: colors.milk, opacity: 0.4, margin: "0 0 8px" }}>
             Then & now split tiles. Witta's heritage paired with The Harvest's vision.
           </p>
           <div style={{
@@ -2300,8 +2402,8 @@ function SocialTemplates({ isMobile, onImageClick }: {
             border: `1px solid rgba(242,201,0,0.15)`,
             marginBottom: 20,
           }}>
-            <span style={{ fontFamily: fonts.display, fontWeight: 700, fontSize: 10, letterSpacing: "0.12em", color: colors.yellow }}>WHEN TO POST</span>
-            <p style={{ fontFamily: fonts.body, fontSize: 13, color: colors.cream, opacity: 0.5, margin: "6px 0 0", lineHeight: 1.6 }}>
+            <span style={{ fontFamily: fonts.display, fontWeight: 700, fontSize: 10, letterSpacing: "0.12em", color: colors.goldenHour }}>WHEN TO POST</span>
+            <p style={{ fontFamily: fonts.body, fontSize: 13, color: colors.milk, opacity: 0.5, margin: "6px 0 0", lineHeight: 1.6 }}>
               These are engagement gold. Post as a carousel ("1899 → 2026") or individual posts.<br/>
               Caption: "Timber workers, dairy farmers, red soil. We're not starting from nothing."<br/>
               Best for: slow days between event pushes. Builds depth without selling.
@@ -2328,10 +2430,10 @@ function SocialTemplates({ isMobile, onImageClick }: {
                       background: "linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 60%)",
                     }} />
                     <div style={{ position: "absolute", bottom: 12, left: 14 }}>
-                      <div style={{ fontFamily: fonts.display, fontWeight: 900, fontSize: 24, color: colors.cream, opacity: 0.8, letterSpacing: "0.05em" }}>
+                      <div style={{ fontFamily: fonts.display, fontWeight: 900, fontSize: 24, color: colors.milk, opacity: 0.8, letterSpacing: "0.05em" }}>
                         {tile.era}
                       </div>
-                      <div style={{ fontFamily: fonts.body, fontSize: 11, color: colors.cream, opacity: 0.6 }}>
+                      <div style={{ fontFamily: fonts.body, fontSize: 11, color: colors.milk, opacity: 0.6 }}>
                         {tile.then}
                       </div>
                     </div>
@@ -2345,10 +2447,10 @@ function SocialTemplates({ isMobile, onImageClick }: {
                       background: `linear-gradient(to top, ${tile.color}BB 0%, transparent 60%)`,
                     }} />
                     <div style={{ position: "absolute", bottom: 12, right: 14, textAlign: "right" }}>
-                      <div style={{ fontFamily: fonts.display, fontWeight: 900, fontSize: 24, color: colors.cream, letterSpacing: "0.05em" }}>
+                      <div style={{ fontFamily: fonts.display, fontWeight: 900, fontSize: 24, color: colors.milk, letterSpacing: "0.05em" }}>
                         {tile.now}
                       </div>
-                      <div style={{ fontFamily: fonts.body, fontSize: 11, color: colors.cream, opacity: 0.8 }}>
+                      <div style={{ fontFamily: fonts.body, fontSize: 11, color: colors.milk, opacity: 0.8 }}>
                         {tile.future}
                       </div>
                     </div>
@@ -2363,14 +2465,14 @@ function SocialTemplates({ isMobile, onImageClick }: {
                   width: 36,
                   height: 36,
                   borderRadius: "50%",
-                  backgroundColor: colors.cream,
+                  backgroundColor: colors.milk,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   fontFamily: fonts.display,
                   fontWeight: 900,
                   fontSize: 16,
-                  color: colors.black,
+                  color: colors.shed,
                   boxShadow: "0 2px 12px rgba(0,0,0,0.4)",
                   zIndex: 2,
                 }}>
@@ -2385,7 +2487,7 @@ function SocialTemplates({ isMobile, onImageClick }: {
       {/* ── VIDEO ── */}
       {activeTab === "video" && (
         <div>
-          <p style={{ fontFamily: fonts.body, fontSize: 13, color: colors.cream, opacity: 0.4, margin: "0 0 8px" }}>
+          <p style={{ fontFamily: fonts.body, fontSize: 13, color: colors.milk, opacity: 0.4, margin: "0 0 8px" }}>
             Atmospheric video clips. Use as reel backgrounds, story videos, or website headers.
           </p>
           <div style={{
@@ -2394,8 +2496,8 @@ function SocialTemplates({ isMobile, onImageClick }: {
             border: `1px solid rgba(242,201,0,0.15)`,
             marginBottom: 20,
           }}>
-            <span style={{ fontFamily: fonts.display, fontWeight: 700, fontSize: 10, letterSpacing: "0.12em", color: colors.yellow }}>USAGE</span>
-            <p style={{ fontFamily: fonts.body, fontSize: 13, color: colors.cream, opacity: 0.5, margin: "6px 0 0", lineHeight: 1.6 }}>
+            <span style={{ fontFamily: fonts.display, fontWeight: 700, fontSize: 10, letterSpacing: "0.12em", color: colors.goldenHour }}>USAGE</span>
+            <p style={{ fontFamily: fonts.body, fontSize: 13, color: colors.milk, opacity: 0.5, margin: "6px 0 0", lineHeight: 1.6 }}>
               Aerial: loop as Instagram Reel with text overlay + music. No voiceover needed — let the place speak.<br/>
               Oyster lease: food story content. Pair with Shaun Fisher post for the gathering.
             </p>
@@ -2420,14 +2522,14 @@ function SocialTemplates({ isMobile, onImageClick }: {
                     fontWeight: 700,
                     fontSize: 12,
                     letterSpacing: "0.08em",
-                    color: colors.cream,
+                    color: colors.milk,
                   }}>
                     {v.label}
                   </div>
                   <div style={{
                     fontFamily: fonts.body,
                     fontSize: 12,
-                    color: colors.cream,
+                    color: colors.milk,
                     opacity: 0.4,
                     marginTop: 4,
                   }}>
@@ -2452,7 +2554,7 @@ const smallLabelStyle: CSSProperties = {
   fontWeight: 700,
   fontSize: 10,
   letterSpacing: "0.2em",
-  color: colors.cream,
+  color: colors.milk,
   opacity: 0.5,
   display: "block",
 };
@@ -2478,7 +2580,7 @@ const sectionDescStyle: CSSProperties = {
 
 const tableCellStyle: CSSProperties = {
   padding: "10px 12px 10px 0",
-  borderBottom: "1px solid rgba(244,244,242,0.06)",
+  borderBottom: "1px solid rgba(245,240,232,0.06)",
   fontFamily: fonts.body,
   fontSize: 14,
 };

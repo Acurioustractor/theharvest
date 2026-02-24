@@ -22,8 +22,8 @@ const COLORS = {
   red: "#D62C2C",
   yellow: "#F2C900",
   cream: "#F4F4F2",
-  creamDim: "rgba(244,244,242,0.5)",
-  creamFaint: "rgba(244,244,242,0.15)",
+  creamDim: "rgba(245,240,232,0.5)",
+  creamFaint: "rgba(245,240,232,0.15)",
 };
 
 const CHART_COLORS = [COLORS.gold, COLORS.blue, COLORS.green, COLORS.red, COLORS.yellow, "#8B5CF6", "#EC4899", "#14B8A6"];
@@ -139,7 +139,7 @@ function StatCard({ label, value, sub, delay = 0 }: {
   return (
     <FadeIn delay={delay}>
       <div style={{
-        background: "rgba(244,244,242,0.04)", border: `1px solid ${COLORS.creamFaint}`,
+        background: "rgba(245,240,232,0.04)", border: `1px solid ${COLORS.creamFaint}`,
         borderRadius: 12, padding: "28px 24px", textAlign: "center", minWidth: 140,
       }}>
         <p style={{
@@ -167,7 +167,7 @@ function ChartCard({ title, children, style }: {
   return (
     <FadeIn>
       <div style={{
-        background: "rgba(244,244,242,0.03)", border: `1px solid ${COLORS.creamFaint}`,
+        background: "rgba(245,240,232,0.03)", border: `1px solid ${COLORS.creamFaint}`,
         borderRadius: 12, padding: 24, ...style,
       }}>
         {title && (
@@ -407,7 +407,7 @@ function CommunityVoiceSection({ isMobile }: { isMobile: boolean }) {
               {openTexts.slice(0, 8).map((text, i) => (
                 <FadeIn key={i} delay={i * 0.05}>
                   <div style={{
-                    background: "rgba(244,244,242,0.04)", border: `1px solid ${COLORS.creamFaint}`,
+                    background: "rgba(245,240,232,0.04)", border: `1px solid ${COLORS.creamFaint}`,
                     borderRadius: 12, padding: 20,
                   }}>
                     <p style={{
@@ -435,7 +435,7 @@ function CommunityVoiceSection({ isMobile }: { isMobile: boolean }) {
                 <FadeIn key={i} delay={i * 0.03}>
                   <span style={{
                     display: "inline-block", padding: "8px 16px",
-                    background: "rgba(244,244,242,0.06)", border: `1px solid ${COLORS.creamFaint}`,
+                    background: "rgba(245,240,232,0.06)", border: `1px solid ${COLORS.creamFaint}`,
                     borderRadius: 20, fontFamily: "'Inter', sans-serif", fontSize: 13,
                     color: COLORS.cream,
                   }}>{skill}</span>
@@ -503,7 +503,7 @@ function PasswordGate({ onUnlock }: { onUnlock: () => void }) {
           autoFocus
           style={{
             width: "100%", padding: "14px 16px", fontSize: 16,
-            fontFamily: "'Inter', sans-serif", background: "rgba(244,244,242,0.06)",
+            fontFamily: "'Inter', sans-serif", background: "rgba(245,240,232,0.06)",
             border: `1px solid ${error ? COLORS.red : COLORS.creamFaint}`,
             borderRadius: 8, color: COLORS.cream, outline: "none",
             boxSizing: "border-box",
@@ -805,7 +805,7 @@ export default function CommunityIntelligence() {
                 {qldHeritage.data.records.map((site, i) => (
                   <FadeIn key={site.name} delay={i * 0.05}>
                     <div style={{
-                      background: "rgba(244,244,242,0.04)", border: `1px solid ${COLORS.creamFaint}`,
+                      background: "rgba(245,240,232,0.04)", border: `1px solid ${COLORS.creamFaint}`,
                       borderRadius: 12, padding: 20,
                     }}>
                       <h4 style={{
@@ -843,7 +843,7 @@ export default function CommunityIntelligence() {
                 {venues.data.features.map((v, i) => (
                   <FadeIn key={i} delay={i * 0.03}>
                     <div style={{
-                      background: "rgba(244,244,242,0.04)", border: `1px solid ${COLORS.creamFaint}`,
+                      background: "rgba(245,240,232,0.04)", border: `1px solid ${COLORS.creamFaint}`,
                       borderRadius: 10, padding: 16,
                     }}>
                       <p style={{
@@ -883,7 +883,7 @@ export default function CommunityIntelligence() {
                   <FadeIn key={ev.name} delay={i * 0.05}>
                     <div style={{
                       display: "flex", alignItems: isMobile ? "flex-start" : "center",
-                      gap: 16, background: "rgba(244,244,242,0.04)",
+                      gap: 16, background: "rgba(245,240,232,0.04)",
                       border: `1px solid ${COLORS.creamFaint}`, borderRadius: 10, padding: 16,
                       flexDirection: isMobile ? "column" : "row",
                     }}>
@@ -959,7 +959,7 @@ export default function CommunityIntelligence() {
                         { name: "Richmond Birdwing", latin: "Ornithoptera richmondia", status: "Vulnerable" },
                       ].map((s, i) => (
                         <div key={s.name} style={{
-                          background: "rgba(244,244,242,0.04)", border: `1px solid ${COLORS.creamFaint}`,
+                          background: "rgba(245,240,232,0.04)", border: `1px solid ${COLORS.creamFaint}`,
                           borderRadius: 10, padding: 16, textAlign: "center",
                         }}>
                           <p style={{
@@ -1049,7 +1049,7 @@ export default function CommunityIntelligence() {
                       .map((r, i) => (
                         <FadeIn key={i} delay={i * 0.05}>
                           <div style={{
-                            background: "rgba(244,244,242,0.04)", border: `1px solid ${COLORS.creamFaint}`,
+                            background: "rgba(245,240,232,0.04)", border: `1px solid ${COLORS.creamFaint}`,
                             borderRadius: 12, padding: 20,
                           }}>
                             <p style={{
@@ -1178,7 +1178,7 @@ export default function CommunityIntelligence() {
                     {orgList.map((org, i) => (
                       <FadeIn key={org.name} delay={i * 0.03}>
                         <div style={{
-                          background: "rgba(244,244,242,0.04)", border: `1px solid ${COLORS.creamFaint}`,
+                          background: "rgba(245,240,232,0.04)", border: `1px solid ${COLORS.creamFaint}`,
                           borderRadius: 10, padding: 16,
                         }}>
                           <p style={{
@@ -1225,7 +1225,7 @@ export default function CommunityIntelligence() {
                   .map((g, i) => (
                     <FadeIn key={g.name} delay={i * 0.03}>
                       <div style={{
-                        background: "rgba(244,244,242,0.04)", border: `1px solid ${COLORS.creamFaint}`,
+                        background: "rgba(245,240,232,0.04)", border: `1px solid ${COLORS.creamFaint}`,
                         borderRadius: 10, padding: 16, display: "flex", justifyContent: "space-between",
                         alignItems: "center",
                       }}>
@@ -1263,7 +1263,7 @@ export default function CommunityIntelligence() {
               {consultations.data.consultations.map((c, i) => (
                 <FadeIn key={c.title} delay={i * 0.04}>
                   <div style={{
-                    background: "rgba(244,244,242,0.04)", border: `1px solid ${COLORS.creamFaint}`,
+                    background: "rgba(245,240,232,0.04)", border: `1px solid ${COLORS.creamFaint}`,
                     borderRadius: 12, padding: 20,
                   }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 8, flexWrap: "wrap" }}>
@@ -1271,7 +1271,7 @@ export default function CommunityIntelligence() {
                         fontFamily: "'Montserrat', sans-serif", fontWeight: 700, fontSize: 10,
                         letterSpacing: "0.08em", textTransform: "uppercase",
                         color: c.status === "open" ? COLORS.green : COLORS.creamDim,
-                        background: c.status === "open" ? "rgba(58,110,71,0.2)" : "rgba(244,244,242,0.08)",
+                        background: c.status === "open" ? "rgba(58,110,71,0.2)" : "rgba(245,240,232,0.08)",
                         padding: "3px 8px", borderRadius: 4,
                       }}>{c.status}</span>
                       <span style={{
@@ -1293,7 +1293,7 @@ export default function CommunityIntelligence() {
                       {c.themes.slice(0, 4).map(t => (
                         <span key={t} style={{
                           fontFamily: "'Inter', sans-serif", fontSize: 11,
-                          color: COLORS.creamDim, background: "rgba(244,244,242,0.06)",
+                          color: COLORS.creamDim, background: "rgba(245,240,232,0.06)",
                           padding: "2px 8px", borderRadius: 4,
                         }}>{t.replace(/_/g, " ")}</span>
                       ))}
@@ -1360,7 +1360,7 @@ export default function CommunityIntelligence() {
           ].map((z, i) => (
             <FadeIn key={z.zone} delay={i * 0.1}>
               <div style={{
-                background: "rgba(244,244,242,0.04)", border: `1px solid ${COLORS.creamFaint}`,
+                background: "rgba(245,240,232,0.04)", border: `1px solid ${COLORS.creamFaint}`,
                 borderRadius: 12, padding: 24, height: "100%",
               }}>
                 <p style={{ fontSize: 32, margin: "0 0 12px" }}>{z.emoji}</p>
@@ -1427,7 +1427,7 @@ export default function CommunityIntelligence() {
               <a key={s.name} href={s.url} target="_blank" rel="noopener noreferrer"
                 style={{
                   display: "block", padding: "10px 14px", borderRadius: 8,
-                  background: "rgba(244,244,242,0.03)", border: `1px solid ${COLORS.creamFaint}`,
+                  background: "rgba(245,240,232,0.03)", border: `1px solid ${COLORS.creamFaint}`,
                   textDecoration: "none",
                 }}>
                 <p style={{

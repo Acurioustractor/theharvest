@@ -288,7 +288,7 @@ function carouselArrowStyle(side: "left" | "right"): CSSProperties {
     height: 32,
     borderRadius: "50%",
     backgroundColor: "rgba(26,26,26,0.85)",
-    color: colors.cream,
+    color: colors.milk,
     border: "none",
     cursor: "pointer",
     fontFamily: fonts.body,
@@ -403,8 +403,8 @@ function VoiceRecorder({ zoneColor, onSave, onClose }: {
               fontWeight: 700,
               fontSize: 11,
               letterSpacing: "0.1em",
-              color: colors.cream,
-              backgroundColor: colors.red,
+              color: colors.milk,
+              backgroundColor: colors.crane,
               border: "none",
               padding: "8px 20px",
               cursor: "pointer",
@@ -420,7 +420,7 @@ function VoiceRecorder({ zoneColor, onSave, onClose }: {
               fontWeight: 700,
               fontSize: 11,
               letterSpacing: "0.1em",
-              color: colors.black,
+              color: colors.shed,
               backgroundColor: "transparent",
               border: "1px solid rgba(26,26,26,0.15)",
               padding: "8px 16px",
@@ -438,7 +438,7 @@ function VoiceRecorder({ zoneColor, onSave, onClose }: {
             width: 12,
             height: 12,
             borderRadius: "50%",
-            backgroundColor: colors.red,
+            backgroundColor: colors.crane,
             animation: "pulse 1s ease-in-out infinite",
           }} />
           <span style={{
@@ -463,8 +463,8 @@ function VoiceRecorder({ zoneColor, onSave, onClose }: {
               fontWeight: 700,
               fontSize: 11,
               letterSpacing: "0.1em",
-              color: colors.cream,
-              backgroundColor: colors.black,
+              color: colors.milk,
+              backgroundColor: colors.shed,
               border: "none",
               padding: "8px 20px",
               cursor: "pointer",
@@ -487,8 +487,8 @@ function VoiceRecorder({ zoneColor, onSave, onClose }: {
                 fontWeight: 700,
                 fontSize: 11,
                 letterSpacing: "0.1em",
-                color: colors.cream,
-                backgroundColor: colors.black,
+                color: colors.milk,
+                backgroundColor: colors.shed,
                 border: "none",
                 padding: "8px 20px",
                 cursor: "pointer",
@@ -503,7 +503,7 @@ function VoiceRecorder({ zoneColor, onSave, onClose }: {
                 fontWeight: 700,
                 fontSize: 11,
                 letterSpacing: "0.1em",
-                color: colors.black,
+                color: colors.shed,
                 backgroundColor: "transparent",
                 border: "1px solid rgba(26,26,26,0.15)",
                 padding: "8px 16px",
@@ -832,14 +832,14 @@ function FullscreenBoard({ items, zoneColor, zoneName, onDelete, onClose, onUpda
             fontWeight: 900,
             fontSize: 13,
             letterSpacing: "0.1em",
-            color: colors.cream,
+            color: colors.milk,
           }}>
             {zoneName} — IDEA BOARD
           </span>
           <span style={{
             fontFamily: fonts.body,
             fontSize: 12,
-            color: colors.cream,
+            color: colors.milk,
             opacity: 0.4,
             marginLeft: 8,
           }}>
@@ -854,7 +854,7 @@ function FullscreenBoard({ items, zoneColor, zoneName, onDelete, onClose, onUpda
               fontWeight: 700,
               fontSize: 10,
               letterSpacing: "0.1em",
-              color: colors.cream,
+              color: colors.milk,
               backgroundColor: "rgba(255,255,255,0.1)",
               border: "none",
               padding: "6px 14px",
@@ -870,7 +870,7 @@ function FullscreenBoard({ items, zoneColor, zoneName, onDelete, onClose, onUpda
               fontWeight: 700,
               fontSize: 10,
               letterSpacing: "0.1em",
-              color: colors.cream,
+              color: colors.milk,
               backgroundColor: "rgba(255,255,255,0.1)",
               border: "none",
               padding: "6px 14px",
@@ -891,7 +891,7 @@ function FullscreenBoard({ items, zoneColor, zoneName, onDelete, onClose, onUpda
         fontFamily: fonts.display,
         fontWeight: 700,
         fontSize: 11,
-        color: colors.cream,
+        color: colors.milk,
         opacity: 0.3,
       }}>
         {Math.round(zoom * 100)}%
@@ -973,7 +973,7 @@ function FullscreenBoard({ items, zoneColor, zoneName, onDelete, onClose, onUpda
                     <span style={{
                       fontFamily: fonts.body,
                       fontSize: 10,
-                      color: colors.cream,
+                      color: colors.milk,
                       opacity: 0.5,
                       overflow: "hidden",
                       textOverflow: "ellipsis",
@@ -1006,7 +1006,7 @@ function FullscreenBoard({ items, zoneColor, zoneName, onDelete, onClose, onUpda
                     fontSize: 13,
                     lineHeight: 1.5,
                     margin: 0,
-                    color: colors.cream,
+                    color: colors.milk,
                     opacity: 0.8,
                     whiteSpace: "pre-wrap",
                     wordBreak: "break-word",
@@ -1035,7 +1035,7 @@ function FullscreenBoard({ items, zoneColor, zoneName, onDelete, onClose, onUpda
                     fontWeight: 700,
                     fontSize: 9,
                     letterSpacing: "0.1em",
-                    color: colors.cream,
+                    color: colors.milk,
                     opacity: 0.4,
                     marginBottom: 8,
                   }}>
@@ -1050,7 +1050,7 @@ function FullscreenBoard({ items, zoneColor, zoneName, onDelete, onClose, onUpda
                   <span style={{
                     fontFamily: fonts.body,
                     fontSize: 10,
-                    color: colors.cream,
+                    color: colors.milk,
                     opacity: 0.4,
                     display: "block",
                     marginTop: 4,
@@ -1105,7 +1105,7 @@ const deleteButtonStyle: CSSProperties = {
   height: 22,
   borderRadius: "50%",
   backgroundColor: "rgba(26,26,26,0.6)",
-  color: colors.cream,
+  color: colors.milk,
   border: "none",
   cursor: "pointer",
   fontFamily: fonts.body,
@@ -1211,7 +1211,7 @@ export default function ZoneWorkshop() {
       {/* Header */}
       <header style={{
         position: "relative",
-        color: colors.cream,
+        color: colors.milk,
         padding: isMobile ? "100px 24px 32px" : "140px 40px 40px",
         textAlign: "center",
         overflow: "hidden",
@@ -1242,7 +1242,7 @@ export default function ZoneWorkshop() {
             fontWeight: 700,
             fontSize: 10,
             letterSpacing: "0.15em",
-            color: colors.cream,
+            color: colors.milk,
             opacity: 0.6,
             textDecoration: "none",
             display: "inline-block",
@@ -1273,8 +1273,8 @@ export default function ZoneWorkshop() {
 
       {/* Concept Deck + Zone Diagram */}
       <section style={{
-        backgroundColor: colors.black,
-        color: colors.cream,
+        backgroundColor: colors.shed,
+        color: colors.milk,
         padding: isMobile ? "40px 24px" : "56px 40px",
       }}>
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
@@ -1286,7 +1286,7 @@ export default function ZoneWorkshop() {
             gap: isMobile ? 16 : 32,
             marginBottom: 40,
             padding: "24px 28px",
-            border: "1px solid rgba(244,244,242,0.1)",
+            border: "1px solid rgba(245,240,232,0.1)",
             borderRadius: 4,
           }}>
             <div style={{ flex: 1 }}>
@@ -1321,8 +1321,8 @@ export default function ZoneWorkshop() {
                 fontWeight: 700,
                 fontSize: 13,
                 letterSpacing: "0.1em",
-                color: colors.cream,
-                border: `1px solid ${colors.cream}`,
+                color: colors.milk,
+                border: `1px solid ${colors.milk}`,
                 padding: "10px 24px",
                 textDecoration: "none",
                 whiteSpace: "nowrap",
@@ -1358,7 +1358,7 @@ export default function ZoneWorkshop() {
                   style={{
                     width: "100%",
                     borderRadius: 2,
-                    border: "1px solid rgba(244,244,242,0.1)",
+                    border: "1px solid rgba(245,240,232,0.1)",
                     display: "block",
                   }}
                 />
@@ -1385,7 +1385,7 @@ export default function ZoneWorkshop() {
                         alignItems: "center",
                         gap: 12,
                         background: "none",
-                        border: "1px solid rgba(244,244,242,0.08)",
+                        border: "1px solid rgba(245,240,232,0.08)",
                         borderRadius: 2,
                         padding: "10px 16px",
                         cursor: "pointer",
@@ -1393,14 +1393,14 @@ export default function ZoneWorkshop() {
                         transition: "border-color 0.2s",
                       }}
                       onMouseEnter={(e) => (e.currentTarget.style.borderColor = zone.color)}
-                      onMouseLeave={(e) => (e.currentTarget.style.borderColor = "rgba(244,244,242,0.08)")}
+                      onMouseLeave={(e) => (e.currentTarget.style.borderColor = "rgba(245,240,232,0.08)")}
                     >
                       <span style={{
                         width: 28,
                         height: 28,
                         borderRadius: "50%",
                         backgroundColor: zone.color,
-                        color: colors.black,
+                        color: colors.shed,
                         fontFamily: fonts.display,
                         fontWeight: 900,
                         fontSize: 13,
@@ -1416,7 +1416,7 @@ export default function ZoneWorkshop() {
                           fontFamily: fonts.display,
                           fontWeight: 700,
                           fontSize: 14,
-                          color: colors.cream,
+                          color: colors.milk,
                           display: "block",
                         }}>
                           {zone.label}
@@ -1424,7 +1424,7 @@ export default function ZoneWorkshop() {
                         <span style={{
                           fontFamily: fonts.body,
                           fontSize: 12,
-                          color: colors.cream,
+                          color: colors.milk,
                           opacity: 0.4,
                         }}>
                           {zone.tagline?.replace(/—/g, ",")}
@@ -1446,8 +1446,8 @@ export default function ZoneWorkshop() {
           position: "sticky",
           top: 0,
           zIndex: 50,
-          backgroundColor: colors.black,
-          borderBottom: "1px solid rgba(244,244,242,0.08)",
+          backgroundColor: colors.shed,
+          borderBottom: "1px solid rgba(245,240,232,0.08)",
           overflowX: "auto",
           WebkitOverflowScrolling: "touch",
         }}
@@ -1471,7 +1471,7 @@ export default function ZoneWorkshop() {
                   fontWeight: 700,
                   fontSize: 9,
                   letterSpacing: "0.1em",
-                  color: colors.cream,
+                  color: colors.milk,
                   opacity: activeZone === id ? 1 : 0.3,
                   backgroundColor: "transparent",
                   border: "none",
@@ -1540,7 +1540,7 @@ export default function ZoneWorkshop() {
                 fontWeight: 700,
                 fontSize: 13,
                 letterSpacing: "0.08em",
-                color: colors.cream,
+                color: colors.milk,
                 opacity: 0.7,
               }}>
                 {lightbox.images.length > 1
@@ -1552,7 +1552,7 @@ export default function ZoneWorkshop() {
                 fontWeight: 700,
                 fontSize: 12,
                 letterSpacing: "0.1em",
-                color: colors.cream,
+                color: colors.milk,
                 opacity: 0.5,
               }}>
                 ESC / CLICK TO CLOSE
@@ -1572,7 +1572,7 @@ export default function ZoneWorkshop() {
                 <span style={{
                   fontFamily: fonts.body,
                   fontSize: 14,
-                  color: colors.cream,
+                  color: colors.milk,
                   opacity: 0.6,
                 }}>
                   {lightbox.images[lightbox.index].label}
@@ -1596,7 +1596,7 @@ export default function ZoneWorkshop() {
                   height: 44,
                   borderRadius: "50%",
                   backgroundColor: "rgba(255,255,255,0.1)",
-                  color: colors.cream,
+                  color: colors.milk,
                   border: "none",
                   cursor: "pointer",
                   fontSize: 20,
@@ -1627,7 +1627,7 @@ export default function ZoneWorkshop() {
                   height: 44,
                   borderRadius: "50%",
                   backgroundColor: "rgba(255,255,255,0.1)",
-                  color: colors.cream,
+                  color: colors.milk,
                   border: "none",
                   cursor: "pointer",
                   fontSize: 20,
@@ -1953,7 +1953,7 @@ function ZoneSection({ zone, isMobile, onImageClick }: {
               style={{
                 fontFamily: fonts.body,
                 fontSize: 14,
-                color: colors.black,
+                color: colors.shed,
                 backgroundColor: "white",
                 border: "1px solid rgba(26,26,26,0.15)",
                 borderRadius: 0,
@@ -1973,8 +1973,8 @@ function ZoneSection({ zone, isMobile, onImageClick }: {
                   fontWeight: 700,
                   fontSize: 12,
                   letterSpacing: "0.1em",
-                  color: colors.cream,
-                  backgroundColor: loading ? "rgba(26,26,26,0.4)" : colors.black,
+                  color: colors.milk,
+                  backgroundColor: loading ? "rgba(26,26,26,0.4)" : colors.shed,
                   border: "none",
                   padding: "10px 24px",
                   cursor: loading ? "not-allowed" : "pointer",
@@ -1989,7 +1989,7 @@ function ZoneSection({ zone, isMobile, onImageClick }: {
                   fontWeight: 700,
                   fontSize: 12,
                   letterSpacing: "0.1em",
-                  color: colors.black,
+                  color: colors.shed,
                   backgroundColor: "transparent",
                   border: `1px solid rgba(26,26,26,0.2)`,
                   padding: "10px 24px",
@@ -2009,7 +2009,7 @@ function ZoneSection({ zone, isMobile, onImageClick }: {
             </div>
           </div>
           {error && (
-            <p style={{ fontFamily: fonts.body, fontSize: 13, color: colors.red, marginTop: 12 }}>
+            <p style={{ fontFamily: fonts.body, fontSize: 13, color: colors.crane, marginTop: 12 }}>
               {error}
             </p>
           )}
@@ -2156,7 +2156,7 @@ function NoteInput({ zoneColor: _zoneColor, onAdd, onCancel }: {
         style={{
           fontFamily: fonts.body,
           fontSize: 14,
-          color: colors.black,
+          color: colors.shed,
           backgroundColor: "white",
           border: "1px solid rgba(26,26,26,0.15)",
           borderRadius: 0,
@@ -2177,8 +2177,8 @@ function NoteInput({ zoneColor: _zoneColor, onAdd, onCancel }: {
             fontWeight: 700,
             fontSize: 11,
             letterSpacing: "0.1em",
-            color: colors.cream,
-            backgroundColor: text.trim() ? colors.black : "rgba(26,26,26,0.3)",
+            color: colors.milk,
+            backgroundColor: text.trim() ? colors.shed : "rgba(26,26,26,0.3)",
             border: "none",
             padding: "8px 20px",
             cursor: text.trim() ? "pointer" : "not-allowed",
@@ -2193,7 +2193,7 @@ function NoteInput({ zoneColor: _zoneColor, onAdd, onCancel }: {
             fontWeight: 700,
             fontSize: 11,
             letterSpacing: "0.1em",
-            color: colors.black,
+            color: colors.shed,
             backgroundColor: "transparent",
             border: "1px solid rgba(26,26,26,0.15)",
             padding: "8px 16px",
@@ -2216,7 +2216,7 @@ const smallLabelStyle: CSSProperties = {
   fontWeight: 700,
   fontSize: 10,
   letterSpacing: "0.2em",
-  color: colors.cream,
+  color: colors.milk,
   opacity: 0.5,
   display: "block",
 };
@@ -2245,7 +2245,7 @@ function actionBtnStyle(zoneColor: string, active: boolean): CSSProperties {
     fontWeight: 700,
     fontSize: 10,
     letterSpacing: "0.1em",
-    color: active ? colors.cream : colors.black,
+    color: active ? colors.milk : colors.shed,
     backgroundColor: active ? zoneColor : "transparent",
     border: `1px solid ${active ? zoneColor : "rgba(26,26,26,0.15)"}`,
     padding: "6px 14px",

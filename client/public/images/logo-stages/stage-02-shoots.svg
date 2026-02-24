@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 260">
+  <!-- Stage 02: The Shoots — two thin stems pushing up. No bars yet. Just potential. -->
+
+  <!-- Soil mound -->
+  <path d="M 50,210 C 70,204 85,202 100,203 C 115,202 130,204 150,210"
+        stroke="#B58B70" stroke-width="1.5" fill="none" opacity="0.2"/>
+
+  <!-- Left stem — thin, slightly curved, taller -->
+  <path d="
+    M 80,206
+    C 79,190 78,170 79,150
+    C 80,130 78,110 80,90
+    C 81,80 79,72 78,65
+  " stroke="#B58B70" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.55"/>
+
+  <!-- Left stem — tiny bud node -->
+  <circle cx="79" cy="110" r="1.5" fill="#B58B70" opacity="0.4"/>
+
+  <!-- Right stem — thin, slightly shorter -->
+  <path d="
+    M 120,206
+    C 121,192 122,175 121,158
+    C 120,140 122,120 121,100
+    C 120,90 122,82 121,75
+  " stroke="#B58B70" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.55"/>
+
+  <!-- Right stem — tiny bud node -->
+  <circle cx="121" cy="125" r="1.5" fill="#B58B70" opacity="0.4"/>
+
+  <!-- Fine root tendrils at base -->
+  <path d="M 80,206 C 76,212 72,216 68,218" stroke="#B58B70" stroke-width="0.8" fill="none" opacity="0.2" stroke-linecap="round"/>
+  <path d="M 120,206 C 124,212 128,215 132,217" stroke="#B58B70" stroke-width="0.8" fill="none" opacity="0.2" stroke-linecap="round"/>
+</svg>

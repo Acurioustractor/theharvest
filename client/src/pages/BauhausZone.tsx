@@ -462,7 +462,7 @@ export default function BauhausZone({ zoneId }: { zoneId: string }) {
       </section>
 
       {/* ─── FOOTER ─── */}
-      <footer style={{ backgroundColor: "var(--bh-black)", padding: "40px", borderTop: "3px solid rgba(244,244,242,0.1)" }}>
+      <footer style={{ backgroundColor: "var(--bh-black)", padding: "40px", borderTop: "3px solid rgba(245,240,232,0.1)" }}>
         <div style={{ maxWidth: 900, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 16 }}>
           <Link href="/bauhaus" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}>
             <GeometricLogo size={20} />

@@ -1,27 +1,18 @@
 import { useEffect, useState } from "react";
-import { Link } from "wouter";
 import { motion } from "framer-motion";
+import { Link } from "wouter";
 import BauhausFooter from "@/components/BauhausFooter";
 import FadeIn from "@/components/FadeIn";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
-import { rootStyle, colors, fonts, detailLabelStyle, detailTextStyle, formLabelStyle, formInputStyle } from "@/styles/brand";
+import { rootStyle, colors, fonts, formLabelStyle, formInputStyle } from "@/styles/brand";
 import { trpc } from "@/lib/trpc";
 
 const GATHERING_DATE = new Date("2026-03-07T11:00:00+10:00");
 
 const SUCCESS_MESSAGES = [
   { headline: "You're in. See you March 7.", sub: "We'll send you a few details before the day. Where to park, what's happening, who else is coming." },
-  { headline: "Spot saved. Bring your appetite.", sub: "Shaun's shucking oysters, pizza's firing, and we'll have a seat for you." },
+  { headline: "Spot saved. Bring your curiosity.", sub: "We'll have a seat and a conversation waiting for you." },
   { headline: "Done. Now tell a friend.", sub: "The best gatherings happen when neighbours bring neighbours." },
-];
-
-const INTEREST_OPTIONS = [
-  { id: "kids-play", label: "Kids play area" },
-  { id: "cafe", label: "Cafe" },
-  { id: "garden", label: "Garden" },
-  { id: "pop-up-events", label: "Pop up events" },
-  { id: "art-exhibitions", label: "Art exhibitions" },
-  { id: "something-else", label: "Something else" },
 ];
 
 function useCountdown(target: Date) {
@@ -63,20 +54,13 @@ function AnimatedCount({ target }: { target: number }) {
 
 export default function Gather() {
   const isMobile = useMediaQuery("(max-width: 768px)");
-  const [eoiData, setEoiData] = useState({
-    name: "",
-    email: "",
-    excitement: "",
-    source: "",
-  });
+  const [eoiData, setEoiData] = useState({ name: "", email: "" });
   const [submitted, setSubmitted] = useState(false);
   const [successMsg] = useState(() => SUCCESS_MESSAGES[Math.floor(Math.random() * SUCCESS_MESSAGES.length)]);
-  const [selectedInterests, setSelectedInterests] = useState<Set<string>>(new Set());
-  const [otherText, setOtherText] = useState("");
-  const [pollSubmitted, setPollSubmitted] = useState(false);
-  const [pollCounts, setPollCounts] = useState<Record<string, number>>({});
-  const [pollTotal, setPollTotal] = useState(0);
   const [shared, setShared] = useState(false);
+
+  const [localsDayData, setLocalsDayData] = useState({ name: "", email: "", alsoSaturday: false });
+  const [localsDaySubmitted, setLocalsDaySubmitted] = useState(false);
 
   const countdown = useCountdown(GATHERING_DATE);
   const isPast = countdown === null;
@@ -85,26 +69,13 @@ export default function Gather() {
     onSuccess: () => setSubmitted(true),
   });
 
+  const localsDayMutation = trpc.eoi.submitLocalsDay.useMutation({
+    onSuccess: () => setLocalsDaySubmitted(true),
+  });
+
   const eoiCountQuery = trpc.eoi.count.useQuery(undefined, {
     staleTime: 60_000,
   });
-
-  const pollResultsQuery = trpc.interestPoll.results.useQuery(undefined, {
-    staleTime: 30_000,
-  });
-
-  const pollVoteMutation = trpc.interestPoll.vote.useMutation({
-    onSuccess: () => {
-      pollResultsQuery.refetch();
-    },
-  });
-
-  useEffect(() => {
-    if (pollResultsQuery.data) {
-      setPollCounts(pollResultsQuery.data.counts ?? {});
-      setPollTotal(pollResultsQuery.data.total ?? 0);
-    }
-  }, [pollResultsQuery.data]);
 
   useEffect(() => {
     document.title = "First Gathering / Saturday 7 March | The Harvest";
@@ -118,7 +89,7 @@ export default function Gather() {
       el.content = content;
     };
     meta("og:title", "First Gathering / Saturday 7 March");
-    meta("og:description", "Oysters, a milk crate pavilion, and the beginning of something. 9 Gumland Drive, Witta.");
+    meta("og:description", "Local history, making things together, and imagining what this place becomes. 9 Gumland Drive, Witta.");
 
     if (window.location.hash) {
       setTimeout(() => {
@@ -133,33 +104,13 @@ export default function Gather() {
     eoiMutation.mutate({
       name: eoiData.name,
       email: eoiData.email,
-      excitement: eoiData.excitement || undefined,
-      source: eoiData.source || undefined,
     });
-  };
-
-  const toggleInterest = (id: string) => {
-    if (pollSubmitted) return;
-    setSelectedInterests(prev => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id); else next.add(id);
-      return next;
-    });
-  };
-
-  const handlePollSubmit = () => {
-    if (selectedInterests.size === 0 || pollSubmitted) return;
-    pollVoteMutation.mutate({
-      interests: Array.from(selectedInterests),
-      other: selectedInterests.has("something-else") ? otherText || undefined : undefined,
-    });
-    setPollSubmitted(true);
   };
 
   const handleShare = async () => {
     const shareData = {
-      title: "The Harvest -First Gathering",
-      text: "I'm going to The Harvest's First Gathering. March 7, Witta. Free entry, oysters, music, building things together.",
+      title: "The Harvest / First Gathering",
+      text: "I'm going to The Harvest's First Gathering. March 7, Witta. Local history, making things together, and imagining what this place becomes.",
       url: "https://theharvestwitta.com.au/gather",
     };
     try {
@@ -205,20 +156,33 @@ export default function Gather() {
         <div style={{
           position: "absolute",
           inset: 0,
-          backgroundColor: "rgba(0,0,0,0.40)",
+          backgroundColor: "rgba(0,0,0,0.35)",
           zIndex: 1,
         }} />
         <div style={{
           position: "relative",
           zIndex: 2,
           textAlign: "center",
-          color: colors.cream,
+          color: colors.milk,
           padding: "0 24px",
         }}>
+          <Link href="/" style={{ textDecoration: "none", color: colors.milk }}>
+            <span style={{
+              fontFamily: fonts.display,
+              fontWeight: 700,
+              fontSize: 12,
+              letterSpacing: "0.4em",
+              opacity: 0.6,
+              display: "block",
+              marginBottom: 24,
+            }}>
+              THE HARVEST
+            </span>
+          </Link>
           <h1 style={{
             fontFamily: fonts.display,
             fontWeight: 900,
-            fontSize: isMobile ? "clamp(32px, 9vw, 52px)" : "clamp(52px, 5.5vw, 76px)",
+            fontSize: isMobile ? "clamp(36px, 10vw, 56px)" : "clamp(56px, 6vw, 80px)",
             letterSpacing: "0.14em",
             margin: 0,
             lineHeight: 1.1,
@@ -227,41 +191,31 @@ export default function Gather() {
           </h1>
           <p style={{
             fontFamily: fonts.body,
-            fontWeight: 400,
+            fontStyle: "italic",
             fontSize: isMobile ? 18 : 24,
-            letterSpacing: "0.12em",
-            margin: "28px 0 0",
+            margin: "28px auto 0",
+            maxWidth: 600,
             opacity: 0.9,
           }}>
-            Saturday 7 March, 11am – 4pm
+            Saturday 7 March, 11am - 4pm
           </p>
           <p style={{
             fontFamily: fonts.body,
-            fontWeight: 400,
-            fontSize: isMobile ? 13 : 15,
-            margin: "8px 0 0",
-            opacity: 0.5,
-          }}>
-            Come for an hour or stay for the day
-          </p>
-          <p style={{
-            fontFamily: fonts.body,
-            fontWeight: 400,
             fontSize: isMobile ? 14 : 16,
-            margin: "12px 0 0",
+            margin: "8px 0 0",
             opacity: 0.6,
           }}>
-            9 Gumland Drive, Witta &middot; Free entry
+            9 Gumland Drive, Witta. Free.
           </p>
 
-          {/* Countdown Timer */}
+          {/* Countdown */}
           {countdown && !countdown.isUnder24h && (
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5, duration: 0.8 }}
               style={{
-                marginTop: 32,
+                marginTop: 40,
                 display: "flex",
                 justifyContent: "center",
                 gap: isMobile ? 16 : 24,
@@ -313,7 +267,7 @@ export default function Gather() {
             </motion.p>
           )}
 
-          {isPast ? (
+          {isPast && (
             <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -327,17 +281,6 @@ export default function Gather() {
             >
               We gathered. Here's what happened.
             </motion.p>
-          ) : (
-            <p style={{
-              fontFamily: fonts.body,
-              fontWeight: 400,
-              fontSize: isMobile ? 16 : 18,
-              margin: "28px 0 0",
-              opacity: 0.8,
-              fontStyle: "italic",
-            }}>
-              Come as you are.
-            </p>
           )}
 
           {!isPast && (
@@ -348,12 +291,12 @@ export default function Gather() {
                 fontWeight: 700,
                 fontSize: 14,
                 letterSpacing: "0.1em",
-                color: colors.black,
-                backgroundColor: colors.yellow,
+                color: colors.shed,
+                backgroundColor: colors.goldenHour,
                 padding: "16px 40px",
                 textDecoration: "none",
                 display: "inline-block",
-                marginTop: 28,
+                marginTop: 32,
               }}
             >
               SAVE MY SPOT
@@ -364,300 +307,238 @@ export default function Gather() {
 
       {/* --- 2. THE INVITATION --- */}
       <section style={{
-        backgroundColor: colors.black,
-        color: colors.cream,
-        padding: isMobile ? "80px 28px" : "120px 40px",
+        backgroundColor: colors.milk,
+        color: colors.shed,
+        padding: isMobile ? "100px 28px" : "160px 40px",
       }}>
-        <div style={{
-          maxWidth: 600,
-          margin: "0 auto",
-          textAlign: "center",
-        }}>
+        <div style={{ maxWidth: 800, margin: "0 auto", textAlign: "center" }}>
           <FadeIn>
-            <p style={{
+            <span style={{
               fontFamily: fonts.display,
               fontWeight: 700,
-              fontSize: 11,
-              letterSpacing: "0.2em",
-              opacity: 0.5,
-              marginBottom: 24,
+              fontSize: 12,
+              letterSpacing: "0.4em",
+              color: colors.goldenHour,
+              display: "block",
+              marginBottom: 32,
             }}>
-              THE INVITATION
+              REGIONAL ARTS FELLOWSHIP
+            </span>
+            <blockquote style={{
+              fontFamily: fonts.body,
+              fontStyle: "italic",
+              fontSize: isMobile ? "clamp(22px, 5vw, 32px)" : "clamp(28px, 3vw, 38px)",
+              lineHeight: 1.4,
+              margin: "0 0 40px",
+            }}>
+              "What happens when you bring creative practice into a place shaped by generations?"
+            </blockquote>
+          </FadeIn>
+          <FadeIn delay={0.1}>
+            <p style={{
+              fontFamily: fonts.body,
+              fontSize: isMobile ? 17 : 20,
+              lineHeight: 1.9,
+              opacity: 0.8,
+              maxWidth: 680,
+              margin: "0 auto 24px",
+            }}>
+              Witta sits on land shaped by generations. Jinibara Country first, then cedar-getters, dairy farmers, timber workers, and the cooperative movement that defined this hinterland. Through a Regional Arts Australia fellowship, we're exploring what happens when you bring creative practice into a place with that kind of history.
             </p>
             <p style={{
               fontFamily: fonts.body,
-              fontSize: isMobile ? 18 : 22,
+              fontSize: isMobile ? 17 : 20,
               lineHeight: 1.9,
-              opacity: 0.85,
-              margin: 0,
+              opacity: 0.8,
+              maxWidth: 680,
+              margin: "0 auto",
             }}>
-              No tickets. No agenda. No speeches. Just food, music, and the people who show up. Come see the place for yourself. This is how it begins.
+              This gathering is the beginning. No tickets. No speeches. Just neighbours on the lawn, oysters from Moreton Bay, drinks from{" "}
+              <a
+                href="https://flightbarwitta.com.au/"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: colors.shed, fontWeight: 600, textDecoration: "none", borderBottom: `1px solid rgba(0,0,0,0.3)` }}
+              >
+                Flight Bar Witta
+              </a>
+              , and an open question: what would you build here?
             </p>
           </FadeIn>
         </div>
       </section>
 
-      {/* --- 3. WHAT'S HAPPENING -Color bands --- */}
-      {([
-        {
-          word: "FEED",
-          color: colors.red,
-          textColor: colors.cream,
-          lines: [
-            "Oysters fresh from Minjerribah.",
-            "",
-            "Shaun Fisher, Quandamooka man and oyster farmer, was the first person to say yes to this place. We're honoured he's bringing his harvest to ours.",
-            "",
-            "Pizza from the trailer. BYO picnic.",
-          ],
-        },
-        {
-          word: "BUILD",
-          color: colors.yellow,
-          textColor: colors.black,
-          lines: [
-            "Milk crate pavilion.",
-            "Bring your hands. We'll build it together.",
-            "",
-            "This is the launch of our Regional Arts Australia project, exploring the dairy, timber and co-op heritage of this ridge.",
-          ],
-        },
-        {
-          word: "GATHER",
-          color: colors.blue,
-          textColor: colors.cream,
-          lines: [
-            "Drinks. Music. Kids welcome. Dogs on leads.",
-            "Everyone shares a table.",
-            "",
-            "Come for an hour or stay all afternoon. No pressure, no program.",
-          ],
-        },
-      ] as const).map((band) => (
-        <section key={band.word} style={{
-          backgroundColor: band.color,
-          color: band.textColor,
-          position: "relative",
-          overflow: "hidden",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          minHeight: isMobile ? "40vh" : "45vh",
-        }}>
-          <div style={{
-            position: "relative",
-            zIndex: 1,
-            textAlign: "center",
-            padding: isMobile ? "60px 28px" : "80px 40px",
-          }}>
-            <FadeIn>
-              <h2 style={{
-                fontFamily: fonts.display,
-                fontWeight: 900,
-                fontSize: "clamp(44px, 9vw, 100px)",
-                letterSpacing: "0.08em",
-                margin: 0,
-                lineHeight: 1,
-              }}>
-                {band.word}
-              </h2>
-              <div style={{
-                fontFamily: fonts.body,
-                fontWeight: 400,
-                fontSize: isMobile ? 15 : 18,
-                lineHeight: 1.8,
-                margin: "24px auto 0",
-                opacity: 0.85,
-                maxWidth: 480,
-              }}>
-                {band.lines.map((line, i) =>
-                  line === "" ? <br key={i} /> : <p key={i} style={{ margin: "4px 0" }}>{line}</p>
-                )}
-              </div>
-            </FadeIn>
-          </div>
-        </section>
-      ))}
-
-      {/* --- INTEREST POLL --- */}
-      {!isPast && (
-        <section style={{
-          backgroundColor: colors.black,
-          color: colors.cream,
-          padding: isMobile ? "60px 28px" : "80px 40px",
-        }}>
-          <div style={{ maxWidth: 520, margin: "0 auto", textAlign: "center" }}>
-            <FadeIn>
-              <h3 style={{
-                fontFamily: fonts.display,
-                fontWeight: 900,
-                fontSize: isMobile ? 20 : 26,
-                letterSpacing: "0.06em",
-                margin: "0 0 8px",
-              }}>
-                WHAT EXCITES YOU MOST?
-              </h3>
-              <p style={{
-                fontFamily: fonts.body,
-                fontSize: 14,
-                opacity: 0.5,
-                margin: "0 0 32px",
-              }}>
-                Pick as many as you like. Helps us know what to build first.
-              </p>
-
-              {pollSubmitted ? (
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                  <div style={{ display: "flex", flexDirection: "column", gap: 10, textAlign: "left" }}>
-                    {INTEREST_OPTIONS.filter(o => o.id !== "something-else").map((opt) => {
-                      const dbCount = pollCounts[opt.id] ?? 0;
-                      const count = dbCount + (selectedInterests.has(opt.id) ? 1 : 0);
-                      const allCounts = INTEREST_OPTIONS
-                        .filter(o => o.id !== "something-else")
-                        .map(o => (pollCounts[o.id] ?? 0) + (selectedInterests.has(o.id) ? 1 : 0));
-                      const maxCount = Math.max(1, ...allCounts);
-                      const pct = Math.round((count / maxCount) * 100);
-                      return (
-                        <div key={opt.id}>
-                          <div style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            fontFamily: fonts.display,
-                            fontWeight: 700,
-                            fontSize: 12,
-                            letterSpacing: "0.05em",
-                            marginBottom: 4,
-                          }}>
-                            <span style={{ opacity: selectedInterests.has(opt.id) ? 1 : 0.6 }}>{opt.label}</span>
-                            <span style={{ opacity: 0.5 }}>{count}</span>
-                          </div>
-                          <div style={{
-                            height: 4,
-                            backgroundColor: "rgba(244,244,242,0.1)",
-                            overflow: "hidden",
-                          }}>
-                            <motion.div
-                              initial={{ width: 0 }}
-                              animate={{ width: `${pct}%` }}
-                              transition={{ duration: 0.8, ease: "easeOut" }}
-                              style={{
-                                height: "100%",
-                                backgroundColor: selectedInterests.has(opt.id) ? colors.yellow : "rgba(244,244,242,0.4)",
-                              }}
-                            />
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                  <p style={{
-                    fontFamily: fonts.body,
-                    fontSize: 13,
-                    opacity: 0.4,
-                    marginTop: 20,
-                  }}>
-                    {pollTotal + 1} {pollTotal + 1 === 1 ? "person has" : "people have"} voted
-                  </p>
-                </motion.div>
-              ) : (
-                <>
-                  <div style={{
-                    display: "grid",
-                    gridTemplateColumns: isMobile ? "1fr 1fr" : "1fr 1fr 1fr",
-                    gap: 10,
-                  }}>
-                    {INTEREST_OPTIONS.map((opt) => {
-                      const isSelected = selectedInterests.has(opt.id);
-                      return (
-                        <motion.button
-                          key={opt.id}
-                          onClick={() => toggleInterest(opt.id)}
-                          whileHover={{ scale: 1.03 }}
-                          whileTap={{ scale: 0.97 }}
-                          style={{
-                            fontFamily: fonts.display,
-                            fontWeight: 700,
-                            fontSize: 12,
-                            letterSpacing: "0.05em",
-                            color: isSelected ? colors.black : colors.cream,
-                            backgroundColor: isSelected ? colors.yellow : "transparent",
-                            border: `1px solid ${isSelected ? colors.yellow : "rgba(244,244,242,0.2)"}`,
-                            padding: "14px 12px",
-                            cursor: "pointer",
-                            transition: "background-color 0.2s, color 0.2s",
-                          }}
-                        >
-                          {opt.label}
-                        </motion.button>
-                      );
-                    })}
-                  </div>
-
-                  {selectedInterests.has("something-else") && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: "auto" }}
-                      style={{ marginTop: 12 }}
-                    >
-                      <input
-                        type="text"
-                        placeholder="Tell us what you'd love to see"
-                        value={otherText}
-                        onChange={(e) => setOtherText(e.target.value)}
-                        style={{
-                          ...formInputStyle,
-                          width: "100%",
-                        }}
-                      />
-                    </motion.div>
-                  )}
-
-                  <motion.button
-                    onClick={handlePollSubmit}
-                    disabled={selectedInterests.size === 0}
-                    whileHover={selectedInterests.size > 0 ? { scale: 1.02 } : {}}
-                    whileTap={selectedInterests.size > 0 ? { scale: 0.98 } : {}}
-                    style={{
-                      fontFamily: fonts.display,
-                      fontWeight: 700,
-                      fontSize: 13,
-                      letterSpacing: "0.08em",
-                      color: selectedInterests.size > 0 ? colors.black : colors.cream,
-                      backgroundColor: selectedInterests.size > 0 ? colors.yellow : "transparent",
-                      border: `1px solid ${selectedInterests.size > 0 ? colors.yellow : "rgba(244,244,242,0.15)"}`,
-                      padding: "14px 32px",
-                      cursor: selectedInterests.size > 0 ? "pointer" : "default",
-                      marginTop: 20,
-                      opacity: selectedInterests.size > 0 ? 1 : 0.3,
-                      transition: "all 0.2s",
-                    }}
-                  >
-                    SUBMIT
-                  </motion.button>
-                </>
-              )}
-            </FadeIn>
-          </div>
-        </section>
-      )}
-
-      {/* --- 4. PRACTICAL DETAILS --- */}
+      {/* --- 3. LISTEN / MAKE / SHARE --- */}
       <section style={{
-        backgroundColor: colors.cream,
-        color: colors.black,
-        padding: isMobile ? "80px 28px" : "100px 40px",
+        backgroundColor: colors.shed,
+        color: colors.milk,
+        padding: isMobile ? "80px 28px" : "140px 40px",
       }}>
-        <div style={{
-          maxWidth: 640,
-          margin: "0 auto",
-        }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto", width: "100%" }}>
           <FadeIn>
             <h2 style={{
               fontFamily: fonts.display,
               fontWeight: 900,
-              fontSize: isMobile ? 28 : 36,
-              letterSpacing: "0.06em",
-              margin: "0 0 48px",
+              fontSize: isMobile ? 36 : 48,
+              letterSpacing: "0.1em",
+              margin: "0 0 64px",
+              textAlign: "center",
+            }}>
+              ON THE DAY
+            </h2>
+          </FadeIn>
+
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr 1fr",
+            gap: isMobile ? 48 : 64,
+          }}>
+            {[
+              {
+                title: "LISTEN",
+                desc: "Stories from the ridge. Local history. The land beneath us and the people who shaped it.",
+                image: "/images/sketch-listen.png",
+              },
+              {
+                title: "MAKE",
+                desc: "Build something together. Hands-on, collaborative, open. Bring an idea or just bring your hands.",
+                image: "/images/sketch-make.png",
+              },
+              {
+                title: "SHARE",
+                desc: "Food, fire, and the question: what would you build here?",
+                image: "/images/sketch-share.png",
+              },
+            ].map((item, i) => (
+              <FadeIn key={item.title} delay={i * 0.1}>
+                <div style={{ textAlign: "center" }}>
+                  <div style={{
+                    width: isMobile ? 160 : 200,
+                    height: isMobile ? 160 : 200,
+                    margin: "0 auto 32px",
+                    borderRadius: "50%",
+                    overflow: "hidden",
+                    border: `1px solid rgba(245,240,232,0.1)`,
+                  }}>
+                    <img
+                      src={item.image}
+                      alt={item.title}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                      }}
+                    />
+                  </div>
+                  <h3 style={{
+                    fontFamily: fonts.display,
+                    fontWeight: 900,
+                    fontSize: 24,
+                    letterSpacing: "0.1em",
+                    margin: "0 0 16px",
+                  }}>
+                    {item.title}
+                  </h3>
+                  <p style={{
+                    fontFamily: fonts.body,
+                    fontSize: 17,
+                    lineHeight: 1.8,
+                    opacity: 0.75,
+                    margin: 0,
+                    maxWidth: 300,
+                    marginLeft: "auto",
+                    marginRight: "auto",
+                  }}>
+                    {item.desc}
+                  </p>
+                </div>
+              </FadeIn>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* --- 4. SHAUN FISHER --- */}
+      <section style={{
+        position: "relative",
+        overflow: "hidden",
+        color: colors.milk,
+        padding: isMobile ? "100px 28px" : "160px 40px",
+      }}>
+        <video
+          src="/images/compendium/oyster-lease.mp4"
+          poster="/images/compendium/oyster-lease-poster.jpg"
+          autoPlay muted loop playsInline
+          style={{
+            position: "absolute",
+            inset: 0,
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            zIndex: 0,
+          }}
+        />
+        <div style={{
+          position: "absolute",
+          inset: 0,
+          backgroundColor: "rgba(0,0,0,0.55)",
+          zIndex: 1,
+        }} />
+        <div style={{
+          position: "relative",
+          zIndex: 2,
+          maxWidth: 700,
+          margin: "0 auto",
+          textAlign: "center",
+        }}>
+          <FadeIn>
+            <span style={{
+              fontFamily: fonts.display,
+              fontWeight: 700,
+              fontSize: 12,
+              letterSpacing: "0.3em",
+              opacity: 0.5,
+              display: "block",
+              marginBottom: 24,
+            }}>
+              FROM SEA COUNTRY
+            </span>
+            <p style={{
+              fontFamily: fonts.body,
+              fontStyle: "italic",
+              fontSize: isMobile ? "clamp(22px, 5vw, 30px)" : "clamp(26px, 3vw, 36px)",
+              lineHeight: 1.5,
+              margin: "0 0 32px",
+            }}>
+              Shaun Fisher, a Mununjali, Gorenpul Man, grows oysters from his leases in Moreton Bay on Quandamooka Country. Where food, culture, and community meet on sea country.
+            </p>
+            <p style={{
+              fontFamily: fonts.body,
+              fontSize: isMobile ? 16 : 18,
+              lineHeight: 1.8,
+              opacity: 0.75,
+              margin: 0,
+            }}>
+              He's bringing his harvest to share.
+            </p>
+          </FadeIn>
+        </div>
+      </section>
+
+      {/* --- 5. DETAILS GRID --- */}
+      <section style={{
+        backgroundColor: colors.milk,
+        color: colors.shed,
+        padding: isMobile ? "80px 28px" : "120px 40px",
+      }}>
+        <div style={{ maxWidth: 900, margin: "0 auto" }}>
+          <FadeIn>
+            <h2 style={{
+              fontFamily: fonts.display,
+              fontWeight: 900,
+              fontSize: isMobile ? 32 : 44,
+              letterSpacing: "0.1em",
+              margin: "0 0 64px",
               textAlign: "center",
             }}>
               DETAILS
@@ -667,27 +548,37 @@ export default function Gather() {
           <div style={{
             display: "grid",
             gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
-            gap: isMobile ? 36 : 48,
+            gap: isMobile ? 40 : 64,
           }}>
             <FadeIn delay={0.1}>
               <div>
-                <h3 style={detailLabelStyle}>WHEN</h3>
-                <p style={detailTextStyle}>Saturday 7 March</p>
-                <p style={detailTextStyle}>11am – 4pm</p>
-                <p style={{ ...detailTextStyle, opacity: 0.5, fontSize: 14 }}>
-                  Come for an hour or stay for the day
-                </p>
+                <h3 style={{
+                  fontFamily: fonts.display,
+                  fontWeight: 900,
+                  fontSize: 12,
+                  letterSpacing: "0.15em",
+                  margin: "0 0 12px",
+                  opacity: 0.5,
+                }}>WHEN</h3>
+                <p style={{ fontFamily: fonts.body, fontSize: 17, lineHeight: 1.8, margin: "0 0 4px" }}>Saturday 7 March</p>
+                <p style={{ fontFamily: fonts.body, fontSize: 17, lineHeight: 1.8, margin: "0 0 4px" }}>11am - 4pm</p>
+                <p style={{ fontFamily: fonts.body, fontSize: 14, lineHeight: 1.8, opacity: 0.5, margin: 0 }}>Come for an hour or stay for the day</p>
               </div>
             </FadeIn>
 
             <FadeIn delay={0.2}>
               <div>
-                <h3 style={detailLabelStyle}>WHERE</h3>
-                <p style={detailTextStyle}>The Harvest</p>
-                <p style={detailTextStyle}>9 Gumland Drive, Witta QLD 4552</p>
-                <p style={{ ...detailTextStyle, opacity: 0.5, fontSize: 14 }}>
-                  10 minutes from Maleny
-                </p>
+                <h3 style={{
+                  fontFamily: fonts.display,
+                  fontWeight: 900,
+                  fontSize: 12,
+                  letterSpacing: "0.15em",
+                  margin: "0 0 12px",
+                  opacity: 0.5,
+                }}>WHERE</h3>
+                <p style={{ fontFamily: fonts.body, fontSize: 17, lineHeight: 1.8, margin: "0 0 4px" }}>The Harvest</p>
+                <p style={{ fontFamily: fonts.body, fontSize: 17, lineHeight: 1.8, margin: "0 0 4px" }}>9 Gumland Drive, Witta QLD 4552</p>
+                <p style={{ fontFamily: fonts.body, fontSize: 14, lineHeight: 1.8, opacity: 0.5, margin: "0 0 8px" }}>10 minutes from Maleny</p>
                 <a
                   href="https://maps.google.com/?q=9+Gumland+Drive+Witta+QLD+4552"
                   target="_blank"
@@ -696,75 +587,87 @@ export default function Gather() {
                     fontFamily: fonts.display,
                     fontWeight: 700,
                     fontSize: 11,
-                    letterSpacing: "0.1em",
-                    color: colors.black,
-                    opacity: 0.6,
+                    letterSpacing: "0.15em",
+                    color: colors.goldenHour,
                     textDecoration: "none",
-                    borderBottom: "1px solid rgba(0,0,0,0.2)",
-                    paddingBottom: 2,
-                    display: "inline-block",
-                    marginTop: 8,
                   }}
                 >
                   OPEN IN MAPS &rarr;
                 </a>
-                <p style={{ ...detailTextStyle, opacity: 0.4, fontSize: 13, marginTop: 8 }}>
-                  Follow the signs from the gate. Parking on grass.
-                </p>
               </div>
             </FadeIn>
 
             <FadeIn delay={0.3}>
               <div>
-                <h3 style={detailLabelStyle}>WHAT TO BRING</h3>
-                <p style={detailTextStyle}>A chair or picnic blanket</p>
-                <p style={detailTextStyle}>BYO drinks (we'll have water and coffee)</p>
-                <p style={detailTextStyle}>Something to share. Food, story, skill. Or nothing. Either's fine.</p>
-                <p style={detailTextStyle}>Kids, dogs (on leads), neighbours</p>
+                <h3 style={{
+                  fontFamily: fonts.display,
+                  fontWeight: 900,
+                  fontSize: 12,
+                  letterSpacing: "0.15em",
+                  margin: "0 0 12px",
+                  opacity: 0.5,
+                }}>BRING</h3>
+                <p style={{ fontFamily: fonts.body, fontSize: 17, lineHeight: 1.8, margin: "0 0 4px" }}>A chair or blanket.</p>
+                <p style={{ fontFamily: fonts.body, fontSize: 17, lineHeight: 1.8, margin: 0 }}>A story, a skill, a question. Or nothing at all.</p>
               </div>
             </FadeIn>
 
             <FadeIn delay={0.4}>
               <div>
-                <h3 style={detailLabelStyle}>WHAT WE'RE PROVIDING</h3>
-                <p style={detailTextStyle}>Oysters, pay what you feel</p>
-                <p style={detailTextStyle}>Pizza from the trailer</p>
-                <p style={detailTextStyle}>Music, fire, good light</p>
-                <p style={{ ...detailTextStyle, fontWeight: 600, marginTop: 8 }}>
-                  Free entry. Come and go as you please.
+                <h3 style={{
+                  fontFamily: fonts.display,
+                  fontWeight: 900,
+                  fontSize: 12,
+                  letterSpacing: "0.15em",
+                  margin: "0 0 12px",
+                  opacity: 0.5,
+                }}>PROVIDING</h3>
+                <p style={{ fontFamily: fonts.body, fontSize: 17, lineHeight: 1.8, margin: "0 0 4px" }}>
+                  Oysters from Moreton Bay. Drinks by{" "}
+                  <a
+                    href="https://flightbarwitta.com.au/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ color: colors.shed, fontWeight: 600, textDecoration: "none", borderBottom: "1px solid rgba(0,0,0,0.3)" }}
+                  >
+                    Flight Bar Witta
+                  </a>
+                  .
                 </p>
+                <p style={{ fontFamily: fonts.body, fontSize: 17, lineHeight: 1.8, margin: 0 }}>Coffee. Water. Music. Good light. The lawn.</p>
               </div>
             </FadeIn>
           </div>
         </div>
       </section>
 
-      {/* --- 5. EOI FORM --- */}
+      {/* --- RSVP FORM --- */}
       <section id="rsvp" style={{
-        backgroundColor: colors.black,
-        color: colors.cream,
-        padding: isMobile ? "80px 28px" : "100px 40px",
+        backgroundColor: colors.shed,
+        color: colors.milk,
+        padding: isMobile ? "80px 28px" : "120px 40px",
       }}>
         <div style={{ maxWidth: 520, margin: "0 auto" }}>
           <FadeIn>
             <h2 style={{
               fontFamily: fonts.display,
               fontWeight: 900,
-              fontSize: isMobile ? 24 : 32,
-              letterSpacing: "0.06em",
+              fontSize: isMobile ? 28 : 36,
+              letterSpacing: "0.08em",
               margin: "0 0 12px",
               textAlign: "center",
             }}>
-              LET US KNOW YOU'RE COMING
+              SAVE YOUR SPOT
             </h2>
             <p style={{
               fontFamily: fonts.body,
-              fontSize: isMobile ? 14 : 16,
+              fontStyle: "italic",
+              fontSize: isMobile ? 15 : 17,
               opacity: 0.6,
               textAlign: "center",
               margin: "0 0 12px",
             }}>
-              No commitment. It just helps Shaun know how many to shuck.
+              Saturday 7 March. It helps us know how many to expect.
             </p>
             {rsvpCount > 0 && !submitted && (
               <motion.p
@@ -808,8 +711,6 @@ export default function Gather() {
                 }}>
                   {successMsg.sub}
                 </p>
-
-                {/* Share Button */}
                 <motion.button
                   onClick={handleShare}
                   whileHover={{ scale: 1.03 }}
@@ -819,9 +720,9 @@ export default function Gather() {
                     fontWeight: 700,
                     fontSize: 13,
                     letterSpacing: "0.08em",
-                    color: colors.cream,
+                    color: colors.milk,
                     backgroundColor: "transparent",
-                    border: `1px solid rgba(244,244,242,0.3)`,
+                    border: `1px solid rgba(245,240,232,0.3)`,
                     padding: "14px 32px",
                     cursor: "pointer",
                   }}
@@ -873,8 +774,8 @@ export default function Gather() {
                     fontWeight: 700,
                     fontSize: 14,
                     letterSpacing: "0.1em",
-                    color: colors.black,
-                    backgroundColor: colors.yellow,
+                    color: colors.shed,
+                    backgroundColor: colors.goldenHour,
                     border: "none",
                     padding: "16px 0",
                     width: "100%",
@@ -889,7 +790,7 @@ export default function Gather() {
                   <p style={{
                     fontFamily: fonts.body,
                     fontSize: 14,
-                    color: colors.red,
+                    color: colors.calendula,
                     textAlign: "center",
                     marginTop: 16,
                   }}>
@@ -902,11 +803,209 @@ export default function Gather() {
         </div>
       </section>
 
+      {/* --- 6. LOCALS DAY --- */}
+      <section style={{
+        backgroundColor: colors.hardwood,
+        color: colors.milk,
+        padding: isMobile ? "80px 28px" : "120px 40px",
+      }}>
+        <div style={{ maxWidth: 600, margin: "0 auto", textAlign: "center" }}>
+          <FadeIn>
+            <span style={{
+              fontFamily: fonts.display,
+              fontWeight: 700,
+              fontSize: 12,
+              letterSpacing: "0.3em",
+              opacity: 0.5,
+              display: "block",
+              marginBottom: 24,
+            }}>
+              THE DAY BEFORE
+            </span>
+            <h2 style={{
+              fontFamily: fonts.display,
+              fontWeight: 900,
+              fontSize: isMobile ? 32 : 44,
+              letterSpacing: "0.1em",
+              margin: "0 0 24px",
+            }}>
+              LOCALS DAY
+            </h2>
+            <p style={{
+              fontFamily: fonts.body,
+              fontStyle: "italic",
+              fontSize: isMobile ? 18 : 22,
+              lineHeight: 1.6,
+              margin: "0 0 16px",
+              opacity: 0.9,
+            }}>
+              Friday 6 March, afternoon
+            </p>
+            <p style={{
+              fontFamily: fonts.body,
+              fontSize: isMobile ? 17 : 19,
+              lineHeight: 1.8,
+              opacity: 0.8,
+              margin: "0 0 48px",
+            }}>
+              A smaller, quieter start. Come meet the neighbours, walk the site, build something from milk crates, and help us think about what a community space for Witta could look like.
+            </p>
+          </FadeIn>
+
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr 1fr",
+            gap: 32,
+            marginBottom: 48,
+          }}>
+            {[
+              { label: "MEET", desc: "Introduce yourself. Hear what your neighbours are thinking." },
+              { label: "MAKE", desc: "Build something from milk crates. A pavilion, a seat, a sculpture." },
+              { label: "VISION", desc: "Share your ideas. What would you want here? What does Witta need?" },
+            ].map((item, i) => (
+              <FadeIn key={item.label} delay={0.1 * (i + 1)}>
+                <div>
+                  <h3 style={{
+                    fontFamily: fonts.display,
+                    fontWeight: 900,
+                    fontSize: 16,
+                    letterSpacing: "0.12em",
+                    margin: "0 0 10px",
+                  }}>
+                    {item.label}
+                  </h3>
+                  <p style={{
+                    fontFamily: fonts.body,
+                    fontSize: 15,
+                    lineHeight: 1.7,
+                    opacity: 0.65,
+                    margin: 0,
+                  }}>
+                    {item.desc}
+                  </p>
+                </div>
+              </FadeIn>
+            ))}
+          </div>
+
+          <FadeIn delay={0.4}>
+            <div style={{
+              borderTop: `1px solid rgba(245,240,232,0.15)`,
+              paddingTop: 32,
+              maxWidth: 420,
+              margin: "0 auto",
+            }}>
+              {localsDaySubmitted ? (
+                <div>
+                  <p style={{
+                    fontFamily: fonts.display,
+                    fontWeight: 900,
+                    fontSize: 20,
+                    letterSpacing: "0.04em",
+                    margin: "0 0 8px",
+                  }}>
+                    You're in for Friday.
+                  </p>
+                  <p style={{
+                    fontFamily: fonts.body,
+                    fontSize: 15,
+                    opacity: 0.5,
+                    margin: 0,
+                  }}>
+                    We'll send you the details before the day.
+                  </p>
+                </div>
+              ) : (
+                <form onSubmit={(e) => {
+                  e.preventDefault();
+                  localsDayMutation.mutate({ name: localsDayData.name, email: localsDayData.email });
+                  if (localsDayData.alsoSaturday) {
+                    eoiMutation.mutate({ name: localsDayData.name, email: localsDayData.email });
+                  }
+                }}>
+                  <div style={{
+                    display: "grid",
+                    gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
+                    gap: 12,
+                    marginBottom: 12,
+                  }}>
+                    <input
+                      type="text"
+                      placeholder="Your name"
+                      value={localsDayData.name}
+                      onChange={(e) => setLocalsDayData((prev) => ({ ...prev, name: e.target.value }))}
+                      required
+                      style={formInputStyle}
+                    />
+                    <input
+                      type="email"
+                      placeholder="Email"
+                      value={localsDayData.email}
+                      onChange={(e) => setLocalsDayData((prev) => ({ ...prev, email: e.target.value }))}
+                      required
+                      style={formInputStyle}
+                    />
+                  </div>
+                  <label style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 10,
+                    marginBottom: 16,
+                    cursor: "pointer",
+                    fontFamily: fonts.body,
+                    fontSize: 14,
+                    opacity: 0.7,
+                  }}>
+                    <input
+                      type="checkbox"
+                      checked={localsDayData.alsoSaturday}
+                      onChange={(e) => setLocalsDayData((prev) => ({ ...prev, alsoSaturday: e.target.checked }))}
+                      style={{ width: 18, height: 18, cursor: "pointer" }}
+                    />
+                    Also sign me up for Saturday's gathering
+                  </label>
+                  <button
+                    type="submit"
+                    disabled={localsDayMutation.isPending}
+                    style={{
+                      fontFamily: fonts.display,
+                      fontWeight: 700,
+                      fontSize: 13,
+                      letterSpacing: "0.1em",
+                      color: colors.shed,
+                      backgroundColor: colors.goldenHour,
+                      border: "none",
+                      padding: "14px 0",
+                      width: "100%",
+                      cursor: localsDayMutation.isPending ? "not-allowed" : "pointer",
+                      opacity: localsDayMutation.isPending ? 0.6 : 1,
+                    }}
+                  >
+                    {localsDayMutation.isPending ? "SENDING..." : "COUNT ME IN"}
+                  </button>
+                  {localsDayMutation.isError && (
+                    <p style={{
+                      fontFamily: fonts.body,
+                      fontSize: 14,
+                      color: colors.calendula,
+                      textAlign: "center",
+                      marginTop: 12,
+                    }}>
+                      Something went wrong. Please try again.
+                    </p>
+                  )}
+                </form>
+              )}
+            </div>
+          </FadeIn>
+        </div>
+      </section>
+
       {/* --- POST-EVENT GALLERY PLACEHOLDER --- */}
       {isPast && (
         <section style={{
-          backgroundColor: colors.cream,
-          color: colors.black,
+          backgroundColor: colors.milk,
+          color: colors.shed,
           padding: isMobile ? "80px 28px" : "100px 40px",
           textAlign: "center",
         }}>
@@ -932,63 +1031,6 @@ export default function Gather() {
           </FadeIn>
         </section>
       )}
-
-      {/* --- 6. REGIONAL ARTS CONTEXT --- */}
-      <section style={{
-        backgroundColor: colors.cream,
-        color: colors.black,
-        padding: isMobile ? "80px 28px" : "100px 40px",
-      }}>
-        <div style={{
-          maxWidth: 560,
-          margin: "0 auto",
-          textAlign: "center",
-        }}>
-          <FadeIn>
-            <span style={{
-              fontFamily: fonts.display,
-              fontWeight: 700,
-              fontSize: 11,
-              letterSpacing: "0.2em",
-              opacity: 0.4,
-              display: "block",
-              marginBottom: 16,
-            }}>
-              REGIONAL ARTS AUSTRALIA
-            </span>
-            <p style={{
-              fontFamily: fonts.body,
-              fontSize: isMobile ? 15 : 17,
-              lineHeight: 1.9,
-              opacity: 0.7,
-              margin: "0 0 24px",
-            }}>
-              This gathering is the first chapter of a project exploring the dairy, timber and co-op heritage of the Blackall Range. Through photography, oral histories, and building things from recycled materials.
-            </p>
-            <p style={{
-              fontFamily: fonts.body,
-              fontSize: isMobile ? 15 : 17,
-              lineHeight: 1.9,
-              opacity: 0.7,
-              margin: "0 0 32px",
-            }}>
-              We're looking for stories, old equipment, photographs, and anyone who remembers. If that's you, get in touch.
-            </p>
-            <Link href="/contact" style={{
-              fontFamily: fonts.display,
-              fontWeight: 700,
-              fontSize: 13,
-              letterSpacing: "0.1em",
-              color: colors.black,
-              textDecoration: "none",
-              borderBottom: `2px solid ${colors.black}`,
-              paddingBottom: 2,
-            }}>
-              GET IN TOUCH
-            </Link>
-          </FadeIn>
-        </div>
-      </section>
 
       {/* --- FOOTER --- */}
       <BauhausFooter isMobile={isMobile} />

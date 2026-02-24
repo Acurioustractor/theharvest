@@ -70,7 +70,7 @@ export default function Contact() {
 
       {/* ─── HERO ─── */}
       <section style={{
-        backgroundColor: colors.cream,
+        backgroundColor: colors.milk,
         padding: isMobile ? "100px 28px 60px" : "140px 40px 80px",
         textAlign: "center",
       }}>
@@ -84,7 +84,7 @@ export default function Contact() {
             fontWeight: 900,
             fontSize: isMobile ? "clamp(32px, 8vw, 48px)" : "clamp(48px, 5vw, 64px)",
             letterSpacing: "0.12em",
-            color: colors.black,
+            color: colors.shed,
             margin: 0,
           }}>
             GET IN TOUCH
@@ -92,7 +92,7 @@ export default function Contact() {
           <p style={{
             fontFamily: fonts.body,
             fontSize: isMobile ? 16 : 18,
-            color: colors.black,
+            color: colors.shed,
             opacity: 0.6,
             margin: "16px 0 0",
             maxWidth: 480,
@@ -106,7 +106,7 @@ export default function Contact() {
 
       {/* ─── FORM ─── */}
       <section style={{
-        backgroundColor: colors.black,
+        backgroundColor: colors.shed,
         padding: isMobile ? "60px 28px" : "80px 40px",
       }}>
         <div style={{ maxWidth: 560, margin: "0 auto" }}>
@@ -184,7 +184,7 @@ export default function Contact() {
                     style={{
                       width: 18,
                       height: 18,
-                      accentColor: colors.yellow,
+                      accentColor: colors.goldenHour,
                       cursor: "pointer",
                       flexShrink: 0,
                     }}
@@ -192,7 +192,7 @@ export default function Contact() {
                   <span style={{
                     fontFamily: fonts.body,
                     fontSize: 14,
-                    color: colors.cream,
+                    color: colors.milk,
                     opacity: 0.7,
                   }}>
                     Keep me in the loop — send me occasional updates
@@ -208,8 +208,8 @@ export default function Contact() {
                   fontWeight: 700,
                   fontSize: 14,
                   letterSpacing: "0.1em",
-                  color: colors.black,
-                  backgroundColor: colors.yellow,
+                  color: colors.shed,
+                  backgroundColor: colors.goldenHour,
                   border: "none",
                   padding: "16px 0",
                   width: "100%",
@@ -226,8 +226,8 @@ export default function Contact() {
 
       {/* ─── DETAILS ─── */}
       <section style={{
-        backgroundColor: colors.cream,
-        color: colors.black,
+        backgroundColor: colors.milk,
+        color: colors.shed,
         padding: isMobile ? "60px 28px" : "80px 40px",
       }}>
         <div style={{
@@ -254,7 +254,7 @@ export default function Contact() {
               <h3 style={detailLabelStyle}>EMAIL</h3>
               <a href="mailto:hello@theharvestwitta.com.au" style={{
                 ...detailTextStyle,
-                color: colors.black,
+                color: colors.shed,
                 textDecoration: "underline",
                 textUnderlineOffset: 4,
               }}>
@@ -268,7 +268,7 @@ export default function Contact() {
               <h3 style={detailLabelStyle}>PHONE</h3>
               <a href="tel:+61422883943" style={{
                 ...detailTextStyle,
-                color: colors.black,
+                color: colors.shed,
                 textDecoration: "none",
               }}>
                 0422 883 943
@@ -290,7 +290,7 @@ export default function Contact() {
 
       {/* ─── MAP ─── */}
       <section style={{
-        backgroundColor: colors.cream,
+        backgroundColor: colors.milk,
         padding: isMobile ? "0 28px 60px" : "0 40px 80px",
       }}>
         <div style={{ maxWidth: 800, margin: "0 auto" }}>
@@ -315,9 +315,9 @@ export default function Contact() {
                   fontWeight: 700,
                   fontSize: 12,
                   letterSpacing: "0.1em",
-                  color: colors.black,
+                  color: colors.shed,
                   textDecoration: "none",
-                  borderBottom: `2px solid ${colors.black}`,
+                  borderBottom: `2px solid ${colors.shed}`,
                   paddingBottom: 2,
                 }}
               >

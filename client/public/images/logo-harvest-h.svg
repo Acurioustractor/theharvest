@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 480" fill="none">
+  <!-- THE HARVEST — H Monogram
+       Two rammed earth posts. Three rails between them.
+       Bottom: Canopy green — Garden / The Land / Grow
+       Middle: Golden Hour — Kitchen / The Heritage / Feed
+       Top:    Crane brown — Art Space / The Exchange / Make
+       Posts:  Rammed Earth — the building, the structure, the place
+  -->
+
+  <!-- Left post — rammed earth -->
+  <rect x="60" y="40" width="72" height="280" rx="2" fill="#B58B70"/>
+
+  <!-- Right post — rammed earth -->
+  <rect x="268" y="40" width="72" height="280" rx="2" fill="#B58B70"/>
+
+  <!-- Bottom bar — Canopy green (Garden / Land / Grow) -->
+  <rect x="132" y="248" width="136" height="32" rx="2" fill="#4A6741"/>
+
+  <!-- Middle bar — Golden Hour (Kitchen / Heritage / Feed) -->
+  <rect x="132" y="164" width="136" height="32" rx="2" fill="#C4922A"/>
+
+  <!-- Top bar — Crane (Art Space / Exchange / Make) -->
+  <rect x="132" y="80" width="136" height="32" rx="2" fill="#8B4A2A"/>
+
+  <!-- THE HARVEST wordmark -->
+  <text x="200" y="380" text-anchor="middle" font-family="'Montserrat', sans-serif" font-weight="900" font-size="42" letter-spacing="6" fill="#1C1917">THE HARVEST</text>
+
+  <!-- WITTA -->
+  <text x="200" y="416" text-anchor="middle" font-family="'Montserrat', sans-serif" font-weight="500" font-size="22" letter-spacing="8" fill="#1C1917" opacity="0.6">WITTA</text>
+</svg>

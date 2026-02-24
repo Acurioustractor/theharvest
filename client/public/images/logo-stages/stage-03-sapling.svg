@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 260">
+  <!-- Stage 03: The Sapling — trunks thickening, first bar (bottom/green) connects them -->
+
+  <!-- Left trunk — getting thicker, bark forming -->
+  <path d="
+    M 66,220 C 64,200 62,170 63,140 C 64,110 62,80 64,55 C 65,45 62,36 58,28
+    L 64,25
+    C 68,34 70,44 69,55 C 67,80 69,110 68,140 C 67,170 69,200 72,220 Z
+  " fill="#B58B70" opacity="0.7"/>
+
+  <!-- Left trunk — fork stub -->
+  <path d="M 67,58 C 69,48 74,38 80,30 L 84,34 C 78,42 73,50 72,58 Z" fill="#B58B70" opacity="0.5"/>
+
+  <!-- Right trunk -->
+  <path d="
+    M 128,220 C 130,200 132,170 131,140 C 130,110 132,80 130,55 C 129,45 132,36 136,28
+    L 142,32
+    C 138,40 135,48 136,58 C 138,80 136,110 137,140 C 138,170 136,200 134,220 Z
+  " fill="#B58B70" opacity="0.7"/>
+
+  <!-- Right trunk — fork stub -->
+  <path d="M 133,60 C 131,50 126,40 120,32 L 116,36 C 122,44 127,52 128,60 Z" fill="#B58B70" opacity="0.5"/>
+
+  <!-- Bottom bar — Canopy green — first connection, not full width yet -->
+  <path d="
+    M 67,178 C 74,175 90,173 100,174 C 110,173 126,175 133,178
+    L 134,190 C 127,192 112,194 100,193 C 88,194 73,192 66,190 Z
+  " fill="#4A6741" opacity="0.65"/>
+
+  <!-- Tiny leaf on the bar -->
+  <path d="M 98,173 C 96,168 92,163 90,160 C 94,162 97,167 100,173" fill="#4A6741" opacity="0.4"/>
+
+  <!-- Roots visible at ground -->
+  <path d="M 66,220 C 60,224 54,226 48,227" stroke="#B58B70" stroke-width="1.2" fill="none" opacity="0.2" stroke-linecap="round"/>
+  <path d="M 134,220 C 140,224 146,226 152,227" stroke="#B58B70" stroke-width="1.2" fill="none" opacity="0.2" stroke-linecap="round"/>
+</svg>

@@ -1,33 +1,50 @@
 import type { CSSProperties } from "react";
 
-/* ─────────────────────────────────────
+/* -----------------------------------------------
    COLOR PALETTE
-   ───────────────────────────────────── */
+   Drawn from the Blackall Range itself:
+   the rammed earth walls, Barry's shed, golden hour light,
+   raw milk, hinterland canopy, hardwood beams,
+   and the Lilly Pilly at the front gate.
+   ----------------------------------------------- */
 
 export const colors = {
-  black: "#1A1A1A",
-  cream: "#F4F4F2",
-  red: "#D62C2C",
-  yellow: "#F2C900",
-  blue: "#005EB8",
-  orange: "#E05206",
-  green: "#3A6E47",
-  indigo: "#2A3B8F",
-  magenta: "#A64B8A",
+  // -- Named after the place --
+  shed:        "#1C1917",  // Barry's shed interior, dark timber shadow
+  milk:        "#F5F0E8",  // Raw milk, aged paper, sandstone render
+  rammedEarth: "#B58B70",  // The rammed earth walls of The Harvest building
+  goldenHour:  "#C4922A",  // Late afternoon on the ridge, honey timber
+  workshirt:   "#3B5563",  // Barry's navy work shirt, hinterland dusk
+  calendula:   "#CF5C1E",  // Calendula in the garden beds, warm permaculture orange
+  canopy:      "#4A6741",  // Paddock green, ridge eucalyptus canopy
+  hardwood:    "#3D3832",  // Blackbutt beams, shed framing, dark bark
+  lillyPilly:  "#6B3040",  // Syzygium new growth, the tree at the front of The Harvest
+  crane:       "#8B4A2A",  // Rusted iron on Barry's crane, corrugated iron patina
+
+  // -- Aliases (backward-compatible) --
+  black:   "#1C1917",
+  cream:   "#F5F0E8",
+  red:     "#8B4A2A",
+  yellow:  "#C4922A",
+  blue:    "#3B5563",
+  orange:  "#CF5C1E",
+  green:   "#4A6741",
+  indigo:  "#3D3832",
+  magenta: "#6B3040",
 } as const;
 
-/* ─────────────────────────────────────
+/* -----------------------------------------------
    FONTS
-   ───────────────────────────────────── */
+   ----------------------------------------------- */
 
 export const fonts = {
   display: "'Montserrat', sans-serif",
   body: "'Inter', sans-serif",
 } as const;
 
-/* ─────────────────────────────────────
+/* -----------------------------------------------
    ROOT STYLE (CSS custom properties + base)
-   ───────────────────────────────────── */
+   ----------------------------------------------- */
 
 export const rootStyle: CSSProperties = {
   // @ts-expect-error -- custom properties
@@ -51,9 +68,9 @@ export const rootStyle: CSSProperties = {
   lineHeight: 1.5,
 };
 
-/* ─────────────────────────────────────
+/* -----------------------------------------------
    SHARED STYLE OBJECTS
-   ───────────────────────────────────── */
+   ----------------------------------------------- */
 
 export const detailLabelStyle: CSSProperties = {
   fontFamily: fonts.display,
@@ -87,7 +104,7 @@ export const formInputStyle: CSSProperties = {
   fontSize: 16,
   color: colors.cream,
   backgroundColor: "transparent",
-  border: `1px solid rgba(244,244,242,0.2)`,
+  border: `1px solid rgba(245,240,232,0.2)`,
   borderRadius: 0,
   padding: "14px 16px",
   width: "100%",
