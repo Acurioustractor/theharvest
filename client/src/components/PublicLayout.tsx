@@ -205,7 +205,7 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
           <Link href="/">
             <div className="flex items-center cursor-pointer group">
               <img
-                src="/images/logo-v1-dark-clean.png"
+                src="/images/logo-harvest-only-clean.png"
                 alt="The Harvest"
                 className={cn(
                   "h-12 w-auto object-contain transition-all",
@@ -528,7 +528,7 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
             <div className="lg:col-span-1 space-y-4">
               <div className="flex flex-col gap-1">
                 <img
-                  src="/images/logo-v1-dark-clean.png"
+                  src="/images/logo-harvest-only-clean.png"
                   alt="The Harvest"
                   className="h-14 w-auto"
                 />

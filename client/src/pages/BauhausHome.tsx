@@ -154,7 +154,7 @@ export default function BauhausHome() {
           padding: "0 24px",
         }}>
           <img
-            src="/images/logo-v1-dark-clean.png"
+            src="/images/logo-harvest-only-clean.png"
             alt="THE HARVEST"
             style={{
               height: isMobile ? "clamp(80px, 20vw, 120px)" : "clamp(120px, 14vw, 180px)",
