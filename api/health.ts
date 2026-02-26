@@ -1,8 +1,5 @@
-export const config = { runtime: "nodejs" };
+import type { VercelRequest, VercelResponse } from '@vercel/node';
 
-export default async function handler(req: Request) {
-  return new Response(JSON.stringify({ ok: true, time: Date.now() }), {
-    status: 200,
-    headers: { "content-type": "application/json" },
-  });
+export default function handler(req: VercelRequest, res: VercelResponse) {
+  res.status(200).json({ ok: true, time: Date.now() });
 }
