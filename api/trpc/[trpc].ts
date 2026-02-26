@@ -1,10 +1,10 @@
 import "dotenv/config";
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
-import { appRouter } from "../../server/routers";
-import type { User } from "../../drizzle/schema";
-import { getSupabaseUser } from "../../server/_core/supabaseAuth";
-import * as db from "../../server/db";
-import { ENV } from "../../server/_core/env";
+import { appRouter } from "../../server/routers.js";
+import type { User } from "../../drizzle/schema.js";
+import { getSupabaseUser } from "../../server/_core/supabaseAuth.js";
+import * as db from "../../server/db.js";
+import { ENV } from "../../server/_core/env.js";
 
 export const config = {
   runtime: "nodejs",
