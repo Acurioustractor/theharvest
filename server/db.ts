@@ -24,10 +24,10 @@ import {
   eventFeedback,
   InsertEventFeedback,
   EventFeedback,
-} from "../drizzle/schema.js";
+} from "../drizzle/schema";
 // Blog posts are now fetched from Empathy Ledger Content Hub API
 // See server/empathyLedgerClient.ts for the integration
-import { ENV } from "./_core/env.js";
+import { ENV } from "./_core/env";
 
 let _db: ReturnType<typeof drizzle> | null = null;
 let _client: ReturnType<typeof postgres> | null = null;
