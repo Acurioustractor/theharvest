@@ -931,10 +931,7 @@ export default function Gather() {
                 <form onSubmit={(e) => {
                   e.preventDefault();
                   if (!localsDayData.email && !localsDayData.phone) return;
-                  localsDayMutation.mutate({ name: localsDayData.name, email: localsDayData.email || undefined, phone: localsDayData.phone || undefined });
-                  if (localsDayData.alsoSaturday) {
-                    eoiMutation.mutate({ name: localsDayData.name, email: localsDayData.email || undefined, phone: localsDayData.phone || undefined });
-                  }
+                  localsDayMutation.mutate({ name: localsDayData.name, email: localsDayData.email || undefined, phone: localsDayData.phone || undefined, alsoSaturday: localsDayData.alsoSaturday });
                 }}>
                   <div style={{
                     display: "grid",

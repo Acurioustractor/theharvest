@@ -330,6 +330,7 @@ export const appRouter = router({
         name: z.string().min(1),
         email: z.string().email().nullish(),
         phone: z.string().nullish(),
+        alsoSaturday: z.boolean().optional(),
       }))
       .mutation(async ({ input }) => {
         if (!input.email && !input.phone) {
@@ -338,21 +339,36 @@ export const appRouter = router({
         const [firstName, ...rest] = input.name.split(" ");
         const lastName = rest.join(" ") || undefined;
 
+        const tags = ["locals-day-march-2026", "harvest-website"];
+        if (input.alsoSaturday) {
+          tags.push("eoi-gathering-march-2026");
+        }
+
         const localsResult = await upsertGHLContact({
           email: input.email || undefined,
           firstName,
           lastName,
           phone: input.phone || undefined,
           source: "EOI Form - Locals Day",
-          tags: ["locals-day-march-2026", "eoi-gathering-march-2026", "harvest-website"],
+          tags,
         });
 
         if (localsResult.contactId) {
-          const workflowId = process.env.GHL_LOCALS_DAY_WORKFLOW_ID;
-          if (workflowId) {
-            triggerGHLWorkflow(workflowId, localsResult.contactId).catch(err =>
+          // Always trigger locals day workflow
+          const localsWorkflowId = process.env.GHL_LOCALS_DAY_WORKFLOW_ID;
+          if (localsWorkflowId) {
+            triggerGHLWorkflow(localsWorkflowId, localsResult.contactId).catch(err =>
               console.error("GHL workflow trigger failed (locals day):", err)
             );
+          }
+          // Also trigger Saturday workflow if they opted in
+          if (input.alsoSaturday) {
+            const eoiWorkflowId = process.env.GHL_EOI_WORKFLOW_ID;
+            if (eoiWorkflowId) {
+              triggerGHLWorkflow(eoiWorkflowId, localsResult.contactId).catch(err =>
+                console.error("GHL workflow trigger failed (eoi from locals):", err)
+              );
+            }
           }
         }
 
