@@ -1,6 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
-import { ENV } from "./env";
+import { ENV } from "./env.js";
 
 let _client: ReturnType<typeof createClient> | null = null;
 
