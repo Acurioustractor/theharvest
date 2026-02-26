@@ -1,6 +1,6 @@
 import { useState, useEffect, FormEvent } from "react";
 import { Link, useLocation } from "wouter";
-import { Menu, X, ChevronDown, Leaf, Heart, MapPin, Calendar, Home as HomeIcon, Users, Building, Store, UserPlus, BookOpen, Mail, Eye, Map, ScrollText, Compass, ArrowRight, Loader2 } from "lucide-react";
+import { Menu, X, ChevronDown, Heart, MapPin, Calendar, Home as HomeIcon, Users, Building, Store, UserPlus, BookOpen, Mail, Eye, Map, ScrollText, Compass, ArrowRight, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   NavigationMenu,
@@ -87,6 +87,7 @@ const footerGroups = {
 
 function FooterNewsletter() {
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
 
@@ -95,7 +96,7 @@ function FooterNewsletter() {
     if (!email.trim()) return;
     setStatus("loading");
     try {
-      const result = await subscribeNewsletter({ email: email.trim(), source: "footer" });
+      const result = await subscribeNewsletter({ email: email.trim(), phone: phone.trim() || undefined, source: "footer" });
       if (result.success) {
         setStatus("success");
         setEmail("");
@@ -128,23 +129,32 @@ function FooterNewsletter() {
           <p className="text-stone-400 text-sm leading-relaxed">
             Stories from the land, upcoming gatherings, and ways to be part of something worth building.
           </p>
-          <form onSubmit={handleSubmit} className="flex gap-2 max-w-md mx-auto">
+          <form onSubmit={handleSubmit} className="max-w-md mx-auto space-y-2">
+            <div className="flex gap-2">
+              <input
+                type="email"
+                required
+                value={email}
+                onChange={(e) => { setEmail(e.target.value); if (status === "error") setStatus("idle"); }}
+                placeholder="Your email"
+                className="flex-1 px-4 py-2.5 rounded-lg bg-stone-700 border border-stone-600 text-stone-200 placeholder:text-stone-500 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+              />
+              <button
+                type="submit"
+                disabled={status === "loading"}
+                className="px-5 py-2.5 rounded-lg bg-amber-500 text-black font-medium text-sm hover:bg-amber-400 transition-colors disabled:opacity-60 flex items-center gap-2"
+              >
+                {status === "loading" ? <Loader2 className="h-4 w-4 animate-spin" /> : <ArrowRight className="h-4 w-4" />}
+                Join
+              </button>
+            </div>
             <input
-              type="email"
-              required
-              value={email}
-              onChange={(e) => { setEmail(e.target.value); if (status === "error") setStatus("idle"); }}
-              placeholder="Your email"
-              className="flex-1 px-4 py-2.5 rounded-lg bg-stone-700 border border-stone-600 text-stone-200 placeholder:text-stone-500 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+              type="tel"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder="Phone (optional — for text updates)"
+              className="w-full px-4 py-2.5 rounded-lg bg-stone-700 border border-stone-600 text-stone-200 placeholder:text-stone-500 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
             />
-            <button
-              type="submit"
-              disabled={status === "loading"}
-              className="px-5 py-2.5 rounded-lg bg-amber-500 text-black font-medium text-sm hover:bg-amber-400 transition-colors disabled:opacity-60 flex items-center gap-2"
-            >
-              {status === "loading" ? <Loader2 className="h-4 w-4 animate-spin" /> : <ArrowRight className="h-4 w-4" />}
-              Join
-            </button>
           </form>
           {status === "error" && (
             <p className="text-red-400 text-xs">{errorMsg}</p>
@@ -193,38 +203,15 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
         <div className="container flex items-center justify-between">
           {/* Logo */}
           <Link href="/">
-            <div className="flex items-center gap-3 cursor-pointer group">
-              <div
+            <div className="flex items-center cursor-pointer group">
+              <img
+                src="/images/logo-v1-dark-clean.png"
+                alt="The Harvest"
                 className={cn(
-                  "h-10 w-10 rounded-full flex items-center justify-center transition-colors",
-                  showTransparentNav ? "bg-white/20 backdrop-blur" : "bg-amber-500"
+                  "h-12 w-auto object-contain transition-all",
+                  showTransparentNav ? "brightness-0 invert" : ""
                 )}
-              >
-                <Leaf
-                  className={cn(
-                    "h-5 w-5",
-                    showTransparentNav ? "text-white" : "text-black"
-                  )}
-                />
-              </div>
-              <div>
-                <span
-                  className={cn(
-                    "font-serif font-bold text-xl tracking-tight block leading-tight transition-colors",
-                    showTransparentNav ? "text-white drop-shadow-md" : "text-stone-800"
-                  )}
-                >
-                  The Harvest
-                </span>
-                <span
-                  className={cn(
-                    "text-xs tracking-wider uppercase transition-colors",
-                    showTransparentNav ? "text-white/70" : "text-stone-500"
-                  )}
-                >
-                  Witta
-                </span>
-              </div>
+              />
             </div>
           </Link>
 
@@ -539,14 +526,12 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
           <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-5">
             {/* Brand column */}
             <div className="lg:col-span-1 space-y-4">
-              <div className="flex items-center gap-2">
-                <div className="h-8 w-8 rounded-full bg-amber-500 flex items-center justify-center">
-                  <Leaf className="h-4 w-4 text-black" />
-                </div>
-                <div>
-                  <span className="font-serif font-bold text-lg block leading-tight text-stone-800">The Harvest</span>
-                  <span className="text-xs tracking-wider uppercase text-stone-500">Witta</span>
-                </div>
+              <div className="flex flex-col gap-1">
+                <img
+                  src="/images/logo-v1-dark-clean.png"
+                  alt="The Harvest"
+                  className="h-14 w-auto"
+                />
               </div>
               <p className="text-sm text-stone-500 leading-relaxed">
                 A place to eat, gather, make, and grow on Jinibara Country.

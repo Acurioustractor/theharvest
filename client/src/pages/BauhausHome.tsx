@@ -153,36 +153,17 @@ export default function BauhausHome() {
           color: colors.milk,
           padding: "0 24px",
         }}>
-          <div style={{
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-            width: isMobile ? 100 : 130,
-            height: isMobile ? 100 : 130,
-            borderRadius: "50%",
-            backgroundColor: "rgba(28,25,23,0.3)",
-            backdropFilter: "blur(4px)",
-            marginBottom: 24,
-          }}>
-            <img
-              src="/images/logo-harvest-seed.png"
-              alt="The Harvest — seed mark"
-              style={{
-                width: isMobile ? 60 : 80,
-                height: "auto",
-              }}
-            />
-          </div>
-          <h1 style={{
-            fontFamily: fonts.display,
-            fontWeight: 900,
-            fontSize: isMobile ? "clamp(40px, 12vw, 64px)" : "clamp(64px, 8vw, 96px)",
-            letterSpacing: "0.2em",
-            margin: 0,
-            lineHeight: 1,
-          }}>
-            THE HARVEST
-          </h1>
+          <img
+            src="/images/logo-v1-dark-clean.png"
+            alt="THE HARVEST"
+            style={{
+              height: isMobile ? "clamp(80px, 20vw, 120px)" : "clamp(120px, 14vw, 180px)",
+              width: "auto",
+              display: "block",
+              margin: "0 auto",
+              filter: "brightness(0) invert(1)",
+            }}
+          />
           <p style={{
             fontFamily: fonts.body,
             fontStyle: "italic",
