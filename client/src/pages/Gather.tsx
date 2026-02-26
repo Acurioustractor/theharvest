@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "wouter";
+import { Ear, Hammer, UtensilsCrossed } from "lucide-react";
 import BauhausFooter from "@/components/BauhausFooter";
 import FadeIn from "@/components/FadeIn";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
@@ -399,37 +400,36 @@ export default function Gather() {
               {
                 title: "LISTEN",
                 desc: "Stories from the ridge. Local history. The land beneath us and the people who shaped it.",
-                image: "/images/sketch-listen.png",
+                icon: Ear,
               },
               {
                 title: "MAKE",
                 desc: "Build something together. Hands-on, collaborative, open. Bring an idea or just bring your hands.",
-                image: "/images/sketch-make.png",
+                icon: Hammer,
               },
               {
                 title: "SHARE",
                 desc: "Food, fire, and the question: what would you build here?",
-                image: "/images/sketch-share.png",
+                icon: UtensilsCrossed,
               },
             ].map((item, i) => (
               <FadeIn key={item.title} delay={i * 0.1}>
                 <div style={{ textAlign: "center" }}>
                   <div style={{
-                    width: isMobile ? 160 : 200,
-                    height: isMobile ? 160 : 200,
+                    width: isMobile ? 100 : 120,
+                    height: isMobile ? 100 : 120,
                     margin: "0 auto 32px",
                     borderRadius: "50%",
-                    overflow: "hidden",
-                    border: `1px solid rgba(245,240,232,0.1)`,
+                    border: `1px solid rgba(245,240,232,0.15)`,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
                   }}>
-                    <img
-                      src={item.image}
-                      alt={item.title}
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
-                      }}
+                    <item.icon
+                      size={isMobile ? 40 : 48}
+                      strokeWidth={1.2}
+                      color={colors.milk}
+                      style={{ opacity: 0.7 }}
                     />
                   </div>
                   <h3 style={{
