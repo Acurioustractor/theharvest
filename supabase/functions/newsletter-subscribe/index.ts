@@ -38,8 +38,8 @@ Deno.serve(async req => {
   if (!email) return jsonResponse({ success: false, error: "Email is required" }, 400);
 
   const tags = Array.isArray(payload?.interests)
-    ? ["newsletter", "website-signup", ...payload.interests.map((i: string) => `interest-${i}`)]
-    : ["newsletter", "website-signup"];
+    ? ["newsletter", "harvest-website", ...payload.interests.map((i: string) => `interest-${i}`)]
+    : ["newsletter", "harvest-website"];
 
   const response = await fetch(`${GHL_API_BASE}/contacts/upsert`, {
     method: "POST",
@@ -72,5 +72,26 @@ Deno.serve(async req => {
   }
 
   const data = await response.json();
-  return jsonResponse({ success: true, contactId: data?.contact?.id ?? null });
+  const contactId = data?.contact?.id ?? null;
+
+  // Trigger GHL workflow for newsletter welcome
+  const workflowId = Deno.env.get("GHL_NEWSLETTER_WORKFLOW_ID");
+  if (workflowId && contactId) {
+    try {
+      await fetch(`${GHL_API_BASE}/workflows/${workflowId}/subscribe`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "Authorization": `Bearer ${apiKey}`,
+          "Version": GHL_API_VERSION,
+        },
+        body: JSON.stringify({ contactId }),
+      });
+    } catch {
+      // Workflow failure shouldn't block the response
+    }
+  }
+
+  return jsonResponse({ success: true, contactId });
 });

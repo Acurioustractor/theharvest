@@ -5,7 +5,7 @@ import { storagePut } from "./storage";
 import { getDb } from "./db";
 import { pulseResponses } from "../drizzle/schema";
 import { eq } from "drizzle-orm";
-import { upsertGHLContact, addGHLContactNote, getGHLContactCountByTag, getGHLSocialAccounts, createGHLSocialPost, getGHLSocialPosts, searchGHLContactsByTag, batchTriggerWorkflow } from "./gohighlevel";
+import { upsertGHLContact, addGHLContactNote, triggerGHLWorkflow, createGHLAppointment, getGHLContactCountByTag, getGHLSocialAccounts, createGHLSocialPost, getGHLSocialPosts, searchGHLContactsByTag, batchTriggerWorkflow } from "./gohighlevel";
 import { empathyLedgerClient } from "./empathyLedgerClient";
 import {
   loadTimeline,
@@ -70,7 +70,7 @@ export const appRouter = router({
       return await getApprovedEvents();
     }),
 
-    // Public: Submit a new event (goes to pending)
+    // Public: Submit a new event (goes to pending) + GHL contact
     submit: publicProcedure
       .input(z.object({
         title: z.string().min(1).max(255),
@@ -88,6 +88,34 @@ export const appRouter = router({
           date: new Date(input.date),
           status: "pending",
         });
+
+        // Create/update GHL contact with event submission tags
+        try {
+          const [firstName, ...rest] = (input.submittedBy || "").split(" ");
+          const result = await upsertGHLContact({
+            email: input.contactEmail,
+            firstName: firstName || undefined,
+            lastName: rest.join(" ") || undefined,
+            source: "Website - Event Submission",
+            tags: ["event-submission", "harvest-website"],
+          });
+
+          if (result.contactId) {
+            await addGHLContactNote(result.contactId,
+              `**Event Submission**\n\n**Title:** ${input.title}\n**Date:** ${input.date}\n**Time:** ${input.time}\n**Location:** ${input.location}\n**Category:** ${input.category}\n**Description:** ${input.description}`
+            );
+
+            const workflowId = process.env.GHL_EVENT_SUBMIT_WORKFLOW_ID;
+            if (workflowId) {
+              triggerGHLWorkflow(workflowId, result.contactId).catch(err =>
+                console.error("GHL workflow trigger failed (event submit):", err)
+              );
+            }
+          }
+        } catch (err) {
+          console.error("GHL event contact creation failed:", err);
+        }
+
         return { success: true, event };
       }),
 
@@ -120,7 +148,7 @@ export const appRouter = router({
       return await getApprovedBusinesses();
     }),
 
-    // Public: Submit a new business (goes to pending)
+    // Public: Submit a new business (goes to pending) + GHL contact
     submit: publicProcedure
       .input(z.object({
         name: z.string().min(1).max(255),
@@ -141,6 +169,35 @@ export const appRouter = router({
           ...input,
           status: "pending",
         });
+
+        // Create/update GHL contact with business registration tags
+        try {
+          const [firstName, ...rest] = (input.submittedBy || "").split(" ");
+          const result = await upsertGHLContact({
+            email: input.submitterEmail,
+            firstName: firstName || undefined,
+            lastName: rest.join(" ") || undefined,
+            phone: input.phone,
+            source: "Website - Business Registration",
+            tags: ["business-registration", "harvest-website"],
+          });
+
+          if (result.contactId) {
+            await addGHLContactNote(result.contactId,
+              `**Business Registration**\n\n**Business Name:** ${input.name}\n**Category:** ${input.category}\n**Description:** ${input.description}\n**Address:** ${input.address || "Not provided"}\n**Website:** ${input.website || "Not provided"}`
+            );
+
+            const workflowId = process.env.GHL_BUSINESS_REG_WORKFLOW_ID;
+            if (workflowId) {
+              triggerGHLWorkflow(workflowId, result.contactId).catch(err =>
+                console.error("GHL workflow trigger failed (business reg):", err)
+              );
+            }
+          }
+        } catch (err) {
+          console.error("GHL business contact creation failed:", err);
+        }
+
         return { success: true, business };
       }),
 
@@ -224,26 +281,53 @@ export const appRouter = router({
     submit: publicProcedure
       .input(z.object({
         name: z.string().min(1),
-        email: z.string().email(),
+        email: z.string().email().nullish(),
+        phone: z.string().nullish(),
         excitement: z.string().optional(),
         source: z.string().optional(),
       }))
       .mutation(async ({ input }) => {
+        if (!input.email && !input.phone) {
+          throw new Error("Email or phone is required");
+        }
         const [firstName, ...rest] = input.name.split(" ");
         const lastName = rest.join(" ") || undefined;
 
         const result = await upsertGHLContact({
-          email: input.email,
+          email: input.email || undefined,
           firstName,
           lastName,
+          phone: input.phone || undefined,
           source: "EOI Form - First Gathering",
-          tags: ["eoi-gathering-march-2026", "website-eoi"],
+          tags: ["eoi-gathering-march-2026", "harvest-website"],
         });
 
         if (result.contactId && input.excitement) {
           await addGHLContactNote(result.contactId,
             `**EOI — First Gathering**\n\n**What excites them:** ${input.excitement}\n**Source:** ${input.source || "Not specified"}`
           );
+        }
+
+        if (result.contactId) {
+          // Create calendar appointment so workflow Wait step can reference event date
+          const calendarId = process.env.GHL_CALENDAR_ID;
+          if (calendarId) {
+            createGHLAppointment({
+              calendarId,
+              contactId: result.contactId,
+              title: "The Harvest — First Gathering",
+              startTime: "2026-03-07T11:00:00+10:00",
+              endTime: "2026-03-07T14:00:00+10:00",
+              address: "9 Gumland Drive, Witta QLD 4552",
+            }).catch(err => console.error("GHL appointment creation failed (eoi):", err));
+          }
+
+          const workflowId = process.env.GHL_EOI_WORKFLOW_ID;
+          if (workflowId) {
+            triggerGHLWorkflow(workflowId, result.contactId).catch(err =>
+              console.error("GHL workflow trigger failed (eoi):", err)
+            );
+          }
         }
 
         return { success: true };
@@ -257,21 +341,126 @@ export const appRouter = router({
     submitLocalsDay: publicProcedure
       .input(z.object({
         name: z.string().min(1),
+        email: z.string().email().nullish(),
+        phone: z.string().nullish(),
+      }))
+      .mutation(async ({ input }) => {
+        if (!input.email && !input.phone) {
+          throw new Error("Email or phone is required");
+        }
+        const [firstName, ...rest] = input.name.split(" ");
+        const lastName = rest.join(" ") || undefined;
+
+        const localsResult = await upsertGHLContact({
+          email: input.email || undefined,
+          firstName,
+          lastName,
+          phone: input.phone || undefined,
+          source: "EOI Form - Locals Day",
+          tags: ["locals-day-march-2026", "eoi-gathering-march-2026", "harvest-website"],
+        });
+
+        if (localsResult.contactId) {
+          const calendarId = process.env.GHL_CALENDAR_ID;
+          if (calendarId) {
+            createGHLAppointment({
+              calendarId,
+              contactId: localsResult.contactId,
+              title: "The Harvest — Locals Day",
+              startTime: "2026-03-14T14:00:00+10:00",
+              endTime: "2026-03-14T17:00:00+10:00",
+              address: "9 Gumland Drive, Witta QLD 4552",
+            }).catch(err => console.error("GHL appointment creation failed (locals day):", err));
+          }
+
+          const workflowId = process.env.GHL_LOCALS_DAY_WORKFLOW_ID;
+          if (workflowId) {
+            triggerGHLWorkflow(workflowId, localsResult.contactId).catch(err =>
+              console.error("GHL workflow trigger failed (locals day):", err)
+            );
+          }
+        }
+
+        return { success: true };
+      }),
+  }),
+
+  // Workshop bookings via GHL
+  workshops: router({
+    book: publicProcedure
+      .input(z.object({
+        name: z.string().min(1),
         email: z.string().email(),
+        phone: z.string().min(1),
+        workshopTitle: z.string().min(1),
+        workshopDate: z.string().min(1),
+        attendees: z.number().min(1).max(10),
+        dietaryRequirements: z.string().optional(),
+        specialRequests: z.string().optional(),
       }))
       .mutation(async ({ input }) => {
         const [firstName, ...rest] = input.name.split(" ");
         const lastName = rest.join(" ") || undefined;
 
-        await upsertGHLContact({
+        const result = await upsertGHLContact({
           email: input.email,
           firstName,
           lastName,
-          source: "EOI Form - Locals Day",
-          tags: ["locals-day-march-2026", "eoi-gathering-march-2026", "website-eoi"],
+          phone: input.phone,
+          source: "Website - Workshop Booking",
+          tags: ["workshop-booking", "harvest-website"],
         });
 
-        return { success: true };
+        if (result.contactId) {
+          await addGHLContactNote(result.contactId,
+            `**Workshop Booking**\n\n**Workshop:** ${input.workshopTitle}\n**Date:** ${input.workshopDate}\n**Attendees:** ${input.attendees}\n**Dietary:** ${input.dietaryRequirements || "None"}\n**Special Requests:** ${input.specialRequests || "None"}`
+          );
+
+          const workflowId = process.env.GHL_WORKSHOP_WORKFLOW_ID;
+          if (workflowId) {
+            triggerGHLWorkflow(workflowId, result.contactId).catch(err =>
+              console.error("GHL workflow trigger failed (workshop):", err)
+            );
+          }
+        }
+
+        return { success: true, message: "Booking request submitted. We'll confirm your spot within 24 hours." };
+      }),
+  }),
+
+  // Visitor quiz results via GHL
+  quiz: router({
+    submit: publicProcedure
+      .input(z.object({
+        email: z.string().email(),
+        persona: z.string().min(1),
+        ghlTags: z.array(z.string()),
+        motivation: z.string().optional(),
+        frequency: z.string().optional(),
+        interests: z.array(z.string()).optional(),
+      }))
+      .mutation(async ({ input }) => {
+        const result = await upsertGHLContact({
+          email: input.email,
+          source: "Website - Visitor Quiz",
+          tags: [...input.ghlTags, "quiz-completed", "harvest-website"],
+        });
+
+        if (result.contactId) {
+          const interestsList = input.interests?.join(", ") || "None selected";
+          await addGHLContactNote(result.contactId,
+            `**Visitor Quiz Result**\n\n**Persona:** ${input.persona}\n**Motivation:** ${input.motivation || "Not specified"}\n**Visit Frequency:** ${input.frequency || "Not specified"}\n**Interests:** ${interestsList}`
+          );
+
+          const workflowId = process.env.GHL_QUIZ_WORKFLOW_ID;
+          if (workflowId) {
+            triggerGHLWorkflow(workflowId, result.contactId).catch(err =>
+              console.error("GHL workflow trigger failed (quiz):", err)
+            );
+          }
+        }
+
+        return { success: true, message: "Welcome to The Harvest community!" };
       }),
   }),
 
@@ -317,6 +506,7 @@ export const appRouter = router({
     subscribe: publicProcedure
       .input(z.object({
         email: z.string().email(),
+        phone: z.string().nullish(),
         firstName: z.string().max(100).optional(),
         lastName: z.string().max(100).optional(),
         source: z.string().max(100).optional(),
@@ -331,7 +521,7 @@ export const appRouter = router({
       }))
       .mutation(async ({ input }) => {
         // Build tags array from interests
-        const baseTags = ["newsletter", "website-signup"];
+        const baseTags = ["newsletter", "harvest-website"];
         const interestTags = input.interests?.map(interest => `interest-${interest}`) || [];
         const allTags = [...baseTags, ...interestTags];
 
@@ -339,12 +529,22 @@ export const appRouter = router({
           email: input.email,
           firstName: input.firstName,
           lastName: input.lastName,
+          phone: input.phone || undefined,
           source: input.source || "The Harvest Website Newsletter",
           tags: allTags,
         });
 
         if (!result.success) {
           throw new Error(result.error || "Failed to subscribe");
+        }
+
+        if (result.contactId) {
+          const workflowId = process.env.GHL_NEWSLETTER_WORKFLOW_ID;
+          if (workflowId) {
+            triggerGHLWorkflow(workflowId, result.contactId).catch(err =>
+              console.error("GHL workflow trigger failed (newsletter):", err)
+            );
+          }
         }
 
         return {
@@ -705,13 +905,22 @@ export const appRouter = router({
         // If email provided, upsert GHL contact with pulse tags
         if (cleanEmail) {
           const interestTags = (input.wouldUse || []).map(u => `interest-${u}`);
-          await upsertGHLContact({
+          const pulseResult = await upsertGHLContact({
             email: cleanEmail,
             firstName: input.name?.split(" ")[0],
             lastName: input.name?.split(" ").slice(1).join(" ") || undefined,
             source: "Community Pulse Survey",
-            tags: ["pulse-respondent", ...interestTags],
+            tags: ["pulse-respondent", "harvest-website", ...interestTags],
           });
+
+          if (pulseResult.contactId) {
+            const workflowId = process.env.GHL_PULSE_WORKFLOW_ID;
+            if (workflowId) {
+              triggerGHLWorkflow(workflowId, pulseResult.contactId).catch(err =>
+                console.error("GHL workflow trigger failed (pulse):", err)
+              );
+            }
+          }
         }
 
         return { success: true, id: response?.id };

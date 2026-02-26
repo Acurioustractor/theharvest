@@ -31,6 +31,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { toast } from "sonner";
+import { trpc } from "@/lib/trpc";
 
 interface Workshop {
   id: string;
@@ -143,18 +144,34 @@ function WorkshopBookingDialog({ workshop }: { workshop: Workshop }) {
     setStep("confirm");
   };
 
+  const bookMutation = trpc.workshops.book.useMutation();
+
   const handleConfirm = async () => {
     setIsSubmitting(true);
 
-    // Simulate API call - in production this would submit to GHL
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    try {
+      await bookMutation.mutateAsync({
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        workshopTitle: workshop.title,
+        workshopDate: workshop.date,
+        attendees: parseInt(formData.attendees),
+        dietaryRequirements: formData.dietaryRequirements || undefined,
+        specialRequests: formData.specialRequests || undefined,
+      });
 
-    setIsSubmitting(false);
-    setStep("success");
-
-    toast.success("Booking request submitted!", {
-      description: "We'll confirm your spot within 24 hours.",
-    });
+      setStep("success");
+      toast.success("Booking request submitted!", {
+        description: "We'll confirm your spot within 24 hours.",
+      });
+    } catch {
+      toast.error("Failed to submit booking", {
+        description: "Please try again later.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const resetAndClose = () => {

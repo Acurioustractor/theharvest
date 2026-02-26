@@ -1,0 +1,98 @@
+{
+  "source": "Sunshine Coast Council ArcGIS",
+  "layer": "Heritage Places",
+  "fetchedAt": "2026-02-16T20:12:10.906Z",
+  "featureCount": 6,
+  "features": [
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": -26.66801255335743,
+      "longitude": 153.10799387417768,
+      "attributes": {
+        "OBJECTID_1": 1,
+        "LABEL": "Local Heritage Place (Shipwreck)",
+        "DESCRIPT": "Land Subject to Heritage and Character Areas Overlay",
+        "PS_Policy_Name": "Bellbird Shipwreck",
+        "HEADING": null
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": -26.55401255468427,
+      "longitude": 153.10049385850928,
+      "attributes": {
+        "OBJECTID_1": 2,
+        "LABEL": "Local Heritage Place (Shipwreck)",
+        "DESCRIPT": "Land Subject to Heritage and Character Areas Overlay",
+        "PS_Policy_Name": "Kirkdale Shipwreck",
+        "HEADING": null
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": -26.649173664509302,
+      "longitude": 153.09319387003643,
+      "attributes": {
+        "OBJECTID_1": 3,
+        "LABEL": "Local Heritage Place (Shipwreck)",
+        "DESCRIPT": "Land Subject to Heritage and Character Areas Overlay",
+        "PS_Policy_Name": "Gneering Shipwreck",
+        "HEADING": null
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": -26.680012549698283,
+      "longitude": 153.13899387858518,
+      "attributes": {
+        "OBJECTID_1": 4,
+        "LABEL": "Local Heritage Place (Shipwreck)",
+        "DESCRIPT": "Land Subject to Heritage and Character Areas Overlay",
+        "PS_Policy_Name": "Genetta Shipwreck",
+        "HEADING": null
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": -26.681012550848763,
+      "longitude": 153.133993878653,
+      "attributes": {
+        "OBJECTID_1": 5,
+        "LABEL": "Local Heritage Place (Shipwreck)",
+        "DESCRIPT": "Land Subject to Heritage and Character Areas Overlay",
+        "PS_Policy_Name": "Hoolet Shipwreck",
+        "HEADING": null
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": -26.680012550668785,
+      "longitude": 153.13299387775834,
+      "attributes": {
+        "OBJECTID_1": 6,
+        "LABEL": "Local Heritage Place (Shipwreck)",
+        "DESCRIPT": "Land Subject to Heritage and Character Areas Overlay",
+        "PS_Policy_Name": "Maria Ann Shipwreck",
+        "HEADING": null
+      }
+    }
+  ]
+}

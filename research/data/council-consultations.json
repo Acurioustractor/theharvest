@@ -1,0 +1,606 @@
+{
+  "consultations": [
+    {
+      "title": "Sunshine Coast Community Strategy 2019-2041",
+      "url": "https://www.sunshinecoast.qld.gov.au/council/planning-and-projects/council-strategies/community-strategy",
+      "status": "closed",
+      "description": "Long-term strategy for community wellbeing, social infrastructure, and community development across the Sunshine Coast",
+      "category": "community_strategy",
+      "relevance": "regional",
+      "themes": [
+        "community_wellbeing",
+        "social_infrastructure",
+        "inclusion",
+        "resilience",
+        "placemaking"
+      ]
+    },
+    {
+      "title": "Environment and Liveability Strategy 2017",
+      "url": "https://www.sunshinecoast.qld.gov.au/council/planning-and-projects/council-strategies/environment-and-liveability-strategy",
+      "status": "closed",
+      "description": "Strategy for environmental sustainability, biodiversity corridors, and liveable communities",
+      "category": "environment",
+      "relevance": "regional",
+      "themes": [
+        "biodiversity",
+        "sustainability",
+        "wildlife_corridors",
+        "green_infrastructure",
+        "climate_resilience"
+      ]
+    },
+    {
+      "title": "Arts and Heritage Levy",
+      "url": "https://www.sunshinecoast.qld.gov.au/experience-sunshine-coast/arts-and-culture/arts-and-heritage-levy",
+      "status": "closed",
+      "description": "Community consultation on the Arts and Heritage Levy funding priorities and allocation",
+      "category": "arts_culture",
+      "relevance": "regional",
+      "themes": [
+        "arts_funding",
+        "heritage_preservation",
+        "creative_economy",
+        "cultural_infrastructure"
+      ]
+    },
+    {
+      "title": "Hinterland Futures — Planning Scheme Review",
+      "url": "https://www.sunshinecoast.qld.gov.au/council/planning-and-projects/planning-scheme",
+      "status": "closed",
+      "description": "Planning scheme amendments affecting rural and hinterland zones, including Maleny and Witta",
+      "category": "planning",
+      "relevance": "direct",
+      "themes": [
+        "rural_character",
+        "development_pressure",
+        "agricultural_land",
+        "housing_density",
+        "infrastructure"
+      ]
+    },
+    {
+      "title": "Sunshine Coast Mass Transit Options",
+      "url": "https://www.sunshinecoast.qld.gov.au/council/planning-and-projects/council-strategies/mass-transit",
+      "status": "closed",
+      "description": "Community consultation on mass transit options — hinterland connectivity is a recurring theme",
+      "category": "transport",
+      "relevance": "regional",
+      "themes": [
+        "public_transport",
+        "hinterland_access",
+        "commuter_needs",
+        "parking",
+        "road_safety"
+      ]
+    },
+    {
+      "title": "Maleny Precinct Plan",
+      "url": "https://www.sunshinecoast.qld.gov.au/council/planning-and-projects/major-regional-projects",
+      "status": "closed",
+      "description": "Planning for Maleny town centre — retail, parking, pedestrian access, character preservation",
+      "category": "planning",
+      "relevance": "direct",
+      "themes": [
+        "town_character",
+        "parking",
+        "pedestrian_access",
+        "retail_mix",
+        "heritage_buildings",
+        "tourism_management"
+      ]
+    },
+    {
+      "title": "Community Grants Program Review",
+      "url": "https://www.sunshinecoast.qld.gov.au/living-and-community/grants-and-funding",
+      "status": "closed",
+      "description": "Review of SCC's community grants program, including arts, environment, and community development grants",
+      "category": "grants",
+      "relevance": "regional",
+      "themes": [
+        "grant_funding",
+        "community_capacity",
+        "volunteer_support",
+        "program_sustainability"
+      ]
+    },
+    {
+      "title": "Sunshine Coast Recreation Parks and Open Space Plan",
+      "url": "https://www.sunshinecoast.qld.gov.au/council/planning-and-projects/council-strategies",
+      "status": "closed",
+      "description": "Planning for recreation spaces, parks, trails, and community gathering areas",
+      "category": "recreation",
+      "relevance": "regional",
+      "themes": [
+        "recreation_spaces",
+        "trails",
+        "community_gathering",
+        "nature_play",
+        "accessibility"
+      ]
+    },
+    {
+      "title": "Disaster Management — Community Resilience",
+      "url": "https://www.sunshinecoast.qld.gov.au/living-and-community/community-safety/disaster-management",
+      "status": "closed",
+      "description": "Community preparedness for bushfire, flood, and storm events — relevant to rural hinterland",
+      "category": "disaster_management",
+      "relevance": "direct",
+      "themes": [
+        "bushfire_preparedness",
+        "flood_resilience",
+        "community_networks",
+        "rural_isolation",
+        "emergency_access"
+      ]
+    },
+    {
+      "title": "Reconciliation Action Plan",
+      "url": "https://www.sunshinecoast.qld.gov.au/living-and-community/first-nations-partnerships",
+      "status": "closed",
+      "description": "SCC's Reconciliation Action Plan — engagement with Jinibara and Kabi Kabi peoples",
+      "category": "indigenous",
+      "relevance": "direct",
+      "themes": [
+        "reconciliation",
+        "first_nations_engagement",
+        "cultural_heritage",
+        "truth_telling",
+        "partnerships"
+      ]
+    },
+    {
+      "title": "Neighbourhood and Targeted Community Projects",
+      "url": "https://haveyoursay.sunshinecoast.qld.gov.au/neighbourhood-targeted-projects",
+      "status": "open",
+      "description": "Ongoing consultation on projects targeted to local neighbourhoods, places and people across the Sunshine Coast",
+      "category": "community_engagement",
+      "relevance": "direct",
+      "themes": [
+        "neighbourhood_projects",
+        "local_identity",
+        "community_connection",
+        "placemaking",
+        "participation"
+      ]
+    },
+    {
+      "title": "Coastal Resilience and Climate Adaptation",
+      "url": "https://haveyoursay.sunshinecoast.qld.gov.au/coastal-resilience-projects",
+      "status": "closed",
+      "description": "Community consultation on coastal resilience projects addressing climate impacts and natural hazards",
+      "category": "environment",
+      "relevance": "regional",
+      "themes": [
+        "climate_adaptation",
+        "coastal_resilience",
+        "natural_hazards",
+        "community_preparedness",
+        "green_infrastructure"
+      ]
+    },
+    {
+      "title": "Coastal Resilience Projects",
+      "url": "https://haveyoursay.sunshinecoast.qld.gov.au/coastal-resilience-projects",
+      "status": "unknown",
+      "description": "We asked the community to help shape the future of some of our most loved foreshores at Golden Beach, Bulcock Beach and Diamond Head.",
+      "category": "general",
+      "relevance": "regional",
+      "themes": []
+    }
+  ],
+  "sentimentThemes": [
+    {
+      "theme": "placemaking",
+      "count": 2,
+      "examples": [
+        "Sunshine Coast Community Strategy 2019-2041",
+        "Neighbourhood and Targeted Community Projects"
+      ]
+    },
+    {
+      "theme": "green_infrastructure",
+      "count": 2,
+      "examples": [
+        "Environment and Liveability Strategy 2017",
+        "Coastal Resilience and Climate Adaptation"
+      ]
+    },
+    {
+      "theme": "parking",
+      "count": 2,
+      "examples": [
+        "Sunshine Coast Mass Transit Options",
+        "Maleny Precinct Plan"
+      ]
+    },
+    {
+      "theme": "community_wellbeing",
+      "count": 1,
+      "examples": [
+        "Sunshine Coast Community Strategy 2019-2041"
+      ]
+    },
+    {
+      "theme": "social_infrastructure",
+      "count": 1,
+      "examples": [
+        "Sunshine Coast Community Strategy 2019-2041"
+      ]
+    },
+    {
+      "theme": "inclusion",
+      "count": 1,
+      "examples": [
+        "Sunshine Coast Community Strategy 2019-2041"
+      ]
+    },
+    {
+      "theme": "resilience",
+      "count": 1,
+      "examples": [
+        "Sunshine Coast Community Strategy 2019-2041"
+      ]
+    },
+    {
+      "theme": "biodiversity",
+      "count": 1,
+      "examples": [
+        "Environment and Liveability Strategy 2017"
+      ]
+    },
+    {
+      "theme": "sustainability",
+      "count": 1,
+      "examples": [
+        "Environment and Liveability Strategy 2017"
+      ]
+    },
+    {
+      "theme": "wildlife_corridors",
+      "count": 1,
+      "examples": [
+        "Environment and Liveability Strategy 2017"
+      ]
+    },
+    {
+      "theme": "climate_resilience",
+      "count": 1,
+      "examples": [
+        "Environment and Liveability Strategy 2017"
+      ]
+    },
+    {
+      "theme": "arts_funding",
+      "count": 1,
+      "examples": [
+        "Arts and Heritage Levy"
+      ]
+    },
+    {
+      "theme": "heritage_preservation",
+      "count": 1,
+      "examples": [
+        "Arts and Heritage Levy"
+      ]
+    },
+    {
+      "theme": "creative_economy",
+      "count": 1,
+      "examples": [
+        "Arts and Heritage Levy"
+      ]
+    },
+    {
+      "theme": "cultural_infrastructure",
+      "count": 1,
+      "examples": [
+        "Arts and Heritage Levy"
+      ]
+    },
+    {
+      "theme": "rural_character",
+      "count": 1,
+      "examples": [
+        "Hinterland Futures — Planning Scheme Review"
+      ]
+    },
+    {
+      "theme": "development_pressure",
+      "count": 1,
+      "examples": [
+        "Hinterland Futures — Planning Scheme Review"
+      ]
+    },
+    {
+      "theme": "agricultural_land",
+      "count": 1,
+      "examples": [
+        "Hinterland Futures — Planning Scheme Review"
+      ]
+    },
+    {
+      "theme": "housing_density",
+      "count": 1,
+      "examples": [
+        "Hinterland Futures — Planning Scheme Review"
+      ]
+    },
+    {
+      "theme": "infrastructure",
+      "count": 1,
+      "examples": [
+        "Hinterland Futures — Planning Scheme Review"
+      ]
+    },
+    {
+      "theme": "public_transport",
+      "count": 1,
+      "examples": [
+        "Sunshine Coast Mass Transit Options"
+      ]
+    },
+    {
+      "theme": "hinterland_access",
+      "count": 1,
+      "examples": [
+        "Sunshine Coast Mass Transit Options"
+      ]
+    },
+    {
+      "theme": "commuter_needs",
+      "count": 1,
+      "examples": [
+        "Sunshine Coast Mass Transit Options"
+      ]
+    },
+    {
+      "theme": "road_safety",
+      "count": 1,
+      "examples": [
+        "Sunshine Coast Mass Transit Options"
+      ]
+    },
+    {
+      "theme": "town_character",
+      "count": 1,
+      "examples": [
+        "Maleny Precinct Plan"
+      ]
+    },
+    {
+      "theme": "pedestrian_access",
+      "count": 1,
+      "examples": [
+        "Maleny Precinct Plan"
+      ]
+    },
+    {
+      "theme": "retail_mix",
+      "count": 1,
+      "examples": [
+        "Maleny Precinct Plan"
+      ]
+    },
+    {
+      "theme": "heritage_buildings",
+      "count": 1,
+      "examples": [
+        "Maleny Precinct Plan"
+      ]
+    },
+    {
+      "theme": "tourism_management",
+      "count": 1,
+      "examples": [
+        "Maleny Precinct Plan"
+      ]
+    },
+    {
+      "theme": "grant_funding",
+      "count": 1,
+      "examples": [
+        "Community Grants Program Review"
+      ]
+    },
+    {
+      "theme": "community_capacity",
+      "count": 1,
+      "examples": [
+        "Community Grants Program Review"
+      ]
+    },
+    {
+      "theme": "volunteer_support",
+      "count": 1,
+      "examples": [
+        "Community Grants Program Review"
+      ]
+    },
+    {
+      "theme": "program_sustainability",
+      "count": 1,
+      "examples": [
+        "Community Grants Program Review"
+      ]
+    },
+    {
+      "theme": "recreation_spaces",
+      "count": 1,
+      "examples": [
+        "Sunshine Coast Recreation Parks and Open Space Plan"
+      ]
+    },
+    {
+      "theme": "trails",
+      "count": 1,
+      "examples": [
+        "Sunshine Coast Recreation Parks and Open Space Plan"
+      ]
+    },
+    {
+      "theme": "community_gathering",
+      "count": 1,
+      "examples": [
+        "Sunshine Coast Recreation Parks and Open Space Plan"
+      ]
+    },
+    {
+      "theme": "nature_play",
+      "count": 1,
+      "examples": [
+        "Sunshine Coast Recreation Parks and Open Space Plan"
+      ]
+    },
+    {
+      "theme": "accessibility",
+      "count": 1,
+      "examples": [
+        "Sunshine Coast Recreation Parks and Open Space Plan"
+      ]
+    },
+    {
+      "theme": "bushfire_preparedness",
+      "count": 1,
+      "examples": [
+        "Disaster Management — Community Resilience"
+      ]
+    },
+    {
+      "theme": "flood_resilience",
+      "count": 1,
+      "examples": [
+        "Disaster Management — Community Resilience"
+      ]
+    },
+    {
+      "theme": "community_networks",
+      "count": 1,
+      "examples": [
+        "Disaster Management — Community Resilience"
+      ]
+    },
+    {
+      "theme": "rural_isolation",
+      "count": 1,
+      "examples": [
+        "Disaster Management — Community Resilience"
+      ]
+    },
+    {
+      "theme": "emergency_access",
+      "count": 1,
+      "examples": [
+        "Disaster Management — Community Resilience"
+      ]
+    },
+    {
+      "theme": "reconciliation",
+      "count": 1,
+      "examples": [
+        "Reconciliation Action Plan"
+      ]
+    },
+    {
+      "theme": "first_nations_engagement",
+      "count": 1,
+      "examples": [
+        "Reconciliation Action Plan"
+      ]
+    },
+    {
+      "theme": "cultural_heritage",
+      "count": 1,
+      "examples": [
+        "Reconciliation Action Plan"
+      ]
+    },
+    {
+      "theme": "truth_telling",
+      "count": 1,
+      "examples": [
+        "Reconciliation Action Plan"
+      ]
+    },
+    {
+      "theme": "partnerships",
+      "count": 1,
+      "examples": [
+        "Reconciliation Action Plan"
+      ]
+    },
+    {
+      "theme": "neighbourhood_projects",
+      "count": 1,
+      "examples": [
+        "Neighbourhood and Targeted Community Projects"
+      ]
+    },
+    {
+      "theme": "local_identity",
+      "count": 1,
+      "examples": [
+        "Neighbourhood and Targeted Community Projects"
+      ]
+    },
+    {
+      "theme": "community_connection",
+      "count": 1,
+      "examples": [
+        "Neighbourhood and Targeted Community Projects"
+      ]
+    },
+    {
+      "theme": "participation",
+      "count": 1,
+      "examples": [
+        "Neighbourhood and Targeted Community Projects"
+      ]
+    },
+    {
+      "theme": "climate_adaptation",
+      "count": 1,
+      "examples": [
+        "Coastal Resilience and Climate Adaptation"
+      ]
+    },
+    {
+      "theme": "coastal_resilience",
+      "count": 1,
+      "examples": [
+        "Coastal Resilience and Climate Adaptation"
+      ]
+    },
+    {
+      "theme": "natural_hazards",
+      "count": 1,
+      "examples": [
+        "Coastal Resilience and Climate Adaptation"
+      ]
+    },
+    {
+      "theme": "community_preparedness",
+      "count": 1,
+      "examples": [
+        "Coastal Resilience and Climate Adaptation"
+      ]
+    }
+  ],
+  "communityPriorities": [
+    "Strong desire for community connection and gathering spaces",
+    "Environmental stewardship central to community identity",
+    "Community resilience and preparedness for natural hazards"
+  ],
+  "harvestRelevance": [
+    "Council strategies explicitly call for more community gathering spaces — The Harvest fills this gap",
+    "Arts and Heritage Levy creates direct funding pathway for Harvest art space programs",
+    "Garden zone aligns with council's biodiversity corridor and green infrastructure priorities",
+    "Community hub model directly supports disaster resilience through social networks",
+    "The Harvest's co-design approach with indigenous community aligns with RAP commitments",
+    "Kitchen and Garden zones celebrate agricultural heritage while addressing food sovereignty",
+    "Multiple SCC grant streams align with Harvest programming across all three zones"
+  ],
+  "methodology": "Curated catalog of Sunshine Coast Council consultations, strategies, and engagement processes relevant to the Maleny/Witta hinterland area. Supplemented with automated scraping of the Have Your Say platform (static HTML scraping of article.project.card elements). Themes extracted from consultation descriptions and categorized for community sentiment analysis. Have Your Say platform uses server-rendered HTML allowing effective scraping of project listings.",
+  "limitations": "Individual community submissions are not publicly available for most consultations. Theme analysis is based on consultation topics rather than actual public responses. SCC News Centre uses client-side rendering (Nuxt/Vue) and cannot be scraped with static HTML tools — would require headless browser or API access. For deeper sentiment, Freedom of Information requests or direct engagement with council community development team would be needed.",
+  "dataDate": "2026-02-16"
+}

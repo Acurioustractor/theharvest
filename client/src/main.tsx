@@ -2,6 +2,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { httpBatchLink } from "@trpc/client";
 import { useState } from "react";
 import { createRoot } from "react-dom/client";
+import superjson from "superjson";
 import App from "./App";
 import { trpc } from "./lib/trpc";
 import "./index.css";
@@ -13,6 +14,7 @@ function Root() {
       links: [
         httpBatchLink({
           url: "/api/trpc",
+          transformer: superjson,
         }),
       ],
     })

@@ -1,0 +1,48 @@
+{
+  "source": "Queensland Government Open Data (data.qld.gov.au)",
+  "dataset": "Queensland Heritage Register",
+  "fetchedAt": "2026-02-16T20:07:20.317Z",
+  "recordCount": 5,
+  "records": [
+    {
+      "name": "Conondale Timbers Sawmill",
+      "address": "Aherns Road",
+      "locality": "CONONDALE",
+      "lga": "SUNSHINE COAST REGIONAL COUNCIL",
+      "significance": "(Only a partial inspection of the site was conducted and no inspection was made of the interiors of the cottages.)\r\nAt the corner of Aherns Road and Harper Creek Road in the Mary Valley some 15 kilometres northwest of Maleny and five kilometres south of Conondale, the Conondale Timbers mill site comprises a level elevated area which falls steeply to an area of river flats along Elaman Creek. Structures associated with the sawmilling operations are on the elevated portion of the site and include ",
+      "rawFields": {}
+    },
+    {
+      "name": "St Isidore's",
+      "address": "40 Post Office Road",
+      "locality": "MAPLETON",
+      "lga": "SUNSHINE COAST REGIONAL COUNCIL",
+      "significance": "St Isidores is a large, high-set timber residence, situated on the eastern edge of the Blackall Range, at Mapleton.  From the eastern rooms and verandahs, there are extensive views over the Maroochy Plains to the Pacific Ocean.  The house once formed the vista at the northern end of the main road through Mapleton, but trees in the front garden now obscure the house from the street. The house is timber-framed, clad externally mostly with weatherboards, and with vertically-jointed boards on those ",
+      "rawFields": {}
+    },
+    {
+      "name": "Kenilworth Homestead",
+      "address": "Eumundi Kenilworth Road",
+      "locality": "KENILWORTH",
+      "lga": "SUNSHINE COAST REGIONAL COUNCIL",
+      "significance": "Kenilworth Homestead is a large complex on about 38 hectares of land to which access is provided via the Eumundi-Kenilworth Road, about 3km west from Kenilworth. The land on which Kenilworth Homestead is situated undulates from a hill on the eastern side of the property toward the Mary River on the eastern side, on a bluff overlooking which is the homestead complex, incorporating the early house. Access roads run north through the property providing access to the homestead as well as an complex ",
+      "rawFields": {}
+    },
+    {
+      "name": "Fairview",
+      "address": "15 Porter's Lane",
+      "locality": "MALENY",
+      "lga": "SUNSHINE COAST REGIONAL COUNCIL",
+      "significance": "Fairview is situated halfway down the steep slope which forms the backdrop to the township of Maleny, on the Blackall Range west of Nambour. It is a low-set timber house capped with a steeply pitched, corrugated iron clad, short ridge roof with gablets to the east and west, and stepped down surrounding verandah roofs. The verandahs have been enclosed on the western and southern sides and southeastern corner.\r\nExternal walls are single-skin, vertically-jointed timber boards, diamond braced with b",
+      "rawFields": {}
+    },
+    {
+      "name": "Montville Memorial Precinct",
+      "address": "Razorback Road and Main Street (Montville-Mapleton Road)",
+      "locality": "MONTVILLE",
+      "lga": "SUNSHINE COAST REGIONAL COUNCIL",
+      "significance": "The Montville Memorial Precinct is a leafy area centred on a small park known locally as the Village Green. As well as this park, it comprises a short street called Memorial Close, memorial gates, a row of memorial fig trees (Ficus sp), a large community hall known as Montville Hall, and a smaller community hall known as the Montville Memorial Hall, St Marys Church Hall and Community Centre. The precinct is located in the commercial centre of Montville, a village in the hinterland of the Sunshin",
+      "rawFields": {}
+    }
+  ]
+}

@@ -1,0 +1,3408 @@
+{
+  "source": "Sunshine Coast Council ArcGIS",
+  "layer": "Planning Zones",
+  "fetchedAt": "2026-02-16T20:12:10.907Z",
+  "featureCount": 200,
+  "features": [
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Environmental Zones Category",
+        "LABEL": "Environmental Management and Conservation Zone",
+        "OBJECTID": 1,
+        "GlobalID": "ea6be74d-6865-4044-9385-eb491c6971ef",
+        "Shape__Area": 790242.16796875,
+        "Shape__Length": 9070.290227256635
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Environmental Zones Category",
+        "LABEL": "Environmental Management and Conservation Zone",
+        "OBJECTID": 2,
+        "GlobalID": "c5980b3a-66f2-4a66-8348-34c8078ced5d",
+        "Shape__Area": 1293065.671875,
+        "Shape__Length": 12768.182916222206
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Recreation Zone Category",
+        "LABEL": "Open Space Zone",
+        "OBJECTID": 3,
+        "GlobalID": "c792b154-1064-4d6a-9c30-553c33154c32",
+        "Shape__Area": 2933.09765625,
+        "Shape__Length": 221.350650407439
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Recreation Zone Category",
+        "LABEL": "Open Space Zone",
+        "OBJECTID": 4,
+        "GlobalID": "b536170a-8837-4580-b0bd-6fc55d42ce96",
+        "Shape__Area": 13228.9921875,
+        "Shape__Length": 698.9726821275171
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Recreation Zone Category",
+        "LABEL": "Open Space Zone",
+        "OBJECTID": 5,
+        "GlobalID": "f30f6d94-5a9e-48b1-8daa-8b447f8dad6c",
+        "Shape__Area": 1370.9453125,
+        "Shape__Length": 159.65499376560786
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Recreation Zone Category",
+        "LABEL": "Open Space Zone",
+        "OBJECTID": 6,
+        "GlobalID": "05b67714-9ad8-447b-81b6-6ec44c409527",
+        "Shape__Area": 1610.6796875,
+        "Shape__Length": 191.20984984668686
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Recreation Zone Category",
+        "LABEL": "Open Space Zone",
+        "OBJECTID": 7,
+        "GlobalID": "09e7bea2-f559-4458-9581-8d8ff3f9f880",
+        "Shape__Area": 6038.5859375,
+        "Shape__Length": 310.5575532214031
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Recreation Zone Category",
+        "LABEL": "Open Space Zone",
+        "OBJECTID": 8,
+        "GlobalID": "8a89ceaa-23fc-464f-bc1b-732203dce314",
+        "Shape__Area": 1710.14453125,
+        "Shape__Length": 204.3064304628254
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Recreation Zone Category",
+        "LABEL": "Open Space Zone",
+        "OBJECTID": 9,
+        "GlobalID": "9a74ea8c-f9c1-48d4-a8a7-f3789af8212b",
+        "Shape__Area": 11368.09765625,
+        "Shape__Length": 425.5393865045231
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Recreation Zone Category",
+        "LABEL": "Open Space Zone",
+        "OBJECTID": 10,
+        "GlobalID": "62561acd-7180-4d74-943a-2d2695aabdc7",
+        "Shape__Area": 4923.80078125,
+        "Shape__Length": 290.6093387600116
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Environmental Zones Category",
+        "LABEL": "Environmental Management and Conservation Zone",
+        "OBJECTID": 11,
+        "GlobalID": "a7c1792d-3435-46ef-b1e4-a4415375c25e",
+        "Shape__Area": 2376.828125,
+        "Shape__Length": 255.0911466694949
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Environmental Zones Category",
+        "LABEL": "Environmental Management and Conservation Zone",
+        "OBJECTID": 12,
+        "GlobalID": "380bb51e-1d9b-4e7c-ac49-e977dc50f9e1",
+        "Shape__Area": 48120.76171875,
+        "Shape__Length": 1590.969307025187
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Environmental Zones Category",
+        "LABEL": "Environmental Management and Conservation Zone",
+        "OBJECTID": 13,
+        "GlobalID": "c57d8488-1341-4514-9e9e-d807435920a4",
+        "Shape__Area": 119495.63671875,
+        "Shape__Length": 3129.289783993766
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Environmental Zones Category",
+        "LABEL": "Environmental Management and Conservation Zone",
+        "OBJECTID": 14,
+        "GlobalID": "10d59359-dca8-412e-b65b-23d9b2f6e5b0",
+        "Shape__Area": 31593.45703125,
+        "Shape__Length": 1208.959580432765
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Environmental Zones Category",
+        "LABEL": "Environmental Management and Conservation Zone",
+        "OBJECTID": 15,
+        "GlobalID": "5d0f5e68-44a2-4e48-b831-39741ffd38b7",
+        "Shape__Area": 15671.97265625,
+        "Shape__Length": 1757.9338892917779
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Environmental Zones Category",
+        "LABEL": "Environmental Management and Conservation Zone",
+        "OBJECTID": 16,
+        "GlobalID": "aa4ec63e-4472-4f7d-8e72-62c50b43f945",
+        "Shape__Area": 168743.984375,
+        "Shape__Length": 3242.7666073387595
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Environmental Zones Category",
+        "LABEL": "Environmental Management and Conservation Zone",
+        "OBJECTID": 17,
+        "GlobalID": "b9bb9d7c-46de-4abf-8021-10acedb01ad4",
+        "Shape__Area": 14162.1484375,
+        "Shape__Length": 516.4808954560623
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Recreation Zone Category",
+        "LABEL": "Open Space Zone",
+        "OBJECTID": 18,
+        "GlobalID": "53ec7cd3-960e-4a14-8b1b-69088ceaf8fc",
+        "Shape__Area": 714.31640625,
+        "Shape__Length": 187.07906797749158
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Recreation Zone Category",
+        "LABEL": "Open Space Zone",
+        "OBJECTID": 19,
+        "GlobalID": "076467e4-4d1c-45d8-916d-422b4efdf473",
+        "Shape__Area": 389.43359375,
+        "Shape__Length": 114.81325890027064
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Environmental Zones Category",
+        "LABEL": "Environmental Management and Conservation Zone",
+        "OBJECTID": 20,
+        "GlobalID": "88a397cd-5b9d-405a-ada5-d2b5e642ba95",
+        "Shape__Area": 19818.44921875,
+        "Shape__Length": 595.089867451948
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Environmental Zones Category",
+        "LABEL": "Environmental Management and Conservation Zone",
+        "OBJECTID": 21,
+        "GlobalID": "b63a01f0-438b-4dbe-b5a1-18486ed7ed67",
+        "Shape__Area": 1922.13671875,
+        "Shape__Length": 263.65552934025544
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Environmental Zones Category",
+        "LABEL": "Environmental Management and Conservation Zone",
+        "OBJECTID": 22,
+        "GlobalID": "78005240-5bdd-4985-b247-b1598c26a901",
+        "Shape__Area": 35787.4765625,
+        "Shape__Length": 904.8290007322694
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Environmental Zones Category",
+        "LABEL": "Environmental Management and Conservation Zone",
+        "OBJECTID": 23,
+        "GlobalID": "b928733e-c6c9-49ea-a300-7acb6fc55ab3",
+        "Shape__Area": 2943.046875,
+        "Shape__Length": 261.9676445326719
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Environmental Zones Category",
+        "LABEL": "Environmental Management and Conservation Zone",
+        "OBJECTID": 24,
+        "GlobalID": "94f2cb27-4f30-4ee6-a090-d6a39e633973",
+        "Shape__Area": 24762.46875,
+        "Shape__Length": 701.1907009980263
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Environmental Zones Category",
+        "LABEL": "Environmental Management and Conservation Zone",
+        "OBJECTID": 25,
+        "GlobalID": "50f91947-0e68-4f11-b17a-b2e900920905",
+        "Shape__Area": 111861.30078125,
+        "Shape__Length": 2152.8571877534578
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Environmental Zones Category",
+        "LABEL": "Environmental Management and Conservation Zone",
+        "OBJECTID": 26,
+        "GlobalID": "f671857a-f0fb-4442-945a-d1dbb8b05274",
+        "Shape__Area": 38430.921875,
+        "Shape__Length": 931.699514758945
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Environmental Zones Category",
+        "LABEL": "Environmental Management and Conservation Zone",
+        "OBJECTID": 27,
+        "GlobalID": "bbd3d6c1-8b0f-4348-9edb-3af610ecad32",
+        "Shape__Area": 2529.671875,
+        "Shape__Length": 256.50542604241133
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Environmental Zones Category",
+        "LABEL": "Environmental Management and Conservation Zone",
+        "OBJECTID": 28,
+        "GlobalID": "abf0ea2a-b6e6-44a0-9e4c-913e46b795da",
+        "Shape__Area": 2881.7578125,
+        "Shape__Length": 278.8834988999606
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Environmental Zones Category",
+        "LABEL": "Environmental Management and Conservation Zone",
+        "OBJECTID": 29,
+        "GlobalID": "59407cbb-1c90-4e26-a07b-5317e0e6c564",
+        "Shape__Area": 43819.3046875,
+        "Shape__Length": 1014.932329072075
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Environmental Zones Category",
+        "LABEL": "Environmental Management and Conservation Zone",
+        "OBJECTID": 30,
+        "GlobalID": "8fc16413-d689-4270-b9ae-bf40f345ca9c",
+        "Shape__Area": 13658.109375,
+        "Shape__Length": 464.23160778900854
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Environmental Zones Category",
+        "LABEL": "Environmental Management and Conservation Zone",
+        "OBJECTID": 31,
+        "GlobalID": "90b39874-ad20-4cd8-a640-051815b1d022",
+        "Shape__Area": 10185.65234375,
+        "Shape__Length": 405.9326942307299
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Environmental Zones Category",
+        "LABEL": "Environmental Management and Conservation Zone",
+        "OBJECTID": 32,
+        "GlobalID": "565c0d65-bce7-4288-854d-31fb845f0736",
+        "Shape__Area": 2976.10546875,
+        "Shape__Length": 259.4283085684642
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Environmental Zones Category",
+        "LABEL": "Environmental Management and Conservation Zone",
+        "OBJECTID": 33,
+        "GlobalID": "394af399-97be-43ee-9a17-b378790db0ff",
+        "Shape__Area": 13794.3203125,
+        "Shape__Length": 478.24268177998266
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Environmental Zones Category",
+        "LABEL": "Environmental Management and Conservation Zone",
+        "OBJECTID": 34,
+        "GlobalID": "c4847fb7-c034-4e70-9fa1-9d3adcc28435",
+        "Shape__Area": 8119.41796875,
+        "Shape__Length": 372.7695054700997
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Environmental Zones Category",
+        "LABEL": "Environmental Management and Conservation Zone",
+        "OBJECTID": 35,
+        "GlobalID": "5c16f494-4da8-4921-803e-582d393ade18",
+        "Shape__Area": 13446.296875,
+        "Shape__Length": 498.28771543184814
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Environmental Zones Category",
+        "LABEL": "Environmental Management and Conservation Zone",
+        "OBJECTID": 36,
+        "GlobalID": "3a2e2171-c8e1-47ba-94ca-c7100424c768",
+        "Shape__Area": 1005.22265625,
+        "Shape__Length": 234.5120538752245
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Environmental Zones Category",
+        "LABEL": "Environmental Management and Conservation Zone",
+        "OBJECTID": 37,
+        "GlobalID": "63487ee7-0fb4-4f68-8da2-60cc54a45a74",
+        "Shape__Area": 22566.65625,
+        "Shape__Length": 632.1398327779801
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Environmental Zones Category",
+        "LABEL": "Environmental Management and Conservation Zone",
+        "OBJECTID": 38,
+        "GlobalID": "03cf82de-854e-4db4-b408-66484265b41d",
+        "Shape__Area": 2559.04296875,
+        "Shape__Length": 258.0024267685556
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Environmental Zones Category",
+        "LABEL": "Environmental Management and Conservation Zone",
+        "OBJECTID": 39,
+        "GlobalID": "4f683616-562b-43bd-9e7e-f75d99573042",
+        "Shape__Area": 19747.9609375,
+        "Shape__Length": 625.5664094023509
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Environmental Zones Category",
+        "LABEL": "Environmental Management and Conservation Zone",
+        "OBJECTID": 40,
+        "GlobalID": "a4971059-89b7-42cf-bc45-1fea1e054de4",
+        "Shape__Area": 3319.39453125,
+        "Shape__Length": 252.13563141313284
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Environmental Zones Category",
+        "LABEL": "Environmental Management and Conservation Zone",
+        "OBJECTID": 41,
+        "GlobalID": "d47030a2-5fb6-40da-b685-8e742863e002",
+        "Shape__Area": 2873.15625,
+        "Shape__Length": 240.59804941263877
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Environmental Zones Category",
+        "LABEL": "Environmental Management and Conservation Zone",
+        "OBJECTID": 42,
+        "GlobalID": "d3142288-d18d-4734-8a61-a5da357338d4",
+        "Shape__Area": 3277.47265625,
+        "Shape__Length": 250.0264485180508
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Environmental Zones Category",
+        "LABEL": "Environmental Management and Conservation Zone",
+        "OBJECTID": 43,
+        "GlobalID": "af953c0e-b1b1-4ca0-b635-c6094a91011c",
+        "Shape__Area": 4974.93359375,
+        "Shape__Length": 306.8931052903896
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Environmental Zones Category",
+        "LABEL": "Environmental Management and Conservation Zone",
+        "OBJECTID": 44,
+        "GlobalID": "34f02067-c3dd-451e-a65b-9b1908598714",
+        "Shape__Area": 2363.78515625,
+        "Shape__Length": 245.9060288947967
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Environmental Zones Category",
+        "LABEL": "Environmental Management and Conservation Zone",
+        "OBJECTID": 45,
+        "GlobalID": "bf06a727-81f6-4f4a-87f7-62f51f8c9cbe",
+        "Shape__Area": 6736.62890625,
+        "Shape__Length": 328.58140066006905
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Environmental Zones Category",
+        "LABEL": "Environmental Management and Conservation Zone",
+        "OBJECTID": 46,
+        "GlobalID": "d75d80f9-aae9-40db-af09-f1ffe6ef57e1",
+        "Shape__Area": 8168.6484375,
+        "Shape__Length": 480.3316428788701
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Environmental Zones Category",
+        "LABEL": "Environmental Management and Conservation Zone",
+        "OBJECTID": 47,
+        "GlobalID": "e2950fed-422a-4ee1-9e08-87f287a6a32f",
+        "Shape__Area": 1938.265625,
+        "Shape__Length": 204.78201332860846
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Environmental Zones Category",
+        "LABEL": "Environmental Management and Conservation Zone",
+        "OBJECTID": 48,
+        "GlobalID": "f757f3f8-03a1-415e-9781-2aaf93bf8171",
+        "Shape__Area": 8832.7109375,
+        "Shape__Length": 384.2467491100532
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Environmental Zones Category",
+        "LABEL": "Environmental Management and Conservation Zone",
+        "OBJECTID": 49,
+        "GlobalID": "cbe8d695-66b8-41c4-aa43-b7474794384f",
+        "Shape__Area": 2465.546875,
+        "Shape__Length": 215.3006893844887
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Environmental Zones Category",
+        "LABEL": "Environmental Management and Conservation Zone",
+        "OBJECTID": 50,
+        "GlobalID": "04aa9619-4fa9-4f0a-bbfb-ba102aff3cf8",
+        "Shape__Area": 6310.19140625,
+        "Shape__Length": 318.9735322855985
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Environmental Zones Category",
+        "LABEL": "Environmental Management and Conservation Zone",
+        "OBJECTID": 51,
+        "GlobalID": "42a2fc1f-c0aa-41fa-b910-f3e0e425f52a",
+        "Shape__Area": 2221.015625,
+        "Shape__Length": 240.08009298898935
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Environmental Zones Category",
+        "LABEL": "Environmental Management and Conservation Zone",
+        "OBJECTID": 52,
+        "GlobalID": "20d4d9e5-8b5e-453a-bf03-85361c2549bf",
+        "Shape__Area": 203515.40234375,
+        "Shape__Length": 3508.2724997182977
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Environmental Zones Category",
+        "LABEL": "Environmental Management and Conservation Zone",
+        "OBJECTID": 53,
+        "GlobalID": "00ada78b-bfad-4a83-965a-69516a0e8068",
+        "Shape__Area": 10777.87890625,
+        "Shape__Length": 444.8484428397037
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Environmental Zones Category",
+        "LABEL": "Environmental Management and Conservation Zone",
+        "OBJECTID": 54,
+        "GlobalID": "2a0b4cf3-9c6e-4e00-bc43-0c4166a18a4b",
+        "Shape__Area": 2893.984375,
+        "Shape__Length": 236.01599064962568
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Environmental Zones Category",
+        "LABEL": "Environmental Management and Conservation Zone",
+        "OBJECTID": 55,
+        "GlobalID": "58edb3ca-409e-468e-8e94-6add87661e52",
+        "Shape__Area": 30419.2421875,
+        "Shape__Length": 1026.2097231235837
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Environmental Zones Category",
+        "LABEL": "Environmental Management and Conservation Zone",
+        "OBJECTID": 56,
+        "GlobalID": "f33619b2-940c-426f-a05d-7315366d8358",
+        "Shape__Area": 1686.12109375,
+        "Shape__Length": 172.72409175803676
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Environmental Zones Category",
+        "LABEL": "Environmental Management and Conservation Zone",
+        "OBJECTID": 57,
+        "GlobalID": "ab2791b8-89d5-4e68-98d1-51fd3e263e4c",
+        "Shape__Area": 15692.3203125,
+        "Shape__Length": 732.7965949946375
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Environmental Zones Category",
+        "LABEL": "Environmental Management and Conservation Zone",
+        "OBJECTID": 58,
+        "GlobalID": "5212d857-2395-4f5f-8d1a-e8120aba6c3c",
+        "Shape__Area": 26744.7421875,
+        "Shape__Length": 1252.6037805116885
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Environmental Zones Category",
+        "LABEL": "Environmental Management and Conservation Zone",
+        "OBJECTID": 59,
+        "GlobalID": "d463112e-4e2f-4817-b1fa-ce1fce1b8b25",
+        "Shape__Area": 76389.359375,
+        "Shape__Length": 2695.349579422812
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Other Zones Category",
+        "LABEL": "Emerging Community Zone",
+        "OBJECTID": 60,
+        "GlobalID": "273f8e2f-e09c-401f-9f00-bff2eeb1b985",
+        "Shape__Area": 192.50390625,
+        "Shape__Length": 67.12469476840596
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Medium Density Residential Zone",
+        "OBJECTID": 61,
+        "GlobalID": "4c22008a-834f-43da-b99c-b39c8de062fc",
+        "Shape__Area": 153.23046875,
+        "Shape__Length": 139.5296764935266
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Recreation Zone Category",
+        "LABEL": "Open Space Zone",
+        "OBJECTID": 62,
+        "GlobalID": "92fce05f-2878-442a-8c64-04342b743695",
+        "Shape__Area": 5369.8203125,
+        "Shape__Length": 295.48611923276826
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Environmental Zones Category",
+        "LABEL": "Environmental Management and Conservation Zone",
+        "OBJECTID": 63,
+        "GlobalID": "b3611906-9864-43f4-873a-2eb2c98fd0a5",
+        "Shape__Area": 5460.4296875,
+        "Shape__Length": 465.8623597895933
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Environmental Zones Category",
+        "LABEL": "Environmental Management and Conservation Zone",
+        "OBJECTID": 64,
+        "GlobalID": "090c556c-44f9-4053-aeee-5ab453537c01",
+        "Shape__Area": 2976.58203125,
+        "Shape__Length": 334.05598624351745
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Environmental Zones Category",
+        "LABEL": "Environmental Management and Conservation Zone",
+        "OBJECTID": 65,
+        "GlobalID": "edaf7cea-a587-4ee1-b65f-8c3e9e46d807",
+        "Shape__Area": 23113.9296875,
+        "Shape__Length": 1131.1451441772206
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Environmental Zones Category",
+        "LABEL": "Environmental Management and Conservation Zone",
+        "OBJECTID": 66,
+        "GlobalID": "59613bc6-0e86-4c73-9452-85f2ee516dd9",
+        "Shape__Area": 6368.9921875,
+        "Shape__Length": 540.7383316162848
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Environmental Zones Category",
+        "LABEL": "Environmental Management and Conservation Zone",
+        "OBJECTID": 69,
+        "GlobalID": "74aedb4f-17a1-47a8-9aed-3660a108836f",
+        "Shape__Area": 59851.51953125,
+        "Shape__Length": 3217.5739235881524
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Environmental Zones Category",
+        "LABEL": "Environmental Management and Conservation Zone",
+        "OBJECTID": 70,
+        "GlobalID": "47a44a1c-01da-49eb-bef8-a0645829d6ae",
+        "Shape__Area": 17058.3671875,
+        "Shape__Length": 1292.9238625219577
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Other Zones Category",
+        "LABEL": "Rural Zone",
+        "OBJECTID": 71,
+        "GlobalID": "5eebf04c-a267-4d3d-87ba-562229daccc2",
+        "Shape__Area": 60777.02734375,
+        "Shape__Length": 1381.8793763236874
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Other Zones Category",
+        "LABEL": "Rural Zone",
+        "OBJECTID": 72,
+        "GlobalID": "9ab2bf0e-5b9a-42c3-871d-6543de640786",
+        "Shape__Area": 1883.23046875,
+        "Shape__Length": 206.79996260152762
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Other Zones Category",
+        "LABEL": "Rural Zone",
+        "OBJECTID": 73,
+        "GlobalID": "b5bbbabd-0ec4-452e-b43d-b4da553ec513",
+        "Shape__Area": 46932.5625,
+        "Shape__Length": 986.8278315401818
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Recreation Zone Category",
+        "LABEL": "Open Space Zone",
+        "OBJECTID": 74,
+        "GlobalID": "1573c790-d4c9-4d77-a7cd-700c752e8d6b",
+        "Shape__Area": 81978.93359375,
+        "Shape__Length": 1301.4457702987534
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Recreation Zone Category",
+        "LABEL": "Open Space Zone",
+        "OBJECTID": 76,
+        "GlobalID": "d9a6c117-e8dd-48b6-87c2-6e717fd1df1f",
+        "Shape__Area": 770.40234375,
+        "Shape__Length": 117.90208674234034
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Recreation Zone Category",
+        "LABEL": "Open Space Zone",
+        "OBJECTID": 78,
+        "GlobalID": "0d8e64c5-56c8-444c-b63b-777b40f78e87",
+        "Shape__Area": 75.56640625,
+        "Shape__Length": 71.98609777445103
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Recreation Zone Category",
+        "LABEL": "Open Space Zone",
+        "OBJECTID": 79,
+        "GlobalID": "120b4211-ddfe-46bb-b706-a285d78c4180",
+        "Shape__Area": 75.55859375,
+        "Shape__Length": 71.98791559059663
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Recreation Zone Category",
+        "LABEL": "Open Space Zone",
+        "OBJECTID": 80,
+        "GlobalID": "f7821b0f-a30a-4566-9c14-4e98df64f3ae",
+        "Shape__Area": 39077.26953125,
+        "Shape__Length": 1501.0843674888945
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Medium Density Residential Zone",
+        "OBJECTID": 81,
+        "GlobalID": "b83ff0a6-5f3d-4f27-9da7-5c620680c636",
+        "Shape__Area": 1270.9375,
+        "Shape__Length": 158.0126869105268
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Medium Density Residential Zone",
+        "OBJECTID": 82,
+        "GlobalID": "6d33599f-6cb7-4fc9-bed7-9d90b3693e06",
+        "Shape__Area": 4708.67578125,
+        "Shape__Length": 318.5871020005947
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Industry Zone Category",
+        "LABEL": "Medium Impact Industry Zone",
+        "OBJECTID": 83,
+        "GlobalID": "2b3c5a4d-02af-4ca6-9e72-45b516264cba",
+        "Shape__Area": 1476.99609375,
+        "Shape__Length": 152.05089843855345
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Low Density Residential Zone",
+        "OBJECTID": 84,
+        "GlobalID": "b3e9f41e-f0e5-407b-8bad-e8662eab092b",
+        "Shape__Area": 685.515625,
+        "Shape__Length": 108.14479767803344
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Centre Zone Category",
+        "LABEL": "Principal Centre Zone",
+        "OBJECTID": 85,
+        "GlobalID": "208a69e7-6be7-4b5c-aa81-6ca26c2bce36",
+        "Shape__Area": 715.2578125,
+        "Shape__Length": 118.51218379186
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Tourist Accommodation Zone",
+        "OBJECTID": 86,
+        "GlobalID": "61ba8851-15d4-4251-9d1c-d25db55f15f4",
+        "Shape__Area": 1340.203125,
+        "Shape__Length": 163.942236981746
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Medium Density Residential Zone",
+        "OBJECTID": 87,
+        "GlobalID": "1fba0ae1-c2ae-4538-b3ab-16b2b4c6bba1",
+        "Shape__Area": 2245.07421875,
+        "Shape__Length": 202.8766821598707
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Medium Density Residential Zone",
+        "OBJECTID": 88,
+        "GlobalID": "962f9127-cbac-4460-bc0b-62998c27d2a7",
+        "Shape__Area": 1558.94140625,
+        "Shape__Length": 196.45367045031998
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Medium Density Residential Zone",
+        "OBJECTID": 89,
+        "GlobalID": "eb79db3d-7557-4834-8b5d-2081b91a2cfd",
+        "Shape__Area": 1869.6640625,
+        "Shape__Length": 201.66077375564305
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Medium Density Residential Zone",
+        "OBJECTID": 90,
+        "GlobalID": "eb9fd8da-6ee6-4ed1-a142-cdaf1603bab5",
+        "Shape__Area": 555.09375,
+        "Shape__Length": 93.96356948110653
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Low Density Residential Zone",
+        "OBJECTID": 91,
+        "GlobalID": "343fd413-c275-4537-b3cf-58578a9a2254",
+        "Shape__Area": 1081.6484375,
+        "Shape__Length": 131.82863516225694
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Other Zones Category",
+        "LABEL": "Specialised Centre Zone",
+        "OBJECTID": 92,
+        "GlobalID": "2a9fb910-7cd5-4c3b-a1b9-0bc48fc57d9c",
+        "Shape__Area": 4361.19140625,
+        "Shape__Length": 401.26391850312973
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Industry Zone Category",
+        "LABEL": "High Impact Industry Zone",
+        "OBJECTID": 93,
+        "GlobalID": "b4897610-ac71-4277-8be4-f124692141bd",
+        "Shape__Area": 4238.46875,
+        "Shape__Length": 320.3245695258556
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Low Density Residential Zone",
+        "OBJECTID": 94,
+        "GlobalID": "4966868b-8863-4de3-a482-e89efb9e4fb0",
+        "Shape__Area": 1536.265625,
+        "Shape__Length": 197.64421675780028
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Medium Density Residential Zone",
+        "OBJECTID": 95,
+        "GlobalID": "152a1c83-5079-4405-a625-cea024cda478",
+        "Shape__Area": 1525.234375,
+        "Shape__Length": 156.31861845707408
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Medium Density Residential Zone",
+        "OBJECTID": 96,
+        "GlobalID": "57370ef0-12bc-4997-9906-647dcb7c0013",
+        "Shape__Area": 2899.53515625,
+        "Shape__Length": 238.24526465452556
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Medium Density Residential Zone",
+        "OBJECTID": 97,
+        "GlobalID": "983b338f-4629-4a67-8f82-3713861edbfb",
+        "Shape__Area": 3058.5078125,
+        "Shape__Length": 280.8761465741336
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Medium Density Residential Zone",
+        "OBJECTID": 98,
+        "GlobalID": "81c4f81b-8a0e-4587-99dd-344b1cde0f67",
+        "Shape__Area": 25059.7421875,
+        "Shape__Length": 1030.340239725498
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Low Density Residential Zone",
+        "OBJECTID": 99,
+        "GlobalID": "83a9b22d-8d0d-4490-9d98-d7e4f0fa5e57",
+        "Shape__Area": 1349.70703125,
+        "Shape__Length": 144.82261922001814
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Industry Zone Category",
+        "LABEL": "Medium Impact Industry Zone",
+        "OBJECTID": 100,
+        "GlobalID": "ea365055-db01-46c2-a1e7-14fb583bd182",
+        "Shape__Area": 806.87890625,
+        "Shape__Length": 116.10306068692894
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Centre Zone Category",
+        "LABEL": "Local Centre Zone",
+        "OBJECTID": 101,
+        "GlobalID": "9c8d2a8c-f942-4aa3-be9a-67f6f9882d63",
+        "Shape__Area": 2005.34375,
+        "Shape__Length": 189.58394169587325
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Medium Density Residential Zone",
+        "OBJECTID": 102,
+        "GlobalID": "9989964b-7594-48e7-807c-73532b75de08",
+        "Shape__Area": 1903.22265625,
+        "Shape__Length": 180.16310247203052
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Low Density Residential Zone",
+        "OBJECTID": 103,
+        "GlobalID": "0c562647-0ba7-463d-9d1b-b253e462690f",
+        "Shape__Area": 2270.39453125,
+        "Shape__Length": 205.68842636472695
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Medium Density Residential Zone",
+        "OBJECTID": 104,
+        "GlobalID": "ca7868d0-22f0-4898-9ce0-5ee304d53b04",
+        "Shape__Area": 807.87109375,
+        "Shape__Length": 114.91668167399236
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Centre Zone Category",
+        "LABEL": "Local Centre Zone",
+        "OBJECTID": 105,
+        "GlobalID": "d49f0caa-bf7b-46fa-a8d5-8bbf32e5c993",
+        "Shape__Area": 4171.3984375,
+        "Shape__Length": 277.423843248613
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Low Density Residential Zone",
+        "OBJECTID": 106,
+        "GlobalID": "303ba3b7-f680-43b4-a84b-564bacfb1d3f",
+        "Shape__Area": 1007.38671875,
+        "Shape__Length": 127.3471846347456
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Low Density Residential Zone",
+        "OBJECTID": 107,
+        "GlobalID": "e2c7b73e-01fd-43fe-a4db-b48c391982fe",
+        "Shape__Area": 1028.140625,
+        "Shape__Length": 134.2131616067002
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Medium Density Residential Zone",
+        "OBJECTID": 108,
+        "GlobalID": "e3734301-a813-40a0-ba23-e26ff3b9f118",
+        "Shape__Area": 3703.83203125,
+        "Shape__Length": 288.25560365267097
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Medium Density Residential Zone",
+        "OBJECTID": 109,
+        "GlobalID": "d5c3dc1c-e145-4801-aa0b-3a232f12699b",
+        "Shape__Area": 2388.640625,
+        "Shape__Length": 204.82375532056648
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Medium Density Residential Zone",
+        "OBJECTID": 110,
+        "GlobalID": "82cfebe7-5965-47fb-86fc-4f3b0a8cecb4",
+        "Shape__Area": 2561.87109375,
+        "Shape__Length": 202.90913549530566
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Medium Density Residential Zone",
+        "OBJECTID": 111,
+        "GlobalID": "550e4ebb-c425-45f1-90ee-dc0bd3434930",
+        "Shape__Area": 2324.7109375,
+        "Shape__Length": 232.73466988777182
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Low Density Residential Zone",
+        "OBJECTID": 112,
+        "GlobalID": "3d6cea22-f726-4acb-bbdd-4f9645107832",
+        "Shape__Area": 757.64453125,
+        "Shape__Length": 115.15828582078503
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "High Density Residential Zone",
+        "OBJECTID": 113,
+        "GlobalID": "222a5c30-b359-4c2d-9c46-ea185728435c",
+        "Shape__Area": 1732.76171875,
+        "Shape__Length": 173.79427090380636
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Centre Zone Category",
+        "LABEL": "Principal Centre Zone",
+        "OBJECTID": 114,
+        "GlobalID": "39cc6800-01d8-468f-8715-ec1074681e42",
+        "Shape__Area": 1905.54296875,
+        "Shape__Length": 181.6416229199173
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Low Density Residential Zone",
+        "OBJECTID": 115,
+        "GlobalID": "72d8663e-9ae7-4882-803c-5115051f4e90",
+        "Shape__Area": 3590.0546875,
+        "Shape__Length": 282.77256677593414
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Low Density Residential Zone",
+        "OBJECTID": 116,
+        "GlobalID": "3d60b896-043b-409a-92f9-cf50c483a157",
+        "Shape__Area": 1794.05078125,
+        "Shape__Length": 205.87688505697133
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Centre Zone Category",
+        "LABEL": "Local Centre Zone",
+        "OBJECTID": 117,
+        "GlobalID": "f5b71f47-ab39-46c9-b267-7e92fcfdcf4b",
+        "Shape__Area": 2290.24609375,
+        "Shape__Length": 193.99579164314952
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Low Density Residential Zone",
+        "OBJECTID": 118,
+        "GlobalID": "2362f990-cde8-4da3-a786-f20eaa237764",
+        "Shape__Area": 1057.76953125,
+        "Shape__Length": 145.02387153604593
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Medium Density Residential Zone",
+        "OBJECTID": 119,
+        "GlobalID": "ce31d35a-4f19-4699-be2d-16898a7b84c1",
+        "Shape__Area": 1522.5234375,
+        "Shape__Length": 157.30696962262726
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Medium Density Residential Zone",
+        "OBJECTID": 120,
+        "GlobalID": "7010a591-1441-4faf-9b5a-f1a03649b362",
+        "Shape__Area": 3201.65234375,
+        "Shape__Length": 226.58647840666413
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Low Density Residential Zone",
+        "OBJECTID": 121,
+        "GlobalID": "c5374885-a89e-437a-b1cc-867e2e337d5d",
+        "Shape__Area": 1005.2265625,
+        "Shape__Length": 128.30671814304404
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Medium Density Residential Zone",
+        "OBJECTID": 122,
+        "GlobalID": "d507cec4-8509-423a-ba23-ea2114973aaf",
+        "Shape__Area": 1271.5859375,
+        "Shape__Length": 158.04798742922605
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Centre Zone Category",
+        "LABEL": "Principal Centre Zone",
+        "OBJECTID": 123,
+        "GlobalID": "8fae4a86-eb1d-41f0-bc2f-038b08dfa740",
+        "Shape__Area": 905.46875,
+        "Shape__Length": 128.2424139611208
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "High Density Residential Zone",
+        "OBJECTID": 124,
+        "GlobalID": "9e153a75-8fac-482c-83c8-347ac4179aa3",
+        "Shape__Area": 2978.203125,
+        "Shape__Length": 216.12191486992816
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Other Zones Category",
+        "LABEL": "Specialised Centre Zone",
+        "OBJECTID": 125,
+        "GlobalID": "aa9b39d1-28ba-4e21-b08f-498397bf2ad5",
+        "Shape__Area": 5350.640625,
+        "Shape__Length": 358.74449289474154
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "High Density Residential Zone",
+        "OBJECTID": 126,
+        "GlobalID": "f20ef698-9c52-4155-8e6a-6c6882fa6382",
+        "Shape__Area": 953.99609375,
+        "Shape__Length": 146.48952784994913
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Industry Zone Category",
+        "LABEL": "Medium Impact Industry Zone",
+        "OBJECTID": 127,
+        "GlobalID": "85c7e51c-8148-4e3a-9a67-c83332d967ef",
+        "Shape__Area": 1460.09765625,
+        "Shape__Length": 164.275035177232
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Medium Density Residential Zone",
+        "OBJECTID": 129,
+        "GlobalID": "615923d9-36fd-48ea-be08-246a39b36e27",
+        "Shape__Area": 1271.33984375,
+        "Shape__Length": 158.01240664808105
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Low Density Residential Zone",
+        "OBJECTID": 130,
+        "GlobalID": "205f7498-00bf-49ac-935b-ef4c1c2e6ec9",
+        "Shape__Area": 4875.37109375,
+        "Shape__Length": 305.264673672135
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "High Density Residential Zone",
+        "OBJECTID": 131,
+        "GlobalID": "a19dc1df-48e1-4aa6-8576-f9a661659e9b",
+        "Shape__Area": 943.74609375,
+        "Shape__Length": 143.85716518367622
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Centre Zone Category",
+        "LABEL": "Principal Centre Zone",
+        "OBJECTID": 132,
+        "GlobalID": "503eaa11-8e68-49c6-aa10-0659844d994a",
+        "Shape__Area": 2459.75,
+        "Shape__Length": 208.73542834153687
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Medium Density Residential Zone",
+        "OBJECTID": 133,
+        "GlobalID": "0e34583a-b561-40f0-aa12-2b0858f01355",
+        "Shape__Area": 1906.65234375,
+        "Shape__Length": 180.4987403992256
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Low Density Residential Zone",
+        "OBJECTID": 134,
+        "GlobalID": "a09f990c-d45a-4bb7-8a53-0f94c94c7369",
+        "Shape__Area": 1698.19140625,
+        "Shape__Length": 176.12064266567606
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Centre Zone Category",
+        "LABEL": "Principal Centre Zone",
+        "OBJECTID": 135,
+        "GlobalID": "81511ce0-6c24-4689-8f8f-e82b5860f605",
+        "Shape__Area": 13322.69140625,
+        "Shape__Length": 464.1293516443378
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Low Density Residential Zone",
+        "OBJECTID": 136,
+        "GlobalID": "ea7fcd09-8f9f-499c-b0d3-495e6ce3ce59",
+        "Shape__Area": 2017.01171875,
+        "Shape__Length": 175.40805268375482
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Medium Density Residential Zone",
+        "OBJECTID": 137,
+        "GlobalID": "98a9cbdd-086b-4aaa-97a2-5a98ae867c32",
+        "Shape__Area": 1036.40625,
+        "Shape__Length": 141.43534539283894
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Centre Zone Category",
+        "LABEL": "Local Centre Zone",
+        "OBJECTID": 138,
+        "GlobalID": "2becbc39-8973-4d99-ae01-c894fe8b2175",
+        "Shape__Area": 2392.41015625,
+        "Shape__Length": 196.0986246542189
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Tourist Accommodation Zone",
+        "OBJECTID": 139,
+        "GlobalID": "535b33dc-2b5e-49cd-a707-49a12527512a",
+        "Shape__Area": 2342.84375,
+        "Shape__Length": 257.43320908817157
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Low Density Residential Zone",
+        "OBJECTID": 140,
+        "GlobalID": "01bd5762-fa47-4a69-a413-d7b2ee03f319",
+        "Shape__Area": 1268.359375,
+        "Shape__Length": 157.60683523101974
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Centre Zone Category",
+        "LABEL": "Local Centre Zone",
+        "OBJECTID": 141,
+        "GlobalID": "e3193510-c8dc-4cc6-afed-33d3e0769094",
+        "Shape__Area": 1342.1953125,
+        "Shape__Length": 148.9250852400429
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "High Density Residential Zone",
+        "OBJECTID": 142,
+        "GlobalID": "473272ea-a364-4bf4-bb82-aadebddf839d",
+        "Shape__Area": 3182.0078125,
+        "Shape__Length": 225.63882426455268
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Tourist Accommodation Zone",
+        "OBJECTID": 143,
+        "GlobalID": "b22c73e8-01ba-473d-bc94-2e1ddd29c32d",
+        "Shape__Area": 905.10546875,
+        "Shape__Length": 144.70450182206946
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Industry Zone Category",
+        "LABEL": "Low Impact Industry Zone",
+        "OBJECTID": 144,
+        "GlobalID": "37db1ee0-e8f0-4064-b5c5-faadfc727a6b",
+        "Shape__Area": 1508.7421875,
+        "Shape__Length": 161.54694910003997
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Industry Zone Category",
+        "LABEL": "Low Impact Industry Zone",
+        "OBJECTID": 145,
+        "GlobalID": "20b33a3f-a568-48a9-8760-5dfcd5ad8899",
+        "Shape__Area": 2480.78515625,
+        "Shape__Length": 199.53844810900225
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Low Density Residential Zone",
+        "OBJECTID": 146,
+        "GlobalID": "edf37684-a0fc-4e2a-a4c6-3e9e586a7a69",
+        "Shape__Area": 876.4375,
+        "Shape__Length": 119.50475867291226
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Low Density Residential Zone",
+        "OBJECTID": 148,
+        "GlobalID": "08132a3c-769c-439b-af68-462cc746a49b",
+        "Shape__Area": 728.21875,
+        "Shape__Length": 109.71783389414172
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Tourist Accommodation Zone",
+        "OBJECTID": 149,
+        "GlobalID": "1edc716a-76da-44c9-9169-de9158ca3452",
+        "Shape__Area": 3133.3671875,
+        "Shape__Length": 269.0841011171813
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Centre Zone Category",
+        "LABEL": "Local Centre Zone",
+        "OBJECTID": 150,
+        "GlobalID": "7cc4f870-8cd7-440d-bae7-04c0cfe09375",
+        "Shape__Area": 2333.26171875,
+        "Shape__Length": 204.43303233510693
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Centre Zone Category",
+        "LABEL": "District Centre Zone",
+        "OBJECTID": 151,
+        "GlobalID": "68cd1e49-b469-4cf7-9fa7-6e205c74880b",
+        "Shape__Area": 2671.2109375,
+        "Shape__Length": 225.61462061840157
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Centre Zone Category",
+        "LABEL": "District Centre Zone",
+        "OBJECTID": 152,
+        "GlobalID": "0d1c2d76-f7bb-4c1e-8b82-7c6213d7ffaa",
+        "Shape__Area": 1306.3671875,
+        "Shape__Length": 145.2230520442392
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Medium Density Residential Zone",
+        "OBJECTID": 153,
+        "GlobalID": "cefe116c-bdfd-4b22-9f15-a45788b51470",
+        "Shape__Area": 6732.41796875,
+        "Shape__Length": 575.0758846607497
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Medium Density Residential Zone",
+        "OBJECTID": 154,
+        "GlobalID": "52c63fb3-037d-406d-a72e-401c930b9e43",
+        "Shape__Area": 872.37890625,
+        "Shape__Length": 118.48066231947234
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Tourist Accommodation Zone",
+        "OBJECTID": 155,
+        "GlobalID": "be25cdd0-324b-4053-8948-b761b02962cb",
+        "Shape__Area": 2325.0390625,
+        "Shape__Length": 193.37010749045305
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "High Density Residential Zone",
+        "OBJECTID": 156,
+        "GlobalID": "382c4002-4059-4aa4-9cd0-358c8288f4a7",
+        "Shape__Area": 1271.98046875,
+        "Shape__Length": 157.7261113377051
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "High Density Residential Zone",
+        "OBJECTID": 157,
+        "GlobalID": "3348cb2e-24b6-4da4-9309-6f4e7d6311b6",
+        "Shape__Area": 2655.40625,
+        "Shape__Length": 210.25565023666354
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Low Density Residential Zone",
+        "OBJECTID": 158,
+        "GlobalID": "9a00d45b-8d11-47c6-9bb4-31cb2f9e6856",
+        "Shape__Area": 9329.36328125,
+        "Shape__Length": 449.03106479493005
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Low Density Residential Zone",
+        "OBJECTID": 159,
+        "GlobalID": "8a6827a1-9d38-4253-8d2f-328c4976ee32",
+        "Shape__Area": 1048.4453125,
+        "Shape__Length": 138.15900439552502
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Low Density Residential Zone",
+        "OBJECTID": 160,
+        "GlobalID": "b66a703d-9109-4e89-9737-8f44d6eadedb",
+        "Shape__Area": 888.4296875,
+        "Shape__Length": 138.32355995376528
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Low Density Residential Zone",
+        "OBJECTID": 161,
+        "GlobalID": "5d501dcb-8efb-4919-b588-c85211149463",
+        "Shape__Area": 1064.953125,
+        "Shape__Length": 133.02733853719133
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Medium Density Residential Zone",
+        "OBJECTID": 162,
+        "GlobalID": "25d079e8-ad4b-4f01-9ccb-0781b88aef97",
+        "Shape__Area": 2347.7265625,
+        "Shape__Length": 202.55931150403006
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Centre Zone Category",
+        "LABEL": "Principal Centre Zone",
+        "OBJECTID": 163,
+        "GlobalID": "899cae03-357e-486a-81a5-04b31957b067",
+        "Shape__Area": 1391.078125,
+        "Shape__Length": 179.5346332943497
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Medium Density Residential Zone",
+        "OBJECTID": 164,
+        "GlobalID": "394b7afe-3372-46a3-8547-621a6c1def75",
+        "Shape__Area": 2168.328125,
+        "Shape__Length": 529.9323674327113
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Tourist Accommodation Zone",
+        "OBJECTID": 165,
+        "GlobalID": "5ae3bb29-3ab9-4e35-b3e5-7eac16d494c9",
+        "Shape__Area": 763.24609375,
+        "Shape__Length": 124.08531470994339
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Medium Density Residential Zone",
+        "OBJECTID": 166,
+        "GlobalID": "429b21ab-caf4-4661-8717-10ab6ae3b014",
+        "Shape__Area": 1322.203125,
+        "Shape__Length": 159.83362042011566
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Centre Zone Category",
+        "LABEL": "Principal Centre Zone",
+        "OBJECTID": 167,
+        "GlobalID": "63304da8-7202-4cc9-9aa2-e83d70379289",
+        "Shape__Area": 1415.9296875,
+        "Shape__Length": 156.4642857022542
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Low Density Residential Zone",
+        "OBJECTID": 168,
+        "GlobalID": "4c93a055-9fbe-4426-aa96-aeb350f0d1ab",
+        "Shape__Area": 762.9453125,
+        "Shape__Length": 124.08732806055866
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Medium Density Residential Zone",
+        "OBJECTID": 169,
+        "GlobalID": "2c19d6d4-88a8-49bd-996d-048bc42beac9",
+        "Shape__Area": 1007.078125,
+        "Shape__Length": 133.68069047076142
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Medium Density Residential Zone",
+        "OBJECTID": 170,
+        "GlobalID": "d3376257-befe-45c2-9ef4-d358c2437c7c",
+        "Shape__Area": 1272.81640625,
+        "Shape__Length": 158.10040296806105
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "High Density Residential Zone",
+        "OBJECTID": 171,
+        "GlobalID": "f0b60c64-5d64-4da9-a6a6-8341b580af87",
+        "Shape__Area": 1249.203125,
+        "Shape__Length": 152.12056881578954
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Low Density Residential Zone",
+        "OBJECTID": 172,
+        "GlobalID": "b3d83e0d-179b-43b3-8004-53737efa8370",
+        "Shape__Area": 1863.11328125,
+        "Shape__Length": 414.10239239941126
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Low Density Residential Zone",
+        "OBJECTID": 173,
+        "GlobalID": "10ed9af5-984c-4ef6-ae0e-24efbf00c8b8",
+        "Shape__Area": 17.37109375,
+        "Shape__Length": 33.61435432114678
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Low Density Residential Zone",
+        "OBJECTID": 174,
+        "GlobalID": "21c52179-532d-43c1-b6d3-232028ca7b32",
+        "Shape__Area": 7820.40234375,
+        "Shape__Length": 428.0858345683925
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Centre Zone Category",
+        "LABEL": "Principal Centre Zone",
+        "OBJECTID": 175,
+        "GlobalID": "67ed69c0-0b63-4f85-bbf3-f7b0816e2c69",
+        "Shape__Area": 1363.08203125,
+        "Shape__Length": 150.47508216605718
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Medium Density Residential Zone",
+        "OBJECTID": 176,
+        "GlobalID": "c5c4587b-5a44-4305-a411-54b82b5c7e3b",
+        "Shape__Area": 1005.5234375,
+        "Shape__Length": 134.4209389730999
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Medium Density Residential Zone",
+        "OBJECTID": 177,
+        "GlobalID": "b650500a-7e15-4ae0-a94c-596c9ce2f008",
+        "Shape__Area": 1271.11328125,
+        "Shape__Length": 157.96912348334035
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Low Density Residential Zone",
+        "OBJECTID": 178,
+        "GlobalID": "aecd3f8c-9017-4084-aab3-127861e5dd0b",
+        "Shape__Area": 752.52734375,
+        "Shape__Length": 110.52464583054527
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Low Density Residential Zone",
+        "OBJECTID": 179,
+        "GlobalID": "4c96c39e-c198-47f4-b8af-c9c96feca4b8",
+        "Shape__Area": 1035.12890625,
+        "Shape__Length": 126.3352290893405
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "High Density Residential Zone",
+        "OBJECTID": 180,
+        "GlobalID": "29268a6b-1dea-4fd9-8393-3524fe33fd6f",
+        "Shape__Area": 737.25390625,
+        "Shape__Length": 112.63860856961779
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "High Density Residential Zone",
+        "OBJECTID": 181,
+        "GlobalID": "e0e4cccb-55fd-4eeb-9ec9-8ca917dda87e",
+        "Shape__Area": 2920.98046875,
+        "Shape__Length": 216.57409357086325
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Medium Density Residential Zone",
+        "OBJECTID": 182,
+        "GlobalID": "6584747c-6580-4afa-b010-bc1f413215b2",
+        "Shape__Area": 1268.671875,
+        "Shape__Length": 151.47760238592969
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Medium Density Residential Zone",
+        "OBJECTID": 183,
+        "GlobalID": "81112129-bb7c-4f0f-9f8c-d0a32e416de9",
+        "Shape__Area": 1665.6484375,
+        "Shape__Length": 191.570362268787
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Medium Density Residential Zone",
+        "OBJECTID": 184,
+        "GlobalID": "de1209bb-af56-4219-b62e-b5795cdc3023",
+        "Shape__Area": 1268.9609375,
+        "Shape__Length": 169.06229812173927
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Medium Density Residential Zone",
+        "OBJECTID": 185,
+        "GlobalID": "eb41ddc3-8844-451a-831f-62aa139662bd",
+        "Shape__Area": 5335.046875,
+        "Shape__Length": 326.8714166427046
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Low Density Residential Zone",
+        "OBJECTID": 186,
+        "GlobalID": "ff79519e-3980-4fbe-b97b-ffbb71e042dc",
+        "Shape__Area": 1006.65625,
+        "Shape__Length": 127.2170371103213
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Low Density Residential Zone",
+        "OBJECTID": 187,
+        "GlobalID": "4fb30839-8c3c-4f80-944a-76f82a1fe99a",
+        "Shape__Area": 1033.80859375,
+        "Shape__Length": 132.8346660883585
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Low Density Residential Zone",
+        "OBJECTID": 188,
+        "GlobalID": "472ae38e-c3d7-44df-8064-bd2f697ef12a",
+        "Shape__Area": 1119.33984375,
+        "Shape__Length": 134.03970423509054
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "High Density Residential Zone",
+        "OBJECTID": 189,
+        "GlobalID": "b87b29c6-e0bd-44b9-a1d6-66ad549d314e",
+        "Shape__Area": 853.62109375,
+        "Shape__Length": 136.70911670685396
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Centre Zone Category",
+        "LABEL": "District Centre Zone",
+        "OBJECTID": 190,
+        "GlobalID": "5efe0a6b-a2a0-48f2-b1b0-59290e84bd21",
+        "Shape__Area": 1053.171875,
+        "Shape__Length": 140.61506174022028
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Medium Density Residential Zone",
+        "OBJECTID": 191,
+        "GlobalID": "217da43e-53c4-4369-9999-89ab2bcf89b6",
+        "Shape__Area": 8335.8515625,
+        "Shape__Length": 1674.8520311167374
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Medium Density Residential Zone",
+        "OBJECTID": 192,
+        "GlobalID": "ee49c4a6-c1e1-4327-9f50-41b980c94c0d",
+        "Shape__Area": 3930.1484375,
+        "Shape__Length": 1004.9210269445355
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Medium Density Residential Zone",
+        "OBJECTID": 193,
+        "GlobalID": "050f22e1-e759-4980-b378-c135f3636312",
+        "Shape__Area": 3009.02734375,
+        "Shape__Length": 746.7916236135773
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Medium Density Residential Zone",
+        "OBJECTID": 194,
+        "GlobalID": "eba53484-2fc7-4bdb-839c-71efc95494c3",
+        "Shape__Area": 1733.62890625,
+        "Shape__Length": 425.37997706486544
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Medium Density Residential Zone",
+        "OBJECTID": 195,
+        "GlobalID": "bb2673e0-3d6a-4710-a4c4-7e207cd01cef",
+        "Shape__Area": 2581.0234375,
+        "Shape__Length": 657.2990210794167
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Medium Density Residential Zone",
+        "OBJECTID": 196,
+        "GlobalID": "cbdf123a-8e72-4a46-98d6-04d7dc4e6c2d",
+        "Shape__Area": 4069.82421875,
+        "Shape__Length": 736.2954434607075
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Medium Density Residential Zone",
+        "OBJECTID": 197,
+        "GlobalID": "4b094d47-fd95-475d-9c28-b59dac1c26df",
+        "Shape__Area": 2561.70703125,
+        "Shape__Length": 738.600669480177
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Low Density Residential Zone",
+        "OBJECTID": 198,
+        "GlobalID": "a466da21-db61-4c3d-9a77-dd26f11054b7",
+        "Shape__Area": 1003.51953125,
+        "Shape__Length": 124.85380603417778
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Tourist Accommodation Zone",
+        "OBJECTID": 199,
+        "GlobalID": "27aefde1-5398-4787-828e-fe3776567899",
+        "Shape__Area": 5896.16796875,
+        "Shape__Length": 317.78133058428523
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Tourist Accommodation Zone",
+        "OBJECTID": 200,
+        "GlobalID": "3f17b469-e733-4ce2-999f-403a235be009",
+        "Shape__Area": 5125.265625,
+        "Shape__Length": 315.99191107678166
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "High Density Residential Zone",
+        "OBJECTID": 201,
+        "GlobalID": "c775aa0b-0ced-42c1-9f17-03ce923d29bb",
+        "Shape__Area": 798.36328125,
+        "Shape__Length": 125.22506701312071
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Low Density Residential Zone",
+        "OBJECTID": 202,
+        "GlobalID": "67e9a795-fa9f-4b3f-84e9-55c0489812ca",
+        "Shape__Area": 1743.77734375,
+        "Shape__Length": 180.8516455256703
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "Medium Density Residential Zone",
+        "OBJECTID": 203,
+        "GlobalID": "23b60d79-63fb-4f4b-b0f1-2ab3f1c5ce32",
+        "Shape__Area": 8345.77734375,
+        "Shape__Length": 371.00630320431935
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Residential Zone Category",
+        "LABEL": "High Density Residential Zone",
+        "OBJECTID": 204,
+        "GlobalID": "d0cd4eda-74df-4973-90db-363f47fcedb4",
+        "Shape__Area": 9319.203125,
+        "Shape__Length": 582.2780411287243
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Industry Zone Category",
+        "LABEL": "Medium Impact Industry Zone",
+        "OBJECTID": 205,
+        "GlobalID": "126f2e3b-2842-492d-aadd-f41071344ae9",
+        "Shape__Area": 2640.34375,
+        "Shape__Length": 208.613755651656
+      }
+    },
+    {
+      "name": null,
+      "type": null,
+      "address": null,
+      "suburb": null,
+      "latitude": null,
+      "longitude": null,
+      "attributes": {
+        "DESCRIPT": "Zone Map",
+        "HEADING": "Centre Zone Category",
+        "LABEL": "District Centre Zone",
+        "OBJECTID": 206,
+        "GlobalID": "bde50fcd-6f14-4a0f-9964-d56312336f15",
+        "Shape__Area": 9560.7734375,
+        "Shape__Length": 398.20533810105155
+      }
+    }
+  ]
+}

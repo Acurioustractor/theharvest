@@ -54,12 +54,12 @@ function AnimatedCount({ target }: { target: number }) {
 
 export default function Gather() {
   const isMobile = useMediaQuery("(max-width: 768px)");
-  const [eoiData, setEoiData] = useState({ name: "", email: "" });
+  const [eoiData, setEoiData] = useState({ name: "", email: "", phone: "" });
   const [submitted, setSubmitted] = useState(false);
   const [successMsg] = useState(() => SUCCESS_MESSAGES[Math.floor(Math.random() * SUCCESS_MESSAGES.length)]);
   const [shared, setShared] = useState(false);
 
-  const [localsDayData, setLocalsDayData] = useState({ name: "", email: "", alsoSaturday: false });
+  const [localsDayData, setLocalsDayData] = useState({ name: "", email: "", phone: "", alsoSaturday: false });
   const [localsDaySubmitted, setLocalsDaySubmitted] = useState(false);
 
   const countdown = useCountdown(GATHERING_DATE);
@@ -101,9 +101,11 @@ export default function Gather() {
 
   const handleEoiSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!eoiData.email && !eoiData.phone) return;
     eoiMutation.mutate({
       name: eoiData.name,
-      email: eoiData.email,
+      email: eoiData.email || undefined,
+      phone: eoiData.phone || undefined,
     });
   };
 
@@ -734,24 +736,24 @@ export default function Gather() {
           ) : (
             <FadeIn delay={0.1}>
               <form onSubmit={handleEoiSubmit}>
+                <div style={{ marginBottom: 20 }}>
+                  <label style={formLabelStyle} htmlFor="eoi-name">YOUR NAME</label>
+                  <input
+                    id="eoi-name"
+                    type="text"
+                    placeholder="What do people call you?"
+                    value={eoiData.name}
+                    onChange={(e) => setEoiData((prev) => ({ ...prev, name: e.target.value }))}
+                    required
+                    style={formInputStyle}
+                  />
+                </div>
                 <div style={{
                   display: "grid",
                   gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
                   gap: 20,
                   marginBottom: 20,
                 }}>
-                  <div>
-                    <label style={formLabelStyle} htmlFor="eoi-name">YOUR NAME</label>
-                    <input
-                      id="eoi-name"
-                      type="text"
-                      placeholder="What do people call you?"
-                      value={eoiData.name}
-                      onChange={(e) => setEoiData((prev) => ({ ...prev, name: e.target.value }))}
-                      required
-                      style={formInputStyle}
-                    />
-                  </div>
                   <div>
                     <label style={formLabelStyle} htmlFor="eoi-email">EMAIL</label>
                     <input
@@ -760,7 +762,17 @@ export default function Gather() {
                       placeholder="Best email for updates"
                       value={eoiData.email}
                       onChange={(e) => setEoiData((prev) => ({ ...prev, email: e.target.value }))}
-                      required
+                      style={formInputStyle}
+                    />
+                  </div>
+                  <div>
+                    <label style={formLabelStyle} htmlFor="eoi-phone">PHONE</label>
+                    <input
+                      id="eoi-phone"
+                      type="tel"
+                      placeholder="For text updates"
+                      value={eoiData.phone}
+                      onChange={(e) => setEoiData((prev) => ({ ...prev, phone: e.target.value }))}
                       style={formInputStyle}
                     />
                   </div>
@@ -904,7 +916,7 @@ export default function Gather() {
                     letterSpacing: "0.04em",
                     margin: "0 0 8px",
                   }}>
-                    You're in for Friday.
+                    {localsDayData.alsoSaturday ? "You're in for Friday and Saturday." : "You're in for Friday."}
                   </p>
                   <p style={{
                     fontFamily: fonts.body,
@@ -918,9 +930,10 @@ export default function Gather() {
               ) : (
                 <form onSubmit={(e) => {
                   e.preventDefault();
-                  localsDayMutation.mutate({ name: localsDayData.name, email: localsDayData.email });
+                  if (!localsDayData.email && !localsDayData.phone) return;
+                  localsDayMutation.mutate({ name: localsDayData.name, email: localsDayData.email || undefined, phone: localsDayData.phone || undefined });
                   if (localsDayData.alsoSaturday) {
-                    eoiMutation.mutate({ name: localsDayData.name, email: localsDayData.email });
+                    eoiMutation.mutate({ name: localsDayData.name, email: localsDayData.email || undefined, phone: localsDayData.phone || undefined });
                   }
                 }}>
                   <div style={{
@@ -942,10 +955,16 @@ export default function Gather() {
                       placeholder="Email"
                       value={localsDayData.email}
                       onChange={(e) => setLocalsDayData((prev) => ({ ...prev, email: e.target.value }))}
-                      required
                       style={formInputStyle}
                     />
                   </div>
+                  <input
+                    type="tel"
+                    placeholder="Phone (email or phone needed)"
+                    value={localsDayData.phone}
+                    onChange={(e) => setLocalsDayData((prev) => ({ ...prev, phone: e.target.value }))}
+                    style={{ ...formInputStyle, marginBottom: 4 }}
+                  />
                   <label style={{
                     display: "flex",
                     alignItems: "center",

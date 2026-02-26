@@ -26,16 +26,16 @@ export default function BauhausFooter({ isMobile }: BauhausFooterProps) {
       borderTop: `1px solid rgba(245,240,232,0.08)`,
       textAlign: "center",
     }}>
-      <p style={{
-        fontFamily: fonts.display,
-        fontWeight: 900,
-        fontSize: 14,
-        letterSpacing: "0.12em",
-        color: colors.milk,
-        margin: "0 0 8px",
-      }}>
-        THE HARVEST
-      </p>
+      <img
+        src="/images/wordmark-never-done.png"
+        alt="THE HARVEST"
+        style={{
+          height: 28,
+          width: "auto",
+          filter: "brightness(0) invert(1)",
+          marginBottom: 8,
+        }}
+      />
       <p style={{
         fontFamily: fonts.body,
         fontSize: 13,

@@ -1,0 +1,690 @@
+{
+  "groups": [
+    {
+      "name": "Maleny Community Board",
+      "url": "https://www.facebook.com/groups/malenycommunityboard",
+      "estimatedMembers": 12000,
+      "type": "community_discussion",
+      "description": "Main community discussion group for Maleny and surrounds",
+      "topics": [
+        "local_issues",
+        "events",
+        "recommendations",
+        "complaints",
+        "council",
+        "development"
+      ],
+      "activityLevel": "very_high",
+      "sentimentThemes": [
+        "development_concerns",
+        "community_spirit",
+        "local_business_support",
+        "traffic_parking",
+        "environment"
+      ],
+      "fetchStatus": "skipped"
+    },
+    {
+      "name": "Maleny Buy Sell Swap",
+      "url": "https://www.facebook.com/groups/malenybuysellswap",
+      "estimatedMembers": 8000,
+      "type": "marketplace",
+      "description": "Local buy/sell/swap marketplace for Maleny area",
+      "topics": [
+        "secondhand",
+        "local_trade",
+        "services",
+        "free_stuff"
+      ],
+      "activityLevel": "high",
+      "sentimentThemes": [
+        "community_exchange",
+        "affordability",
+        "local_economy"
+      ],
+      "fetchStatus": "skipped"
+    },
+    {
+      "name": "Sunshine Coast Hinterland Community",
+      "url": "https://www.facebook.com/groups/schinterland",
+      "estimatedMembers": 15000,
+      "type": "community_discussion",
+      "description": "Broader hinterland community group covering Maleny, Montville, Mapleton, Kenilworth",
+      "topics": [
+        "events",
+        "news",
+        "wildlife",
+        "weather",
+        "recommendations"
+      ],
+      "activityLevel": "high",
+      "sentimentThemes": [
+        "hinterland_identity",
+        "tourism_tension",
+        "wildlife_encounters",
+        "bushfire_preparedness"
+      ],
+      "fetchStatus": "skipped"
+    },
+    {
+      "name": "Maleny and Hinterland Real Estate",
+      "url": "https://www.facebook.com/groups/malenyhinterlandrealestate",
+      "estimatedMembers": 5000,
+      "type": "real_estate",
+      "description": "Property listings and real estate discussion for the hinterland",
+      "topics": [
+        "property",
+        "rentals",
+        "market_trends",
+        "acreage"
+      ],
+      "activityLevel": "medium",
+      "sentimentThemes": [
+        "housing_affordability",
+        "tree_change",
+        "rental_crisis",
+        "development_pressure"
+      ],
+      "fetchStatus": "skipped"
+    },
+    {
+      "name": "Range Gardeners",
+      "url": "https://www.facebook.com/groups/rangegardeners",
+      "estimatedMembers": 3000,
+      "type": "interest_group",
+      "description": "Gardening community for the Blackall Range area",
+      "topics": [
+        "gardening",
+        "permaculture",
+        "food_growing",
+        "native_plants",
+        "composting"
+      ],
+      "activityLevel": "medium",
+      "sentimentThemes": [
+        "food_sovereignty",
+        "sustainability",
+        "knowledge_sharing",
+        "seasonal_growing"
+      ],
+      "fetchStatus": "skipped"
+    },
+    {
+      "name": "Maleny Arts and Crafts",
+      "url": "https://www.facebook.com/groups/malenyartsandcrafts",
+      "estimatedMembers": 2000,
+      "type": "interest_group",
+      "description": "Arts, crafts, and creative community in Maleny",
+      "topics": [
+        "art",
+        "craft",
+        "exhibitions",
+        "workshops",
+        "markets"
+      ],
+      "activityLevel": "medium",
+      "sentimentThemes": [
+        "creative_community",
+        "exhibition_opportunities",
+        "workshop_demand",
+        "art_market"
+      ],
+      "fetchStatus": "skipped"
+    },
+    {
+      "name": "Maleny Food Co-op / Maple Street Co-op",
+      "url": "https://www.facebook.com/MapleStreetCoop",
+      "estimatedMembers": 4000,
+      "type": "business_page",
+      "description": "Community-owned cooperative offering local, organic, and fair trade products",
+      "topics": [
+        "local_food",
+        "organic",
+        "cooperative",
+        "sustainability"
+      ],
+      "activityLevel": "medium",
+      "sentimentThemes": [
+        "cooperative_economy",
+        "local_food_systems",
+        "ethical_consumption"
+      ],
+      "fetchStatus": "blocked"
+    },
+    {
+      "name": "Crystal Waters Community",
+      "url": "https://www.facebook.com/crystalwatersecovillage",
+      "estimatedMembers": 2500,
+      "type": "business_page",
+      "description": "Permaculture eco-village near Maleny",
+      "topics": [
+        "permaculture",
+        "eco_living",
+        "community_design",
+        "sustainability"
+      ],
+      "activityLevel": "low",
+      "sentimentThemes": [
+        "intentional_community",
+        "permaculture",
+        "alternative_living"
+      ],
+      "fetchStatus": "blocked"
+    },
+    {
+      "name": "Barung Landcare",
+      "url": "https://www.facebook.com/BarungLandcare",
+      "estimatedMembers": 3000,
+      "type": "business_page",
+      "description": "Environmental restoration and landcare across the Blackall Range",
+      "topics": [
+        "revegetation",
+        "wildlife_corridors",
+        "native_plants",
+        "volunteering",
+        "workshops"
+      ],
+      "activityLevel": "medium",
+      "sentimentThemes": [
+        "environmental_stewardship",
+        "volunteer_community",
+        "biodiversity"
+      ],
+      "fetchStatus": "blocked"
+    },
+    {
+      "name": "Witta Community",
+      "url": "https://www.facebook.com/groups/wittacommunity",
+      "estimatedMembers": 500,
+      "type": "community_discussion",
+      "description": "Local community group for Witta residents",
+      "topics": [
+        "local_news",
+        "witta_markets",
+        "neighbours",
+        "road_conditions"
+      ],
+      "activityLevel": "low",
+      "sentimentThemes": [
+        "rural_identity",
+        "community_connection",
+        "infrastructure"
+      ],
+      "fetchStatus": "skipped"
+    },
+    {
+      "name": "Maleny Dairies",
+      "url": "https://www.facebook.com/MalenyDairies",
+      "estimatedMembers": 8000,
+      "type": "business_page",
+      "description": "Local dairy producer, iconic Maleny brand",
+      "topics": [
+        "local_dairy",
+        "farm_tours",
+        "sustainability"
+      ],
+      "activityLevel": "medium",
+      "sentimentThemes": [
+        "local_production",
+        "agricultural_heritage",
+        "buy_local"
+      ],
+      "fetchStatus": "blocked"
+    },
+    {
+      "name": "Sunshine Coast Food and Agribusiness Network (FAN)",
+      "url": "https://www.facebook.com/scfoodnetwork",
+      "estimatedMembers": 3000,
+      "type": "business_page",
+      "description": "Network supporting local food producers on the Sunshine Coast",
+      "topics": [
+        "food_production",
+        "agribusiness",
+        "farm_gate",
+        "food_trails"
+      ],
+      "activityLevel": "medium",
+      "sentimentThemes": [
+        "food_economy",
+        "producer_support",
+        "paddock_to_plate"
+      ],
+      "fetchStatus": "blocked"
+    },
+    {
+      "name": "Maleny Music Festival",
+      "url": "https://www.facebook.com/malenymusicfestival",
+      "estimatedMembers": 6000,
+      "type": "business_page",
+      "description": "Annual music and arts festival",
+      "topics": [
+        "music",
+        "arts",
+        "festival",
+        "community_celebration"
+      ],
+      "activityLevel": "seasonal",
+      "sentimentThemes": [
+        "cultural_celebration",
+        "community_gathering",
+        "arts_economy"
+      ],
+      "fetchStatus": "blocked"
+    }
+  ],
+  "sentimentSummary": {
+    "dominantThemes": [
+      {
+        "theme": "development_concerns",
+        "frequency": 1,
+        "relevantGroups": [
+          "Maleny Community Board"
+        ]
+      },
+      {
+        "theme": "community_spirit",
+        "frequency": 1,
+        "relevantGroups": [
+          "Maleny Community Board"
+        ]
+      },
+      {
+        "theme": "local_business_support",
+        "frequency": 1,
+        "relevantGroups": [
+          "Maleny Community Board"
+        ]
+      },
+      {
+        "theme": "traffic_parking",
+        "frequency": 1,
+        "relevantGroups": [
+          "Maleny Community Board"
+        ]
+      },
+      {
+        "theme": "environment",
+        "frequency": 1,
+        "relevantGroups": [
+          "Maleny Community Board"
+        ]
+      },
+      {
+        "theme": "community_exchange",
+        "frequency": 1,
+        "relevantGroups": [
+          "Maleny Buy Sell Swap"
+        ]
+      },
+      {
+        "theme": "affordability",
+        "frequency": 1,
+        "relevantGroups": [
+          "Maleny Buy Sell Swap"
+        ]
+      },
+      {
+        "theme": "local_economy",
+        "frequency": 1,
+        "relevantGroups": [
+          "Maleny Buy Sell Swap"
+        ]
+      },
+      {
+        "theme": "hinterland_identity",
+        "frequency": 1,
+        "relevantGroups": [
+          "Sunshine Coast Hinterland Community"
+        ]
+      },
+      {
+        "theme": "tourism_tension",
+        "frequency": 1,
+        "relevantGroups": [
+          "Sunshine Coast Hinterland Community"
+        ]
+      },
+      {
+        "theme": "wildlife_encounters",
+        "frequency": 1,
+        "relevantGroups": [
+          "Sunshine Coast Hinterland Community"
+        ]
+      },
+      {
+        "theme": "bushfire_preparedness",
+        "frequency": 1,
+        "relevantGroups": [
+          "Sunshine Coast Hinterland Community"
+        ]
+      },
+      {
+        "theme": "housing_affordability",
+        "frequency": 1,
+        "relevantGroups": [
+          "Maleny and Hinterland Real Estate"
+        ]
+      },
+      {
+        "theme": "tree_change",
+        "frequency": 1,
+        "relevantGroups": [
+          "Maleny and Hinterland Real Estate"
+        ]
+      },
+      {
+        "theme": "rental_crisis",
+        "frequency": 1,
+        "relevantGroups": [
+          "Maleny and Hinterland Real Estate"
+        ]
+      },
+      {
+        "theme": "development_pressure",
+        "frequency": 1,
+        "relevantGroups": [
+          "Maleny and Hinterland Real Estate"
+        ]
+      },
+      {
+        "theme": "food_sovereignty",
+        "frequency": 1,
+        "relevantGroups": [
+          "Range Gardeners"
+        ]
+      },
+      {
+        "theme": "sustainability",
+        "frequency": 1,
+        "relevantGroups": [
+          "Range Gardeners"
+        ]
+      },
+      {
+        "theme": "knowledge_sharing",
+        "frequency": 1,
+        "relevantGroups": [
+          "Range Gardeners"
+        ]
+      },
+      {
+        "theme": "seasonal_growing",
+        "frequency": 1,
+        "relevantGroups": [
+          "Range Gardeners"
+        ]
+      },
+      {
+        "theme": "creative_community",
+        "frequency": 1,
+        "relevantGroups": [
+          "Maleny Arts and Crafts"
+        ]
+      },
+      {
+        "theme": "exhibition_opportunities",
+        "frequency": 1,
+        "relevantGroups": [
+          "Maleny Arts and Crafts"
+        ]
+      },
+      {
+        "theme": "workshop_demand",
+        "frequency": 1,
+        "relevantGroups": [
+          "Maleny Arts and Crafts"
+        ]
+      },
+      {
+        "theme": "art_market",
+        "frequency": 1,
+        "relevantGroups": [
+          "Maleny Arts and Crafts"
+        ]
+      },
+      {
+        "theme": "cooperative_economy",
+        "frequency": 1,
+        "relevantGroups": [
+          "Maleny Food Co-op / Maple Street Co-op"
+        ]
+      },
+      {
+        "theme": "local_food_systems",
+        "frequency": 1,
+        "relevantGroups": [
+          "Maleny Food Co-op / Maple Street Co-op"
+        ]
+      },
+      {
+        "theme": "ethical_consumption",
+        "frequency": 1,
+        "relevantGroups": [
+          "Maleny Food Co-op / Maple Street Co-op"
+        ]
+      },
+      {
+        "theme": "intentional_community",
+        "frequency": 1,
+        "relevantGroups": [
+          "Crystal Waters Community"
+        ]
+      },
+      {
+        "theme": "permaculture",
+        "frequency": 1,
+        "relevantGroups": [
+          "Crystal Waters Community"
+        ]
+      },
+      {
+        "theme": "alternative_living",
+        "frequency": 1,
+        "relevantGroups": [
+          "Crystal Waters Community"
+        ]
+      },
+      {
+        "theme": "environmental_stewardship",
+        "frequency": 1,
+        "relevantGroups": [
+          "Barung Landcare"
+        ]
+      },
+      {
+        "theme": "volunteer_community",
+        "frequency": 1,
+        "relevantGroups": [
+          "Barung Landcare"
+        ]
+      },
+      {
+        "theme": "biodiversity",
+        "frequency": 1,
+        "relevantGroups": [
+          "Barung Landcare"
+        ]
+      },
+      {
+        "theme": "rural_identity",
+        "frequency": 1,
+        "relevantGroups": [
+          "Witta Community"
+        ]
+      },
+      {
+        "theme": "community_connection",
+        "frequency": 1,
+        "relevantGroups": [
+          "Witta Community"
+        ]
+      },
+      {
+        "theme": "infrastructure",
+        "frequency": 1,
+        "relevantGroups": [
+          "Witta Community"
+        ]
+      },
+      {
+        "theme": "local_production",
+        "frequency": 1,
+        "relevantGroups": [
+          "Maleny Dairies"
+        ]
+      },
+      {
+        "theme": "agricultural_heritage",
+        "frequency": 1,
+        "relevantGroups": [
+          "Maleny Dairies"
+        ]
+      },
+      {
+        "theme": "buy_local",
+        "frequency": 1,
+        "relevantGroups": [
+          "Maleny Dairies"
+        ]
+      },
+      {
+        "theme": "food_economy",
+        "frequency": 1,
+        "relevantGroups": [
+          "Sunshine Coast Food and Agribusiness Network (FAN)"
+        ]
+      },
+      {
+        "theme": "producer_support",
+        "frequency": 1,
+        "relevantGroups": [
+          "Sunshine Coast Food and Agribusiness Network (FAN)"
+        ]
+      },
+      {
+        "theme": "paddock_to_plate",
+        "frequency": 1,
+        "relevantGroups": [
+          "Sunshine Coast Food and Agribusiness Network (FAN)"
+        ]
+      },
+      {
+        "theme": "cultural_celebration",
+        "frequency": 1,
+        "relevantGroups": [
+          "Maleny Music Festival"
+        ]
+      },
+      {
+        "theme": "community_gathering",
+        "frequency": 1,
+        "relevantGroups": [
+          "Maleny Music Festival"
+        ]
+      },
+      {
+        "theme": "arts_economy",
+        "frequency": 1,
+        "relevantGroups": [
+          "Maleny Music Festival"
+        ]
+      }
+    ],
+    "totalCommunityReach": 72000,
+    "topicDistribution": {
+      "local_issues": 1,
+      "events": 2,
+      "recommendations": 2,
+      "complaints": 1,
+      "council": 1,
+      "development": 1,
+      "secondhand": 1,
+      "local_trade": 1,
+      "services": 1,
+      "free_stuff": 1,
+      "news": 1,
+      "wildlife": 1,
+      "weather": 1,
+      "property": 1,
+      "rentals": 1,
+      "market_trends": 1,
+      "acreage": 1,
+      "gardening": 1,
+      "permaculture": 2,
+      "food_growing": 1,
+      "native_plants": 2,
+      "composting": 1,
+      "art": 1,
+      "craft": 1,
+      "exhibitions": 1,
+      "workshops": 2,
+      "markets": 1,
+      "local_food": 1,
+      "organic": 1,
+      "cooperative": 1,
+      "sustainability": 3,
+      "eco_living": 1,
+      "community_design": 1,
+      "revegetation": 1,
+      "wildlife_corridors": 1,
+      "volunteering": 1,
+      "local_news": 1,
+      "witta_markets": 1,
+      "neighbours": 1,
+      "road_conditions": 1,
+      "local_dairy": 1,
+      "farm_tours": 1,
+      "food_production": 1,
+      "agribusiness": 1,
+      "farm_gate": 1,
+      "food_trails": 1,
+      "music": 1,
+      "arts": 1,
+      "festival": 1,
+      "community_celebration": 1
+    },
+    "harvestAlignment": {
+      "garden": [
+        "environment",
+        "food_sovereignty",
+        "sustainability",
+        "seasonal_growing",
+        "intentional_community",
+        "permaculture",
+        "alternative_living",
+        "environmental_stewardship",
+        "volunteer_community",
+        "biodiversity"
+      ],
+      "kitchen": [
+        "community_exchange",
+        "affordability",
+        "local_economy",
+        "cooperative_economy",
+        "local_food_systems",
+        "ethical_consumption",
+        "local_production",
+        "agricultural_heritage",
+        "buy_local",
+        "food_economy",
+        "producer_support",
+        "paddock_to_plate"
+      ],
+      "artSpace": [
+        "community_spirit",
+        "hinterland_identity",
+        "knowledge_sharing",
+        "creative_community",
+        "exhibition_opportunities",
+        "workshop_demand",
+        "art_market",
+        "cultural_celebration",
+        "community_gathering",
+        "arts_economy"
+      ]
+    }
+  },
+  "methodology": "Curated catalog of public Facebook groups and pages in the Maleny/Witta/Hinterland area. Member counts are estimates based on publicly visible information. Business pages were fetched for public metadata where possible; group content was not accessed as it requires membership.",
+  "limitations": "Facebook group content requires membership to access. Most group metadata is not available without authentication. Member counts are approximate and may be outdated. Sentiment themes are inferred from group purpose and public description, not from analysis of actual posts. Activity levels are qualitative estimates.",
+  "dataDate": "2026-02-16"
+}

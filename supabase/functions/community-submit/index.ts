@@ -16,11 +16,11 @@ function jsonResponse(body: Record<string, unknown>, status = 200) {
 
 // Tag mappings for each submission type
 const TYPE_TAGS: Record<string, string[]> = {
-  idea: ["community-idea", "website-submission"],
-  residency: ["residency-applicant", "website-submission"],
-  "business-interest": ["business-interest", "website-submission"],
-  "workshop-suggestion": ["workshop-suggestion", "website-submission"],
-  "story-feature": ["story-feature", "website-submission"],
+  idea: ["community-idea", "harvest-website"],
+  residency: ["residency-applicant", "harvest-website"],
+  "business-interest": ["business-interest", "harvest-website"],
+  "workshop-suggestion": ["workshop-suggestion", "harvest-website"],
+  "story-feature": ["story-feature", "harvest-website"],
 };
 
 Deno.serve(async (req) => {
@@ -47,7 +47,7 @@ Deno.serve(async (req) => {
     return jsonResponse({ success: false, error: "Type and email are required." }, 400);
   }
 
-  const tags = TYPE_TAGS[type] ?? ["website-submission"];
+  const tags = TYPE_TAGS[type] ?? ["harvest-website"];
   if (fields.residencyType) tags.push(`residency-${fields.residencyType}`);
   if (fields.ideaType) tags.push(`idea-${fields.ideaType}`);
   if (fields.interestType) tags.push(`biz-${fields.interestType}`);
@@ -175,6 +175,25 @@ Deno.serve(async (req) => {
       }
     } catch {
       // DB failure shouldn't block response
+    }
+  }
+
+  // Trigger GHL workflow for community submission
+  const workflowId = Deno.env.get("GHL_COMMUNITY_SUBMIT_WORKFLOW_ID");
+  if (workflowId && ghlContactId) {
+    try {
+      await fetch(`${GHL_API_BASE}/workflows/${workflowId}/subscribe`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "Authorization": `Bearer ${apiKey}`,
+          "Version": GHL_API_VERSION,
+        },
+        body: JSON.stringify({ contactId: ghlContactId }),
+      });
+    } catch {
+      // Workflow failure shouldn't block the response
     }
   }
 

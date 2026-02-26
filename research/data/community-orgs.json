@@ -1,0 +1,261 @@
+{
+  "totalOrganizations": 19,
+  "byType": {
+    "community_service": [
+      {
+        "name": "Maleny Neighbourhood Centre",
+        "type": "community_service",
+        "description": "Community support services, programs, and referrals for the Maleny and hinterland area",
+        "url": "https://www.malenyneighbourhoodcentre.org",
+        "location": "Maleny"
+      },
+      {
+        "name": "Maleny RSL Sub-Branch",
+        "type": "community_service",
+        "description": "Returned services support and community social hub",
+        "location": "Maleny"
+      },
+      {
+        "name": "Range Care",
+        "type": "community_service",
+        "description": "Aged care and disability support services for the Blackall Range area",
+        "location": "Maleny"
+      }
+    ],
+    "arts": [
+      {
+        "name": "Maleny Arts Council",
+        "type": "arts",
+        "description": "Supporting and promoting arts and culture in the Maleny region",
+        "location": "Maleny"
+      },
+      {
+        "name": "Maleny Singers",
+        "type": "arts",
+        "description": "Community choir bringing together local singers",
+        "location": "Maleny"
+      }
+    ],
+    "community_venue": [
+      {
+        "name": "Maleny Community Centre",
+        "type": "community_venue",
+        "description": "Multi-purpose community venue hosting events, meetings, and activities",
+        "location": "Maleny"
+      },
+      {
+        "name": "Maleny Showground",
+        "type": "community_venue",
+        "description": "Home of the annual Maleny Show and various community events",
+        "location": "Maleny"
+      }
+    ],
+    "education": [
+      {
+        "name": "Range Community Kindergarten",
+        "type": "education",
+        "description": "Community kindergarten serving families in the Blackall Range area",
+        "location": "Maleny"
+      }
+    ],
+    "environment": [
+      {
+        "name": "Maleny & District Green Hills Fund",
+        "type": "environment",
+        "description": "Environmental conservation and land management in the Maleny district",
+        "location": "Maleny"
+      },
+      {
+        "name": "Barung Landcare",
+        "type": "environment",
+        "description": "With over 30 years of grassroots action, Barung Landcare empowers and connects community to restore, protect, and celebrate the rich and resilient natural",
+        "url": "https://www.barunglandcare.org.au",
+        "location": "Maleny"
+      },
+      {
+        "name": "Hinterland Bush Links",
+        "type": "environment",
+        "description": "Wildlife corridor restoration connecting habitats in the Sunshine Coast Hinterland",
+        "location": "Hinterland region"
+      }
+    ],
+    "cooperative": [
+      {
+        "name": "Maleny Credit Union (Maleny Credit Co-operative)",
+        "type": "cooperative",
+        "description": "Community-owned credit union serving the Maleny and hinterland region",
+        "location": "Maleny"
+      },
+      {
+        "name": "Maple Street Co-op",
+        "type": "cooperative",
+        "description": "Community-owned cooperative offering local, organic, and fair trade products",
+        "location": "Maleny"
+      }
+    ],
+    "intentional_community": [
+      {
+        "name": "Crystal Waters Eco Village",
+        "type": "intentional_community",
+        "description": "Permaculture-based eco village near Maleny, established 1987",
+        "location": "Conondale (near Maleny)"
+      }
+    ],
+    "recreation": [
+      {
+        "name": "Maleny Trail Riders",
+        "type": "recreation",
+        "description": "Mountain biking and trail riding community in the hinterland",
+        "location": "Maleny"
+      },
+      {
+        "name": "Witta Recreation Club",
+        "type": "recreation",
+        "description": "Local recreation and social club for the Witta community",
+        "location": "Witta"
+      }
+    ],
+    "health": [
+      {
+        "name": "Maleny Hospital Auxiliary",
+        "type": "health",
+        "description": "Volunteer support for Maleny Soldiers Memorial Hospital",
+        "location": "Maleny"
+      }
+    ],
+    "service_club": [
+      {
+        "name": "Maleny Lions Club",
+        "type": "service_club",
+        "description": "Lions Club International chapter serving the Maleny community",
+        "location": "Maleny"
+      },
+      {
+        "name": "Maleny Rotary Club",
+        "type": "service_club",
+        "description": "Rotary International chapter supporting community projects in Maleny",
+        "location": "Maleny"
+      }
+    ]
+  },
+  "organizations": [
+    {
+      "name": "Maleny Neighbourhood Centre",
+      "type": "community_service",
+      "description": "Community support services, programs, and referrals for the Maleny and hinterland area",
+      "url": "https://www.malenyneighbourhoodcentre.org",
+      "location": "Maleny"
+    },
+    {
+      "name": "Maleny Arts Council",
+      "type": "arts",
+      "description": "Supporting and promoting arts and culture in the Maleny region",
+      "location": "Maleny"
+    },
+    {
+      "name": "Maleny Community Centre",
+      "type": "community_venue",
+      "description": "Multi-purpose community venue hosting events, meetings, and activities",
+      "location": "Maleny"
+    },
+    {
+      "name": "Range Community Kindergarten",
+      "type": "education",
+      "description": "Community kindergarten serving families in the Blackall Range area",
+      "location": "Maleny"
+    },
+    {
+      "name": "Maleny & District Green Hills Fund",
+      "type": "environment",
+      "description": "Environmental conservation and land management in the Maleny district",
+      "location": "Maleny"
+    },
+    {
+      "name": "Barung Landcare",
+      "type": "environment",
+      "description": "With over 30 years of grassroots action, Barung Landcare empowers and connects community to restore, protect, and celebrate the rich and resilient natural",
+      "url": "https://www.barunglandcare.org.au",
+      "location": "Maleny"
+    },
+    {
+      "name": "Maleny Credit Union (Maleny Credit Co-operative)",
+      "type": "cooperative",
+      "description": "Community-owned credit union serving the Maleny and hinterland region",
+      "location": "Maleny"
+    },
+    {
+      "name": "Maple Street Co-op",
+      "type": "cooperative",
+      "description": "Community-owned cooperative offering local, organic, and fair trade products",
+      "location": "Maleny"
+    },
+    {
+      "name": "Crystal Waters Eco Village",
+      "type": "intentional_community",
+      "description": "Permaculture-based eco village near Maleny, established 1987",
+      "location": "Conondale (near Maleny)"
+    },
+    {
+      "name": "Maleny Showground",
+      "type": "community_venue",
+      "description": "Home of the annual Maleny Show and various community events",
+      "location": "Maleny"
+    },
+    {
+      "name": "Maleny RSL Sub-Branch",
+      "type": "community_service",
+      "description": "Returned services support and community social hub",
+      "location": "Maleny"
+    },
+    {
+      "name": "Maleny Trail Riders",
+      "type": "recreation",
+      "description": "Mountain biking and trail riding community in the hinterland",
+      "location": "Maleny"
+    },
+    {
+      "name": "Witta Recreation Club",
+      "type": "recreation",
+      "description": "Local recreation and social club for the Witta community",
+      "location": "Witta"
+    },
+    {
+      "name": "Maleny Singers",
+      "type": "arts",
+      "description": "Community choir bringing together local singers",
+      "location": "Maleny"
+    },
+    {
+      "name": "Hinterland Bush Links",
+      "type": "environment",
+      "description": "Wildlife corridor restoration connecting habitats in the Sunshine Coast Hinterland",
+      "location": "Hinterland region"
+    },
+    {
+      "name": "Maleny Hospital Auxiliary",
+      "type": "health",
+      "description": "Volunteer support for Maleny Soldiers Memorial Hospital",
+      "location": "Maleny"
+    },
+    {
+      "name": "Maleny Lions Club",
+      "type": "service_club",
+      "description": "Lions Club International chapter serving the Maleny community",
+      "location": "Maleny"
+    },
+    {
+      "name": "Maleny Rotary Club",
+      "type": "service_club",
+      "description": "Rotary International chapter supporting community projects in Maleny",
+      "location": "Maleny"
+    },
+    {
+      "name": "Range Care",
+      "type": "community_service",
+      "description": "Aged care and disability support services for the Blackall Range area",
+      "location": "Maleny"
+    }
+  ],
+  "note": "Data compiled from public web sources and local knowledge. Some organizations may have changed status.",
+  "dataDate": "2026-02-16"
+}

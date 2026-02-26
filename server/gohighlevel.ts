@@ -12,7 +12,7 @@ const GHL_API_BASE = "https://services.leadconnectorhq.com";
 const GHL_API_VERSION = "2021-07-28";
 
 interface GHLContactInput {
-  email: string;
+  email?: string;
   firstName?: string;
   lastName?: string;
   phone?: string;
@@ -120,6 +120,7 @@ export async function upsertGHLContact(input: GHLContactInput): Promise<{ succes
   }
 
   try {
+    // 1. Upsert contact (without tags — upsert replaces tags instead of merging)
     const response = await fetch(`${GHL_API_BASE}/contacts/upsert`, {
       method: "POST",
       headers: {
@@ -135,7 +136,6 @@ export async function upsertGHLContact(input: GHLContactInput): Promise<{ succes
         phone: input.phone || undefined,
         locationId: locationId,
         source: input.source || "The Harvest Website",
-        tags: input.tags || ["newsletter", "website-signup"],
       }),
     });
 
@@ -146,9 +146,50 @@ export async function upsertGHLContact(input: GHLContactInput): Promise<{ succes
     }
 
     const data = await response.json() as GHLContactResponse;
+    const contactId = data.contact.id;
+
+    // 2. Update contact fields that upsert doesn't reliably merge
+    const updates: Record<string, string> = {};
+    if (input.phone) updates.phone = input.phone;
+    if (input.firstName) updates.firstName = input.firstName;
+    if (input.lastName) updates.lastName = input.lastName;
+    if (Object.keys(updates).length > 0 && contactId) {
+      try {
+        await fetch(`${GHL_API_BASE}/contacts/${contactId}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${apiKey}`,
+            "Version": GHL_API_VERSION,
+          },
+          body: JSON.stringify(updates),
+        });
+      } catch (updateErr) {
+        console.error("GHL contact update failed (contact still created):", updateErr);
+      }
+    }
+
+    // 3. Add tags separately (merges with existing tags)
+    const tags = input.tags || ["newsletter", "harvest-website"];
+    if (tags.length > 0 && contactId) {
+      try {
+        await fetch(`${GHL_API_BASE}/contacts/${contactId}/tags`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${apiKey}`,
+            "Version": GHL_API_VERSION,
+          },
+          body: JSON.stringify({ tags }),
+        });
+      } catch (tagErr) {
+        console.error("GHL Add Tags failed (contact still created):", tagErr);
+      }
+    }
+
     return {
       success: true,
-      contactId: data.contact.id,
+      contactId,
     };
   } catch (error) {
     console.error("GHL Upsert API request failed:", error);
@@ -600,6 +641,59 @@ export async function batchTriggerWorkflow(
   }
 
   return { success: true, triggered, failed };
+}
+
+/**
+ * Create a calendar appointment for a contact in Go High Level
+ * Used to tie event dates to contacts for workflow Wait steps
+ */
+export async function createGHLAppointment(input: {
+  calendarId: string;
+  contactId: string;
+  title: string;
+  startTime: string; // ISO 8601
+  endTime: string;   // ISO 8601
+  address?: string;
+}): Promise<{ success: boolean; appointmentId?: string; error?: string }> {
+  const apiKey = process.env.GHL_API_KEY;
+
+  if (!apiKey) {
+    console.error("Go High Level API key not configured.");
+    return { success: false, error: "Calendar service is not configured." };
+  }
+
+  try {
+    const response = await fetch(`${GHL_API_BASE}/calendars/events/appointments`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Authorization": `Bearer ${apiKey}`,
+        "Version": GHL_API_VERSION,
+      },
+      body: JSON.stringify({
+        calendarId: input.calendarId,
+        contactId: input.contactId,
+        title: input.title,
+        startTime: input.startTime,
+        endTime: input.endTime,
+        address: input.address,
+        status: "confirmed",
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json() as GHLErrorResponse;
+      console.error("GHL Create Appointment Error:", errorData);
+      return { success: false, error: errorData.message || "Failed to create appointment." };
+    }
+
+    const data = await response.json() as any;
+    return { success: true, appointmentId: data?.id || data?.event?.id };
+  } catch (error) {
+    console.error("GHL Create Appointment request failed:", error);
+    return { success: false, error: "Unable to create appointment." };
+  }
 }
 
 /**

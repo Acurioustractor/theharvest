@@ -187,6 +187,7 @@ function MembershipCard({ tier }: { tier: MembershipTier }) {
 
 export default function Membership() {
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [interests, setInterests] = useState<Interest[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -214,6 +215,7 @@ export default function Membership() {
     setIsSubmitting(true);
     newsletterMutation.mutate({
       email,
+      phone: phone.trim() || undefined,
       source: "Membership Interest",
       interests: interests.length > 0 ? interests : undefined,
     });
@@ -384,6 +386,13 @@ export default function Membership() {
                   <Bell className="ml-2 h-5 w-5" />
                 </Button>
               </div>
+              <Input
+                type="tel"
+                placeholder="Phone (optional — for text updates)"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                className="bg-white/10 border-white/20 text-white placeholder:text-white/50 h-12"
+              />
               <InterestSelector
                 selected={interests}
                 onChange={setInterests}

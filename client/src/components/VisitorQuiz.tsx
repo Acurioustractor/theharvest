@@ -29,6 +29,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { Link } from "wouter";
+import { trpc } from "@/lib/trpc";
 
 interface QuizAnswer {
   id: string;
@@ -313,20 +314,34 @@ export function VisitorQuiz({ trigger, onComplete }: VisitorQuizProps) {
     }
   };
 
+  const quizMutation = trpc.quiz.submit.useMutation();
+
   const handleEmailSubmit = async () => {
     if (!email || !persona) return;
 
     setIsSubmitting(true);
 
-    // Simulate API call to GHL
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    try {
+      await quizMutation.mutateAsync({
+        email,
+        persona: persona.id,
+        ghlTags: persona.ghlTags,
+        motivation: answers.motivation as string | undefined,
+        frequency: answers.frequency as string | undefined,
+        interests: (answers.interests as string[]) || undefined,
+      });
 
-    setIsSubmitting(false);
-    onComplete?.(persona, email);
-
-    toast.success(`Welcome, ${persona.title}!`, {
-      description: "We've personalized your experience and added you to our community.",
-    });
+      onComplete?.(persona, email);
+      toast.success(`Welcome, ${persona.title}!`, {
+        description: "We've personalized your experience and added you to our community.",
+      });
+    } catch {
+      toast.error("Something went wrong", {
+        description: "Your quiz result is still valid — we just couldn't save your email.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
 
     resetAndClose();
   };

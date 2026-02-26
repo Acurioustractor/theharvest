@@ -1,0 +1,63 @@
+{
+  "totalEvents": 8,
+  "events": [
+    {
+      "name": "Witta Markets",
+      "type": "market",
+      "schedule": "First Saturday of every month, 6:30am-12pm",
+      "location": "Witta Recreation Club, Witta",
+      "description": "Community market with local produce, plants, crafts, food, and live music"
+    },
+    {
+      "name": "Maleny Community Markets",
+      "type": "market",
+      "schedule": "Every Sunday, 8am-1pm",
+      "location": "RSL Hall, Maleny",
+      "description": "Weekly market with local produce, handmade goods, and community atmosphere"
+    },
+    {
+      "name": "Montville Markets",
+      "type": "market",
+      "schedule": "Second Saturday of every month",
+      "location": "Montville Village Green",
+      "description": "Artisan and produce market in the village of Montville"
+    },
+    {
+      "name": "Maleny Show",
+      "type": "annual_event",
+      "schedule": "Annually (typically May/June)",
+      "location": "Maleny Showground",
+      "description": "Annual agricultural show celebrating rural life, livestock, and community"
+    },
+    {
+      "name": "Maleny Music Festival",
+      "type": "festival",
+      "schedule": "Annual (New Year period)",
+      "location": "Various venues, Maleny",
+      "description": "Multi-day music and arts festival attracting national and local performers"
+    },
+    {
+      "name": "Maleny Wood Expo",
+      "type": "annual_event",
+      "schedule": "Annually",
+      "location": "Maleny Showground",
+      "description": "Exhibition of woodworking, timber arts, and sustainable forestry practices"
+    },
+    {
+      "name": "Sunshine Coast Hinterland Harvest Trail",
+      "type": "tourism",
+      "schedule": "Ongoing / seasonal",
+      "location": "Various farms across hinterland",
+      "description": "Farm gate trail connecting visitors with local producers in the hinterland"
+    },
+    {
+      "name": "Maleny Scarecrow Festival",
+      "type": "community_event",
+      "schedule": "Annually (typically June)",
+      "location": "Maple Street and surrounds, Maleny",
+      "description": "Community festival with scarecrow displays, workshops, and street activities"
+    }
+  ],
+  "note": "Schedules are indicative — check with organizers for current dates.",
+  "dataDate": "2026-02-16"
+}

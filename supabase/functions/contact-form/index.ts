@@ -60,7 +60,7 @@ Deno.serve(async req => {
       lastName,
       locationId,
       source: "Website Contact Form",
-      tags: ["contact-form", "website-inquiry", ...(subscribe ? ["newsletter"] : [])],
+      tags: ["contact-form", "harvest-website", ...(subscribe ? ["newsletter"] : [])],
     }),
   });
 
@@ -92,6 +92,25 @@ Deno.serve(async req => {
         body: `**Website Contact Form**\n\n**Subject:** ${subject || "No subject"}\n\n**Message:**\n${message}`,
       }),
     });
+  }
+
+  // Trigger GHL workflow for contact form auto-reply
+  const workflowId = Deno.env.get("GHL_CONTACT_FORM_WORKFLOW_ID");
+  if (workflowId && contactId) {
+    try {
+      await fetch(`${GHL_API_BASE}/workflows/${workflowId}/subscribe`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "Authorization": `Bearer ${apiKey}`,
+          "Version": GHL_API_VERSION,
+        },
+        body: JSON.stringify({ contactId }),
+      });
+    } catch {
+      // Workflow failure shouldn't block the response
+    }
   }
 
   return jsonResponse({ success: true, contactId });

@@ -1,0 +1,416 @@
+{
+  "source": "ABS Data API — Estimated Resident Population",
+  "dataset": "Annual ERP by SA2 (ASGS 2021), Maroochy Hinterland (316061443)",
+  "fetchedAt": "2026-02-16T20:07:20.022Z",
+  "recordCount": 24,
+  "records": [
+    {
+      "sa2Name": "Maroochy Hinterland",
+      "year": "2001",
+      "population": 5489,
+      "rawFields": {
+        "DATAFLOW": "ABS:ABS_ANNUAL_ERP_ASGS2021(1.2.0)",
+        "MEASURE": "ERP",
+        "REGION_TYPE": "SA2",
+        "ASGS_2021": "316061443",
+        "FREQ": "A",
+        "TIME_PERIOD": "2001",
+        "OBS_VALUE": "5489",
+        "UNIT_MEASURE": "PSNS",
+        "OBS_STATUS": "",
+        "OBS_COMMENT": ""
+      }
+    },
+    {
+      "sa2Name": "Maroochy Hinterland",
+      "year": "2002",
+      "population": 5652,
+      "rawFields": {
+        "DATAFLOW": "ABS:ABS_ANNUAL_ERP_ASGS2021(1.2.0)",
+        "MEASURE": "ERP",
+        "REGION_TYPE": "SA2",
+        "ASGS_2021": "316061443",
+        "FREQ": "A",
+        "TIME_PERIOD": "2002",
+        "OBS_VALUE": "5652",
+        "UNIT_MEASURE": "PSNS",
+        "OBS_STATUS": "",
+        "OBS_COMMENT": ""
+      }
+    },
+    {
+      "sa2Name": "Maroochy Hinterland",
+      "year": "2003",
+      "population": 5770,
+      "rawFields": {
+        "DATAFLOW": "ABS:ABS_ANNUAL_ERP_ASGS2021(1.2.0)",
+        "MEASURE": "ERP",
+        "REGION_TYPE": "SA2",
+        "ASGS_2021": "316061443",
+        "FREQ": "A",
+        "TIME_PERIOD": "2003",
+        "OBS_VALUE": "5770",
+        "UNIT_MEASURE": "PSNS",
+        "OBS_STATUS": "",
+        "OBS_COMMENT": ""
+      }
+    },
+    {
+      "sa2Name": "Maroochy Hinterland",
+      "year": "2004",
+      "population": 5860,
+      "rawFields": {
+        "DATAFLOW": "ABS:ABS_ANNUAL_ERP_ASGS2021(1.2.0)",
+        "MEASURE": "ERP",
+        "REGION_TYPE": "SA2",
+        "ASGS_2021": "316061443",
+        "FREQ": "A",
+        "TIME_PERIOD": "2004",
+        "OBS_VALUE": "5860",
+        "UNIT_MEASURE": "PSNS",
+        "OBS_STATUS": "",
+        "OBS_COMMENT": ""
+      }
+    },
+    {
+      "sa2Name": "Maroochy Hinterland",
+      "year": "2005",
+      "population": 5996,
+      "rawFields": {
+        "DATAFLOW": "ABS:ABS_ANNUAL_ERP_ASGS2021(1.2.0)",
+        "MEASURE": "ERP",
+        "REGION_TYPE": "SA2",
+        "ASGS_2021": "316061443",
+        "FREQ": "A",
+        "TIME_PERIOD": "2005",
+        "OBS_VALUE": "5996",
+        "UNIT_MEASURE": "PSNS",
+        "OBS_STATUS": "",
+        "OBS_COMMENT": ""
+      }
+    },
+    {
+      "sa2Name": "Maroochy Hinterland",
+      "year": "2006",
+      "population": 6087,
+      "rawFields": {
+        "DATAFLOW": "ABS:ABS_ANNUAL_ERP_ASGS2021(1.2.0)",
+        "MEASURE": "ERP",
+        "REGION_TYPE": "SA2",
+        "ASGS_2021": "316061443",
+        "FREQ": "A",
+        "TIME_PERIOD": "2006",
+        "OBS_VALUE": "6087",
+        "UNIT_MEASURE": "PSNS",
+        "OBS_STATUS": "",
+        "OBS_COMMENT": ""
+      }
+    },
+    {
+      "sa2Name": "Maroochy Hinterland",
+      "year": "2007",
+      "population": 6059,
+      "rawFields": {
+        "DATAFLOW": "ABS:ABS_ANNUAL_ERP_ASGS2021(1.2.0)",
+        "MEASURE": "ERP",
+        "REGION_TYPE": "SA2",
+        "ASGS_2021": "316061443",
+        "FREQ": "A",
+        "TIME_PERIOD": "2007",
+        "OBS_VALUE": "6059",
+        "UNIT_MEASURE": "PSNS",
+        "OBS_STATUS": "",
+        "OBS_COMMENT": ""
+      }
+    },
+    {
+      "sa2Name": "Maroochy Hinterland",
+      "year": "2008",
+      "population": 6100,
+      "rawFields": {
+        "DATAFLOW": "ABS:ABS_ANNUAL_ERP_ASGS2021(1.2.0)",
+        "MEASURE": "ERP",
+        "REGION_TYPE": "SA2",
+        "ASGS_2021": "316061443",
+        "FREQ": "A",
+        "TIME_PERIOD": "2008",
+        "OBS_VALUE": "6100",
+        "UNIT_MEASURE": "PSNS",
+        "OBS_STATUS": "",
+        "OBS_COMMENT": ""
+      }
+    },
+    {
+      "sa2Name": "Maroochy Hinterland",
+      "year": "2009",
+      "population": 6065,
+      "rawFields": {
+        "DATAFLOW": "ABS:ABS_ANNUAL_ERP_ASGS2021(1.2.0)",
+        "MEASURE": "ERP",
+        "REGION_TYPE": "SA2",
+        "ASGS_2021": "316061443",
+        "FREQ": "A",
+        "TIME_PERIOD": "2009",
+        "OBS_VALUE": "6065",
+        "UNIT_MEASURE": "PSNS",
+        "OBS_STATUS": "",
+        "OBS_COMMENT": ""
+      }
+    },
+    {
+      "sa2Name": "Maroochy Hinterland",
+      "year": "2010",
+      "population": 6064,
+      "rawFields": {
+        "DATAFLOW": "ABS:ABS_ANNUAL_ERP_ASGS2021(1.2.0)",
+        "MEASURE": "ERP",
+        "REGION_TYPE": "SA2",
+        "ASGS_2021": "316061443",
+        "FREQ": "A",
+        "TIME_PERIOD": "2010",
+        "OBS_VALUE": "6064",
+        "UNIT_MEASURE": "PSNS",
+        "OBS_STATUS": "",
+        "OBS_COMMENT": ""
+      }
+    },
+    {
+      "sa2Name": "Maroochy Hinterland",
+      "year": "2011",
+      "population": 6131,
+      "rawFields": {
+        "DATAFLOW": "ABS:ABS_ANNUAL_ERP_ASGS2021(1.2.0)",
+        "MEASURE": "ERP",
+        "REGION_TYPE": "SA2",
+        "ASGS_2021": "316061443",
+        "FREQ": "A",
+        "TIME_PERIOD": "2011",
+        "OBS_VALUE": "6131",
+        "UNIT_MEASURE": "PSNS",
+        "OBS_STATUS": "",
+        "OBS_COMMENT": ""
+      }
+    },
+    {
+      "sa2Name": "Maroochy Hinterland",
+      "year": "2012",
+      "population": 6201,
+      "rawFields": {
+        "DATAFLOW": "ABS:ABS_ANNUAL_ERP_ASGS2021(1.2.0)",
+        "MEASURE": "ERP",
+        "REGION_TYPE": "SA2",
+        "ASGS_2021": "316061443",
+        "FREQ": "A",
+        "TIME_PERIOD": "2012",
+        "OBS_VALUE": "6201",
+        "UNIT_MEASURE": "PSNS",
+        "OBS_STATUS": "",
+        "OBS_COMMENT": ""
+      }
+    },
+    {
+      "sa2Name": "Maroochy Hinterland",
+      "year": "2013",
+      "population": 6301,
+      "rawFields": {
+        "DATAFLOW": "ABS:ABS_ANNUAL_ERP_ASGS2021(1.2.0)",
+        "MEASURE": "ERP",
+        "REGION_TYPE": "SA2",
+        "ASGS_2021": "316061443",
+        "FREQ": "A",
+        "TIME_PERIOD": "2013",
+        "OBS_VALUE": "6301",
+        "UNIT_MEASURE": "PSNS",
+        "OBS_STATUS": "",
+        "OBS_COMMENT": ""
+      }
+    },
+    {
+      "sa2Name": "Maroochy Hinterland",
+      "year": "2014",
+      "population": 6343,
+      "rawFields": {
+        "DATAFLOW": "ABS:ABS_ANNUAL_ERP_ASGS2021(1.2.0)",
+        "MEASURE": "ERP",
+        "REGION_TYPE": "SA2",
+        "ASGS_2021": "316061443",
+        "FREQ": "A",
+        "TIME_PERIOD": "2014",
+        "OBS_VALUE": "6343",
+        "UNIT_MEASURE": "PSNS",
+        "OBS_STATUS": "",
+        "OBS_COMMENT": ""
+      }
+    },
+    {
+      "sa2Name": "Maroochy Hinterland",
+      "year": "2015",
+      "population": 6389,
+      "rawFields": {
+        "DATAFLOW": "ABS:ABS_ANNUAL_ERP_ASGS2021(1.2.0)",
+        "MEASURE": "ERP",
+        "REGION_TYPE": "SA2",
+        "ASGS_2021": "316061443",
+        "FREQ": "A",
+        "TIME_PERIOD": "2015",
+        "OBS_VALUE": "6389",
+        "UNIT_MEASURE": "PSNS",
+        "OBS_STATUS": "",
+        "OBS_COMMENT": ""
+      }
+    },
+    {
+      "sa2Name": "Maroochy Hinterland",
+      "year": "2016",
+      "population": 6402,
+      "rawFields": {
+        "DATAFLOW": "ABS:ABS_ANNUAL_ERP_ASGS2021(1.2.0)",
+        "MEASURE": "ERP",
+        "REGION_TYPE": "SA2",
+        "ASGS_2021": "316061443",
+        "FREQ": "A",
+        "TIME_PERIOD": "2016",
+        "OBS_VALUE": "6402",
+        "UNIT_MEASURE": "PSNS",
+        "OBS_STATUS": "",
+        "OBS_COMMENT": ""
+      }
+    },
+    {
+      "sa2Name": "Maroochy Hinterland",
+      "year": "2017",
+      "population": 6490,
+      "rawFields": {
+        "DATAFLOW": "ABS:ABS_ANNUAL_ERP_ASGS2021(1.2.0)",
+        "MEASURE": "ERP",
+        "REGION_TYPE": "SA2",
+        "ASGS_2021": "316061443",
+        "FREQ": "A",
+        "TIME_PERIOD": "2017",
+        "OBS_VALUE": "6490",
+        "UNIT_MEASURE": "PSNS",
+        "OBS_STATUS": "",
+        "OBS_COMMENT": ""
+      }
+    },
+    {
+      "sa2Name": "Maroochy Hinterland",
+      "year": "2018",
+      "population": 6573,
+      "rawFields": {
+        "DATAFLOW": "ABS:ABS_ANNUAL_ERP_ASGS2021(1.2.0)",
+        "MEASURE": "ERP",
+        "REGION_TYPE": "SA2",
+        "ASGS_2021": "316061443",
+        "FREQ": "A",
+        "TIME_PERIOD": "2018",
+        "OBS_VALUE": "6573",
+        "UNIT_MEASURE": "PSNS",
+        "OBS_STATUS": "",
+        "OBS_COMMENT": ""
+      }
+    },
+    {
+      "sa2Name": "Maroochy Hinterland",
+      "year": "2019",
+      "population": 6640,
+      "rawFields": {
+        "DATAFLOW": "ABS:ABS_ANNUAL_ERP_ASGS2021(1.2.0)",
+        "MEASURE": "ERP",
+        "REGION_TYPE": "SA2",
+        "ASGS_2021": "316061443",
+        "FREQ": "A",
+        "TIME_PERIOD": "2019",
+        "OBS_VALUE": "6640",
+        "UNIT_MEASURE": "PSNS",
+        "OBS_STATUS": "",
+        "OBS_COMMENT": ""
+      }
+    },
+    {
+      "sa2Name": "Maroochy Hinterland",
+      "year": "2020",
+      "population": 6759,
+      "rawFields": {
+        "DATAFLOW": "ABS:ABS_ANNUAL_ERP_ASGS2021(1.2.0)",
+        "MEASURE": "ERP",
+        "REGION_TYPE": "SA2",
+        "ASGS_2021": "316061443",
+        "FREQ": "A",
+        "TIME_PERIOD": "2020",
+        "OBS_VALUE": "6759",
+        "UNIT_MEASURE": "PSNS",
+        "OBS_STATUS": "",
+        "OBS_COMMENT": ""
+      }
+    },
+    {
+      "sa2Name": "Maroochy Hinterland",
+      "year": "2021",
+      "population": 6865,
+      "rawFields": {
+        "DATAFLOW": "ABS:ABS_ANNUAL_ERP_ASGS2021(1.2.0)",
+        "MEASURE": "ERP",
+        "REGION_TYPE": "SA2",
+        "ASGS_2021": "316061443",
+        "FREQ": "A",
+        "TIME_PERIOD": "2021",
+        "OBS_VALUE": "6865",
+        "UNIT_MEASURE": "PSNS",
+        "OBS_STATUS": "",
+        "OBS_COMMENT": ""
+      }
+    },
+    {
+      "sa2Name": "Maroochy Hinterland",
+      "year": "2022",
+      "population": 6992,
+      "rawFields": {
+        "DATAFLOW": "ABS:ABS_ANNUAL_ERP_ASGS2021(1.2.0)",
+        "MEASURE": "ERP",
+        "REGION_TYPE": "SA2",
+        "ASGS_2021": "316061443",
+        "FREQ": "A",
+        "TIME_PERIOD": "2022",
+        "OBS_VALUE": "6992",
+        "UNIT_MEASURE": "PSNS",
+        "OBS_STATUS": "",
+        "OBS_COMMENT": ""
+      }
+    },
+    {
+      "sa2Name": "Maroochy Hinterland",
+      "year": "2023",
+      "population": 7148,
+      "rawFields": {
+        "DATAFLOW": "ABS:ABS_ANNUAL_ERP_ASGS2021(1.2.0)",
+        "MEASURE": "ERP",
+        "REGION_TYPE": "SA2",
+        "ASGS_2021": "316061443",
+        "FREQ": "A",
+        "TIME_PERIOD": "2023",
+        "OBS_VALUE": "7148",
+        "UNIT_MEASURE": "PSNS",
+        "OBS_STATUS": "",
+        "OBS_COMMENT": ""
+      }
+    },
+    {
+      "sa2Name": "Maroochy Hinterland",
+      "year": "2024",
+      "population": 7316,
+      "rawFields": {
+        "DATAFLOW": "ABS:ABS_ANNUAL_ERP_ASGS2021(1.2.0)",
+        "MEASURE": "ERP",
+        "REGION_TYPE": "SA2",
+        "ASGS_2021": "316061443",
+        "FREQ": "A",
+        "TIME_PERIOD": "2024",
+        "OBS_VALUE": "7316",
+        "UNIT_MEASURE": "PSNS",
+        "OBS_STATUS": "",
+        "OBS_COMMENT": ""
+      }
+    }
+  ]
+}

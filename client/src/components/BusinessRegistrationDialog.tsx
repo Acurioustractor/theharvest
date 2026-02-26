@@ -20,9 +20,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Building2, Loader2, CheckCircle, Store, MapPin, Phone, Mail, Globe, Facebook, Instagram, Image } from "lucide-react";
-import { submitBusiness } from "@/lib/api";
 import { toast } from "sonner";
-import { useMutation } from "@tanstack/react-query";
+import { trpc } from "@/lib/trpc";
 
 interface BusinessRegistrationDialogProps {
   trigger?: React.ReactNode;
@@ -58,13 +57,12 @@ export default function BusinessRegistrationDialog({ trigger }: BusinessRegistra
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const submitMutation = useMutation({
-    mutationFn: submitBusiness,
+  const submitMutation = trpc.businesses.submit.useMutation({
     onSuccess: () => {
       setSubmitted(true);
       toast.success("Business submitted successfully!");
     },
-    onError: (error: Error) => {
+    onError: (error) => {
       toast.error("Failed to submit business", { description: error.message });
     },
   });

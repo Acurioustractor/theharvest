@@ -1,0 +1,624 @@
+{
+  "region": "Witta, Sunshine Coast Hinterland",
+  "coordinates": {
+    "lat": -26.75,
+    "lon": 152.85,
+    "radiusKm": 10
+  },
+  "fetchedAt": "2026-02-16T19:36:08.476Z",
+  "totalRecords": 231593,
+  "speciesGroups": [
+    {
+      "group": "Animals",
+      "count": 213231
+    },
+    {
+      "group": "Birds",
+      "count": 151780
+    },
+    {
+      "group": "Arthropods",
+      "count": 45829
+    },
+    {
+      "group": "Insects",
+      "count": 42629
+    },
+    {
+      "group": "Plants",
+      "count": 12406
+    },
+    {
+      "group": "Amphibians",
+      "count": 10903
+    },
+    {
+      "group": "Flowering plants",
+      "count": 10825
+    },
+    {
+      "group": "Dicots",
+      "count": 8499
+    },
+    {
+      "group": "Fungi",
+      "count": 5340
+    },
+    {
+      "group": "Monocots",
+      "count": 2326
+    },
+    {
+      "group": "Mammals",
+      "count": 2145
+    },
+    {
+      "group": "Reptiles",
+      "count": 1656
+    },
+    {
+      "group": "Ferns and allies",
+      "count": 903
+    },
+    {
+      "group": "Not supplied",
+      "count": 607
+    },
+    {
+      "group": "Fishes",
+      "count": 393
+    },
+    {
+      "group": "Molluscs",
+      "count": 338
+    },
+    {
+      "group": "Bryophytes",
+      "count": 332
+    },
+    {
+      "group": "Conifers, Cycads",
+      "count": 137
+    },
+    {
+      "group": "Crustaceans",
+      "count": 132
+    },
+    {
+      "group": "Algae",
+      "count": 24
+    },
+    {
+      "group": "Bacteria",
+      "count": 7
+    },
+    {
+      "group": "Chromista",
+      "count": 2
+    }
+  ],
+  "threatenedSpecies": [
+    {
+      "name": "Adelotus brevis",
+      "conservationStatus": "Vulnerable",
+      "recordCount": 939
+    },
+    {
+      "name": "Mixophyes iteratus",
+      "conservationStatus": "Vulnerable",
+      "recordCount": 534
+    },
+    {
+      "name": "Phascolarctos cinereus",
+      "conservationStatus": "Endangered",
+      "recordCount": 526
+    },
+    {
+      "name": "Hirundapus caudacutus",
+      "conservationStatus": "Vulnerable",
+      "recordCount": 302
+    },
+    {
+      "name": "Ornithoptera richmondia",
+      "conservationStatus": "Vulnerable",
+      "recordCount": 235
+    },
+    {
+      "name": "Syzygium hodgkinsoniae",
+      "conservationStatus": "Vulnerable",
+      "recordCount": 68
+    },
+    {
+      "name": "Romnalda strobilacea",
+      "conservationStatus": "Vulnerable",
+      "recordCount": 60
+    },
+    {
+      "name": "Litoria pearsoniana",
+      "conservationStatus": "Vulnerable",
+      "recordCount": 56
+    },
+    {
+      "name": "Rhodamnia rubescens",
+      "conservationStatus": "Critically Endangered",
+      "recordCount": 45
+    },
+    {
+      "name": "Macadamia ternifolia",
+      "conservationStatus": "Vulnerable",
+      "recordCount": 44
+    },
+    {
+      "name": "Aristolochia praevenosa",
+      "conservationStatus": "Near Threatened",
+      "recordCount": 43
+    },
+    {
+      "name": "Phascolarctos cinereus Goldfuss",
+      "conservationStatus": "Endangered",
+      "recordCount": 40
+    },
+    {
+      "name": "Gossia inophloia",
+      "conservationStatus": "Critically Endangered",
+      "recordCount": 34
+    },
+    {
+      "name": "Euastacus urospinosus",
+      "conservationStatus": "Endangered",
+      "recordCount": 30
+    },
+    {
+      "name": "Ninox strenua",
+      "conservationStatus": "Vulnerable",
+      "recordCount": 28
+    },
+    {
+      "name": "Gallinago hardwickii",
+      "conservationStatus": "Vulnerable",
+      "recordCount": 27
+    },
+    {
+      "name": "Rheobatrachus silus",
+      "conservationStatus": "Extinct in the Wild",
+      "recordCount": 23
+    },
+    {
+      "name": "Rhodomyrtus psidioides",
+      "conservationStatus": "Critically Endangered",
+      "recordCount": 22
+    },
+    {
+      "name": "Calyptorhynchus lathami",
+      "conservationStatus": "Vulnerable",
+      "recordCount": 18
+    },
+    {
+      "name": "Taudactylus diurnus",
+      "conservationStatus": "Extinct in the Wild",
+      "recordCount": 18
+    },
+    {
+      "name": "Gossia hillii",
+      "conservationStatus": "Critically Endangered",
+      "recordCount": 17
+    },
+    {
+      "name": "Podargus ocellatus plumiferus",
+      "conservationStatus": "Vulnerable",
+      "recordCount": 17
+    },
+    {
+      "name": "Assa darlingtoni",
+      "conservationStatus": "Vulnerable",
+      "recordCount": 15
+    },
+    {
+      "name": "Coleus torrenticola",
+      "conservationStatus": "Endangered",
+      "recordCount": 15
+    },
+    {
+      "name": "Pararistolochia praevenosa",
+      "conservationStatus": "Near Threatened",
+      "recordCount": 15
+    },
+    {
+      "name": "Parsonsia largiflorens",
+      "conservationStatus": "Endangered",
+      "recordCount": 14
+    },
+    {
+      "name": "Dryopsophus pearsonianus",
+      "conservationStatus": "Vulnerable",
+      "recordCount": 11
+    },
+    {
+      "name": "Euastacus hystricosus",
+      "conservationStatus": "Endangered",
+      "recordCount": 11
+    },
+    {
+      "name": "Syzygium hodgkinsoniae (F.Muell.) L.A.S.Johnson",
+      "conservationStatus": "Vulnerable",
+      "recordCount": 11
+    },
+    {
+      "name": "\"Hirundapus caudacutus\"",
+      "conservationStatus": "Vulnerable",
+      "recordCount": 10
+    },
+    {
+      "name": "Nothoalsomitra suberosa",
+      "conservationStatus": "Near Threatened",
+      "recordCount": 10
+    },
+    {
+      "name": "Cyclopsitta diophthalma coxeni",
+      "conservationStatus": "Critically Endangered",
+      "recordCount": 9
+    },
+    {
+      "name": "Helicia ferruginea",
+      "conservationStatus": "Vulnerable",
+      "recordCount": 8
+    },
+    {
+      "name": "Lepiderema pulchella",
+      "conservationStatus": "Vulnerable",
+      "recordCount": 8
+    },
+    {
+      "name": "Gossia punctata",
+      "conservationStatus": "Critically Endangered",
+      "recordCount": 7
+    },
+    {
+      "name": "Macadamia ternifolia F.Muell.",
+      "conservationStatus": "Vulnerable",
+      "recordCount": 6
+    },
+    {
+      "name": "Petauroides volans",
+      "conservationStatus": "Endangered",
+      "recordCount": 6
+    },
+    {
+      "name": "Petauroides volans volans",
+      "conservationStatus": "Vulnerable",
+      "recordCount": 6
+    },
+    {
+      "name": "Euastacus hystricosus Riek, 1951",
+      "conservationStatus": "Endangered",
+      "recordCount": 5
+    },
+    {
+      "name": "Gossia fragrantissima",
+      "conservationStatus": "Endangered",
+      "recordCount": 5
+    },
+    {
+      "name": "Romnalda strobilacea R.J.F.Hend. & Sharpe",
+      "conservationStatus": "Vulnerable",
+      "recordCount": 5
+    },
+    {
+      "name": "Calyptorhynchus lathami lathami",
+      "conservationStatus": "Vulnerable",
+      "recordCount": 4
+    },
+    {
+      "name": "Eclectus roratus",
+      "conservationStatus": "Vulnerable",
+      "recordCount": 4
+    },
+    {
+      "name": "Macadamia integrifolia",
+      "conservationStatus": "Vulnerable",
+      "recordCount": 4
+    },
+    {
+      "name": "Macadamia tetraphylla",
+      "conservationStatus": "Vulnerable",
+      "recordCount": 4
+    },
+    {
+      "name": "Maccullochella mariensis",
+      "conservationStatus": "Endangered",
+      "recordCount": 4
+    },
+    {
+      "name": "Planchonella eerwah",
+      "conservationStatus": "Endangered",
+      "recordCount": 4
+    },
+    {
+      "name": "Rheobatrachus silus Liem, 1973",
+      "conservationStatus": "Extinct in the Wild",
+      "recordCount": 4
+    },
+    {
+      "name": "Corynocarpus rupestris subsp. arborescens",
+      "conservationStatus": "Vulnerable",
+      "recordCount": 3
+    },
+    {
+      "name": "Diteilis simmondsii",
+      "conservationStatus": "Near Threatened",
+      "recordCount": 3
+    },
+    {
+      "name": "Erythrotriorchis radiatus",
+      "conservationStatus": "Endangered",
+      "recordCount": 3
+    },
+    {
+      "name": "Jasminum jenniae",
+      "conservationStatus": "Endangered",
+      "recordCount": 3
+    },
+    {
+      "name": "Leichhardtia coronata",
+      "conservationStatus": "Vulnerable",
+      "recordCount": 3
+    },
+    {
+      "name": "Phascolarctos cinereus (Goldfuss  1817)",
+      "conservationStatus": "Endangered",
+      "recordCount": 3
+    },
+    {
+      "name": "Plectorrhiza beckleri",
+      "conservationStatus": "Near Threatened",
+      "recordCount": 3
+    },
+    {
+      "name": "Dryopsophus pearsoniana",
+      "conservationStatus": "Vulnerable",
+      "recordCount": 2
+    },
+    {
+      "name": "Litoria pearsoniana (Copland, 1961)",
+      "conservationStatus": "Vulnerable",
+      "recordCount": 2
+    },
+    {
+      "name": "Maccullochella peelii mariensis",
+      "conservationStatus": "Endangered",
+      "recordCount": 2
+    },
+    {
+      "name": "Neoceratodus forsteri",
+      "conservationStatus": "Vulnerable",
+      "recordCount": 2
+    },
+    {
+      "name": "Ornithoptera richmondia (Gray  1853)",
+      "conservationStatus": "Vulnerable",
+      "recordCount": 2
+    },
+    {
+      "name": "Phaius australis",
+      "conservationStatus": "Endangered",
+      "recordCount": 2
+    },
+    {
+      "name": "Sarcochilus fitzgeraldii",
+      "conservationStatus": "Endangered",
+      "recordCount": 2
+    },
+    {
+      "name": "\"Gallinago hardwickii\"",
+      "conservationStatus": "Vulnerable",
+      "recordCount": 1
+    },
+    {
+      "name": "Acacia attenuata",
+      "conservationStatus": "Vulnerable",
+      "recordCount": 1
+    },
+    {
+      "name": "Adelotus brevis (Gunther, 1863)",
+      "conservationStatus": "Vulnerable",
+      "recordCount": 1
+    },
+    {
+      "name": "Adelotus brevis (Günther  1863)",
+      "conservationStatus": "Vulnerable",
+      "recordCount": 1
+    },
+    {
+      "name": "Allocasuarina filidens",
+      "conservationStatus": "Endangered",
+      "recordCount": 1
+    },
+    {
+      "name": "Aristolochia praevenosa F.Muell.",
+      "conservationStatus": "Near Threatened",
+      "recordCount": 1
+    },
+    {
+      "name": "Calyptorhynchus lathami (Temminck  1807)",
+      "conservationStatus": "Vulnerable",
+      "recordCount": 1
+    },
+    {
+      "name": "Coleus omissus",
+      "conservationStatus": "Endangered",
+      "recordCount": 1
+    },
+    {
+      "name": "Dasyurus maculatus maculatus",
+      "conservationStatus": "Endangered",
+      "recordCount": 1
+    },
+    {
+      "name": "Dodonaea rupicola",
+      "conservationStatus": "Vulnerable",
+      "recordCount": 1
+    },
+    {
+      "name": "Elusor macrurus",
+      "conservationStatus": "Critically Endangered",
+      "recordCount": 1
+    },
+    {
+      "name": "Erythrura (Chloebia) gouldiae",
+      "conservationStatus": "Endangered",
+      "recordCount": 1
+    },
+    {
+      "name": "Euastacus urospinosus (Riek, 1956)",
+      "conservationStatus": "Endangered",
+      "recordCount": 1
+    },
+    {
+      "name": "Eucalyptus conglomerata Maiden & Blakely",
+      "conservationStatus": "Endangered",
+      "recordCount": 1
+    },
+    {
+      "name": "Eucalyptus kabiana",
+      "conservationStatus": "Vulnerable",
+      "recordCount": 1
+    },
+    {
+      "name": "Gossia gonoclada",
+      "conservationStatus": "Critically Endangered",
+      "recordCount": 1
+    },
+    {
+      "name": "Lenwebbia sp. Blackall Range (P.R.Sharpe 5387)",
+      "conservationStatus": "Critically Endangered",
+      "recordCount": 1
+    },
+    {
+      "name": "Litoria freycineti",
+      "conservationStatus": "Vulnerable",
+      "recordCount": 1
+    },
+    {
+      "name": "Litoria olongburensis Liem & Ingram  1977",
+      "conservationStatus": "Vulnerable",
+      "recordCount": 1
+    },
+    {
+      "name": "Lophochroa leadbeateri",
+      "conservationStatus": "Endangered",
+      "recordCount": 1
+    },
+    {
+      "name": "Mallotus megadontus",
+      "conservationStatus": "Endangered",
+      "recordCount": 1
+    },
+    {
+      "name": "Menura alberti",
+      "conservationStatus": "Near Threatened",
+      "recordCount": 1
+    },
+    {
+      "name": "Ornithoptera richmondia (Gray, 1853)",
+      "conservationStatus": "Vulnerable",
+      "recordCount": 1
+    },
+    {
+      "name": "Phaius australis F.Muell.",
+      "conservationStatus": "Endangered",
+      "recordCount": 1
+    },
+    {
+      "name": "Plectranthus torrenticola",
+      "conservationStatus": "Endangered",
+      "recordCount": 1
+    },
+    {
+      "name": "Potorous tridactylus tridactylus",
+      "conservationStatus": "Vulnerable",
+      "recordCount": 1
+    },
+    {
+      "name": "Pteropus conspicillatus",
+      "conservationStatus": "Endangered",
+      "recordCount": 1
+    },
+    {
+      "name": "Revwattsia fragilis",
+      "conservationStatus": "Vulnerable",
+      "recordCount": 1
+    },
+    {
+      "name": "Ricinocarpos speciosus",
+      "conservationStatus": "Vulnerable",
+      "recordCount": 1
+    },
+    {
+      "name": "Sophora fraseri",
+      "conservationStatus": "Vulnerable",
+      "recordCount": 1
+    },
+    {
+      "name": "Symplocos harroldii Jessup",
+      "conservationStatus": "Near Threatened",
+      "recordCount": 1
+    },
+    {
+      "name": "Tenuibranchiurus glypticus",
+      "conservationStatus": "Endangered",
+      "recordCount": 1
+    },
+    {
+      "name": "Tringa nebularia",
+      "conservationStatus": "Endangered",
+      "recordCount": 1
+    },
+    {
+      "name": "Triunia robusta",
+      "conservationStatus": "Endangered",
+      "recordCount": 1
+    },
+    {
+      "name": "Wodyetia bifurcata",
+      "conservationStatus": "Near Threatened",
+      "recordCount": 1
+    },
+    {
+      "name": "Zieria bifida",
+      "conservationStatus": "Endangered",
+      "recordCount": 1
+    },
+    {
+      "name": "Not supplied",
+      "conservationStatus": "Listed",
+      "recordCount": 1
+    }
+  ],
+  "notableSpecies": [
+    {
+      "commonName": "Platypus",
+      "scientificName": "Ornithorhynchus anatinus",
+      "recordCount": 307,
+      "notes": "Iconic monotreme found in local creeks including Obi Obi Creek"
+    },
+    {
+      "commonName": "Koala",
+      "scientificName": "Phascolarctos cinereus",
+      "recordCount": 766,
+      "notes": "Vulnerable species; hinterland eucalypt habitat is critical"
+    },
+    {
+      "commonName": "Glossy Black-Cockatoo",
+      "scientificName": "Calyptorhynchus lathami",
+      "recordCount": 0,
+      "notes": "Relies on she-oak (Allocasuarina) forests in the hinterland"
+    },
+    {
+      "commonName": "Richmond Birdwing Butterfly",
+      "scientificName": "Ornithoptera richmondia",
+      "recordCount": 307,
+      "notes": "Vulnerable species; subtropical rainforest specialist"
+    }
+  ],
+  "summary": "The area within 10km of Witta has 231,593 biodiversity occurrence records in the Atlas of Living Australia. Top species groups: Animals (213,231 records), Birds (151,780 records), Arthropods (45,829 records), Insects (42,629 records), Plants (12,406 records). 99 threatened or conservation-listed species have been recorded. Notable species confirmed in the area: Platypus, Koala, Richmond Birdwing Butterfly."
+}

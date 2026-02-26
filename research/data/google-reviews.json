@@ -1,0 +1,1119 @@
+{
+  "venues": [
+    {
+      "name": "Witta Markets",
+      "type": "market",
+      "rating": 4.6,
+      "totalReviews": 158,
+      "sentimentThemes": {
+        "local_identity": 2,
+        "food_quality": 10,
+        "community_value": 2,
+        "criticism_gaps": 1
+      },
+      "topPositiveThemes": [
+        "food_quality",
+        "local_identity",
+        "community_value"
+      ],
+      "topNegativeThemes": [
+        "criticism_gaps"
+      ],
+      "sampleReviews": [
+        {
+          "text": "Fantastic monthly market held at a large grassy oval with ample shade. Classic country atmosphere. So much variety and so many bargains. Lots of delicious produce and local food/drink too. Well worth visiting!",
+          "rating": 5,
+          "time": "2025-12-25"
+        },
+        {
+          "text": "Jim has been selling veges since time immemorial. He's always friendly and up for a quick chat. The veges have always been good and seasonal and the prices are very good. You can buy from the farm on weekdays.",
+          "rating": 5,
+          "time": "2025-09-05"
+        },
+        {
+          "text": "Found this amazing specialty COMMUNITY COFFEE  ROASTERS at the beautiful Witta markets!\nMost delicious coffee I’ve had  in my travels.",
+          "rating": 5,
+          "time": "2025-01-18"
+        }
+      ]
+    },
+    {
+      "name": "Maleny Community Markets",
+      "type": "market",
+      "rating": 5,
+      "totalReviews": 2,
+      "sentimentThemes": {},
+      "topPositiveThemes": [],
+      "topNegativeThemes": [],
+      "sampleReviews": [
+        {
+          "text": "Gorgeous items",
+          "rating": 5,
+          "time": "2022-11-10"
+        },
+        {
+          "text": "",
+          "rating": 5,
+          "time": "2024-07-14"
+        }
+      ]
+    },
+    {
+      "name": "Maple Street Co-op",
+      "type": "retail_coop",
+      "rating": 4.7,
+      "totalReviews": 26,
+      "sentimentThemes": {
+        "community_value": 4,
+        "local_identity": 2,
+        "arts_culture": 1,
+        "food_quality": 1
+      },
+      "topPositiveThemes": [
+        "community_value",
+        "local_identity",
+        "arts_culture"
+      ],
+      "topNegativeThemes": [],
+      "sampleReviews": [
+        {
+          "text": "Maple Street Co-op is a true gem of the local community — a values-driven business with heart. Their knowledgeable team and warm, friendly service make every visit a joy. We’re deeply grateful that Maple Street Co-op has supported the Moontime Diary for over 20 years now. Thank you for your continue",
+          "rating": 5,
+          "time": "2025-07-31"
+        },
+        {
+          "text": "I love this place. Their range, location, staff, pricing, atmosphere. Shopping here is like therapy.",
+          "rating": 5,
+          "time": "2025-09-08"
+        },
+        {
+          "text": "Great variety of organic products and local products. It is a large store where we can find everything. Highly recommended",
+          "rating": 5,
+          "time": "2020-12-30"
+        }
+      ]
+    },
+    {
+      "name": "Maleny Showground",
+      "type": "venue",
+      "rating": 4.4,
+      "totalReviews": 460,
+      "sentimentThemes": {
+        "community_value": 3,
+        "nature_environment": 5
+      },
+      "topPositiveThemes": [
+        "nature_environment",
+        "community_value"
+      ],
+      "topNegativeThemes": [],
+      "sampleReviews": [
+        {
+          "text": "What a great place to stay, and such a lovely little town. The town is a short walk along the river.\nPlenty to do, especially if you like walking and nature.\nThe showground toilets are clean and the staff are friendly.\n$30 / night with power and water. Stay for 7 nights and the 7th night was free.",
+          "rating": 5,
+          "time": "2025-10-27"
+        },
+        {
+          "text": "Attended an evening concert with a good friend to see Ash Grundwald and Bobby Alu! A great venue and a wonderful little community concert. Had to sing along to Bobby Alu's Samoan 🎵 tunes 👌 🎶 🙌",
+          "rating": 5,
+          "time": "2025-12-23"
+        },
+        {
+          "text": "Great place to cheaply park your van for the night with power and water. Bathrooms were clean. Check in counter is only open a few hours a day but the guy that helped us out was very friendly. There is a creek walk from the Showgrounds into town that we were lucky enough to spot two platypus along!",
+          "rating": 5,
+          "time": "2025-08-06"
+        }
+      ]
+    },
+    {
+      "name": "The Upfront Club",
+      "type": "cafe_community",
+      "rating": 4.3,
+      "totalReviews": 7,
+      "sentimentThemes": {
+        "local_identity": 1,
+        "food_quality": 6,
+        "community_value": 1,
+        "arts_culture": 1
+      },
+      "topPositiveThemes": [
+        "food_quality",
+        "local_identity",
+        "community_value"
+      ],
+      "topNegativeThemes": [],
+      "sampleReviews": [
+        {
+          "text": "We popped in late on a Saturday afternoon after the Maleny Wood show for a coffee & beer.  Great staff.  We donated a coffee.\nThen whole sitting outside enjoying our beverages we got a couple of free muffins as they are cooked fresh each day.  Would go back, and next time spend some more time.",
+          "rating": 4,
+          "time": "2015-07-29"
+        },
+        {
+          "text": "My favourite place to visit when in Queensland. You can be sure of a friendly welcome, excellent food and wonderful live music.",
+          "rating": 5,
+          "time": "2015-08-03"
+        },
+        {
+          "text": "This is one of my favorite places on the coast.\nI take visitors there every time. Great place",
+          "rating": 5,
+          "time": "2011-04-04"
+        }
+      ]
+    },
+    {
+      "name": "Maleny Neighbourhood Centre",
+      "type": "community_service",
+      "rating": 4.9,
+      "totalReviews": 54,
+      "sentimentThemes": {
+        "community_value": 7,
+        "food_quality": 4,
+        "family_friendly": 1
+      },
+      "topPositiveThemes": [
+        "community_value",
+        "food_quality",
+        "family_friendly"
+      ],
+      "topNegativeThemes": [],
+      "sampleReviews": [
+        {
+          "text": "They are always very welcoming and I love going there for the Community Lunch which is by Donation only. Heaps of Information is available for newcomers to the area.",
+          "rating": 5,
+          "time": "2025-08-14"
+        },
+        {
+          "text": "An amazing service to the community. So much on offer for anyone in need of support or connection",
+          "rating": 5,
+          "time": "2025-08-17"
+        },
+        {
+          "text": "Great Venue - Helpful Volunteers, Lunch on Thursdays and Emergency relief Monday to Friday - Be Connected Digital cafe for seniors fortnightly and Fix It Cafe for repairs",
+          "rating": 5,
+          "time": "2020-08-01"
+        }
+      ]
+    },
+    {
+      "name": "Barung Landcare",
+      "type": "environment",
+      "rating": 4.8,
+      "totalReviews": 11,
+      "sentimentThemes": {
+        "nature_environment": 1,
+        "arts_culture": 1,
+        "community_value": 1,
+        "local_identity": 1
+      },
+      "topPositiveThemes": [
+        "nature_environment",
+        "arts_culture",
+        "community_value"
+      ],
+      "topNegativeThemes": [],
+      "sampleReviews": [
+        {
+          "text": "Review for the natural area service department.\nKate and her team were extremely helpful with their knowledge and expertise.\nAfter visiting our property, Kate was able to choose the correct native plants to re-populate our dam and surrounding areas and remove noxious weeds efficiently.\nAmazingly har",
+          "rating": 5,
+          "time": "2019-08-22"
+        },
+        {
+          "text": "These guys are really helpful- you can see that they care about the land and environment. Have a lot of great tips and are knowledgeable about their trade. I always enjoy visiting there.",
+          "rating": 5,
+          "time": "2017-06-20"
+        },
+        {
+          "text": "Very good quality stock, well priced and very helpful and friendly staff",
+          "rating": 5,
+          "time": "2022-08-30"
+        }
+      ]
+    },
+    {
+      "name": "Crystal Waters Eco Village",
+      "type": "eco_community",
+      "rating": 4.4,
+      "totalReviews": 152,
+      "sentimentThemes": {
+        "nature_environment": 2,
+        "arts_culture": 3,
+        "family_friendly": 1,
+        "local_identity": 3,
+        "food_quality": 6,
+        "community_value": 1
+      },
+      "topPositiveThemes": [
+        "food_quality",
+        "arts_culture",
+        "local_identity"
+      ],
+      "topNegativeThemes": [],
+      "sampleReviews": [
+        {
+          "text": "I have family who live here, so it is super handy to have the beautiful ecopark right in the heart of CW. Rooms at the bunk house are quaint and cosy. Small outdoor kitchenette at the bunkhouse as well as large camp kitchen close by. The grounds surrounding are beaming with wildlife, its wonderful t",
+          "rating": 5,
+          "time": "2025-04-20"
+        },
+        {
+          "text": "Stayed at the caravan park it was nice but not really lived up to the expectations of the online brochure I think they’ve lost the meaning of Ecco village and asked at the office wether the tap water at the camp site was drinking water as no signs saying it wasn’t! But the woman had no idea ? That’s",
+          "rating": 4,
+          "time": "2025-06-22"
+        },
+        {
+          "text": "Crystal Waters market is a village feel wi mth an accessible cafe with hot fresh falafel bc the chef just offered me one and seriously delish.  Fantastic out of the way destination location about 15 mins north of Maleny, it's a nice drive and a great market when there's a lot of stall holders. Unfor",
+          "rating": 4,
+          "time": "2024-08-11"
+        }
+      ]
+    },
+    {
+      "name": "Maleny Botanic Gardens",
+      "type": "garden_attraction",
+      "rating": 4.6,
+      "totalReviews": 4199,
+      "sentimentThemes": {
+        "community_value": 3,
+        "local_identity": 3,
+        "nature_environment": 12,
+        "food_quality": 2,
+        "family_friendly": 3,
+        "arts_culture": 1
+      },
+      "topPositiveThemes": [
+        "nature_environment",
+        "community_value",
+        "local_identity"
+      ],
+      "topNegativeThemes": [],
+      "sampleReviews": [
+        {
+          "text": "I visited Maleny Botanic Gardens and Bird World yesterday, and it was absolutely incredible. The birds were stunning, and the staff running the tours were friendly, fun, and knowledgeable, which made the experience even more enjoyable. I highly recommend taking the time to visit, it’s truly worth it",
+          "rating": 5,
+          "time": "2026-01-08"
+        },
+        {
+          "text": "We celebrated New Year's Eve there, returning after 5 years, and it was even more incredible than before! The area now offers a wide range of spectacular activities and breathtaking scenery. Highlights like the farm animals, feeding the goldfish, and exploring the fairy land added extra fun and magi",
+          "rating": 5,
+          "time": "2026-01-05"
+        },
+        {
+          "text": "The Maleny Botanical Gardens and Bird Sanctuary is definitely a must see. The gardens are exquisite and the views are spectacular. There are lots of beautiful birds to see if you can’t get to the aviary. The staff are very friendly and helpful and demonstrate great customer service. Make it a necess",
+          "rating": 5,
+          "time": "2025-12-30"
+        }
+      ]
+    },
+    {
+      "name": "Gardners Falls",
+      "type": "natural_attraction",
+      "rating": 4.5,
+      "totalReviews": 1504,
+      "sentimentThemes": {
+        "local_identity": 4,
+        "nature_environment": 14,
+        "food_quality": 3,
+        "family_friendly": 2,
+        "criticism_gaps": 4,
+        "tourism_tension": 3,
+        "arts_culture": 1
+      },
+      "topPositiveThemes": [
+        "nature_environment",
+        "local_identity",
+        "food_quality"
+      ],
+      "topNegativeThemes": [
+        "criticism_gaps",
+        "tourism_tension"
+      ],
+      "sampleReviews": [
+        {
+          "text": "Very nice place with nature. Enjoyed it with family. Limited parking spaces so it's not for masses to go there. Given the location there is only a about two picnic tables. Again emphasis to say it's for small groups. The water is nice and cold for a summer bath. Ideal on a sunny day. Rocks can be ve",
+          "rating": 5,
+          "time": "2026-01-05"
+        },
+        {
+          "text": "Beautiful little creek, water fall and swimming hole with rope swings against a rainforesty backdrop!!\nNot far off the main road and the walk in is only a couple hundred meters on a mainly paved path.\nDefinitely worth the few minutes it takes to check it out.",
+          "rating": 5,
+          "time": "2026-01-09"
+        },
+        {
+          "text": "This is such a beautiful place to relax,have a swim and connect with nature.\nThere's grassed areas to have a picnic and a drop toilet onsite.\nI highly recommend for a relaxing day out",
+          "rating": 5,
+          "time": "2025-10-10"
+        }
+      ]
+    },
+    {
+      "name": "Mary Cairncross Scenic Reserve",
+      "type": "nature_reserve",
+      "rating": 4.8,
+      "totalReviews": 3405,
+      "sentimentThemes": {
+        "community_value": 2,
+        "nature_environment": 18,
+        "food_quality": 1,
+        "criticism_gaps": 4,
+        "local_identity": 1,
+        "family_friendly": 1,
+        "tourism_tension": 1
+      },
+      "topPositiveThemes": [
+        "nature_environment",
+        "community_value",
+        "food_quality"
+      ],
+      "topNegativeThemes": [
+        "criticism_gaps",
+        "tourism_tension"
+      ],
+      "sampleReviews": [
+        {
+          "text": "This is a gem in Queensland. So many things to see and experience. Beautiful visitor centre, super friendly and knowledgeable staff, great Cafe and the viewing deck is a fantastic view of the glasshouse mountains. Then there is the walks. So full of wildlife, flora and massive trees. The stranger fi",
+          "rating": 5,
+          "time": "2026-01-05"
+        },
+        {
+          "text": "Beautiful views, the food there is yummy, but I do wish they had a few more salads and healthier options. Thus the 4 stars. Being a diabetic you are always looking for healthier options. The staff were helpful and friendly and the atmosphere is just lovely. The walks 🚶‍♂️ through the reserve are be",
+          "rating": 4,
+          "time": "2025-08-20"
+        },
+        {
+          "text": "Mary Caincross Reserve is a DO NOT MISS if you are in the area!\nRod made out experience so much better too. He gave us so much information on the wildlife and nature in the park, specific things to lookout for and it was so helpful.\nWe saw pademelons, even a baby! So so many types of birds even nest",
+          "rating": 5,
+          "time": "2025-12-05"
+        }
+      ]
+    },
+    {
+      "name": "Maleny Cheese",
+      "type": "food_producer",
+      "rating": 4.4,
+      "totalReviews": 1286,
+      "sentimentThemes": {
+        "local_identity": 2,
+        "food_quality": 6,
+        "community_value": 1,
+        "criticism_gaps": 1,
+        "tourism_tension": 1
+      },
+      "topPositiveThemes": [
+        "food_quality",
+        "local_identity",
+        "community_value"
+      ],
+      "topNegativeThemes": [
+        "criticism_gaps",
+        "tourism_tension"
+      ],
+      "sampleReviews": [
+        {
+          "text": "Great spot to stop when exploring the app hinterland. You can view the factory floor, get a meal or have a tasting plate. Yoghurt smoothie was great. We also bought a heap of cheese and yoghurt and the staff were really knowledgeable explaining what each thing was",
+          "rating": 5,
+          "time": "2025-12-23"
+        },
+        {
+          "text": "This little gem is fantastic . The cheese selection is huge and the staff are fair dinkim friendly we got a large cheeseburger for $38 and it was impressively generous.  I can guarantee that back home you would pay a heck of alot more for the same thing . I would 100% recommend and go back there agi",
+          "rating": 5,
+          "time": "2025-09-24"
+        },
+        {
+          "text": "Most scrumptious cheeses and such good value for money ~ Delightful & hard working staff x Thank you ladies",
+          "rating": 5,
+          "time": "2025-12-13"
+        }
+      ]
+    },
+    {
+      "name": "Maleny Dairies",
+      "type": "food_producer",
+      "rating": 4.6,
+      "totalReviews": 1317,
+      "sentimentThemes": {
+        "food_quality": 5,
+        "arts_culture": 1,
+        "family_friendly": 6,
+        "local_identity": 3,
+        "community_value": 1
+      },
+      "topPositiveThemes": [
+        "family_friendly",
+        "food_quality",
+        "local_identity"
+      ],
+      "topNegativeThemes": [],
+      "sampleReviews": [
+        {
+          "text": "This a really lovely dairy farm. Staffs were lovely, areas are clean and the animals very well looked after. The tour was great and the dairy taste test was my favourite part. Just make sure your children are under supervision all times so they don't scare the animals.",
+          "rating": 5,
+          "time": "2023-01-13"
+        },
+        {
+          "text": "Absolutely fantastic experience! Beautiful surrounds, an informative and hands-on tour of the facility, with tastings of delicious Maleny Dairies milk, yoghurt and custard products. Nice little cafe on site too. A+ overall! 🐮👌😊",
+          "rating": 5,
+          "time": "2023-03-09"
+        },
+        {
+          "text": "Cool experience in QLD. Loved the taste tests and the guy who took us around was very experienced. Good for the family, kids get to touch/pet/feed the young cows and learn so much about how milk gets in our fridges. These photos are also the scenery around Maleny Dairies.",
+          "rating": 5,
+          "time": "2022-07-19"
+        }
+      ]
+    },
+    {
+      "name": "Montville Markets",
+      "type": "market",
+      "rating": 4.7,
+      "totalReviews": 37,
+      "sentimentThemes": {
+        "community_value": 2,
+        "local_identity": 7,
+        "nature_environment": 1,
+        "food_quality": 8,
+        "arts_culture": 6,
+        "family_friendly": 1,
+        "tourism_tension": 2
+      },
+      "topPositiveThemes": [
+        "food_quality",
+        "local_identity",
+        "arts_culture"
+      ],
+      "topNegativeThemes": [
+        "tourism_tension"
+      ],
+      "sampleReviews": [
+        {
+          "text": "Beautiful setting, under shady trees in picturesque Montville. Gorgeous village hall, with stalls inside and out, loads of character, friendly people, and loads of interesting things to look and and buy. Unique gifts, locally made art and jewellery, fresh produce, coffee van, live music, and to top ",
+          "rating": 5,
+          "time": "2021-11-26"
+        },
+        {
+          "text": "Very nice town. If only the Santa shop had more Christmas themed toys in it.",
+          "rating": 5,
+          "time": "2018-12-05"
+        },
+        {
+          "text": "Very lovely village in the mountain with all different stores and restaurants",
+          "rating": 5,
+          "time": "2024-07-13"
+        }
+      ]
+    },
+    {
+      "name": "Maleny RSL",
+      "type": "community_venue",
+      "rating": 4.4,
+      "totalReviews": 59,
+      "sentimentThemes": {
+        "local_identity": 2,
+        "food_quality": 8,
+        "nature_environment": 2,
+        "arts_culture": 1,
+        "criticism_gaps": 1,
+        "tourism_tension": 1,
+        "community_value": 2
+      },
+      "topPositiveThemes": [
+        "food_quality",
+        "local_identity",
+        "nature_environment"
+      ],
+      "topNegativeThemes": [
+        "criticism_gaps",
+        "tourism_tension"
+      ],
+      "sampleReviews": [
+        {
+          "text": "Maleny 2023 ANZAC Day memorial march and ceremony was lovely.  Fabulous march through town, and there were so many people.  The weather was perfect, and the Maleny chior to sung the national anthems for AU and NZ and did a great job. The female bugle player performed the Last Post, which was hauntin",
+          "rating": 5,
+          "time": "2023-04-25"
+        },
+        {
+          "text": "We went to the Sunday markets for the first time on Mother’s Day and we weren’t disappointed. We got there on opening at 8am and there were still carparks in the grounds. It was great that the markets were undercover and there was a good variety of stalls at affordable prices. The coffee was very ni",
+          "rating": 5,
+          "time": "2024-05-14"
+        },
+        {
+          "text": "Visited the sunday market at the RSL. Nice small mostly indoor market with coffee and cakes. Some parking out along one side. Market has a range of housewares, jewelry, craft and organic type goods. Due to size may not keep your attention long. Can walk to other shops and galleries.",
+          "rating": 3,
+          "time": "2019-01-06"
+        }
+      ]
+    },
+    {
+      "name": "Maleny Hotel",
+      "type": "pub_social",
+      "rating": 4.2,
+      "totalReviews": 1189,
+      "sentimentThemes": {
+        "food_quality": 9,
+        "family_friendly": 1,
+        "arts_culture": 1,
+        "community_value": 1,
+        "local_identity": 1
+      },
+      "topPositiveThemes": [
+        "food_quality",
+        "family_friendly",
+        "arts_culture"
+      ],
+      "topNegativeThemes": [],
+      "sampleReviews": [
+        {
+          "text": "We came here for lunch with the family and had a wonderful time. The food was lovely and the chef was very professional.\nThe seafood was fresh, , calamari was cooked to perfection and well seasoned. The chips were crispy and perfect.\nWould definitely come back again.",
+          "rating": 5,
+          "time": "2025-12-23"
+        },
+        {
+          "text": "Stopped in for lunch and it absolutely delivered 👌\nAmazing food, great service and excellent value. My partner went with the steak sandwich, I had the beef brisket pizza and then spotted the chicken, brie & bacon pizza afterwards… guess that’s on the list for next time 😄\n\nGenerous portions, seriou",
+          "rating": 5,
+          "time": "2025-12-30"
+        },
+        {
+          "text": "Nice pub. Ordered pizza, paying extra for chirozo.   What the staff member put on was NOT chirozo.   Staff said it was a mild chirozo which is total BS.  Unlike salami, chirozo is chirozo it does not have mild, hot varieties.  Please advise your customers if you have to substitute a paid extra as ha",
+          "rating": 4,
+          "time": "2025-12-15"
+        }
+      ]
+    },
+    {
+      "name": "Rosetta Books Maleny",
+      "type": "bookshop_culture",
+      "rating": 4.4,
+      "totalReviews": 103,
+      "sentimentThemes": {
+        "arts_culture": 5,
+        "community_value": 1,
+        "local_identity": 1,
+        "food_quality": 4
+      },
+      "topPositiveThemes": [
+        "arts_culture",
+        "food_quality",
+        "community_value"
+      ],
+      "topNegativeThemes": [],
+      "sampleReviews": [
+        {
+          "text": "Jess, Steph & Rob were absolutely awesome. Looking for an amazing selection of books, they will not let you down. 5 Star Customer Service & served with care and love!!!",
+          "rating": 5,
+          "time": "2025-11-17"
+        },
+        {
+          "text": "Large, well set out bookshop with a huge range of books. Friendly staff.",
+          "rating": 5,
+          "time": "2026-01-11"
+        },
+        {
+          "text": "What a great little place to find that special  book and have a coffee at the same time.  This bookshop has done a 180 since the new owners have taken over 18 months ago. A breath of fresh air in Maleny. Don’t visit Maleny without visiting this bookshop.",
+          "rating": 5,
+          "time": "2024-04-20"
+        }
+      ]
+    },
+    {
+      "name": "Maleny Artisan Market",
+      "type": "market",
+      "rating": 5,
+      "totalReviews": 2,
+      "sentimentThemes": {},
+      "topPositiveThemes": [],
+      "topNegativeThemes": [],
+      "sampleReviews": [
+        {
+          "text": "Gorgeous items",
+          "rating": 5,
+          "time": "2022-11-10"
+        },
+        {
+          "text": "",
+          "rating": 5,
+          "time": "2024-07-14"
+        }
+      ]
+    },
+    {
+      "name": "Colin James Fine Food",
+      "type": "cafe_restaurant",
+      "rating": 4.3,
+      "totalReviews": 538,
+      "sentimentThemes": {
+        "local_identity": 1,
+        "nature_environment": 1,
+        "food_quality": 11,
+        "tourism_tension": 2,
+        "criticism_gaps": 1
+      },
+      "topPositiveThemes": [
+        "food_quality",
+        "local_identity",
+        "nature_environment"
+      ],
+      "topNegativeThemes": [
+        "tourism_tension",
+        "criticism_gaps"
+      ],
+      "sampleReviews": [
+        {
+          "text": "Too hungry to shoot the slight Halloumi wrap with carrot and cucumber, the thick, stacked chicken and avocado hamburger, or the extra high Halloumi burger, with avocado, cucumber, a beetroot puree, tomato, onions, carrot. The wrap tasty as after a good walk through the Dularcha rail tunnel walk. I ,",
+          "rating": 4,
+          "time": "2025-11-21"
+        },
+        {
+          "text": "We have been here several time. We love the Ploughmans Share board and always add some cheeses from the Fromagerie.\nYumm! Service was quick although the restaurant was packed and the amount of people lining up for icecream was huge.\nWe will be back for sure!",
+          "rating": 5,
+          "time": "2025-10-25"
+        },
+        {
+          "text": "Coffees were pretty  good - hot the way I like.\nFood was pretty good too  - hot, fresh & tasty. The bread & the sauce was perfect. The only thing I would’ve improved would be the size - most places provide at least 2x slices of bread and a bit more sauce.",
+          "rating": 5,
+          "time": "2025-11-09"
+        }
+      ]
+    },
+    {
+      "name": "The Maleny Food Co",
+      "type": "cafe_restaurant",
+      "rating": 4.3,
+      "totalReviews": 538,
+      "sentimentThemes": {
+        "local_identity": 1,
+        "nature_environment": 1,
+        "food_quality": 11,
+        "tourism_tension": 2,
+        "criticism_gaps": 1
+      },
+      "topPositiveThemes": [
+        "food_quality",
+        "local_identity",
+        "nature_environment"
+      ],
+      "topNegativeThemes": [
+        "tourism_tension",
+        "criticism_gaps"
+      ],
+      "sampleReviews": [
+        {
+          "text": "Too hungry to shoot the slight Halloumi wrap with carrot and cucumber, the thick, stacked chicken and avocado hamburger, or the extra high Halloumi burger, with avocado, cucumber, a beetroot puree, tomato, onions, carrot. The wrap tasty as after a good walk through the Dularcha rail tunnel walk. I ,",
+          "rating": 4,
+          "time": "2025-11-21"
+        },
+        {
+          "text": "We have been here several time. We love the Ploughmans Share board and always add some cheeses from the Fromagerie.\nYumm! Service was quick although the restaurant was packed and the amount of people lining up for icecream was huge.\nWe will be back for sure!",
+          "rating": 5,
+          "time": "2025-10-25"
+        },
+        {
+          "text": "Coffees were pretty  good - hot the way I like.\nFood was pretty good too  - hot, fresh & tasty. The bread & the sauce was perfect. The only thing I would’ve improved would be the size - most places provide at least 2x slices of bread and a bit more sauce.",
+          "rating": 5,
+          "time": "2025-11-09"
+        }
+      ]
+    },
+    {
+      "name": "The Terrace Maleny",
+      "type": "cafe_restaurant",
+      "rating": 4.5,
+      "totalReviews": 808,
+      "sentimentThemes": {
+        "nature_environment": 3,
+        "food_quality": 7,
+        "arts_culture": 1,
+        "criticism_gaps": 2,
+        "community_value": 3,
+        "local_identity": 1
+      },
+      "topPositiveThemes": [
+        "food_quality",
+        "nature_environment",
+        "community_value"
+      ],
+      "topNegativeThemes": [
+        "criticism_gaps"
+      ],
+      "sampleReviews": [
+        {
+          "text": "Breathtaking views backed by wonderful service and brilliant seafood inspired menus.\n\nThe staff are truly remarkable here, making every dinner feel welcome and their knowledge and experience shines in their interactions with their customers.\n\nAll our party (aside from me) enjoy seafood and had a won",
+          "rating": 4,
+          "time": "2026-01-07"
+        },
+        {
+          "text": "A magnificent location with great views for a luxury seafood lunch.\n\nBoth seafood platters were well presented and most flavours were great and cooked nicely, and side from the half lobster was slightly overcooked. The Asian basket was also fantastic as an extra for our table, but probably too much ",
+          "rating": 5,
+          "time": "2025-10-12"
+        },
+        {
+          "text": "The seafood Chowder was mostly a bowl of cream with a couple of pieces of fish, it did not have any flavour other than a thick cream. I am glad I only ordered the sample bowl. The Lobster Mornay was over cooked, dry and chewy, there was a thin runny sauce at the base of the plate, which had very lit",
+          "rating": 1,
+          "time": "2025-11-07"
+        }
+      ]
+    },
+    {
+      "name": "Maleny Printmakers",
+      "type": "arts_culture",
+      "rating": 5,
+      "totalReviews": 16,
+      "sentimentThemes": {
+        "arts_culture": 9,
+        "community_value": 1,
+        "local_identity": 1
+      },
+      "topPositiveThemes": [
+        "arts_culture",
+        "community_value",
+        "local_identity"
+      ],
+      "topNegativeThemes": [],
+      "sampleReviews": [
+        {
+          "text": "Kim is a fantastic artist with passion and enthusiasm for all things print making!!  Such a wealth of knowledge.\nThere are so many awesome workshops that Kim offers. Do yourself and your creative brain a favour and enrol .",
+          "rating": 5,
+          "time": "2025-02-24"
+        },
+        {
+          "text": "Kim got me \"hooked\" on Gel Printing after I purchased Gel Plates with no clue what to do with them.\n\nShe is an font of wisdom, generous with her time and knowledge, supportive, kind, considerate and calm.  Her workshops are meticulously organised, planned and executed.  No one is \"left behind\", ever",
+          "rating": 5,
+          "time": "2024-01-03"
+        },
+        {
+          "text": "I have done both online and face to face workshops with Kim.  She is a fabulous teacher- extremely well organised, great handouts to go with the classes, very approachable and very encouraging.  Her studio in Maleny is a wonderful experience in itself. I have done her Gel Printing classes (online an",
+          "rating": 5,
+          "time": "2024-01-03"
+        }
+      ]
+    },
+    {
+      "name": "Black Bamboo Art Gallery",
+      "type": "arts_culture",
+      "rating": 4.8,
+      "totalReviews": 13,
+      "sentimentThemes": {
+        "local_identity": 7,
+        "arts_culture": 7,
+        "nature_environment": 1
+      },
+      "topPositiveThemes": [
+        "local_identity",
+        "arts_culture",
+        "nature_environment"
+      ],
+      "topNegativeThemes": [],
+      "sampleReviews": [
+        {
+          "text": "Great range of local artist across a large range of mediums. There is likely something for everyone. We met one of the artists there and bought one of their pieces. Really lovely experience.",
+          "rating": 5,
+          "time": "2025-12-23"
+        },
+        {
+          "text": "A wonderful array of unique handcrafted items and decorative art all by local artists. Peace of Green won't disappoint it's an aladdin's cave of pottery, ceramics, leather goods, jewellery, lino prints, paintings, mixed media and so much more .... Definitely worth a visit : )",
+          "rating": 5,
+          "time": "2021-09-09"
+        },
+        {
+          "text": "This is an inspiring gallery of work from the collective of local artists who run it and have done so for the last 30 years or so. You will always meet one of them as they take turns to staff the shop. The work is very varied and of a high standard, across a broad range of media with price points to",
+          "rating": 5,
+          "time": "2023-08-07"
+        }
+      ]
+    },
+    {
+      "name": "The Laneway Gallery",
+      "type": "arts_culture",
+      "rating": 4.8,
+      "totalReviews": 10,
+      "sentimentThemes": {
+        "community_value": 2,
+        "arts_culture": 5,
+        "tourism_tension": 1,
+        "nature_environment": 1,
+        "criticism_gaps": 1,
+        "local_identity": 1
+      },
+      "topPositiveThemes": [
+        "arts_culture",
+        "community_value",
+        "nature_environment"
+      ],
+      "topNegativeThemes": [
+        "tourism_tension",
+        "criticism_gaps"
+      ],
+      "sampleReviews": [
+        {
+          "text": "Visited for the first time earlier today.\n\nSome really cool artwork on display and the owner, Geoff, was very welcoming & friendly. Took the time to have a conversation with me and even gave me some info about Cork that I didn't know (I'm a tourist).\n\nKeep up the good work!",
+          "rating": 5,
+          "time": "2024-03-30"
+        },
+        {
+          "text": "Second time walking up to gallery & couldn't get in as the inside gate was closed even though website says open till 6 & its 4.45.\nNo phone number or bell.\nDisappointed.\n\nEdited to say that a mistake in published times has been rectified.\n\nThis gallery is absolutely lovely, The owner has done a fant",
+          "rating": 5,
+          "time": "2023-07-18"
+        },
+        {
+          "text": "Great use of the space. Really nice owners, good exhibitions. Worth the visit!",
+          "rating": 5,
+          "time": "2023-09-29"
+        }
+      ]
+    },
+    {
+      "name": "Maleny Library",
+      "type": "community_venue",
+      "rating": 4.5,
+      "totalReviews": 18,
+      "sentimentThemes": {
+        "community_value": 4,
+        "arts_culture": 3,
+        "family_friendly": 1,
+        "tourism_tension": 1,
+        "local_identity": 1
+      },
+      "topPositiveThemes": [
+        "community_value",
+        "arts_culture",
+        "family_friendly"
+      ],
+      "topNegativeThemes": [
+        "tourism_tension"
+      ],
+      "sampleReviews": [
+        {
+          "text": "Great library!\nLots of computers available, as well as places to plug in to charge electronics, and the staff are friendly and attentive. Best of all there is a window seat with sunshine streaming in overlooking a nearby playground that is just perfect for curling up and reading in. On my visit ther",
+          "rating": 5,
+          "time": "2018-07-30"
+        },
+        {
+          "text": "I found a refuge in this cosy library in very rainy day. Really it is a nice place  to spend time chilling / reading or chatting with people, very welcoming!",
+          "rating": 5,
+          "time": "2025-08-12"
+        },
+        {
+          "text": "Informative and friendly staff, beautiful location and comfortable layout. But it's a tad small, but, well, where would a suitable relocation be? It's invariably busy so an upgrade is inevitable, but where?!?",
+          "rating": 4,
+          "time": "2024-09-18"
+        }
+      ]
+    },
+    {
+      "name": "Maleny Swimming Pool",
+      "type": "community_venue",
+      "rating": 4.5,
+      "totalReviews": 115,
+      "sentimentThemes": {
+        "family_friendly": 4,
+        "tourism_tension": 1,
+        "community_value": 1,
+        "local_identity": 1,
+        "criticism_gaps": 1
+      },
+      "topPositiveThemes": [
+        "family_friendly",
+        "community_value",
+        "local_identity"
+      ],
+      "topNegativeThemes": [
+        "tourism_tension",
+        "criticism_gaps"
+      ],
+      "sampleReviews": [
+        {
+          "text": "Kids play area is good. It was pricey though. $22 just for the 3 kids. Wife and I just watched. Kids are 4, 2 and 1. Asked what the bands where for that the kids had to wear, he said he didn't know but they have to wear them.\nThere was a lady testing the water and when my girl said hello she snapped",
+          "rating": 2,
+          "time": "2025-11-28"
+        },
+        {
+          "text": "Great local swimming pool with all amenities. Family friendly, lessons, squad and overall really lovely members and patrons. Always clean and well maintained.",
+          "rating": 4,
+          "time": "2022-06-12"
+        },
+        {
+          "text": "The staff and teachers are nice I feel the classes are too big though and I was disappointed that because my daughter finished up early this year due to family commitments and work they refused to give her, her graduation certificate for this year I think that was a bit rough she is only 3 and was e",
+          "rating": 3,
+          "time": "2023-10-29"
+        }
+      ]
+    },
+    {
+      "name": "Kondalilla Falls",
+      "type": "natural_attraction",
+      "rating": 4.7,
+      "totalReviews": 1693,
+      "sentimentThemes": {
+        "nature_environment": 14,
+        "criticism_gaps": 3,
+        "family_friendly": 1,
+        "local_identity": 1,
+        "food_quality": 1,
+        "tourism_tension": 1
+      },
+      "topPositiveThemes": [
+        "nature_environment",
+        "family_friendly",
+        "local_identity"
+      ],
+      "topNegativeThemes": [
+        "criticism_gaps",
+        "tourism_tension"
+      ],
+      "sampleReviews": [
+        {
+          "text": "It's a nice walk, can be steep in places however there's a number of benches to take a rest. The pool below the falls is very popular so can be a little crowded. There's 4 or 5 sheltered tables and BBQ's if you're looking for a picnic.",
+          "rating": 4,
+          "time": "2026-01-16"
+        },
+        {
+          "text": "Beautiful walk through the rainforest. Arrived at the waterfall and had a nice swim. What temperature was perfect for someone who hates the cold. Other hikes were getting leeches on them, make sure you wear enclosed shoes and try not to brush up against the branches when walking. It took myself and ",
+          "rating": 5,
+          "time": "2026-01-22"
+        },
+        {
+          "text": "Love Kondalilla Falls. Even if you just walk to the top of the big waterfall and chill at the pond, check out the views, or walk down into the Valley, you will love this spot. Well maintained trails. Not suitable for prams as there is alot of stairs.",
+          "rating": 5,
+          "time": "2025-09-13"
+        }
+      ]
+    },
+    {
+      "name": "Obi Obi Creek",
+      "type": "natural_attraction",
+      "rating": null,
+      "totalReviews": null,
+      "sentimentThemes": {},
+      "topPositiveThemes": [],
+      "topNegativeThemes": [],
+      "sampleReviews": []
+    },
+    {
+      "name": "Kenilworth Cheese",
+      "type": "food_producer",
+      "rating": 4.3,
+      "totalReviews": 422,
+      "sentimentThemes": {
+        "food_quality": 14,
+        "community_value": 3,
+        "arts_culture": 1,
+        "nature_environment": 1,
+        "family_friendly": 1
+      },
+      "topPositiveThemes": [
+        "food_quality",
+        "community_value",
+        "arts_culture"
+      ],
+      "topNegativeThemes": [],
+      "sampleReviews": [
+        {
+          "text": "We recently attended Kenilworth Dairy and were extremely impressed by the wide range of products on offer. They had an excellent selection of cheeses, milks, yogurts, mousses, and various other dairy items. The prices for all the products were very reasonable.\n\nWe purchased a packet of assorted hard",
+          "rating": 5,
+          "time": "2025-10-07"
+        },
+        {
+          "text": "Many thanks to chef Paul and super friendly staff making my Not the 80th Birthday Party Party Lunch memorable for all guests. The food was sensational. Everyone commented on the quality and exquisite and masterful use of ingredients, which took the food to another level. Many thanks Paul. Look forwa",
+          "rating": 5,
+          "time": "2026-01-21"
+        },
+        {
+          "text": "Friendly environment with great selection of product for takeaway or even lovely garden setting for coffee and muffins.  Young professional and very helpful staff.  Congratulations team Poppa.",
+          "rating": 5,
+          "time": "2025-08-23"
+        }
+      ]
+    },
+    {
+      "name": "Brouhaha Brewery Maleny",
+      "type": "food_producer",
+      "rating": 4.4,
+      "totalReviews": 894,
+      "sentimentThemes": {
+        "food_quality": 7,
+        "local_identity": 1,
+        "family_friendly": 1,
+        "arts_culture": 1
+      },
+      "topPositiveThemes": [
+        "food_quality",
+        "local_identity",
+        "family_friendly"
+      ],
+      "topNegativeThemes": [],
+      "sampleReviews": [
+        {
+          "text": "Haven’t been here for some time because we had moved away. But while in town we stopped in for a quick lunch. They had a special on that we shared between the two of us. A fish patty and bbq pork plates. Both were delicious. Just enough for us with a glass of Italian wine. Well prepared and presente",
+          "rating": 4,
+          "time": "2025-10-17"
+        },
+        {
+          "text": "Absolutely fantastic meal at Brouhaha. Their Sourced Dining menu was delicious and fantastic value for a 3-course, 6 dish dinner. The way they feature fresh, seasonal produce is excellent and the menu is always filled with local producers from the region. Highly recommend… and the beer is great too!",
+          "rating": 5,
+          "time": "2025-03-27"
+        },
+        {
+          "text": "Great spot, called in for a drink and ended up having one of their amazing pizzas! Such good service, and friendliness couldn't do enough for us. Thanks. We'll recommended",
+          "rating": 5,
+          "time": "2026-01-16"
+        }
+      ]
+    }
+  ],
+  "aggregateSentiment": {
+    "overallRating": 4.6,
+    "totalReviewsAnalyzed": 85,
+    "themeFrequency": {
+      "local_identity": 49,
+      "food_quality": 124,
+      "community_value": 46,
+      "criticism_gaps": 20,
+      "arts_culture": 49,
+      "nature_environment": 77,
+      "family_friendly": 24,
+      "tourism_tension": 16
+    },
+    "positiveThemes": [
+      "food_quality",
+      "nature_environment",
+      "local_identity",
+      "arts_culture",
+      "community_value"
+    ],
+    "negativeThemes": [
+      "criticism_gaps",
+      "tourism_tension"
+    ],
+    "communityStrengths": [
+      "High-quality local food and produce culture",
+      "Rich natural environment and green spaces",
+      "Strong local identity and authentic character",
+      "Active arts, culture, and creative community",
+      "Community togetherness and welcoming atmosphere"
+    ],
+    "communityGaps": [
+      "Some venues noted for limited options, closures, or service issues",
+      "Tension between local community needs and tourism pressure"
+    ]
+  },
+  "harvestInsights": {
+    "gardenOpportunities": [
+      "Strong community appetite for nature-based experiences — native gardens, bush restoration, and wildlife habitat could anchor the Garden zone",
+      "Local food and produce culture is highly valued — edible gardens, permaculture demonstrations, and seed libraries would resonate",
+      "Multiple eco/nature orgs already active — partnership opportunities for shared knowledge, volunteer programs, and plant propagation",
+      "Tourism pressure on nature spots — a local garden space reduces need to compete with tourists at popular reserves"
+    ],
+    "kitchenOpportunities": [
+      "Reviews highlight fresh, local, and organic food as a core draw — a community kitchen with local produce focus would align perfectly",
+      "Community togetherness is the top-rated theme — shared meals, cooking workshops, and community dinners could fill a social gap",
+      "Dense food producer ecosystem nearby — potential for farm-to-table collaborations, producer showcases, and food preservation workshops",
+      "Some criticism around limited options and closures — a reliable, community-run kitchen could fill gaps in local food infrastructure"
+    ],
+    "artSpaceOpportunities": [
+      "Arts and culture referenced positively across venues — dedicated creative space would serve an existing appetite",
+      "Existing cultural anchors (bookshops, creative cafes) show demand — an art space could offer what these venues cannot: workshop and exhibition space",
+      "Strong local identity pride — art space could celebrate and document hinterland culture, support local makers, and resist homogenisation",
+      "Tourism tension detected — art space can prioritise local makers and community-first programming over tourist-oriented content"
+    ]
+  },
+  "methodology": "Google Places API Text Search + Place Details used to collect real reviews for each venue. Sentiment analysis via keyword matching against predefined community-relevant theme categories.",
+  "dataDate": "2026-02-16",
+  "apiMode": "google_places"
+}

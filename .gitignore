@@ -110,6 +110,24 @@ temp/
 # Claude/Cursor IDE files
 .claude/
 
+# Other AI/IDE agent configs
+.agent/
+.agents/
+.junie/
+.kiro/
+.obsidian/
+.pi/
+.qwen/
+.superdesign/
+.trae/
+.windsurf/
+skills/
+skills-lock.json
+test-results/
+
+# Social auth secrets
+.env.social-auth
+
 # Backup files
 .env.local.backup*
 *.backup-*
