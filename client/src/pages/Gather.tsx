@@ -169,18 +169,17 @@ export default function Gather() {
           color: colors.milk,
           padding: "0 24px",
         }}>
-          <Link href="/" style={{ textDecoration: "none", color: colors.milk }}>
-            <span style={{
-              fontFamily: fonts.display,
-              fontWeight: 700,
-              fontSize: 12,
-              letterSpacing: "0.4em",
-              opacity: 0.6,
-              display: "block",
-              marginBottom: 24,
-            }}>
-              THE HARVEST
-            </span>
+          <Link href="/" style={{ textDecoration: "none", display: "block", marginBottom: 24 }}>
+            <img
+              src="/images/logo-harvest-only-clean.png"
+              alt="THE HARVEST"
+              style={{
+                height: 32,
+                width: "auto",
+                filter: "brightness(0) invert(1)",
+                opacity: 0.6,
+              }}
+            />
           </Link>
           <h1 style={{
             fontFamily: fonts.display,

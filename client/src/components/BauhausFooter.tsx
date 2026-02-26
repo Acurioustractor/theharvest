@@ -27,10 +27,10 @@ export default function BauhausFooter({ isMobile }: BauhausFooterProps) {
       textAlign: "center",
     }}>
       <img
-        src="/images/wordmark-never-done.png"
+        src="/images/logo-harvest-only-clean.png"
         alt="THE HARVEST"
         style={{
-          height: 28,
+          height: 36,
           width: "auto",
           filter: "brightness(0) invert(1)",
           marginBottom: 8,
