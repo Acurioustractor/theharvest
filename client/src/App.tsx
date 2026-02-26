@@ -1,5 +1,6 @@
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { useEffect } from "react";
 import { useLocation } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
@@ -21,6 +22,10 @@ import NotFound from "./pages/NotFound";
 
 function Router() {
   const [location] = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location]);
 
   // All pages are standalone (no PublicLayout)
   if (location === "/") return <BauhausHome />;
