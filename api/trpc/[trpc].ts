@@ -1,4 +1,4 @@
-import "dotenv/config";
+// dotenv not needed on Vercel — env vars are injected natively
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
 import { appRouter } from "../../server/routers.js";
 import type { User } from "../../drizzle/schema.js";
