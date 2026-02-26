@@ -5,7 +5,7 @@ import { storagePut } from "./storage";
 import { getDb } from "./db";
 import { pulseResponses } from "../drizzle/schema";
 import { eq } from "drizzle-orm";
-import { upsertGHLContact, addGHLContactNote, triggerGHLWorkflow, createGHLAppointment, getGHLContactCountByTag, getGHLSocialAccounts, createGHLSocialPost, getGHLSocialPosts, searchGHLContactsByTag, batchTriggerWorkflow } from "./gohighlevel";
+import { upsertGHLContact, addGHLContactNote, triggerGHLWorkflow, getGHLContactCountByTag, getGHLSocialAccounts, createGHLSocialPost, getGHLSocialPosts, searchGHLContactsByTag, batchTriggerWorkflow } from "./gohighlevel";
 import { empathyLedgerClient } from "./empathyLedgerClient";
 import {
   loadTimeline,
@@ -309,19 +309,6 @@ export const appRouter = router({
         }
 
         if (result.contactId) {
-          // Create calendar appointment so workflow Wait step can reference event date
-          const calendarId = process.env.GHL_CALENDAR_ID;
-          if (calendarId) {
-            createGHLAppointment({
-              calendarId,
-              contactId: result.contactId,
-              title: "The Harvest — First Gathering",
-              startTime: "2026-03-07T11:00:00+10:00",
-              endTime: "2026-03-07T14:00:00+10:00",
-              address: "9 Gumland Drive, Witta QLD 4552",
-            }).catch(err => console.error("GHL appointment creation failed (eoi):", err));
-          }
-
           const workflowId = process.env.GHL_EOI_WORKFLOW_ID;
           if (workflowId) {
             triggerGHLWorkflow(workflowId, result.contactId).catch(err =>
@@ -361,18 +348,6 @@ export const appRouter = router({
         });
 
         if (localsResult.contactId) {
-          const calendarId = process.env.GHL_CALENDAR_ID;
-          if (calendarId) {
-            createGHLAppointment({
-              calendarId,
-              contactId: localsResult.contactId,
-              title: "The Harvest — Locals Day",
-              startTime: "2026-03-14T14:00:00+10:00",
-              endTime: "2026-03-14T17:00:00+10:00",
-              address: "9 Gumland Drive, Witta QLD 4552",
-            }).catch(err => console.error("GHL appointment creation failed (locals day):", err));
-          }
-
           const workflowId = process.env.GHL_LOCALS_DAY_WORKFLOW_ID;
           if (workflowId) {
             triggerGHLWorkflow(workflowId, localsResult.contactId).catch(err =>

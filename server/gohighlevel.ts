@@ -644,59 +644,6 @@ export async function batchTriggerWorkflow(
 }
 
 /**
- * Create a calendar appointment for a contact in Go High Level
- * Used to tie event dates to contacts for workflow Wait steps
- */
-export async function createGHLAppointment(input: {
-  calendarId: string;
-  contactId: string;
-  title: string;
-  startTime: string; // ISO 8601
-  endTime: string;   // ISO 8601
-  address?: string;
-}): Promise<{ success: boolean; appointmentId?: string; error?: string }> {
-  const apiKey = process.env.GHL_API_KEY;
-
-  if (!apiKey) {
-    console.error("Go High Level API key not configured.");
-    return { success: false, error: "Calendar service is not configured." };
-  }
-
-  try {
-    const response = await fetch(`${GHL_API_BASE}/calendars/events/appointments`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json",
-        "Authorization": `Bearer ${apiKey}`,
-        "Version": GHL_API_VERSION,
-      },
-      body: JSON.stringify({
-        calendarId: input.calendarId,
-        contactId: input.contactId,
-        title: input.title,
-        startTime: input.startTime,
-        endTime: input.endTime,
-        address: input.address,
-        status: "confirmed",
-      }),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json() as GHLErrorResponse;
-      console.error("GHL Create Appointment Error:", errorData);
-      return { success: false, error: errorData.message || "Failed to create appointment." };
-    }
-
-    const data = await response.json() as any;
-    return { success: true, appointmentId: data?.id || data?.event?.id };
-  } catch (error) {
-    console.error("GHL Create Appointment request failed:", error);
-    return { success: false, error: "Unable to create appointment." };
-  }
-}
-
-/**
  * Trigger a workflow for a contact in Go High Level
  * Used to automate follow-up sequences and nurturing campaigns
  */
