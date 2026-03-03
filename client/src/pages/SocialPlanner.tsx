@@ -680,10 +680,11 @@ function QueueTab({ posts }: { posts: EditorialPost[] }) {
     try {
       const result = await autoSyncMutation.mutateAsync();
       const parts: string[] = [];
-      if (result.synced > 0) parts.push(`${result.synced} synced`);
+      if (result.synced > 0) parts.push(`${result.synced} synced to GHL`);
+      if ((result as any).published > 0) parts.push(`${(result as any).published} marked published`);
       if (result.skipped > 0) parts.push(`${result.skipped} skipped`);
       if (result.failed > 0) parts.push(`${result.failed} failed`);
-      setAutoSyncMsg(parts.length > 0 ? parts.join(", ") : "No Ready posts to sync");
+      setAutoSyncMsg(parts.length > 0 ? parts.join(", ") : "All up to date");
     } catch (err: any) {
       setAutoSyncMsg(err.message || "Auto-sync failed");
     }

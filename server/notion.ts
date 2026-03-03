@@ -8,7 +8,7 @@
 
 import { Client } from "@notionhq/client";
 import type { EditorialPost, EditorialProject } from "../client/src/types/social";
-import { getGHLAccountMap, createGHLSocialPost } from "./gohighlevel.js";
+import { getGHLAccountMap, createGHLSocialPost, getGHLSocialPosts } from "./gohighlevel.js";
 
 // ── Notion client singleton ───────────────────────────────────
 
@@ -531,4 +531,38 @@ export async function syncReadyPosts(): Promise<{
   }
 
   return { synced, failed, skipped };
+}
+
+/**
+ * Sync published status from GHL back to Notion.
+ * Finds Scheduled posts in Notion that have a GHL Post ID,
+ * checks if they're published in GHL, and updates Notion status accordingly.
+ */
+export async function syncPublishedPosts(): Promise<{ updated: number }> {
+  const ghlResult = await getGHLSocialPosts();
+  if (!ghlResult.success || !ghlResult.posts) {
+    console.warn("[SyncPublished] Failed to fetch GHL posts:", ghlResult.error);
+    return { updated: 0 };
+  }
+
+  const scheduledPosts = await queryEditorialCalendar({ status: "scheduled" });
+  let updated = 0;
+
+  for (const post of scheduledPosts) {
+    if (!post.ghlPostId) continue;
+    const ghlPost = ghlResult.posts.find(
+      (g: any) => (g.id || g._id) === post.ghlPostId
+    );
+    if (ghlPost?.status === "published") {
+      try {
+        await updateEditorialPost(post.id, { status: "published" });
+        updated++;
+        console.log(`[SyncPublished] "${post.title}" marked as published`);
+      } catch (err) {
+        console.error(`[SyncPublished] Failed to update "${post.title}":`, err);
+      }
+    }
+  }
+
+  return { updated };
 }

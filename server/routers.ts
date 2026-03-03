@@ -20,7 +20,7 @@ import {
   loadStory,
   getWikiStatus,
 } from "./wiki.js";
-import { queryEditorialCalendar, getEditorialPost, updateEditorialPost, getEditorialProjects, getEditorialCommunicationTypes, syncReadyPosts } from "./notion.js";
+import { queryEditorialCalendar, getEditorialPost, updateEditorialPost, getEditorialProjects, getEditorialCommunicationTypes, syncReadyPosts, syncPublishedPosts } from "./notion.js";
 import { z } from "zod";
 
 const INTEREST_OPTIONS = ["kids-play", "cafe", "garden", "pop-up-events", "art-exhibitions", "something-else"] as const;
@@ -1049,34 +1049,17 @@ export const appRouter = router({
       return await getEditorialCommunicationTypes();
     }),
 
-    // Auto-sync Ready posts from Notion → GHL
+    // Auto-sync: push Ready → GHL, pull Published ← GHL
     autoSync: publicProcedure.mutation(async () => {
-      const result = await syncReadyPosts();
-      return { success: true, ...result };
+      const readyResult = await syncReadyPosts();
+      const publishedResult = await syncPublishedPosts();
+      return { success: true, ...readyResult, published: publishedResult.updated };
     }),
 
-    // Sync published status from GHL back to Notion
+    // Sync published status from GHL back to Notion (legacy, kept for backward compat)
     syncPublished: publicProcedure.mutation(async () => {
-      const ghlResult = await getGHLSocialPosts();
-      if (!ghlResult.success || !ghlResult.posts) {
-        return { success: false, error: ghlResult.error, updated: 0 };
-      }
-
-      const scheduledPosts = await queryEditorialCalendar({ status: "scheduled" });
-      let updated = 0;
-
-      for (const post of scheduledPosts) {
-        if (!post.ghlPostId) continue;
-        const ghlPost = ghlResult.posts.find(
-          (g: any) => (g.id || g._id) === post.ghlPostId
-        );
-        if (ghlPost?.status === "published") {
-          await updateEditorialPost(post.id, { status: "published" });
-          updated++;
-        }
-      }
-
-      return { success: true, updated };
+      const result = await syncPublishedPosts();
+      return { success: true, updated: result.updated };
     }),
   }),
 
