@@ -665,11 +665,30 @@ function QueueTab({ posts }: { posts: EditorialPost[] }) {
   const ghlPostsQuery = trpc.social.list.useQuery();
   const ghlPosts: GHLPost[] = ghlPostsQuery.data?.posts ?? [];
   const syncMutation = trpc.editorial.update.useMutation();
+  const autoSyncMutation = trpc.editorial.autoSync.useMutation();
   const [syncing, setSyncing] = useState(false);
   const [syncMsg, setSyncMsg] = useState("");
+  const [autoSyncing, setAutoSyncing] = useState(false);
+  const [autoSyncMsg, setAutoSyncMsg] = useState("");
 
   // Posts that are scheduled or published
   const queuedPosts = posts.filter((p) => p.status === "scheduled" || p.status === "published");
+
+  const handleAutoSync = async () => {
+    setAutoSyncing(true);
+    setAutoSyncMsg("");
+    try {
+      const result = await autoSyncMutation.mutateAsync();
+      const parts: string[] = [];
+      if (result.synced > 0) parts.push(`${result.synced} synced`);
+      if (result.skipped > 0) parts.push(`${result.skipped} skipped`);
+      if (result.failed > 0) parts.push(`${result.failed} failed`);
+      setAutoSyncMsg(parts.length > 0 ? parts.join(", ") : "No Ready posts to sync");
+    } catch (err: any) {
+      setAutoSyncMsg(err.message || "Auto-sync failed");
+    }
+    setAutoSyncing(false);
+  };
 
   const handleSync = async () => {
     setSyncing(true);
@@ -700,6 +719,24 @@ function QueueTab({ posts }: { posts: EditorialPost[] }) {
           Post Queue
         </h2>
         <div style={{ display: "flex", gap: "0.5rem" }}>
+          <button
+            onClick={handleAutoSync}
+            disabled={autoSyncing}
+            style={{
+              background: colors.goldenHour,
+              color: "white",
+              border: "none",
+              padding: "0.4rem 0.75rem",
+              borderRadius: 4,
+              fontSize: "0.65rem",
+              fontWeight: 700,
+              cursor: autoSyncing ? "wait" : "pointer",
+              fontFamily: fonts.display,
+              opacity: autoSyncing ? 0.5 : 1,
+            }}
+          >
+            {autoSyncing ? "Syncing..." : "Auto-Sync Now"}
+          </button>
           <button
             onClick={handleSync}
             disabled={syncing}
@@ -737,6 +774,11 @@ function QueueTab({ posts }: { posts: EditorialPost[] }) {
         </div>
       </div>
 
+      {autoSyncMsg && (
+        <div style={{ fontSize: "0.7rem", color: autoSyncMsg.includes("failed") ? colors.calendula : colors.goldenHour, marginBottom: "0.5rem" }}>
+          {autoSyncMsg}
+        </div>
+      )}
       {syncMsg && (
         <div style={{ fontSize: "0.7rem", color: colors.canopy, marginBottom: "1rem" }}>
           {syncMsg}

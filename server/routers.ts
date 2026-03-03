@@ -20,7 +20,7 @@ import {
   loadStory,
   getWikiStatus,
 } from "./wiki.js";
-import { queryEditorialCalendar, getEditorialPost, updateEditorialPost, getEditorialProjects, getEditorialCommunicationTypes } from "./notion.js";
+import { queryEditorialCalendar, getEditorialPost, updateEditorialPost, getEditorialProjects, getEditorialCommunicationTypes, syncReadyPosts } from "./notion.js";
 import { z } from "zod";
 
 const INTEREST_OPTIONS = ["kids-play", "cafe", "garden", "pop-up-events", "art-exhibitions", "something-else"] as const;
@@ -1047,6 +1047,12 @@ export const appRouter = router({
     // List communication type options
     communicationTypes: publicProcedure.query(async () => {
       return await getEditorialCommunicationTypes();
+    }),
+
+    // Auto-sync Ready posts from Notion → GHL
+    autoSync: publicProcedure.mutation(async () => {
+      const result = await syncReadyPosts();
+      return { success: true, ...result };
     }),
 
     // Sync published status from GHL back to Notion

@@ -634,6 +634,50 @@ export async function createGHLSocialPost(post: GHLSocialPost): Promise<{ succes
 }
 
 /**
+ * Build a map from Notion platform names → GHL account IDs.
+ * Calls getGHLSocialAccounts() dynamically so new accounts are auto-detected.
+ */
+export async function getGHLAccountMap(): Promise<Map<string, string[]>> {
+  const result = await getGHLSocialAccounts();
+  const map = new Map<string, string[]>();
+
+  if (!result.success || !result.accounts) return map;
+
+  // GHL platform field → Notion "Target Accounts" name(s)
+  const platformMapping: Record<string, string[]> = {
+    instagram: ["Instagram"],
+    facebook: ["Facebook"],
+    google: ["Google Business"],
+    linkedin: [], // disambiguated by type below
+    youtube: ["YouTube"],
+    twitter: ["Twitter"],
+    bluesky: ["Bluesky"],
+  };
+
+  for (const acc of result.accounts) {
+    const platform = acc.platform?.toLowerCase();
+    let notionNames: string[];
+
+    if (platform === "linkedin") {
+      // Disambiguate LinkedIn by account type
+      notionNames = acc.type === "profile"
+        ? ["LinkedIn (Personal)"]
+        : ["LinkedIn (Company)"];
+    } else {
+      notionNames = platformMapping[platform] || [acc.platform];
+    }
+
+    for (const name of notionNames) {
+      const existing = map.get(name) || [];
+      existing.push(acc.id);
+      map.set(name, existing);
+    }
+  }
+
+  return map;
+}
+
+/**
  * Get social media posts from GHL (with auto token refresh)
  */
 export async function getGHLSocialPosts(status?: string): Promise<{ success: boolean; posts?: any[]; error?: string }> {

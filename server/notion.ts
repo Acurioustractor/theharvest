@@ -8,6 +8,7 @@
 
 import { Client } from "@notionhq/client";
 import type { EditorialPost, EditorialProject } from "../client/src/types/social";
+import { getGHLAccountMap, createGHLSocialPost } from "./gohighlevel.js";
 
 // ── Notion client singleton ───────────────────────────────────
 
@@ -449,4 +450,85 @@ export async function getEditorialCommunicationTypes(): Promise<string[]> {
 
   setCache(cacheKey, types);
   return types;
+}
+
+/**
+ * Auto-sync "Ready" posts from Notion → GHL Social Planner.
+ * Finds posts with status=Ready and no GHL Post ID, creates them in GHL,
+ * then updates Notion with the GHL Post ID and status → Scheduled.
+ */
+export async function syncReadyPosts(): Promise<{
+  synced: number;
+  failed: number;
+  skipped: number;
+}> {
+  // 1. Query Notion for Ready posts without a GHL Post ID
+  const readyPosts = await queryEditorialCalendar({ status: "approved" });
+  const unsynced = readyPosts.filter((p) => !p.ghlPostId);
+
+  if (unsynced.length === 0) {
+    return { synced: 0, failed: 0, skipped: 0 };
+  }
+
+  // 2. Get platform → account ID mapping once
+  const accountMap = await getGHLAccountMap();
+  if (accountMap.size === 0) {
+    console.warn("[AutoSync] No GHL social accounts found — skipping all posts");
+    return { synced: 0, failed: 0, skipped: unsynced.length };
+  }
+
+  let synced = 0;
+  let failed = 0;
+  let skipped = 0;
+
+  // 3. Process each post
+  for (const post of unsynced) {
+    // Map Notion platforms → GHL account IDs
+    const accountIds: string[] = [];
+    for (const platform of post.platforms) {
+      const ids = accountMap.get(platform);
+      if (ids) accountIds.push(...ids);
+    }
+
+    if (accountIds.length === 0) {
+      console.warn(`[AutoSync] No matching GHL accounts for post "${post.title}" (platforms: ${post.platforms.join(", ")})`);
+      skipped++;
+      continue;
+    }
+
+    // Skip posts with no caption
+    if (!post.caption) {
+      console.warn(`[AutoSync] Skipping post "${post.title}" — no caption`);
+      skipped++;
+      continue;
+    }
+
+    try {
+      const result = await createGHLSocialPost({
+        summary: post.caption,
+        accountIds,
+        mediaUrls: post.mediaUrl ? [post.mediaUrl] : undefined,
+        scheduledAt: post.scheduledDate || undefined,
+      });
+
+      if (result.success && result.postId) {
+        // Update Notion: set GHL Post ID, status → Scheduled, set date if missing
+        await updateEditorialPost(post.id, {
+          ghlPostId: result.postId,
+          status: "scheduled",
+          scheduledDate: post.scheduledDate || new Date().toISOString(),
+        });
+        synced++;
+        console.log(`[AutoSync] Synced "${post.title}" → GHL ${result.postId}`);
+      } else {
+        console.error(`[AutoSync] GHL post creation failed for "${post.title}":`, result.error);
+        failed++;
+      }
+    } catch (err) {
+      console.error(`[AutoSync] Error syncing "${post.title}":`, err);
+      failed++;
+    }
+  }
+
+  return { synced, failed, skipped };
 }
