@@ -19,6 +19,7 @@ export default function Contact() {
     subscribe: false,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
     document.title = "Get In Touch — The Harvest";
@@ -55,10 +56,7 @@ export default function Contact() {
         throw new Error(data.error || "Failed to send message");
       }
 
-      toast.success("Message sent!", {
-        description: "We'll get back to you as soon as we can.",
-      });
-
+      setSubmitted(true);
       setFormData({ name: "", email: "", subject: "", message: "", subscribe: false });
     } catch (error) {
       toast.error("Failed to send message", {
@@ -108,11 +106,68 @@ export default function Contact() {
         </motion.div>
       </section>
 
-      {/* ─── FORM ─── */}
+      {/* ─── FORM / THANK YOU ─── */}
       <section style={{
         backgroundColor: colors.shed,
         padding: isMobile ? "60px 28px" : "80px 40px",
       }}>
+        {submitted ? (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            style={{
+              maxWidth: 520,
+              margin: "0 auto",
+              textAlign: "center",
+              padding: isMobile ? "40px 0" : "60px 0",
+            }}
+          >
+            <div style={{
+              fontSize: isMobile ? 48 : 64,
+              marginBottom: 24,
+            }}>
+              Thank you
+            </div>
+            <h2 style={{
+              fontFamily: fonts.display,
+              fontWeight: 900,
+              fontSize: isMobile ? 24 : 32,
+              letterSpacing: "0.08em",
+              color: colors.milk,
+              margin: "0 0 16px",
+            }}>
+              MESSAGE RECEIVED
+            </h2>
+            <p style={{
+              fontFamily: fonts.body,
+              fontSize: isMobile ? 16 : 18,
+              color: colors.milk,
+              opacity: 0.7,
+              lineHeight: 1.6,
+              margin: "0 0 32px",
+            }}>
+              We've got your message and will get back to you soon.
+              In the meantime, feel free to explore what we're building.
+            </p>
+            <button
+              onClick={() => setSubmitted(false)}
+              style={{
+                fontFamily: fonts.display,
+                fontWeight: 700,
+                fontSize: 13,
+                letterSpacing: "0.1em",
+                color: colors.shed,
+                backgroundColor: colors.goldenHour,
+                border: "none",
+                padding: "14px 32px",
+                cursor: "pointer",
+              }}
+            >
+              SEND ANOTHER MESSAGE
+            </button>
+          </motion.div>
+        ) : (
         <div style={{ maxWidth: 560, margin: "0 auto" }}>
           <FadeIn>
             <form onSubmit={handleSubmit}>
@@ -226,6 +281,7 @@ export default function Contact() {
             </form>
           </FadeIn>
         </div>
+        )}
       </section>
 
       {/* ─── DETAILS ─── */}
