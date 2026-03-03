@@ -9,6 +9,7 @@ import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
 import { getApprovedBusinesses, getApprovedEvents } from "../db";
 import { generateImage, generateSketch } from "../gemini";
+import { refreshGHLToken, persistTokens } from "../gohighlevel";
 
 const resolveBaseUrl = (req: express.Request) => {
   const envUrl = process.env.PUBLIC_SITE_URL;
@@ -152,9 +153,11 @@ async function startServer() {
     if (!clientId) {
       return res.status(500).send("GHL_OAUTH_CLIENT_ID not set in .env.local");
     }
-    const redirectUri = process.env.NODE_ENV === "development"
-      ? `http://localhost:3000/api/social-auth/callback`
-      : `https://theharvestwitta.com.au/api/social-auth/callback`;
+    // GHL OAuth requires redirect_uri to exactly match the registered value
+    const redirectUri = process.env.GHL_REDIRECT_URI
+      || (process.env.NODE_ENV === "production"
+        ? `https://theharvestwitta.com.au/api/social-auth/callback`
+        : `http://localhost:3000/api/social-auth/callback`);
     const scopes = [
       "socialplanner/oauth.readonly",
       "socialplanner/oauth.write",
@@ -193,9 +196,10 @@ async function startServer() {
           grant_type: "authorization_code",
           code,
           user_type: "Location",
-          redirect_uri: process.env.NODE_ENV === "development"
-              ? `http://localhost:3000/api/social-auth/callback`
-              : `https://theharvestwitta.com.au/api/social-auth/callback`,
+          redirect_uri: process.env.GHL_REDIRECT_URI
+              || (process.env.NODE_ENV === "production"
+                ? `https://theharvestwitta.com.au/api/social-auth/callback`
+                : `http://localhost:3000/api/social-auth/callback`),
         }),
       });
       const data = await response.json() as Record<string, unknown>;
@@ -203,23 +207,14 @@ async function startServer() {
         console.error("GHL OAuth token error:", data);
         return res.status(400).json({ error: "Token exchange failed", details: data });
       }
-      // Store tokens — write to .env.local-style file for persistence
-      const fs = await import("fs");
-      const envPath = path.resolve(import.meta.dirname, "../..", ".env.social-auth");
-      const tokenData = {
+      // Store tokens using shared persistence function
+      persistTokens({
         access_token: data.access_token as string,
         refresh_token: data.refresh_token as string,
         expires_in: data.expires_in as number,
         location_id: data.locationId as string,
         user_id: (data.userId as string) || undefined,
-        fetched_at: new Date().toISOString(),
-      };
-      fs.writeFileSync(envPath, JSON.stringify(tokenData, null, 2));
-      // Also set in current process so it works immediately
-      process.env.GHL_OAUTH_ACCESS_TOKEN = tokenData.access_token;
-      process.env.GHL_OAUTH_REFRESH_TOKEN = tokenData.refresh_token;
-      if (tokenData.user_id) process.env.GHL_USER_ID = tokenData.user_id;
-      console.log("[GHL OAuth] Tokens saved to .env.social-auth");
+      });
       res.send(`
         <html><body style="font-family:sans-serif;text-align:center;padding:60px">
           <h1>GHL Connected!</h1>
@@ -236,47 +231,12 @@ async function startServer() {
 
   // Token refresh endpoint (call periodically or on 401)
   app.post("/api/social-auth/refresh", async (_req, res) => {
-    const clientId = process.env.GHL_OAUTH_CLIENT_ID;
-    const clientSecret = process.env.GHL_OAUTH_CLIENT_SECRET;
-    const refreshToken = process.env.GHL_OAUTH_REFRESH_TOKEN;
-    if (!clientId || !clientSecret || !refreshToken) {
-      return res.status(400).json({ error: "Missing OAuth credentials or refresh token" });
-    }
     try {
-      const response = await fetch("https://services.leadconnectorhq.com/oauth/token", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({
-          client_id: clientId,
-          client_secret: clientSecret,
-          grant_type: "refresh_token",
-          refresh_token: refreshToken,
-          user_type: "Location",
-        }),
-      });
-      const data = await response.json() as Record<string, unknown>;
-      if (!response.ok) {
-        return res.status(400).json({ error: "Refresh failed", details: data });
-      }
-      const fs = await import("fs");
-      const envPath = path.resolve(import.meta.dirname, "../..", ".env.social-auth");
-      const tokenData = {
-        access_token: data.access_token as string,
-        refresh_token: data.refresh_token as string,
-        expires_in: data.expires_in as number,
-        location_id: data.locationId as string,
-        user_id: (data.userId as string) || undefined,
-        fetched_at: new Date().toISOString(),
-      };
-      fs.writeFileSync(envPath, JSON.stringify(tokenData, null, 2));
-      process.env.GHL_OAUTH_ACCESS_TOKEN = tokenData.access_token;
-      process.env.GHL_OAUTH_REFRESH_TOKEN = tokenData.refresh_token;
-      if (tokenData.user_id) process.env.GHL_USER_ID = tokenData.user_id;
-      console.log("[GHL OAuth] Tokens refreshed");
-      res.json({ success: true, expires_in: data.expires_in });
+      const result = await refreshGHLToken();
+      res.json({ success: true, expires_in: result.expires_in });
     } catch (err) {
       console.error("GHL OAuth refresh error:", err);
-      res.status(500).json({ error: "Refresh failed" });
+      res.status(500).json({ error: err instanceof Error ? err.message : "Refresh failed" });
     }
   });
 

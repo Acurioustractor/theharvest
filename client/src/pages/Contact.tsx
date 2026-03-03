@@ -7,6 +7,7 @@ import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { rootStyle, colors, fonts, detailLabelStyle, detailTextStyle, formLabelStyle, formInputStyle } from "@/styles/brand";
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 export default function Contact() {
   const isMobile = useMediaQuery("(max-width: 768px)");
@@ -41,7 +42,10 @@ export default function Contact() {
     try {
       const response = await fetch(`${supabaseUrl}/functions/v1/contact-form`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${supabaseAnonKey}`,
+        },
         body: JSON.stringify(formData),
       });
 

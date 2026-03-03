@@ -20,6 +20,7 @@ import {
   loadStory,
   getWikiStatus,
 } from "./wiki.js";
+import { queryEditorialCalendar, getEditorialPost, updateEditorialPost, getEditorialProjects, getEditorialCommunicationTypes } from "./notion.js";
 import { z } from "zod";
 
 const INTEREST_OPTIONS = ["kids-play", "cafe", "garden", "pop-up-events", "art-exhibitions", "something-else"] as const;
@@ -996,6 +997,81 @@ export const appRouter = router({
         );
         return { success: true, content: result };
       }),
+  }),
+
+  // Editorial calendar (ACT Communications Dashboard in Notion)
+  editorial: router({
+    // List posts from Notion, optionally filtered by project/status/type
+    list: publicProcedure
+      .input(z.object({
+        projectId: z.string().optional(),
+        status: z.string().optional(),
+        communicationType: z.string().optional(),
+      }).optional())
+      .query(async ({ input }) => {
+        return await queryEditorialCalendar({
+          projectId: input?.projectId,
+          status: input?.status,
+          communicationType: input?.communicationType,
+        });
+      }),
+
+    // Get a single post by Notion page ID
+    get: publicProcedure
+      .input(z.object({ id: z.string() }))
+      .query(async ({ input }) => {
+        return await getEditorialPost(input.id);
+      }),
+
+    // Update a post in Notion (status, caption, date, GHL Post ID)
+    update: publicProcedure
+      .input(z.object({
+        id: z.string(),
+        status: z.string().optional(),
+        caption: z.string().optional(),
+        scheduledDate: z.string().optional(),
+        ghlPostId: z.string().optional(),
+        mediaUrl: z.string().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        const { id, ...updates } = input;
+        await updateEditorialPost(id, updates);
+        return { success: true };
+      }),
+
+    // List projects from the ACT Projects database
+    projects: publicProcedure.query(async () => {
+      return await getEditorialProjects();
+    }),
+
+    // List communication type options
+    communicationTypes: publicProcedure.query(async () => {
+      return await getEditorialCommunicationTypes();
+    }),
+
+    // Sync published status from GHL back to Notion
+    syncPublished: publicProcedure.mutation(async () => {
+      const ghlResult = await getGHLSocialPosts();
+      if (!ghlResult.success || !ghlResult.posts) {
+        return { success: false, error: ghlResult.error, updated: 0 };
+      }
+
+      const scheduledPosts = await queryEditorialCalendar({ status: "scheduled" });
+      let updated = 0;
+
+      for (const post of scheduledPosts) {
+        if (!post.ghlPostId) continue;
+        const ghlPost = ghlResult.posts.find(
+          (g: any) => (g.id || g._id) === post.ghlPostId
+        );
+        if (ghlPost?.status === "published") {
+          await updateEditorialPost(post.id, { status: "published" });
+          updated++;
+        }
+      }
+
+      return { success: true, updated };
+    }),
   }),
 
   // Social media posting via GHL Social Planner

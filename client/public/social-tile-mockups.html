@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The Harvest — Social Tile Planner</title>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -54,6 +55,13 @@
   .tile img, .tile video { width: 100%; height: 100%; object-fit: cover; display: block; transition: opacity 0.3s; }
   .tile .overlay { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; padding: 1.5rem; pointer-events: none; }
   .style-gradient .overlay { background: linear-gradient(to top, rgba(44,24,16,0.95) 0%, rgba(44,24,16,0.7) 35%, transparent 70%); }
+  /* Top overlay variant */
+  .tile .overlay.overlay-top { justify-content: flex-start; }
+  .style-gradient .overlay.overlay-top { background: linear-gradient(to bottom, rgba(44,24,16,0.95) 0%, rgba(44,24,16,0.7) 35%, transparent 70%); }
+  .style-sketch .overlay.overlay-top { background: linear-gradient(to bottom, var(--milk) 0%, rgba(245,240,232,0.8) 30%, transparent 60%); }
+  /* Toggle button */
+  .tile-pos-btn { background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.3); color: #fff; font-size: 0.55rem; padding: 3px 7px; border-radius: 3px; cursor: pointer; font-family: inherit; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; transition: all 0.2s; }
+  .tile-pos-btn:hover { background: rgba(0,0,0,0.8); border-color: var(--golden-hour); color: var(--golden-hour); }
   .style-sketch .overlay { background: linear-gradient(to top, var(--milk) 0%, rgba(245,240,232,0.8) 30%, transparent 60%); }
   .style-typo { background: var(--milk); display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 2rem; }
   .style-typo .overlay { position: relative; inset: auto; background: none; justify-content: center; align-items: center; text-align: center; }
@@ -234,6 +242,9 @@
   /* Tile edit button */
   .tile-edit-btn { background: none; border: 1px solid #444; color: #888; font-size: 0.6rem; padding: 2px 8px; border-radius: 3px; cursor: pointer; font-family: inherit; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; transition: all 0.2s; }
   .tile-edit-btn:hover { border-color: var(--golden-hour); color: var(--golden-hour); }
+  /* Tile download button */
+  .tile-download-btn { display: inline-block; background: rgba(255,255,255,0.08); border: 1px solid #444; color: #888; font-size: 0.6rem; padding: 3px 10px; border-radius: 3px; cursor: pointer; font-family: inherit; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; transition: all 0.2s; text-decoration: none; margin-top: 0.4rem; }
+  .tile-download-btn:hover { border-color: var(--canopy); color: var(--canopy); background: rgba(74,124,89,0.1); }
 
   /* Copy editor modal */
   .copy-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 100; }
@@ -285,8 +296,13 @@
 <div class="app">
 <div class="main">
 
-<h1>The Harvest — Social Planner</h1>
-<p class="subtitle">Design tiles, plan posts on a calendar, manage your media library. Everything saved to Supabase.</p>
+<div style="display:flex;justify-content:space-between;align-items:flex-start;">
+  <div>
+    <h1>The Harvest — Tile Designer</h1>
+    <p class="subtitle">Design tiles, plan posts on a calendar, manage your media library.</p>
+  </div>
+  <a href="/social-planner" style="color:var(--golden-hour);font-size:0.7rem;font-weight:700;text-decoration:none;padding:0.4rem 0.75rem;background:#333;border-radius:4px;white-space:nowrap;margin-top:0.5rem;">Social Planner</a>
+</div>
 
 <!-- MAIN TABS -->
 <div class="main-tabs">
@@ -686,8 +702,9 @@ let usageLog = [];
 let supabaseMedia = [];
 let uploadedThisSession = [];
 
-// Social posts for calendar
-const socialPosts = [
+// Social posts for calendar — loaded from Notion editorial calendar via tRPC
+let socialPosts = [
+  // Fallback data used while Notion loads
   { date: '2026-02-18', title: 'Origin Story', tile: 0, platforms: ['IG','FB'], link: '/' },
   { date: '2026-02-20', title: 'First Gathering', tile: 1, platforms: ['IG','FB','GBP'], link: '/gather' },
   { date: '2026-02-22', title: 'Shaun Fisher', tile: 2, platforms: ['IG','FB'], link: '/gather' },
@@ -702,6 +719,65 @@ const socialPosts = [
   { date: '2026-03-05', title: 'Save Your Spot', tile: 9, platforms: ['IG','FB','GBP'], link: '/gather' },
   { date: '2026-03-05', title: 'Story: Invite', tile: 11, platforms: ['IG'], link: '/gather' },
 ];
+
+// Fetch editorial posts from Notion via tRPC and replace socialPosts
+let _notionProjectId = '';
+async function loadEditorialPosts(projectId) {
+  try {
+    const input = projectId ? { projectId } : {};
+    const url = '/api/trpc/editorial.list?input=' + encodeURIComponent(JSON.stringify(input));
+    const res = await fetch(url);
+    if (!res.ok) return;
+    const json = await res.json();
+    const posts = json.result?.data ?? [];
+    if (!posts.length) return;
+
+    // Map Notion posts to the format the tile designer expects
+    socialPosts = posts.map((p, i) => ({
+      date: p.scheduledDate ? p.scheduledDate.slice(0, 10) : null,
+      title: p.title,
+      tile: i,
+      platforms: p.platforms || [],
+      link: p.link,
+      caption: p.caption,
+      mediaUrl: p.mediaUrl,
+      status: p.status,
+      notionId: p.id,
+      communicationType: p.communicationType,
+    }));
+
+    // Re-render calendar if it's visible
+    if (typeof renderCalendar === 'function') renderCalendar();
+    console.log(`[Editorial] Loaded ${socialPosts.length} posts from Notion` + (projectId ? ` (project: ${projectId})` : ''));
+  } catch (err) {
+    console.warn('[Editorial] Could not load from Notion, using fallback data:', err.message);
+  }
+}
+
+// Load projects for selector
+async function loadEditorialProjects() {
+  try {
+    const res = await fetch('/api/trpc/editorial.projects?input={}');
+    if (!res.ok) return [];
+    const json = await res.json();
+    return json.result?.data ?? [];
+  } catch { return []; }
+}
+
+// Initialize: load posts on page load
+loadEditorialPosts().then(() => {
+  // Add project selector to header if projects exist
+  loadEditorialProjects().then(projects => {
+    if (!projects.length) return;
+    const subtitle = document.querySelector('.subtitle');
+    if (!subtitle) return;
+    const sel = document.createElement('select');
+    sel.style.cssText = 'background:#333;color:var(--milk);border:1px solid #444;border-radius:4px;padding:4px 8px;font-size:0.7rem;font-family:inherit;margin-left:0.75rem;cursor:pointer;';
+    sel.innerHTML = '<option value="">All Projects</option>' + projects.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
+    sel.onchange = () => { _notionProjectId = sel.value; loadEditorialPosts(sel.value); };
+    subtitle.appendChild(sel);
+  });
+});
 
 // Photo library
 const photoLibrary = {
@@ -1751,6 +1827,157 @@ async function loadPostQueue() {
 }
 
 // ============================================================
+// DOWNLOAD BUTTONS — captures composed tile (photo + overlay)
+// ============================================================
+async function downloadComposedTile(tileIndex) {
+  const wrapper = document.querySelector(`[data-tile="${tileIndex}"]`);
+  if (!wrapper) return;
+  const tileEl = wrapper.querySelector('.tile');
+  const img = tileEl.querySelector('img');
+  if (!tileEl || !img) return;
+
+  const origSrc = img.src;
+  const origFit = img.style.objectFit;
+  const rect = tileEl.getBoundingClientRect();
+  // Render at 1080px for social-quality output
+  const aspect = rect.width / rect.height;
+  const targetW = 1080;
+  const targetH = Math.round(1080 / aspect);
+
+  // Pre-crop image to simulate object-fit:cover
+  const tempImg = new Image();
+  tempImg.crossOrigin = 'anonymous';
+  await new Promise((resolve, reject) => {
+    tempImg.onload = resolve;
+    tempImg.onerror = reject;
+    tempImg.src = origSrc;
+  });
+
+  const cropCanvas = document.createElement('canvas');
+  cropCanvas.width = targetW;
+  cropCanvas.height = targetH;
+  const ctx = cropCanvas.getContext('2d');
+  const iw = tempImg.naturalWidth, ih = tempImg.naturalHeight;
+  const scale = Math.max(targetW / iw, targetH / ih);
+  const sw = targetW / scale, sh = targetH / scale;
+  const sx = (iw - sw) / 2, sy = (ih - sh) / 2;
+  ctx.drawImage(tempImg, sx, sy, sw, sh, 0, 0, targetW, targetH);
+
+  // Clone the tile at 1080px size for high-res capture
+  const scaleFactor = targetW / rect.width;
+  const clone = tileEl.cloneNode(true);
+  clone.style.width = targetW + 'px';
+  clone.style.height = targetH + 'px';
+  clone.style.position = 'fixed';
+  clone.style.left = '-9999px';
+  clone.style.top = '0';
+  clone.style.aspectRatio = 'auto';
+  clone.style.fontSize = (scaleFactor * 16) + 'px'; // scale base font size
+  // Scale all text elements proportionally
+  clone.querySelectorAll('.headline, .subtext, .branding').forEach(el => {
+    const computed = window.getComputedStyle(tileEl.querySelector('.' + el.className.split(' ')[0]) || el);
+    const origSize = parseFloat(computed.fontSize);
+    el.style.fontSize = (origSize * scaleFactor) + 'px';
+    if (computed.marginTop) el.style.marginTop = (parseFloat(computed.marginTop) * scaleFactor) + 'px';
+    if (computed.letterSpacing && computed.letterSpacing !== 'normal') el.style.letterSpacing = (parseFloat(computed.letterSpacing) * scaleFactor) + 'px';
+  });
+  // Scale overlay padding
+  const overlayClone = clone.querySelector('.overlay');
+  if (overlayClone) {
+    const origPadding = parseFloat(window.getComputedStyle(tileEl.querySelector('.overlay')).padding);
+    overlayClone.style.padding = (origPadding * scaleFactor) + 'px';
+  }
+  // Swap cloned img to pre-cropped version
+  const cloneImg = clone.querySelector('img');
+  if (cloneImg) {
+    cloneImg.src = cropCanvas.toDataURL('image/png');
+    cloneImg.style.objectFit = 'fill';
+    cloneImg.style.width = '100%';
+    cloneImg.style.height = '100%';
+  }
+  document.body.appendChild(clone);
+
+  // Small delay for the browser to render
+  await new Promise(r => setTimeout(r, 150));
+
+  // Capture the composed tile at full resolution
+  const canvas = await html2canvas(clone, {
+    useCORS: true,
+    scale: 1,
+    backgroundColor: '#333',
+    width: targetW,
+    height: targetH,
+  });
+
+  document.body.removeChild(clone);
+
+  // Download
+  const label = wrapper.querySelector('.tile-label');
+  const name = label ? label.textContent.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-') : `tile-${tileIndex}`;
+  const a = document.createElement('a');
+  a.download = `${name}.png`;
+  a.href = canvas.toDataURL('image/png');
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
+function addTileControls() {
+  document.querySelectorAll('.tile-wrapper').forEach(wrapper => {
+    const idx = wrapper.dataset.tile;
+    if (idx == null) return;
+    const tileEl = wrapper.querySelector('.tile');
+    const overlay = tileEl?.querySelector('.overlay');
+
+    // Controls row
+    const controls = document.createElement('div');
+    controls.style.cssText = 'display:flex; gap:0.4rem; margin-top:0.4rem; align-items:center;';
+
+    // Position toggle
+    if (overlay) {
+      const posBtn = document.createElement('button');
+      posBtn.className = 'tile-pos-btn';
+      posBtn.textContent = '↕ Top / Bottom';
+      posBtn.onclick = (e) => {
+        e.stopPropagation();
+        overlay.classList.toggle('overlay-top');
+        // Persist to localStorage
+        const key = `tile-pos-${idx}`;
+        localStorage.setItem(key, overlay.classList.contains('overlay-top') ? 'top' : 'bottom');
+      };
+      controls.appendChild(posBtn);
+
+      // Restore saved position
+      const saved = localStorage.getItem(`tile-pos-${idx}`);
+      if (saved === 'top') overlay.classList.add('overlay-top');
+    }
+
+    // Download button
+    const dlBtn = document.createElement('button');
+    dlBtn.className = 'tile-download-btn';
+    dlBtn.style.marginTop = '0';
+    dlBtn.textContent = '↓ Download';
+    dlBtn.onclick = async (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      dlBtn.textContent = '⏳ Rendering...';
+      dlBtn.disabled = true;
+      try {
+        await downloadComposedTile(parseInt(idx));
+      } catch (err) {
+        console.error('Download failed:', err);
+        alert('Download failed: ' + err.message);
+      }
+      dlBtn.textContent = '↓ Download';
+      dlBtn.disabled = false;
+    };
+    controls.appendChild(dlBtn);
+
+    wrapper.appendChild(controls);
+  });
+}
+
+// ============================================================
 // INIT
 // ============================================================
 async function init() {
@@ -1760,6 +1987,7 @@ async function init() {
   renderUsageLog();
   setupDropZone();
   loadSupabaseMedia(); // async, populates in background
+  addTileControls();
 }
 init();
 </script>

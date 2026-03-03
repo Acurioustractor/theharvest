@@ -285,25 +285,164 @@ export async function getGHLContactCountByTag(tag: string): Promise<number> {
 }
 
 // ============================================================
-// SOCIAL PLANNER API
+// SOCIAL PLANNER API — OAuth Token Management
 // ============================================================
+
+const SOCIAL_AUTH_PATH = path.resolve(import.meta.dirname, "..", ".env.social-auth");
+
+/** Read persisted token data from .env.social-auth */
+function readTokenFile(): Record<string, unknown> | null {
+  try {
+    if (fs.existsSync(SOCIAL_AUTH_PATH)) {
+      return JSON.parse(fs.readFileSync(SOCIAL_AUTH_PATH, "utf8"));
+    }
+  } catch {}
+  return null;
+}
+
+/** Write token data to .env.social-auth and update process.env */
+export function persistTokens(data: {
+  access_token: string;
+  refresh_token: string;
+  expires_in: number;
+  location_id?: string;
+  user_id?: string;
+}) {
+  const tokenData = {
+    ...data,
+    fetched_at: new Date().toISOString(),
+  };
+  fs.writeFileSync(SOCIAL_AUTH_PATH, JSON.stringify(tokenData, null, 2));
+  process.env.GHL_OAUTH_ACCESS_TOKEN = data.access_token;
+  process.env.GHL_OAUTH_REFRESH_TOKEN = data.refresh_token;
+  if (data.user_id) process.env.GHL_USER_ID = data.user_id;
+  console.log("[GHL OAuth] Tokens persisted");
+}
+
+/**
+ * Refresh the OAuth token using the refresh_token grant.
+ * Shared by both the /api/social-auth/refresh endpoint and auto-refresh.
+ * Returns the new token data or throws on failure.
+ */
+export async function refreshGHLToken(): Promise<{
+  access_token: string;
+  refresh_token: string;
+  expires_in: number;
+  locationId?: string;
+  userId?: string;
+}> {
+  const clientId = process.env.GHL_OAUTH_CLIENT_ID;
+  const clientSecret = process.env.GHL_OAUTH_CLIENT_SECRET;
+  let refreshToken = process.env.GHL_OAUTH_REFRESH_TOKEN;
+
+  // Try loading refresh token from file if not in env
+  if (!refreshToken) {
+    const fileData = readTokenFile();
+    if (fileData?.refresh_token) {
+      refreshToken = fileData.refresh_token as string;
+    }
+  }
+
+  if (!clientId || !clientSecret || !refreshToken) {
+    throw new Error("Missing OAuth credentials or refresh token for GHL refresh");
+  }
+
+  const response = await fetch("https://services.leadconnectorhq.com/oauth/token", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({
+      client_id: clientId,
+      client_secret: clientSecret,
+      grant_type: "refresh_token",
+      refresh_token: refreshToken,
+      user_type: "Location",
+    }),
+  });
+
+  const data = await response.json() as Record<string, unknown>;
+  if (!response.ok) {
+    console.error("[GHL OAuth] Refresh failed:", data);
+    throw new Error(`GHL token refresh failed: ${JSON.stringify(data)}`);
+  }
+
+  const result = {
+    access_token: data.access_token as string,
+    refresh_token: data.refresh_token as string,
+    expires_in: data.expires_in as number,
+    locationId: data.locationId as string | undefined,
+    userId: data.userId as string | undefined,
+  };
+
+  persistTokens({
+    access_token: result.access_token,
+    refresh_token: result.refresh_token,
+    expires_in: result.expires_in,
+    location_id: result.locationId,
+    user_id: result.userId,
+  });
+
+  console.log("[GHL OAuth] Token refreshed successfully");
+  return result;
+}
+
+/**
+ * Check if the token is expiring within 5 minutes, refresh if needed.
+ * Called before social API requests.
+ */
+async function refreshTokenIfNeeded(): Promise<void> {
+  const fileData = readTokenFile();
+  if (!fileData?.fetched_at || !fileData?.expires_in) return;
+
+  const fetchedAt = new Date(fileData.fetched_at as string).getTime();
+  const expiresIn = (fileData.expires_in as number) * 1000; // convert to ms
+  const expiresAt = fetchedAt + expiresIn;
+  const fiveMinutes = 5 * 60 * 1000;
+
+  if (Date.now() > expiresAt - fiveMinutes) {
+    console.log("[GHL OAuth] Token expiring soon, refreshing...");
+    try {
+      await refreshGHLToken();
+    } catch (err) {
+      console.error("[GHL OAuth] Auto-refresh failed:", err);
+    }
+  }
+}
+
+/**
+ * Wrapper that retries a function once on 401 after refreshing the token.
+ */
+async function withTokenRetry<T>(fn: () => Promise<T>): Promise<T> {
+  await refreshTokenIfNeeded();
+  try {
+    const result = await fn();
+    return result;
+  } catch (err: any) {
+    // Check if the error is a 401-like failure
+    if (err?.status === 401 || err?.message?.includes("401")) {
+      console.log("[GHL OAuth] Got 401, forcing token refresh and retrying...");
+      try {
+        await refreshGHLToken();
+        return await fn();
+      } catch (refreshErr) {
+        console.error("[GHL OAuth] Retry after refresh also failed:", refreshErr);
+        throw refreshErr;
+      }
+    }
+    throw err;
+  }
+}
 
 /** Get the best available token for social planner (OAuth > Agency > Sub-account) */
 function getSocialApiKey(): string | undefined {
   // Prefer OAuth access token (from OAuth2 flow)
   if (process.env.GHL_OAUTH_ACCESS_TOKEN) return process.env.GHL_OAUTH_ACCESS_TOKEN;
   // Try loading from persisted file
-  try {
-    const envPath = path.resolve(import.meta.dirname, "..", ".env.social-auth");
-    if (fs.existsSync(envPath)) {
-      const data = JSON.parse(fs.readFileSync(envPath, "utf8"));
-      if (data.access_token) {
-        process.env.GHL_OAUTH_ACCESS_TOKEN = data.access_token;
-        process.env.GHL_OAUTH_REFRESH_TOKEN = data.refresh_token;
-        return data.access_token;
-      }
-    }
-  } catch {}
+  const fileData = readTokenFile();
+  if (fileData?.access_token) {
+    process.env.GHL_OAUTH_ACCESS_TOKEN = fileData.access_token as string;
+    process.env.GHL_OAUTH_REFRESH_TOKEN = fileData.refresh_token as string;
+    return fileData.access_token as string;
+  }
   // Fallback to Private Integration tokens
   return process.env.GHL_AGENCY_API_KEY || process.env.GHL_API_KEY;
 }
@@ -381,17 +520,17 @@ async function getSocialUserId(): Promise<string | undefined> {
 }
 
 /**
- * Get connected social media accounts from GHL
+ * Get connected social media accounts from GHL (with auto token refresh)
  */
 export async function getGHLSocialAccounts(): Promise<{ success: boolean; accounts?: GHLSocialAccount[]; error?: string }> {
-  const apiKey = getSocialApiKey();
-  const locationId = process.env.GHL_LOCATION_ID;
+  return withTokenRetry(async () => {
+    const apiKey = getSocialApiKey();
+    const locationId = process.env.GHL_LOCATION_ID;
 
-  if (!apiKey || !locationId) {
-    return { success: false, error: "GHL credentials not configured." };
-  }
+    if (!apiKey || !locationId) {
+      return { success: false, error: "GHL credentials not configured." };
+    }
 
-  try {
     const response = await fetch(
       `${GHL_API_BASE}/social-media-posting/${locationId}/accounts`,
       {
@@ -402,6 +541,10 @@ export async function getGHLSocialAccounts(): Promise<{ success: boolean; accoun
         },
       }
     );
+
+    if (response.status === 401) {
+      throw Object.assign(new Error("401 Unauthorized"), { status: 401 });
+    }
 
     if (!response.ok) {
       const err = await response.text();
@@ -418,29 +561,25 @@ export async function getGHLSocialAccounts(): Promise<{ success: boolean; accoun
     }));
 
     return { success: true, accounts };
-  } catch (err) {
-    console.error("GHL social accounts error:", err);
-    return { success: false, error: String(err) };
-  }
+  });
 }
 
 /**
- * Create a social media post in GHL Social Planner
+ * Create a social media post in GHL Social Planner (with auto token refresh)
  */
 export async function createGHLSocialPost(post: GHLSocialPost): Promise<{ success: boolean; postId?: string; error?: string }> {
-  const apiKey = getSocialApiKey();
-  const locationId = process.env.GHL_LOCATION_ID;
-  const userId = await getSocialUserId();
+  return withTokenRetry(async () => {
+    const apiKey = getSocialApiKey();
+    const locationId = process.env.GHL_LOCATION_ID;
+    const userId = await getSocialUserId();
 
-  if (!apiKey || !locationId) {
-    return { success: false, error: "GHL credentials not configured." };
-  }
-  if (!userId) {
-    return { success: false, error: "GHL user ID not configured. Re-authorize via /api/social-auth/start." };
-  }
+    if (!apiKey || !locationId) {
+      return { success: false, error: "GHL credentials not configured." };
+    }
+    if (!userId) {
+      return { success: false, error: "GHL user ID not configured. Re-authorize via /api/social-auth/start." };
+    }
 
-  try {
-    // GHL CreatePostDTO schema — locationId is in URL path, NOT body
     const body: Record<string, unknown> = {
       userId,
       summary: post.summary,
@@ -449,8 +588,6 @@ export async function createGHLSocialPost(post: GHLSocialPost): Promise<{ succes
       type: "post",
     };
 
-    // Media: GHL expects array of { url, type? } objects
-    // Rewrite localhost URLs to production domain so GHL can fetch them
     const PROD_ORIGIN = process.env.PUBLIC_SITE_URL || "https://theharvestwitta.com.au";
     const publicMediaUrls = (post.mediaUrls || [])
       .filter(url => url.startsWith("https://") || url.startsWith("http://"))
@@ -464,10 +601,8 @@ export async function createGHLSocialPost(post: GHLSocialPost): Promise<{ succes
     if (post.scheduledAt) {
       const schedDate = new Date(post.scheduledAt);
       if (schedDate.getTime() > Date.now() + 60_000) {
-        // GHL uses "scheduleDate" — must be in the future
         body.scheduleDate = post.scheduledAt;
       } else {
-        // Date is in the past or too close — save as draft instead
         body.status = "draft";
       }
     }
@@ -482,6 +617,10 @@ export async function createGHLSocialPost(post: GHLSocialPost): Promise<{ succes
       body: JSON.stringify(body),
     });
 
+    if (response.status === 401) {
+      throw Object.assign(new Error("401 Unauthorized"), { status: 401 });
+    }
+
     if (!response.ok) {
       const errorData = await response.json() as GHLErrorResponse;
       console.error("GHL Social Post Error:", errorData);
@@ -491,24 +630,21 @@ export async function createGHLSocialPost(post: GHLSocialPost): Promise<{ succes
     const data = await response.json() as { results?: { post?: { id?: string; _id?: string } }; id?: string };
     const postId = data.results?.post?.id || data.results?.post?._id || data.id;
     return { success: true, postId };
-  } catch (error) {
-    console.error("GHL Social Post request failed:", error);
-    return { success: false, error: "Unable to create social post." };
-  }
+  });
 }
 
 /**
- * Get social media posts from GHL
+ * Get social media posts from GHL (with auto token refresh)
  */
 export async function getGHLSocialPosts(status?: string): Promise<{ success: boolean; posts?: any[]; error?: string }> {
-  const apiKey = getSocialApiKey();
-  const locationId = process.env.GHL_LOCATION_ID;
+  return withTokenRetry(async () => {
+    const apiKey = getSocialApiKey();
+    const locationId = process.env.GHL_LOCATION_ID;
 
-  if (!apiKey || !locationId) {
-    return { success: false, error: "GHL credentials not configured." };
-  }
+    if (!apiKey || !locationId) {
+      return { success: false, error: "GHL credentials not configured." };
+    }
 
-  try {
     const url = `${GHL_API_BASE}/social-media-posting/${locationId}/posts/list`;
     const body: Record<string, unknown> = { limit: "50" };
 
@@ -523,6 +659,10 @@ export async function getGHLSocialPosts(status?: string): Promise<{ success: boo
       body: JSON.stringify(body),
     });
 
+    if (response.status === 401) {
+      throw Object.assign(new Error("401 Unauthorized"), { status: 401 });
+    }
+
     if (!response.ok) {
       const errorData = await response.json() as GHLErrorResponse;
       return { success: false, error: errorData.message || "Failed to fetch posts." };
@@ -530,16 +670,12 @@ export async function getGHLSocialPosts(status?: string): Promise<{ success: boo
 
     const data = await response.json() as { results?: { posts?: any[] }; posts?: any[] };
     const allPosts = data.results?.posts || data.posts || [];
-    // Filter to only posts created by our OAuth user (The Harvest tile planner)
     const userId = await getSocialUserId();
     const posts = userId
       ? allPosts.filter((p: any) => p.createdBy === userId)
       : allPosts;
     return { success: true, posts };
-  } catch (error) {
-    console.error("GHL get posts failed:", error);
-    return { success: false, error: "Unable to fetch posts." };
-  }
+  });
 }
 
 /**

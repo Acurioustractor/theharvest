@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { trpc } from "../lib/trpc";
 import { colors, fonts } from "../styles/brand";
-import { socialPosts, getPostLink, type SocialPost } from "../data/socialPosts";
+import type { EditorialPost, EditorialProject } from "../types/social";
 
 type Tab = "tiles" | "publish" | "queue";
 
@@ -22,37 +22,141 @@ interface GHLPost {
   accountIds?: string[];
 }
 
-// Platform display helpers
+// Platform display helpers — ACT uses full names in Target Accounts
 const platformIcon: Record<string, string> = {
+  Instagram: "IG",
+  Facebook: "FB",
+  "Google Business": "GBP",
+  "LinkedIn (Company)": "LI",
+  "LinkedIn (Personal)": "LI",
+  YouTube: "YT",
+  Bluesky: "BS",
+  Twitter: "TW",
+  // Legacy short names
   instagram: "IG",
   facebook: "FB",
   google: "GBP",
   linkedin: "LI",
+  IG: "IG",
+  FB: "FB",
+  GBP: "GBP",
 };
 
 const platformColor: Record<string, string> = {
+  Instagram: "#E1306C",
+  Facebook: "#1877F2",
+  "Google Business": "#4285F4",
+  "LinkedIn (Company)": "#0A66C2",
+  "LinkedIn (Personal)": "#0A66C2",
+  YouTube: "#FF0000",
+  Bluesky: "#0085FF",
+  Twitter: "#1DA1F2",
+  // Legacy short names
   instagram: "#E1306C",
   facebook: "#1877F2",
   google: "#4285F4",
   linkedin: "#0A66C2",
+  IG: "#E1306C",
+  FB: "#1877F2",
+  GBP: "#4285F4",
+};
+
+/** Build a UTM-tagged link for a post */
+function getPostLink(post: EditorialPost, platform: string = "social"): string {
+  if (!post.link) return "";
+  const type = post.communicationType?.toLowerCase().replace(/\s+/g, "-") || "social";
+  return `theharvestwitta.com.au${post.link}?utm_source=${platform}&utm_medium=social&utm_campaign=${type}&utm_content=${post.utmContent}`;
+}
+
+/** Format an ISO date to a short display string */
+function formatDate(iso: string | null): string {
+  if (!iso) return "\u2014";
+  const d = new Date(iso);
+  return d.toLocaleDateString("en-AU", { month: "short", day: "numeric" });
+}
+
+const statusColors: Record<string, string> = {
+  draft: "#666",
+  approved: colors.goldenHour,
+  scheduled: colors.workshirt,
+  published: colors.canopy,
+  failed: colors.calendula,
 };
 
 export default function SocialPlanner() {
   const [tab, setTab] = useState<Tab>("tiles");
+  const [projectId, setProjectId] = useState<string>("");
+
+  // Fetch projects for the selector
+  const projectsQuery = trpc.editorial.projects.useQuery();
+  const projects: EditorialProject[] = projectsQuery.data ?? [];
+
+  // Fetch posts from Notion filtered by project
+  const postsQuery = trpc.editorial.list.useQuery(
+    projectId ? { projectId } : {},
+  );
+  const posts: EditorialPost[] = postsQuery.data ?? [];
+
+  // Find project name for display
+  const currentProject = projects.find((p) => p.id === projectId);
 
   useEffect(() => {
-    document.title = "The Harvest \u2014 Social Planner";
+    document.title = "ACT \u2014 Social Planner";
   }, []);
 
   return (
     <div style={{ background: colors.shed, minHeight: "100vh", color: colors.milk, fontFamily: fonts.display }}>
       {/* Header */}
       <div style={{ padding: "2rem 2rem 0" }}>
-        <h1 style={{ fontSize: "1.8rem", fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.05em", margin: 0 }}>
-          Social Planner
-        </h1>
-        <div style={{ color: colors.goldenHour, fontSize: "0.85rem", marginBottom: "1.5rem" }}>
-          The Harvest \u2014 First Gathering Campaign \u00b7 14 posts \u00b7 Feb 18 \u2013 Mar 7
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "1rem" }}>
+          <div>
+            <h1 style={{ fontSize: "1.8rem", fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.05em", margin: 0 }}>
+              Social Planner
+            </h1>
+            <div style={{ color: colors.goldenHour, fontSize: "0.85rem", marginTop: "0.25rem" }}>
+              {currentProject ? currentProject.name : "All Projects"} {"\u00b7"} {posts.length} posts
+            </div>
+          </div>
+
+          {/* Project selector */}
+          <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+            <select
+              value={projectId}
+              onChange={(e) => setProjectId(e.target.value)}
+              style={{
+                background: "#333",
+                color: colors.milk,
+                border: "1px solid #444",
+                borderRadius: 4,
+                padding: "0.4rem 0.6rem",
+                fontSize: "0.7rem",
+                fontFamily: fonts.display,
+                cursor: "pointer",
+              }}
+            >
+              <option value="">All Projects</option>
+              {projects.map((p) => (
+                <option key={p.id} value={p.id}>{p.name}</option>
+              ))}
+            </select>
+            <button
+              onClick={() => window.open("/social-tile-mockups.html", "_blank")}
+              style={{
+                background: colors.workshirt,
+                color: "white",
+                border: "none",
+                padding: "0.4rem 0.75rem",
+                borderRadius: 4,
+                fontSize: "0.65rem",
+                fontWeight: 700,
+                cursor: "pointer",
+                fontFamily: fonts.display,
+                whiteSpace: "nowrap",
+              }}
+            >
+              Tile Designer
+            </button>
+          </div>
         </div>
 
         {/* Tabs */}
@@ -82,38 +186,75 @@ export default function SocialPlanner() {
         </div>
       </div>
 
+      {/* Loading / error states */}
+      {postsQuery.isLoading && (
+        <div style={{ padding: "2rem", fontSize: "0.75rem", color: "#666" }}>
+          Loading editorial calendar from Notion...
+        </div>
+      )}
+
+      {postsQuery.isError && (
+        <div style={{ padding: "2rem" }}>
+          <div style={{ fontSize: "0.75rem", color: colors.calendula }}>
+            Failed to load editorial calendar. Check NOTION_API_KEY and NOTION_EDITORIAL_DB_ID.
+          </div>
+        </div>
+      )}
+
       {/* Tab content */}
-      <div style={{ padding: "0 2rem 2rem" }}>
-        {tab === "tiles" && <TilesTab />}
-        {tab === "publish" && <PublishTab />}
-        {tab === "queue" && <QueueTab />}
-      </div>
+      {!postsQuery.isLoading && !postsQuery.isError && (
+        <div style={{ padding: "0 2rem 2rem" }}>
+          {tab === "tiles" && <TilesTab posts={posts} />}
+          {tab === "publish" && <PublishTab posts={posts} />}
+          {tab === "queue" && <QueueTab posts={posts} />}
+        </div>
+      )}
     </div>
   );
 }
 
 // ─────────────────────────────────────────────
-// TILES TAB
+// TILES TAB — shows all posts from Notion
 // ─────────────────────────────────────────────
-function TilesTab() {
+function TilesTab({ posts }: { posts: EditorialPost[] }) {
   return (
     <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(360px, 1fr))", gap: "1.5rem" }}>
-      {socialPosts.map((post) => (
+      {posts.map((post) => (
         <TileCard key={post.id} post={post} />
       ))}
+      {posts.length === 0 && (
+        <div style={{ fontSize: "0.75rem", color: "#555", gridColumn: "1 / -1" }}>
+          No posts found. Add posts to the ACT Communications Dashboard in Notion.
+        </div>
+      )}
     </div>
   );
 }
 
-function TileCard({ post }: { post: SocialPost }) {
+function TileCard({ post }: { post: EditorialPost }) {
   const aspectRatio = post.format === "landscape" ? "16/9" : post.format === "story" ? "9/16" : "1/1";
   return (
     <div style={{ background: "#222", borderRadius: 12, overflow: "hidden", padding: "1rem" }}>
       {/* Header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
-        <span style={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.1em", color: colors.goldenHour, fontWeight: 700 }}>
-          {post.label}
-        </span>
+        <div style={{ display: "flex", gap: "0.4rem", alignItems: "center" }}>
+          <span
+            style={{
+              fontSize: "0.55rem",
+              fontWeight: 700,
+              textTransform: "uppercase",
+              padding: "2px 6px",
+              borderRadius: 3,
+              background: statusColors[post.status] || "#555",
+              color: "white",
+            }}
+          >
+            {post.status}
+          </span>
+          <span style={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.1em", color: colors.goldenHour, fontWeight: 700 }}>
+            {post.title}
+          </span>
+        </div>
         <div style={{ display: "flex", gap: "0.4rem", alignItems: "center" }}>
           {post.platforms.map((p) => (
             <span
@@ -123,24 +264,44 @@ function TileCard({ post }: { post: SocialPost }) {
                 fontWeight: 700,
                 padding: "2px 5px",
                 borderRadius: 3,
-                background: platformColor[p === "IG" ? "instagram" : p === "FB" ? "facebook" : "google"] || "#555",
+                background: platformColor[p] || "#555",
                 color: "white",
               }}
             >
-              {p}
+              {platformIcon[p] || p}
             </span>
           ))}
-          <span style={{ fontSize: "0.65rem", color: "#666" }}>{post.displayDate}</span>
+          <span style={{ fontSize: "0.65rem", color: "#666" }}>{formatDate(post.scheduledDate)}</span>
         </div>
       </div>
 
       {/* Image */}
-      <div style={{ width: "100%", aspectRatio, borderRadius: 4, overflow: "hidden", background: "#333", maxHeight: post.format === "story" ? 500 : undefined }}>
-        <img src={post.image} alt={post.title} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
-      </div>
+      {post.mediaUrl && (
+        <div style={{ width: "100%", aspectRatio, borderRadius: 4, overflow: "hidden", background: "#333", maxHeight: post.format === "story" ? 500 : undefined }}>
+          <img src={post.mediaUrl} alt={post.title} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+        </div>
+      )}
+      {!post.mediaUrl && (
+        <div style={{ width: "100%", aspectRatio, borderRadius: 4, background: "#333", display: "flex", alignItems: "center", justifyContent: "center", color: "#555", fontSize: "0.7rem" }}>
+          No media
+        </div>
+      )}
 
-      {/* Caption */}
-      <div style={{ fontSize: "0.75rem", color: "#888", marginTop: "0.5rem", lineHeight: 1.4 }}>
+      {/* Communication type badge */}
+      {post.communicationType && (
+        <div style={{ fontSize: "0.55rem", color: "#888", marginTop: "0.5rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+          {post.communicationType}
+        </div>
+      )}
+
+      {/* Editorial Note */}
+      {post.editorialNote && (
+        <div style={{ fontSize: "0.65rem", color: "#c4922a", marginTop: "0.35rem", lineHeight: 1.3, fontStyle: "italic" }}>
+          {post.editorialNote}
+        </div>
+      )}
+      {/* Caption preview */}
+      <div style={{ fontSize: "0.7rem", color: "#aaa", marginTop: "0.35rem", lineHeight: 1.4, whiteSpace: "pre-line", maxHeight: 60, overflow: "hidden" }}>
         {post.caption}
       </div>
       {post.link && (
@@ -148,18 +309,48 @@ function TileCard({ post }: { post: SocialPost }) {
           Link: {post.link}
         </div>
       )}
+      {/* Download button */}
+      {post.mediaUrl && (
+        <a
+          href={post.mediaUrl}
+          download={`${post.utmContent || post.title}.png`}
+          style={{
+            display: "inline-block",
+            marginTop: "0.5rem",
+            fontSize: "0.6rem",
+            fontWeight: 700,
+            letterSpacing: "0.1em",
+            textTransform: "uppercase",
+            color: colors.milk,
+            background: "rgba(255,255,255,0.1)",
+            padding: "4px 10px",
+            borderRadius: 4,
+            textDecoration: "none",
+            cursor: "pointer",
+            transition: "background 0.2s",
+          }}
+          onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.2)")}
+          onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.1)")}
+        >
+          Download Image
+        </a>
+      )}
     </div>
   );
 }
 
 // ─────────────────────────────────────────────
-// PUBLISH TAB
+// PUBLISH TAB — only shows "approved" posts
 // ─────────────────────────────────────────────
-function PublishTab() {
+function PublishTab({ posts }: { posts: EditorialPost[] }) {
   const accountsQuery = trpc.social.accounts.useQuery();
   const postMutation = trpc.social.post.useMutation();
+  const editorialUpdate = trpc.editorial.update.useMutation();
   const accounts = accountsQuery.data?.accounts ?? [];
   const hasAccounts = accounts.length > 0;
+
+  // Only show approved posts for publishing
+  const approvedPosts = posts.filter((p) => p.status === "approved");
 
   return (
     <div style={{ maxWidth: 900 }}>
@@ -226,12 +417,17 @@ function PublishTab() {
         </div>
       )}
 
-      {/* Post cards */}
+      {/* Post cards — approved only */}
       <h3 style={{ fontSize: "0.85rem", fontWeight: 900, textTransform: "uppercase", color: colors.goldenHour, marginBottom: "0.75rem" }}>
-        Schedule Tiles
+        Ready to Schedule ({approvedPosts.length} approved)
       </h3>
-      {socialPosts.map((post) => (
-        <PublishCard key={post.id} post={post} accounts={accounts} postMutation={postMutation} />
+      {approvedPosts.length === 0 && (
+        <div style={{ fontSize: "0.75rem", color: "#555", marginBottom: "1rem" }}>
+          No approved posts. Mark posts as "Ready to Connect" in Notion to see them here.
+        </div>
+      )}
+      {approvedPosts.map((post) => (
+        <PublishCard key={post.id} post={post} accounts={accounts} postMutation={postMutation} editorialUpdate={editorialUpdate} />
       ))}
 
       {/* Newsletter section */}
@@ -261,19 +457,39 @@ function PublishCard({
   post,
   accounts,
   postMutation,
+  editorialUpdate,
 }: {
-  post: SocialPost;
+  post: EditorialPost;
   accounts: GHLAccount[];
   postMutation: ReturnType<typeof trpc.social.post.useMutation>;
+  editorialUpdate: ReturnType<typeof trpc.editorial.update.useMutation>;
 }) {
   const [selectedAccountIds, setSelectedAccountIds] = useState<string[]>(() => {
-    // Pre-select accounts matching the post's suggested platforms
-    const platMap: Record<string, string> = { IG: "instagram", FB: "facebook", GBP: "google" };
-    const wantedPlatforms = post.platforms.map((p) => platMap[p]).filter(Boolean);
+    // Pre-select accounts matching the post's target accounts
+    // Map ACT platform names to GHL platform identifiers
+    const platMap: Record<string, string> = {
+      "Instagram": "instagram",
+      "Facebook": "facebook",
+      "Google Business": "google",
+      "LinkedIn (Company)": "linkedin",
+      "LinkedIn (Personal)": "linkedin",
+      // Legacy
+      "IG": "instagram",
+      "FB": "facebook",
+      "GBP": "google",
+    };
+    const wantedPlatforms = post.platforms.map((p) => platMap[p] || p.toLowerCase()).filter(Boolean);
     return accounts.filter((a) => wantedPlatforms.includes(a.platform)).map((a) => a.id);
   });
-  const [date, setDate] = useState(post.date ?? "");
-  const [time, setTime] = useState("09:00");
+  const [date, setDate] = useState(() => {
+    if (!post.scheduledDate) return "";
+    return post.scheduledDate.slice(0, 10); // YYYY-MM-DD
+  });
+  const [time, setTime] = useState(() => {
+    if (!post.scheduledDate) return "09:00";
+    const t = post.scheduledDate.slice(11, 16);
+    return t || "09:00";
+  });
   const [status, setStatus] = useState<"idle" | "sending" | "done" | "error">("idle");
   const [resultMsg, setResultMsg] = useState("");
 
@@ -297,19 +513,32 @@ function PublishCard({
     const platform = accounts.find((a) => selectedAccountIds.includes(a.id))?.platform || "social";
     const linkText = getPostLink(post, platform);
     const summary = post.caption + (linkText ? `\n\n${linkText}` : "");
-    const mediaUrl = `${window.location.origin}${post.image}`;
+    const mediaUrl = post.mediaUrl || undefined;
 
     try {
       const result = await postMutation.mutateAsync({
         summary,
         accountIds: selectedAccountIds,
-        mediaUrls: [mediaUrl],
+        mediaUrls: mediaUrl ? [mediaUrl] : undefined,
         scheduledAt: mode === "schedule" ? new Date(`${date}T${time}:00+10:00`).toISOString() : undefined,
       });
 
       if (result.success) {
         setStatus("done");
         setResultMsg(mode === "schedule" ? `Scheduled! ID: ${result.postId}` : `Draft saved! ID: ${result.postId}`);
+
+        // Update Notion: mark as scheduled, store GHL Post ID, and set Sent date
+        if (result.postId) {
+          const sentDate = mode === "schedule"
+            ? new Date(`${date}T${time}:00+10:00`).toISOString()
+            : new Date().toISOString();
+          editorialUpdate.mutate({
+            id: post.id,
+            status: "scheduled",
+            ghlPostId: result.postId,
+            scheduledDate: sentDate,
+          });
+        }
       } else {
         setStatus("error");
         setResultMsg(result.error || "Failed");
@@ -333,7 +562,13 @@ function PublishCard({
   return (
     <div style={{ background: "#222", borderRadius: 8, padding: "1rem", marginBottom: "0.75rem", display: "grid", gridTemplateColumns: "80px 1fr", gap: "1rem", alignItems: "start" }}>
       <div style={{ width: 80, height: 80, borderRadius: 4, overflow: "hidden", background: "#333" }}>
-        <img src={post.image} alt={post.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+        {post.mediaUrl ? (
+          <img src={post.mediaUrl} alt={post.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+        ) : (
+          <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#555", fontSize: "0.55rem" }}>
+            No img
+          </div>
+        )}
       </div>
       <div>
         <div style={{ fontSize: "0.8rem", fontWeight: 700, color: colors.milk, marginBottom: "0.5rem" }}>{post.title}</div>
@@ -358,7 +593,7 @@ function PublishCard({
                   color: active ? "white" : "#888",
                 }}
               >
-                {platformIcon[acc.platform] || acc.platform} \u00b7 {acc.name.length > 12 ? acc.name.slice(0, 12) + "\u2026" : acc.name}
+                {platformIcon[acc.platform] || acc.platform} {"\u00b7"} {acc.name.length > 12 ? acc.name.slice(0, 12) + "\u2026" : acc.name}
               </button>
             );
           })}
@@ -424,17 +659,38 @@ function PublishCard({
 }
 
 // ─────────────────────────────────────────────
-// QUEUE TAB
+// QUEUE TAB — shows Notion + GHL combined status
 // ─────────────────────────────────────────────
-function QueueTab() {
-  const postsQuery = trpc.social.list.useQuery();
-  const posts: GHLPost[] = postsQuery.data?.posts ?? [];
+function QueueTab({ posts }: { posts: EditorialPost[] }) {
+  const ghlPostsQuery = trpc.social.list.useQuery();
+  const ghlPosts: GHLPost[] = ghlPostsQuery.data?.posts ?? [];
+  const syncMutation = trpc.editorial.update.useMutation();
+  const [syncing, setSyncing] = useState(false);
+  const [syncMsg, setSyncMsg] = useState("");
 
-  const statusColors: Record<string, string> = {
-    draft: "#666",
-    scheduled: colors.workshirt,
-    published: colors.canopy,
-    failed: colors.calendula,
+  // Posts that are scheduled or published
+  const queuedPosts = posts.filter((p) => p.status === "scheduled" || p.status === "published");
+
+  const handleSync = async () => {
+    setSyncing(true);
+    setSyncMsg("");
+    let updated = 0;
+
+    for (const post of queuedPosts) {
+      if (!post.ghlPostId || post.status === "published") continue;
+
+      // Check if this post is published in GHL
+      const ghlPost = ghlPosts.find((g) => (g.id || g._id) === post.ghlPostId);
+      if (ghlPost?.status === "published") {
+        try {
+          await syncMutation.mutateAsync({ id: post.id, status: "published" });
+          updated++;
+        } catch {}
+      }
+    }
+
+    setSyncMsg(updated > 0 ? `Updated ${updated} post(s) to published` : "No new updates found");
+    setSyncing(false);
   };
 
   return (
@@ -443,35 +699,133 @@ function QueueTab() {
         <h2 style={{ fontSize: "1rem", fontWeight: 900, textTransform: "uppercase", color: colors.goldenHour, margin: 0 }}>
           Post Queue
         </h2>
-        <button
-          onClick={() => postsQuery.refetch()}
-          style={{
-            background: colors.workshirt,
-            color: "white",
-            border: "none",
-            padding: "0.4rem 0.75rem",
-            borderRadius: 4,
-            fontSize: "0.65rem",
-            fontWeight: 700,
-            cursor: "pointer",
-            fontFamily: fonts.display,
-          }}
-        >
-          {postsQuery.isFetching ? "Loading..." : "Refresh"}
-        </button>
+        <div style={{ display: "flex", gap: "0.5rem" }}>
+          <button
+            onClick={handleSync}
+            disabled={syncing}
+            style={{
+              background: colors.canopy,
+              color: "white",
+              border: "none",
+              padding: "0.4rem 0.75rem",
+              borderRadius: 4,
+              fontSize: "0.65rem",
+              fontWeight: 700,
+              cursor: syncing ? "wait" : "pointer",
+              fontFamily: fonts.display,
+              opacity: syncing ? 0.5 : 1,
+            }}
+          >
+            {syncing ? "Syncing..." : "Sync Published"}
+          </button>
+          <button
+            onClick={() => ghlPostsQuery.refetch()}
+            style={{
+              background: colors.workshirt,
+              color: "white",
+              border: "none",
+              padding: "0.4rem 0.75rem",
+              borderRadius: 4,
+              fontSize: "0.65rem",
+              fontWeight: 700,
+              cursor: "pointer",
+              fontFamily: fonts.display,
+            }}
+          >
+            {ghlPostsQuery.isFetching ? "Loading..." : "Refresh"}
+          </button>
+        </div>
       </div>
 
-      {postsQuery.isLoading && (
-        <div style={{ fontSize: "0.75rem", color: "#666" }}>Loading post queue...</div>
-      )}
-
-      {!postsQuery.isLoading && posts.length === 0 && (
-        <div style={{ fontSize: "0.75rem", color: "#555" }}>
-          No posts in queue yet. Schedule tiles from the Publish tab.
+      {syncMsg && (
+        <div style={{ fontSize: "0.7rem", color: colors.canopy, marginBottom: "1rem" }}>
+          {syncMsg}
         </div>
       )}
 
-      {posts.map((p) => {
+      {/* Notion editorial queue */}
+      <h3 style={{ fontSize: "0.75rem", fontWeight: 700, textTransform: "uppercase", color: "#888", marginBottom: "0.5rem" }}>
+        Editorial Calendar
+      </h3>
+
+      {queuedPosts.length === 0 && (
+        <div style={{ fontSize: "0.75rem", color: "#555", marginBottom: "1.5rem" }}>
+          No scheduled or published posts yet.
+        </div>
+      )}
+
+      {queuedPosts.map((post) => (
+        <div
+          key={post.id}
+          style={{
+            background: "#222",
+            borderRadius: 8,
+            padding: "0.75rem 1rem",
+            marginBottom: "0.5rem",
+            display: "flex",
+            gap: "1rem",
+            alignItems: "center",
+          }}
+        >
+          <span
+            style={{
+              fontSize: "0.6rem",
+              fontWeight: 700,
+              textTransform: "uppercase",
+              padding: "3px 8px",
+              borderRadius: 3,
+              background: statusColors[post.status] || "#555",
+              color: "white",
+              flexShrink: 0,
+            }}
+          >
+            {post.status}
+          </span>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontSize: "0.75rem", color: colors.milk, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+              {post.title}
+            </div>
+            <div style={{ fontSize: "0.6rem", color: "#666", marginTop: 2 }}>
+              {formatDate(post.scheduledDate)}
+              {post.ghlPostId && <span> {"\u00b7"} GHL: {post.ghlPostId.slice(0, 8)}{"\u2026"}</span>}
+            </div>
+          </div>
+          <div style={{ display: "flex", gap: "0.3rem", flexShrink: 0 }}>
+            {post.platforms.map((p) => (
+              <span
+                key={p}
+                style={{
+                  fontSize: "0.5rem",
+                  fontWeight: 700,
+                  padding: "1px 4px",
+                  borderRadius: 2,
+                  background: platformColor[p] || "#555",
+                  color: "white",
+                }}
+              >
+                {platformIcon[p] || p}
+              </span>
+            ))}
+          </div>
+        </div>
+      ))}
+
+      {/* GHL Raw Queue */}
+      <h3 style={{ fontSize: "0.75rem", fontWeight: 700, textTransform: "uppercase", color: "#888", marginTop: "1.5rem", marginBottom: "0.5rem" }}>
+        GHL Post Queue
+      </h3>
+
+      {ghlPostsQuery.isLoading && (
+        <div style={{ fontSize: "0.75rem", color: "#666" }}>Loading GHL posts...</div>
+      )}
+
+      {!ghlPostsQuery.isLoading && ghlPosts.length === 0 && (
+        <div style={{ fontSize: "0.75rem", color: "#555" }}>
+          No posts in GHL queue.
+        </div>
+      )}
+
+      {ghlPosts.map((p) => {
         const st = p.status || "draft";
         const postId = p.id || p._id || "?";
         const when = p.scheduledAt
@@ -492,7 +846,6 @@ function QueueTab() {
               alignItems: "center",
             }}
           >
-            {/* Status badge */}
             <span
               style={{
                 fontSize: "0.6rem",
@@ -507,18 +860,14 @@ function QueueTab() {
             >
               {st}
             </span>
-
-            {/* Content */}
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ fontSize: "0.75rem", color: colors.milk, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                 {summaryPreview}
               </div>
               <div style={{ fontSize: "0.6rem", color: "#666", marginTop: 2 }}>{when}</div>
             </div>
-
-            {/* ID */}
             <div style={{ fontSize: "0.55rem", color: "#444", flexShrink: 0 }}>
-              {postId.slice(0, 8)}\u2026
+              {postId.slice(0, 8)}{"\u2026"}
             </div>
           </div>
         );
@@ -536,7 +885,6 @@ function NewsletterSection() {
   const [result, setResult] = useState<{ ok: boolean; msg: string } | null>(null);
   const sendNewsletter = trpc.newsletter.sendCampaign.useMutation();
 
-  // Fetch subscriber count on mount
   const countQuery = trpc.newsletter.subscriberCount.useQuery();
   useEffect(() => {
     if (countQuery.data?.count != null) {
