@@ -16,12 +16,10 @@ function useAdmin() {
   });
 
   useEffect(() => {
-    // Check URL for ?admin=harvest2026
     const params = new URLSearchParams(window.location.search);
     if (params.get("admin") === ADMIN_PASSWORD) {
       localStorage.setItem(ADMIN_KEY, "true");
       setIsAdmin(true);
-      // Clean URL
       window.history.replaceState({}, "", window.location.pathname);
     }
     if (params.get("admin") === "logout") {
@@ -31,12 +29,36 @@ function useAdmin() {
     }
   }, []);
 
-  return isAdmin;
+  const toggle = () => {
+    const next = !isAdmin;
+    if (next) {
+      localStorage.setItem(ADMIN_KEY, "true");
+    } else {
+      localStorage.removeItem(ADMIN_KEY);
+    }
+    setIsAdmin(next);
+    toast(next ? "Admin mode on" : "Admin mode off");
+  };
+
+  return { isAdmin, toggle };
 }
 
 export default function PhotoWall() {
   const isMobile = useMediaQuery("(max-width: 768px)");
-  const isAdmin = useAdmin();
+  const { isAdmin, toggle: toggleAdmin } = useAdmin();
+  const tapCount = useRef(0);
+  const tapTimer = useRef<ReturnType<typeof setTimeout>>();
+
+  const handleLogoTap = () => {
+    tapCount.current++;
+    clearTimeout(tapTimer.current);
+    if (tapCount.current >= 3) {
+      tapCount.current = 0;
+      toggleAdmin();
+    } else {
+      tapTimer.current = setTimeout(() => { tapCount.current = 0; }, 600);
+    }
+  };
   const [formData, setFormData] = useState({
     firstName: "",
     email: "",
@@ -155,6 +177,7 @@ export default function PhotoWall() {
           <img
             src="/images/logo-v1-dark-clean.png"
             alt="The Harvest"
+            onClick={handleLogoTap}
             style={{
               width: isMobile ? 100 : 120,
               height: "auto",
@@ -163,6 +186,7 @@ export default function PhotoWall() {
               display: "block",
               marginLeft: "auto",
               marginRight: "auto",
+              cursor: "pointer",
             }}
           />
           <h1 style={{

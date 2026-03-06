@@ -60,18 +60,11 @@ export default function Gather() {
   const [successMsg] = useState(() => SUCCESS_MESSAGES[Math.floor(Math.random() * SUCCESS_MESSAGES.length)]);
   const [shared, setShared] = useState(false);
 
-  const [localsDayData, setLocalsDayData] = useState({ name: "", email: "", phone: "", alsoSaturday: false });
-  const [localsDaySubmitted, setLocalsDaySubmitted] = useState(false);
-
   const countdown = useCountdown(GATHERING_DATE);
   const isPast = countdown === null;
 
   const eoiMutation = trpc.eoi.submit.useMutation({
     onSuccess: () => setSubmitted(true),
-  });
-
-  const localsDayMutation = trpc.eoi.submitLocalsDay.useMutation({
-    onSuccess: () => setLocalsDaySubmitted(true),
   });
 
   const eoiCountQuery = trpc.eoi.count.useQuery(undefined, {
@@ -668,7 +661,7 @@ export default function Gather() {
               opacity: 0.6,
               margin: "0 0 48px",
             }}>
-              Saturday 7 March, 11am — 9 Gumland Drive, Witta
+              Saturday 7 March, 11am. 9 Gumland Drive, Witta
             </p>
           </FadeIn>
 
@@ -690,7 +683,7 @@ export default function Gather() {
                   THE VIBE
                 </h3>
                 <p style={{ fontFamily: fonts.body, fontSize: 15, lineHeight: 1.7, margin: 0, opacity: 0.8 }}>
-                  This is a relaxed, open-air gathering on the property. Wander the garden, meet your neighbours, and see the space that's becoming The Harvest. No tickets, no schedule — just show up.
+                  This is a relaxed, open-air gathering on the property. Come hear about the vision for the garden and The Harvest, meet your neighbours, and see the space taking shape. No tickets, no schedule. Just show up.
                 </p>
               </div>
             </FadeIn>
@@ -708,7 +701,7 @@ export default function Gather() {
                   FOOD & DRINK
                 </h3>
                 <p style={{ fontFamily: fonts.body, fontSize: 15, lineHeight: 1.7, margin: 0, opacity: 0.8 }}>
-                  Fresh oysters shucked on the spot. BYO drinks and something to share if you'd like — a plate, a bottle, whatever feels right. We'll have water and cups sorted.
+                  Fresh oysters shucked on the spot. BYO drinks and something to share if you'd like. A plate, a bottle, whatever feels right.
                 </p>
               </div>
             </FadeIn>
@@ -726,7 +719,7 @@ export default function Gather() {
                   WHAT TO BRING
                 </h3>
                 <p style={{ fontFamily: fonts.body, fontSize: 15, lineHeight: 1.7, margin: 0, opacity: 0.8 }}>
-                  A rug or camp chair. Sun protection. Your kids, your dog, your curiosity. Closed shoes if you want to explore the full property.
+                  A rug or camp chair. Sun protection. Your kids, your dog, your curiosity.
                 </p>
               </div>
             </FadeIn>
@@ -744,7 +737,7 @@ export default function Gather() {
                   PARKING & ACCESS
                 </h3>
                 <p style={{ fontFamily: fonts.body, fontSize: 15, lineHeight: 1.7, margin: 0, opacity: 0.8 }}>
-                  Park on Gumland Drive (plenty of space along the road). Walk in through the main gate. Look for the signs. If you get lost, call Nic on 0424 054 113.
+                  Park on Gumland Drive (plenty of space along the road). Walk in through the main gate. Look for the signs. If you get lost, call Nic on 0424 054 113 or Ben on 0431 590 498.
                 </p>
               </div>
             </FadeIn>
@@ -941,208 +934,6 @@ export default function Gather() {
               </form>
             </FadeIn>
           )}
-        </div>
-      </section>
-
-      {/* --- 6. LOCALS DAY --- */}
-      <section style={{
-        backgroundColor: colors.hardwood,
-        color: colors.milk,
-        padding: isMobile ? "80px 28px" : "120px 40px",
-      }}>
-        <div style={{ maxWidth: 600, margin: "0 auto", textAlign: "center" }}>
-          <FadeIn>
-            <span style={{
-              fontFamily: fonts.display,
-              fontWeight: 700,
-              fontSize: 12,
-              letterSpacing: "0.3em",
-              opacity: 0.5,
-              display: "block",
-              marginBottom: 24,
-            }}>
-              THE DAY BEFORE
-            </span>
-            <h2 style={{
-              fontFamily: fonts.display,
-              fontWeight: 900,
-              fontSize: isMobile ? 32 : 44,
-              letterSpacing: "0.1em",
-              margin: "0 0 24px",
-            }}>
-              LOCALS DAY
-            </h2>
-            <p style={{
-              fontFamily: fonts.body,
-              fontStyle: "italic",
-              fontSize: isMobile ? 18 : 22,
-              lineHeight: 1.6,
-              margin: "0 0 16px",
-              opacity: 0.9,
-            }}>
-              Friday 6 March, afternoon
-            </p>
-            <p style={{
-              fontFamily: fonts.body,
-              fontSize: isMobile ? 17 : 19,
-              lineHeight: 1.8,
-              opacity: 0.8,
-              margin: "0 0 48px",
-            }}>
-              A smaller, quieter start. Come meet the neighbours, walk the site, build something from milk crates, and help us think about what a community space for Witta could look like.
-            </p>
-          </FadeIn>
-
-          <div style={{
-            display: "grid",
-            gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr 1fr",
-            gap: 32,
-            marginBottom: 48,
-          }}>
-            {[
-              { label: "MEET", desc: "Introduce yourself. Hear what your neighbours are thinking." },
-              { label: "MAKE", desc: "Build something from milk crates. A pavilion, a seat, a sculpture." },
-              { label: "VISION", desc: "Share your ideas. What would you want here? What does Witta need?" },
-            ].map((item, i) => (
-              <FadeIn key={item.label} delay={0.1 * (i + 1)}>
-                <div>
-                  <h3 style={{
-                    fontFamily: fonts.display,
-                    fontWeight: 900,
-                    fontSize: 16,
-                    letterSpacing: "0.12em",
-                    margin: "0 0 10px",
-                  }}>
-                    {item.label}
-                  </h3>
-                  <p style={{
-                    fontFamily: fonts.body,
-                    fontSize: 15,
-                    lineHeight: 1.7,
-                    opacity: 0.65,
-                    margin: 0,
-                  }}>
-                    {item.desc}
-                  </p>
-                </div>
-              </FadeIn>
-            ))}
-          </div>
-
-          <FadeIn delay={0.4}>
-            <div style={{
-              borderTop: `1px solid rgba(245,240,232,0.15)`,
-              paddingTop: 32,
-              maxWidth: 420,
-              margin: "0 auto",
-            }}>
-              {localsDaySubmitted ? (
-                <div>
-                  <p style={{
-                    fontFamily: fonts.display,
-                    fontWeight: 900,
-                    fontSize: 20,
-                    letterSpacing: "0.04em",
-                    margin: "0 0 8px",
-                  }}>
-                    {localsDayData.alsoSaturday ? "You're in for Friday and Saturday." : "You're in for Friday."}
-                  </p>
-                  <p style={{
-                    fontFamily: fonts.body,
-                    fontSize: 15,
-                    opacity: 0.5,
-                    margin: 0,
-                  }}>
-                    We'll send you the details before the day.
-                  </p>
-                </div>
-              ) : (
-                <form onSubmit={(e) => {
-                  e.preventDefault();
-                  if (!localsDayData.email && !localsDayData.phone) return;
-                  localsDayMutation.mutate({ name: localsDayData.name, email: localsDayData.email || undefined, phone: localsDayData.phone || undefined, alsoSaturday: localsDayData.alsoSaturday });
-                }}>
-                  <div style={{
-                    display: "grid",
-                    gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
-                    gap: 12,
-                    marginBottom: 12,
-                  }}>
-                    <input
-                      type="text"
-                      placeholder="Your name"
-                      value={localsDayData.name}
-                      onChange={(e) => setLocalsDayData((prev) => ({ ...prev, name: e.target.value }))}
-                      required
-                      style={formInputStyle}
-                    />
-                    <input
-                      type="email"
-                      placeholder="Email"
-                      value={localsDayData.email}
-                      onChange={(e) => setLocalsDayData((prev) => ({ ...prev, email: e.target.value }))}
-                      style={formInputStyle}
-                    />
-                  </div>
-                  <input
-                    type="tel"
-                    placeholder="Phone (email or phone needed)"
-                    value={localsDayData.phone}
-                    onChange={(e) => setLocalsDayData((prev) => ({ ...prev, phone: e.target.value }))}
-                    style={{ ...formInputStyle, marginBottom: 4 }}
-                  />
-                  <label style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 10,
-                    marginBottom: 16,
-                    cursor: "pointer",
-                    fontFamily: fonts.body,
-                    fontSize: 14,
-                    opacity: 0.7,
-                  }}>
-                    <input
-                      type="checkbox"
-                      checked={localsDayData.alsoSaturday}
-                      onChange={(e) => setLocalsDayData((prev) => ({ ...prev, alsoSaturday: e.target.checked }))}
-                      style={{ width: 18, height: 18, cursor: "pointer" }}
-                    />
-                    Also sign me up for Saturday's gathering
-                  </label>
-                  <button
-                    type="submit"
-                    disabled={localsDayMutation.isPending}
-                    style={{
-                      fontFamily: fonts.display,
-                      fontWeight: 700,
-                      fontSize: 13,
-                      letterSpacing: "0.1em",
-                      color: colors.shed,
-                      backgroundColor: colors.goldenHour,
-                      border: "none",
-                      padding: "14px 0",
-                      width: "100%",
-                      cursor: localsDayMutation.isPending ? "not-allowed" : "pointer",
-                      opacity: localsDayMutation.isPending ? 0.6 : 1,
-                    }}
-                  >
-                    {localsDayMutation.isPending ? "SENDING..." : "COUNT ME IN"}
-                  </button>
-                  {localsDayMutation.isError && (
-                    <p style={{
-                      fontFamily: fonts.body,
-                      fontSize: 14,
-                      color: colors.calendula,
-                      textAlign: "center",
-                      marginTop: 12,
-                    }}>
-                      Something went wrong. Please try again.
-                    </p>
-                  )}
-                </form>
-              )}
-            </div>
-          </FadeIn>
         </div>
       </section>
 

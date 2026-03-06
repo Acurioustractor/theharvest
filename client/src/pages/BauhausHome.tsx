@@ -179,6 +179,45 @@ export default function BauhausHome() {
           }}>
             Grow. Make. Feed.<br />A community space on Jinibara Country, Witta.
           </p>
+          <div style={{
+            display: "flex",
+            gap: 12,
+            justifyContent: "center",
+            marginTop: 32,
+            flexWrap: "wrap",
+          }}>
+            <a href="#footer" onClick={(e) => { e.preventDefault(); document.getElementById("footer")?.scrollIntoView({ behavior: "smooth" }); }}>
+              <span style={{
+                fontFamily: fonts.display,
+                fontWeight: 700,
+                fontSize: 12,
+                letterSpacing: "0.1em",
+                color: colors.shed,
+                backgroundColor: colors.goldenHour,
+                padding: "12px 24px",
+                display: "inline-block",
+                cursor: "pointer",
+              }}>
+                SIGN UP TO NEWSLETTER
+              </span>
+            </a>
+            <Link href="/photo-wall">
+              <span style={{
+                fontFamily: fonts.display,
+                fontWeight: 700,
+                fontSize: 12,
+                letterSpacing: "0.1em",
+                color: colors.milk,
+                backgroundColor: "rgba(255,255,255,0.15)",
+                border: `1px solid rgba(255,255,255,0.3)`,
+                padding: "12px 24px",
+                display: "inline-block",
+                cursor: "pointer",
+              }}>
+                PHOTO WALL
+              </span>
+            </Link>
+          </div>
         </div>
         {/* Scroll indicator */}
         <motion.div

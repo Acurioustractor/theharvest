@@ -24,12 +24,20 @@ export default function BauhausFooter({ isMobile }: BauhausFooterProps) {
   const [photoEmail, setPhotoEmail] = useState("");
   const [photoContactId, setPhotoContactId] = useState<string | null>(null);
   const [photoError, setPhotoError] = useState("");
+  const [nlEmail, setNlEmail] = useState("");
+  const [nlDone, setNlDone] = useState(false);
+  const [nlError, setNlError] = useState("");
 
   const photoWallMutation = trpc.photoWall.submit.useMutation({
     onSuccess: (data) => {
       if (data.contactId) setPhotoContactId(data.contactId);
     },
     onError: (err) => setPhotoError(err.message || "Something went wrong"),
+  });
+
+  const nlMutation = trpc.newsletter.subscribe.useMutation({
+    onSuccess: () => setNlDone(true),
+    onError: (err) => setNlError(err.message || "Something went wrong"),
   });
 
   const handlePhotoSubmit = (e: FormEvent) => {
@@ -42,8 +50,15 @@ export default function BauhausFooter({ isMobile }: BauhausFooterProps) {
     });
   };
 
+  const handleNlSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    setNlError("");
+    if (!nlEmail.trim()) return;
+    nlMutation.mutate({ email: nlEmail.trim(), source: "gathering-footer" });
+  };
+
   return (
-    <footer style={{
+    <footer id="footer" style={{
       backgroundColor: colors.shed,
       padding: isMobile ? "40px 28px" : "48px 40px",
       borderTop: `1px solid rgba(245,240,232,0.08)`,
@@ -191,6 +206,93 @@ export default function BauhausFooter({ isMobile }: BauhausFooterProps) {
             {photoError && (
               <p style={{ fontFamily: fonts.body, fontSize: 12, color: colors.calendula, margin: "8px 0 0", opacity: 0.8 }}>
                 {photoError}
+              </p>
+            )}
+          </>
+        )}
+      </div>
+
+      {/* Newsletter signup */}
+      <div style={{
+        maxWidth: 480,
+        margin: "0 auto 32px",
+        padding: "0 0 28px",
+        borderBottom: `1px solid rgba(245,240,232,0.08)`,
+      }}>
+        <p style={{
+          fontFamily: fonts.display,
+          fontWeight: 900,
+          fontSize: 11,
+          letterSpacing: "0.15em",
+          color: colors.goldenHour,
+          margin: "0 0 6px",
+        }}>
+          STAY IN THE LOOP
+        </p>
+        {nlDone ? (
+          <p style={{
+            fontFamily: fonts.display,
+            fontWeight: 700,
+            fontSize: 16,
+            color: colors.milk,
+            margin: 0,
+          }}>
+            You're on the list!
+          </p>
+        ) : (
+          <>
+            <p style={{
+              fontFamily: fonts.body,
+              fontSize: 13,
+              color: colors.milk,
+              opacity: 0.5,
+              margin: "0 0 12px",
+              lineHeight: 1.5,
+            }}>
+              Get updates on what's happening at The Harvest.
+            </p>
+            <form onSubmit={handleNlSubmit} style={{
+              display: "flex",
+              flexDirection: isMobile ? "column" : "row",
+              gap: 8,
+              alignItems: "stretch",
+            }}>
+              <input
+                type="email"
+                placeholder="Your email"
+                value={nlEmail}
+                onChange={e => setNlEmail(e.target.value)}
+                required
+                style={{
+                  ...formInputStyle,
+                  fontSize: 14,
+                  padding: "10px 14px",
+                  flex: 1,
+                }}
+              />
+              <button
+                type="submit"
+                disabled={nlMutation.isPending}
+                style={{
+                  fontFamily: fonts.display,
+                  fontWeight: 700,
+                  fontSize: 11,
+                  letterSpacing: "0.1em",
+                  color: colors.shed,
+                  backgroundColor: colors.goldenHour,
+                  border: "none",
+                  padding: "10px 20px",
+                  cursor: nlMutation.isPending ? "wait" : "pointer",
+                  opacity: nlMutation.isPending ? 0.6 : 1,
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {nlMutation.isPending ? "..." : "SUBSCRIBE"}
+              </button>
+            </form>
+            {nlError && (
+              <p style={{ fontFamily: fonts.body, fontSize: 12, color: colors.calendula, margin: "8px 0 0", opacity: 0.8 }}>
+                {nlError}
               </p>
             )}
           </>
