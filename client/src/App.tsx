@@ -18,6 +18,10 @@ import SocialPlanner from "./pages/SocialPlanner";
 import LogoStory from "./pages/LogoStory";
 import GrowingH from "./pages/GrowingH";
 import LogoLab from "./pages/LogoLab";
+import GatheringPostcard from "./pages/GatheringPostcard";
+import Social from "./pages/Social";
+import PhotoWall from "./pages/PhotoWall";
+import PhotoWallCheckin from "./pages/PhotoWallCheckin";
 import NotFound from "./pages/NotFound";
 
 function Router() {
@@ -40,6 +44,10 @@ function Router() {
   if (location === "/logo-story") return <LogoStory />;
   if (location === "/growing-h") return <GrowingH />;
   if (location === "/logo-lab") return <LogoLab />;
+  if (location === "/gathering-postcard") return <GatheringPostcard />;
+  if (location === "/social") return <Social />;
+  if (location === "/photo-wall") return <PhotoWall />;
+  if (location.startsWith("/photo-wall/checkin")) return <PhotoWallCheckin />;
   if (location.startsWith("/feedback")) {
     const eventId = location.split("/feedback/")[1];
     return <EventFeedback eventId={eventId} />;

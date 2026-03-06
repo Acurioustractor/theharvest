@@ -201,6 +201,81 @@ export async function upsertGHLContact(input: GHLContactInput): Promise<{ succes
 }
 
 /**
+ * Get a contact from Go High Level by ID
+ */
+export async function getGHLContact(contactId: string): Promise<{ success: boolean; contact?: { firstName?: string; lastName?: string; email?: string }; error?: string }> {
+  const apiKey = process.env.GHL_API_KEY;
+
+  if (!apiKey) {
+    return { success: false, error: "GHL API key not configured." };
+  }
+
+  try {
+    const response = await fetch(`${GHL_API_BASE}/contacts/${contactId}`, {
+      method: "GET",
+      headers: {
+        "Accept": "application/json",
+        "Authorization": `Bearer ${apiKey}`,
+        "Version": GHL_API_VERSION,
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json() as GHLErrorResponse;
+      return { success: false, error: errorData.message || "Contact not found." };
+    }
+
+    const data = await response.json() as { contact: { firstName?: string; lastName?: string; email?: string } };
+    return {
+      success: true,
+      contact: {
+        firstName: data.contact.firstName,
+        lastName: data.contact.lastName,
+        email: data.contact.email,
+      },
+    };
+  } catch (error) {
+    console.error("GHL Get Contact failed:", error);
+    return { success: false, error: "Unable to fetch contact." };
+  }
+}
+
+/**
+ * Add a tag to a contact in Go High Level
+ */
+export async function addGHLContactTag(contactId: string, tag: string): Promise<{ success: boolean; error?: string }> {
+  const apiKey = process.env.GHL_API_KEY;
+
+  if (!apiKey) {
+    return { success: false, error: "GHL API key not configured." };
+  }
+
+  try {
+    const response = await fetch(`${GHL_API_BASE}/contacts/${contactId}/tags`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Authorization": `Bearer ${apiKey}`,
+        "Version": GHL_API_VERSION,
+      },
+      body: JSON.stringify({ tags: [tag] }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json() as GHLErrorResponse;
+      console.error("GHL Add Tag Error:", errorData);
+      return { success: false, error: errorData.message || "Failed to add tag." };
+    }
+
+    return { success: true };
+  } catch (error) {
+    console.error("GHL Add Tag request failed:", error);
+    return { success: false, error: "Unable to add tag to contact." };
+  }
+}
+
+/**
  * Add a note to a contact in Go High Level
  */
 export async function addGHLContactNote(contactId: string, noteBody: string): Promise<{ success: boolean; error?: string }> {
@@ -592,12 +667,12 @@ export async function createGHLSocialPost(post: GHLSocialPost): Promise<{ succes
     const publicMediaUrls = (post.mediaUrls || [])
       .filter(url => url.startsWith("https://") || url.startsWith("http://"))
       .map(url => url.replace(/^https?:\/\/localhost:\d+/, PROD_ORIGIN));
-    if (publicMediaUrls.length) {
-      body.media = publicMediaUrls.map(url => ({
-        url,
-        type: /\.(mp4|mov|webm|avi)$/i.test(url) ? "video/mp4" : "image/jpeg",
-      }));
-    }
+    body.media = publicMediaUrls.length
+      ? publicMediaUrls.map(url => ({
+          url,
+          type: /\.(mp4|mov|webm|avi)$/i.test(url) ? "video/mp4" : "image/jpeg",
+        }))
+      : [];
     if (post.scheduledAt) {
       const schedDate = new Date(post.scheduledAt);
       if (schedDate.getTime() > Date.now() + 60_000) {
@@ -736,33 +811,35 @@ export async function searchGHLContactsByTag(tag: string): Promise<{ success: bo
 
   try {
     const allContacts: { id: string; email?: string }[] = [];
-    let offset = 0;
     const limit = 100;
+    let startAfterId: string | undefined;
 
     // Paginate through all contacts with this tag
     while (true) {
-      const response = await fetch(
-        `${GHL_API_BASE}/contacts/?locationId=${locationId}&query=${encodeURIComponent(tag)}&limit=${limit}&offset=${offset}`,
-        {
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${apiKey}`,
-            Version: GHL_API_VERSION,
-          },
-        }
-      );
+      let url = `${GHL_API_BASE}/contacts/?locationId=${locationId}&query=${encodeURIComponent(tag)}&limit=${limit}`;
+      if (startAfterId) url += `&startAfterId=${startAfterId}`;
+
+      const response = await fetch(url, {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${apiKey}`,
+          Version: GHL_API_VERSION,
+        },
+      });
 
       if (!response.ok) {
         const err = await response.text();
         return { success: false, error: `GHL search error ${response.status}: ${err}` };
       }
 
-      const data = await response.json() as { contacts?: { id: string; email?: string }[]; meta?: { total?: number } };
+      const data = await response.json() as { contacts?: { id: string; email?: string }[]; meta?: { total?: number; startAfterId?: string; startAfter?: string } };
       const contacts = data.contacts || [];
       allContacts.push(...contacts.map(c => ({ id: c.id, email: c.email })));
 
       if (contacts.length < limit) break;
-      offset += limit;
+      // Use cursor from meta, or fall back to last contact ID
+      startAfterId = data.meta?.startAfterId || data.meta?.startAfter || contacts[contacts.length - 1]?.id;
+      if (!startAfterId) break;
     }
 
     return { success: true, contacts: allContacts };
@@ -865,5 +942,90 @@ export async function triggerGHLWorkflow(workflowId: string, contactId: string):
       success: false,
       error: "Unable to trigger workflow.",
     };
+  }
+}
+
+/**
+ * Create an email template in GHL Email Builder
+ */
+export async function createGHLEmailTemplate(input: {
+  name: string;
+  html: string;
+  subject?: string;
+  preheader?: string;
+}): Promise<{ success: boolean; templateId?: string; error?: string }> {
+  const locationId = process.env.GHL_LOCATION_ID;
+
+  if (!locationId) {
+    return { success: false, error: "GHL credentials not configured" };
+  }
+
+  // Email builder needs PIT (Private Integration Token) — OAuth token only has socialplanner scopes
+  const apiKey = process.env.GHL_API_KEY;
+  if (!apiKey) {
+    return { success: false, error: "GHL API key not configured" };
+  }
+
+  try {
+    const response = await fetch(`${GHL_API_BASE}/emails/builder`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Authorization": `Bearer ${apiKey}`,
+        "Version": GHL_API_VERSION,
+      },
+      body: JSON.stringify({
+        locationId,
+        name: input.name,
+        type: "html",
+        updatedBy: "api",
+        builderVersion: "2",
+        templateData: {
+          html: input.html,
+          subject: input.subject || input.name,
+          preheader: input.preheader || "",
+        },
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({})) as Record<string, unknown>;
+      console.error("GHL Email Template Error:", response.status, errorData);
+
+      // Try alternative payload shape (flat fields)
+      const response2 = await fetch(`${GHL_API_BASE}/emails/builder`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "Authorization": `Bearer ${apiKey}`,
+          "Version": GHL_API_VERSION,
+        },
+        body: JSON.stringify({
+          locationId,
+          name: input.name,
+          type: "html",
+          html: input.html,
+          subject: input.subject || input.name,
+          preheader: input.preheader || "",
+        }),
+      });
+      if (!response2.ok) {
+        const err2 = await response2.json().catch(() => ({})) as Record<string, unknown>;
+        console.error("GHL Email Template Error (attempt 2):", response2.status, err2);
+        return { success: false, error: `API error ${response2.status}: ${JSON.stringify(err2)}` };
+      }
+      const data2 = await response2.json() as Record<string, unknown>;
+      console.log("GHL Email Template created (attempt 2):", data2);
+      return { success: true, templateId: (data2.id || data2._id || data2.templateId) as string };
+    }
+
+    const data = await response.json() as Record<string, unknown>;
+    console.log("GHL Email Template created:", data);
+    return { success: true, templateId: (data.id || data._id || data.templateId) as string };
+  } catch (error) {
+    console.error("GHL Email Template request failed:", error);
+    return { success: false, error: "Unable to create email template." };
   }
 }

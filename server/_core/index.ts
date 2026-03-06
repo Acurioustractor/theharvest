@@ -1,4 +1,6 @@
 import "dotenv/config";
+import dotenv from "dotenv";
+dotenv.config({ path: ".env.local", override: true });
 import path from "path";
 import express from "express";
 import { createServer } from "http";

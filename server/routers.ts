@@ -5,7 +5,8 @@ import { storagePut } from "./storage.js";
 import { getDb } from "./db.js";
 import { pulseResponses } from "../drizzle/schema.js";
 import { eq } from "drizzle-orm";
-import { upsertGHLContact, addGHLContactNote, triggerGHLWorkflow, getGHLContactCountByTag, getGHLSocialAccounts, createGHLSocialPost, getGHLSocialPosts, searchGHLContactsByTag, batchTriggerWorkflow } from "./gohighlevel.js";
+import { upsertGHLContact, addGHLContactNote, addGHLContactTag, getGHLContact, triggerGHLWorkflow, getGHLContactCountByTag, getGHLSocialAccounts, createGHLSocialPost, getGHLSocialPosts, searchGHLContactsByTag, batchTriggerWorkflow, createGHLEmailTemplate } from "./gohighlevel.js";
+import { getGalleryPhotos, addGalleryPhoto, removeGalleryPhoto } from "./photoWallGallery.js";
 import { empathyLedgerClient } from "./empathyLedgerClient.js";
 import {
   loadTimeline,
@@ -20,7 +21,7 @@ import {
   loadStory,
   getWikiStatus,
 } from "./wiki.js";
-import { queryEditorialCalendar, getEditorialPost, updateEditorialPost, getEditorialProjects, getEditorialCommunicationTypes, syncReadyPosts, syncPublishedPosts } from "./notion.js";
+import { queryEditorialCalendar, getEditorialPost, updateEditorialPost, createEditorialPost, getEditorialProjects, getEditorialCommunicationTypes, syncReadyPosts, syncPublishedPosts } from "./notion.js";
 import { z } from "zod";
 
 const INTEREST_OPTIONS = ["kids-play", "cafe", "garden", "pop-up-events", "art-exhibitions", "something-else"] as const;
@@ -581,6 +582,174 @@ export const appRouter = router({
       }),
   }),
 
+  photoWall: router({
+    submit: publicProcedure
+      .input(z.object({
+        firstName: z.string().min(1).max(100),
+        email: z.string().email(),
+        phone: z.string().max(20).optional(),
+        response: z.string().max(1000).optional(),
+      }))
+      .mutation(async ({ input }) => {
+        const result = await upsertGHLContact({
+          email: input.email,
+          firstName: input.firstName,
+          phone: input.phone,
+          source: "Photo Wall — Witta Gathering",
+          tags: ["photo-wall", "harvest-website", "eoi-gathering-march-2026", "harvest-gathering-photos"],
+        });
+
+        if (!result.success) {
+          return { success: false, error: result.error };
+        }
+
+        if (result.contactId && input.response) {
+          addGHLContactNote(
+            result.contactId,
+            `**Photo Wall — What would you love to see grow here?**\n\n${input.response}`
+          ).catch(err => console.error("Photo wall note failed:", err));
+        }
+
+        // Trigger notification workflow if configured
+        const workflowId = process.env.GHL_PHOTO_WALL_WORKFLOW_ID;
+        if (workflowId && result.contactId) {
+          triggerGHLWorkflow(workflowId, result.contactId).catch(err =>
+            console.error("GHL workflow trigger failed (photo wall):", err)
+          );
+        }
+
+        return { success: true, contactId: result.contactId };
+      }),
+
+    getContact: publicProcedure
+      .input(z.object({ contactId: z.string().min(1) }))
+      .query(async ({ input }) => {
+        const result = await getGHLContact(input.contactId);
+        if (!result.success || !result.contact) {
+          throw new Error(result.error || "Contact not found");
+        }
+        return { firstName: result.contact.firstName, lastName: result.contact.lastName };
+      }),
+
+    addNote: publicProcedure
+      .input(z.object({
+        contactId: z.string().min(1),
+        note: z.string().min(1).max(2000),
+      }))
+      .mutation(async ({ input }) => {
+        const result = await addGHLContactNote(input.contactId, `**Photo Wall Note**\n\n${input.note}`);
+        if (!result.success) {
+          throw new Error(result.error || "Failed to save note");
+        }
+        return { success: true };
+      }),
+
+    sendPhoto: publicProcedure
+      .input(z.object({
+        contactId: z.string().min(1),
+        photoUrl: z.string().url(),
+      }))
+      .mutation(async ({ input }) => {
+        const result = await addGHLContactNote(
+          input.contactId,
+          `**Your Photo Wall Portrait**\nHere's your portrait from The Harvest: ${input.photoUrl}`
+        );
+        if (!result.success) {
+          throw new Error(result.error || "Failed to add photo note");
+        }
+        return { success: true };
+      }),
+
+    // Upload a photo to the shared gallery (via Supabase Storage)
+    upload: publicProcedure
+      .input(z.object({
+        base64Data: z.string().min(1),
+        fileName: z.string().min(1),
+        contentType: z.string().min(1),
+      }))
+      .mutation(async ({ input }) => {
+        const supabaseUrl = process.env.VITE_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL;
+        const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+        if (!supabaseUrl || !serviceKey) {
+          throw new Error("Supabase credentials not configured for photo upload");
+        }
+
+        const buffer = Buffer.from(input.base64Data, "base64");
+        const filePath = `${Date.now()}-${input.fileName}`;
+
+        const response = await fetch(
+          `${supabaseUrl}/storage/v1/object/photo-wall/${filePath}`,
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${serviceKey}`,
+              "Content-Type": input.contentType,
+              "x-upsert": "true",
+            },
+            body: buffer,
+            // @ts-expect-error duplex needed for Node fetch with body stream
+            duplex: "half",
+          }
+        );
+
+        if (!response.ok) {
+          const err = await response.text();
+          console.error("Supabase storage upload failed:", response.status, err);
+          throw new Error("Photo upload failed");
+        }
+
+        const url = `${supabaseUrl}/storage/v1/object/public/photo-wall/${filePath}`;
+        addGalleryPhoto({ url, fileName: input.fileName, uploadedAt: new Date().toISOString() });
+        return { success: true, url };
+      }),
+
+    // Get all gallery photos
+    gallery: publicProcedure.query(() => {
+      return getGalleryPhotos();
+    }),
+
+    // Delete a photo from the gallery
+    deletePhoto: publicProcedure
+      .input(z.object({ url: z.string().min(1) }))
+      .mutation(async ({ input }) => {
+        const removed = removeGalleryPhoto(input.url);
+
+        // Also delete from Supabase storage
+        const supabaseUrl = process.env.VITE_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL;
+        const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+        if (supabaseUrl && serviceKey) {
+          const prefix = `${supabaseUrl}/storage/v1/object/public/photo-wall/`;
+          if (input.url.startsWith(prefix)) {
+            const filePath = input.url.slice(prefix.length);
+            fetch(`${supabaseUrl}/storage/v1/object/photo-wall/${filePath}`, {
+              method: "DELETE",
+              headers: { Authorization: `Bearer ${serviceKey}` },
+            }).catch(err => console.error("Supabase storage delete failed:", err));
+          }
+        }
+
+        return { success: removed };
+      }),
+
+    // Add photo-wall-ready tag to all photo-wall contacts (triggers GHL text workflow)
+    notifyAll: publicProcedure.mutation(async () => {
+      const searchResult = await searchGHLContactsByTag("photo-wall");
+      if (!searchResult.success || !searchResult.contacts?.length) {
+        return { success: false, error: searchResult.error || "No photo-wall contacts found.", tagged: 0 };
+      }
+
+      let tagged = 0;
+      let failed = 0;
+      for (const contact of searchResult.contacts) {
+        const result = await addGHLContactTag(contact.id, "photo-wall-ready");
+        if (result.success) tagged++;
+        else failed++;
+      }
+
+      return { success: true, tagged, failed, total: searchResult.contacts.length };
+    }),
+  }),
+
   blog: router({
     // Public: Get articles from Empathy Ledger with optional filters
     list: publicProcedure
@@ -1016,6 +1185,26 @@ export const appRouter = router({
         });
       }),
 
+    // Create a new post in Notion
+    create: publicProcedure
+      .input(z.object({
+        title: z.string(),
+        communicationType: z.string().optional(),
+        status: z.string().optional(),
+        scheduledDate: z.string().optional(),
+        platforms: z.array(z.string()).optional(),
+        caption: z.string().optional(),
+        editorialNote: z.string().optional(),
+        mediaUrl: z.string().optional(),
+        format: z.string().optional(),
+        link: z.string().optional(),
+        projectId: z.string().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        const id = await createEditorialPost(input);
+        return { success: true, id };
+      }),
+
     // Get a single post by Notion page ID
     get: publicProcedure
       .input(z.object({ id: z.string() }))
@@ -1092,6 +1281,21 @@ export const appRouter = router({
       }).optional())
       .query(async ({ input }) => {
         const result = await getGHLSocialPosts(input?.status);
+        return result;
+      }),
+  }),
+
+  // Email templates
+  email: router({
+    createTemplate: publicProcedure
+      .input(z.object({
+        name: z.string().min(1),
+        html: z.string().min(1),
+        subject: z.string().optional(),
+        preheader: z.string().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        const result = await createGHLEmailTemplate(input);
         return result;
       }),
   }),
