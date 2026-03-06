@@ -160,6 +160,9 @@ export default function PhotoWall() {
               height: "auto",
               filter: "brightness(0) invert(1)",
               marginBottom: 32,
+              display: "block",
+              marginLeft: "auto",
+              marginRight: "auto",
             }}
           />
           <h1 style={{
