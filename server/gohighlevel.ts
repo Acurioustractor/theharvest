@@ -916,7 +916,7 @@ export async function triggerGHLWorkflow(workflowId: string, contactId: string):
   }
 
   try {
-    const response = await fetch(`${GHL_API_BASE}/workflows/${workflowId}/subscribe`, {
+    const response = await fetch(`${GHL_API_BASE}/contacts/${contactId}/workflow/${workflowId}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -924,9 +924,6 @@ export async function triggerGHLWorkflow(workflowId: string, contactId: string):
         "Authorization": `Bearer ${apiKey}`,
         "Version": GHL_API_VERSION,
       },
-      body: JSON.stringify({
-        contactId: contactId,
-      }),
     });
 
     if (!response.ok) {
