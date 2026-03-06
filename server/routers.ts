@@ -596,7 +596,7 @@ export const appRouter = router({
           firstName: input.firstName,
           phone: input.phone,
           source: "Photo Wall — Witta Gathering",
-          tags: ["photo-wall", "harvest-website", "eoi-gathering-march-2026", "harvest-gathering-photos"],
+          tags: ["photo-wall", "harvest-website", "harvest-gathering-photos"],
         });
 
         if (!result.success) {
