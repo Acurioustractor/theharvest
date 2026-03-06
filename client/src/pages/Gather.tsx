@@ -171,6 +171,8 @@ export default function Gather() {
                 width: "auto",
                 filter: "brightness(0) invert(1)",
                 opacity: 0.6,
+                display: "block",
+                margin: "0 auto",
               }}
             />
           </Link>

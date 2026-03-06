@@ -42,17 +42,10 @@ const zones = [
 
 const events = [
   {
-    tag: "Community",
-    date: "Friday 6 March, afternoon",
-    title: "LOCALS DAY",
-    desc: "Meet the neighbours, build with milk crates, share your vision for this space. Just locals.",
-    href: "/gather",
-  },
-  {
     tag: "Event",
-    date: "Saturday 7 March, 11am - 4pm",
+    date: "Today, 11am - 4pm",
     title: "FIRST GATHERING",
-    desc: "Local history, making things together, oysters from Moreton Bay, drinks from Flight Bar. 9 Gumland Drive, Witta. Free.",
+    desc: "Oysters, milk crate building, music, drinks from Flight Bar. 9 Gumland Drive, Witta. Free.",
     href: "/gather",
   },
   {
