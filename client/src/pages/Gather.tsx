@@ -642,6 +642,136 @@ export default function Gather() {
         </div>
       </section>
 
+      {/* --- WHAT TO EXPECT --- */}
+      <section id="what-to-expect" style={{
+        backgroundColor: colors.milk,
+        color: colors.shed,
+        padding: isMobile ? "80px 28px" : "120px 40px",
+      }}>
+        <div style={{ maxWidth: 640, margin: "0 auto" }}>
+          <FadeIn>
+            <h2 style={{
+              fontFamily: fonts.display,
+              fontWeight: 900,
+              fontSize: isMobile ? "clamp(24px, 6vw, 32px)" : "clamp(32px, 3vw, 40px)",
+              letterSpacing: "0.08em",
+              textAlign: "center",
+              margin: "0 0 16px",
+            }}>
+              WHAT TO EXPECT
+            </h2>
+            <p style={{
+              fontFamily: fonts.body,
+              fontSize: isMobile ? 15 : 17,
+              lineHeight: 1.7,
+              textAlign: "center",
+              opacity: 0.6,
+              margin: "0 0 48px",
+            }}>
+              Saturday 7 March, 11am — 9 Gumland Drive, Witta
+            </p>
+          </FadeIn>
+
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
+            gap: isMobile ? 32 : 40,
+          }}>
+            <FadeIn delay={0.1}>
+              <div>
+                <h3 style={{
+                  fontFamily: fonts.display,
+                  fontWeight: 900,
+                  fontSize: 14,
+                  letterSpacing: "0.12em",
+                  color: colors.goldenHour,
+                  margin: "0 0 12px",
+                }}>
+                  THE VIBE
+                </h3>
+                <p style={{ fontFamily: fonts.body, fontSize: 15, lineHeight: 1.7, margin: 0, opacity: 0.8 }}>
+                  This is a relaxed, open-air gathering on the property. Wander the garden, meet your neighbours, and see the space that's becoming The Harvest. No tickets, no schedule — just show up.
+                </p>
+              </div>
+            </FadeIn>
+
+            <FadeIn delay={0.15}>
+              <div>
+                <h3 style={{
+                  fontFamily: fonts.display,
+                  fontWeight: 900,
+                  fontSize: 14,
+                  letterSpacing: "0.12em",
+                  color: colors.goldenHour,
+                  margin: "0 0 12px",
+                }}>
+                  FOOD & DRINK
+                </h3>
+                <p style={{ fontFamily: fonts.body, fontSize: 15, lineHeight: 1.7, margin: 0, opacity: 0.8 }}>
+                  Fresh oysters shucked on the spot. BYO drinks and something to share if you'd like — a plate, a bottle, whatever feels right. We'll have water and cups sorted.
+                </p>
+              </div>
+            </FadeIn>
+
+            <FadeIn delay={0.2}>
+              <div>
+                <h3 style={{
+                  fontFamily: fonts.display,
+                  fontWeight: 900,
+                  fontSize: 14,
+                  letterSpacing: "0.12em",
+                  color: colors.goldenHour,
+                  margin: "0 0 12px",
+                }}>
+                  WHAT TO BRING
+                </h3>
+                <p style={{ fontFamily: fonts.body, fontSize: 15, lineHeight: 1.7, margin: 0, opacity: 0.8 }}>
+                  A rug or camp chair. Sun protection. Your kids, your dog, your curiosity. Closed shoes if you want to explore the full property.
+                </p>
+              </div>
+            </FadeIn>
+
+            <FadeIn delay={0.25}>
+              <div>
+                <h3 style={{
+                  fontFamily: fonts.display,
+                  fontWeight: 900,
+                  fontSize: 14,
+                  letterSpacing: "0.12em",
+                  color: colors.goldenHour,
+                  margin: "0 0 12px",
+                }}>
+                  PARKING & ACCESS
+                </h3>
+                <p style={{ fontFamily: fonts.body, fontSize: 15, lineHeight: 1.7, margin: 0, opacity: 0.8 }}>
+                  Park on Gumland Drive (plenty of space along the road). Walk in through the main gate. Look for the signs. If you get lost, call Nic on 0424 054 113.
+                </p>
+              </div>
+            </FadeIn>
+          </div>
+
+          <FadeIn delay={0.3}>
+            <div style={{ textAlign: "center", marginTop: 48 }}>
+              <Link href="/photo-wall" style={{ textDecoration: "none" }}>
+                <span style={{
+                  fontFamily: fonts.display,
+                  fontWeight: 700,
+                  fontSize: 13,
+                  letterSpacing: "0.1em",
+                  color: colors.milk,
+                  backgroundColor: colors.shed,
+                  padding: "14px 32px",
+                  display: "inline-block",
+                  cursor: "pointer",
+                }}>
+                  VISIT THE PHOTO WALL
+                </span>
+              </Link>
+            </div>
+          </FadeIn>
+        </div>
+      </section>
+
       {/* --- RSVP FORM --- */}
       <section id="rsvp" style={{
         backgroundColor: colors.shed,

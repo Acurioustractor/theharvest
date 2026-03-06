@@ -8,15 +8,18 @@ import { rootStyle, colors, fonts } from "@/styles/brand";
 
 const GATHERING_DATE = new Date("2026-03-07T11:00:00+10:00");
 
-function useCountdownDays(target: Date) {
+function useCountdownDays(target: Date): { daysLeft: number | null; isToday: boolean } {
   const [now, setNow] = useState(new Date());
   useEffect(() => {
     const id = setInterval(() => setNow(new Date()), 60_000);
     return () => clearInterval(id);
   }, []);
+  // Check if it's the same calendar day (in local timezone)
+  const isToday = now.toDateString() === target.toDateString();
+  if (isToday) return { daysLeft: 0, isToday: true };
   const diff = target.getTime() - now.getTime();
-  if (diff <= 0) return null;
-  return Math.ceil(diff / 86400000);
+  if (diff <= 0) return { daysLeft: null, isToday: false };
+  return { daysLeft: Math.ceil(diff / 86400000), isToday: false };
 }
 
 const zones = [
@@ -64,7 +67,7 @@ const events = [
 export default function BauhausHome() {
   const isMobile = useMediaQuery("(max-width: 768px)");
   const [scrollVisible, setScrollVisible] = useState(false);
-  const daysLeft = useCountdownDays(GATHERING_DATE);
+  const { daysLeft, isToday } = useCountdownDays(GATHERING_DATE);
 
   useEffect(() => {
     document.title = "The Harvest - Witta, Sunshine Coast Hinterland";
@@ -90,8 +93,8 @@ export default function BauhausHome() {
     <div style={rootStyle}>
 
       {/* --- GATHERING COUNTDOWN BANNER --- */}
-      {daysLeft !== null && (
-        <Link href="/gather#rsvp" style={{ textDecoration: "none" }}>
+      {(daysLeft !== null || isToday) && (
+        <Link href={isToday ? "/gather#what-to-expect" : "/gather#rsvp"} style={{ textDecoration: "none" }}>
           <motion.div
             initial={{ y: -40 }}
             animate={{ y: 0 }}
@@ -113,7 +116,9 @@ export default function BauhausHome() {
               cursor: "pointer",
             }}
           >
-            FIRST GATHERING IN {daysLeft} {daysLeft === 1 ? "DAY" : "DAYS"} / SAVE YOUR SPOT
+            {isToday
+              ? "FIRST GATHERING IS TODAY / WHAT TO EXPECT"
+              : `FIRST GATHERING IN ${daysLeft} ${daysLeft === 1 ? "DAY" : "DAYS"} / SAVE YOUR SPOT`}
           </motion.div>
         </Link>
       )}
