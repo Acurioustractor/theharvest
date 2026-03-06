@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Event Day Posts — The Harvest</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', -apple-system, sans-serif; background: #1C1917; color: #F5F0E8; padding: 20px; max-width: 600px; margin: 0 auto; }
+  h1 { font-size: 20px; font-weight: 900; letter-spacing: 0.1em; text-align: center; padding: 24px 0; border-bottom: 1px solid rgba(245,240,232,0.1); margin-bottom: 24px; }
+  .post { background: rgba(245,240,232,0.05); border-radius: 8px; padding: 20px; margin-bottom: 20px; }
+  .post-time { font-size: 11px; font-weight: 700; color: #C4922A; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 4px; }
+  .post-platform { font-size: 11px; color: rgba(245,240,232,0.4); margin-bottom: 12px; }
+  .post-caption { font-size: 15px; line-height: 1.6; white-space: pre-wrap; margin-bottom: 12px; }
+  .post-note { font-size: 12px; color: rgba(245,240,232,0.4); font-style: italic; border-top: 1px solid rgba(245,240,232,0.08); padding-top: 12px; }
+  .copy-btn { display: block; width: 100%; padding: 12px; background: #C4922A; color: #1C1917; border: none; font-weight: 700; font-size: 13px; letter-spacing: 0.08em; cursor: pointer; border-radius: 4px; margin-top: 12px; }
+  .copy-btn:active { opacity: 0.7; }
+  .scheduled { border-left: 3px solid #4A6741; }
+  .scheduled .post-time::after { content: " — SCHEDULED"; color: #4A6741; }
+  .hashtags { color: rgba(245,240,232,0.4); }
+</style>
+</head>
+<body>
+
+<h1>SAT 7 MARCH — POST TEMPLATES</h1>
+
+<div class="post scheduled">
+  <div class="post-time">7:00 AM — Morning Teaser</div>
+  <div class="post-platform">Instagram + Facebook (auto-scheduled)</div>
+  <div class="post-caption" id="p1">Today's the day.
+
+11am – 4pm
+9 Gumland Drive, Witta
+
+Come as you are.
+
+<span class="hashtags">#TheHarvest #Witta #SunshineCoastHinterland #BlackallRange</span></div>
+  <div class="post-note">Image: come-as-you-are-tile.png (already attached)</div>
+</div>
+
+<div class="post scheduled">
+  <div class="post-time">11:00 AM — Doors Open</div>
+  <div class="post-platform">Instagram + Facebook + Google (auto-scheduled)</div>
+  <div class="post-caption" id="p2">The first gathering at The Harvest.
+
+Doors are open. Music's playing. Fisher's Oysters are being shucked on the lawn.
+
+Come build a milk crate pavilion with us, see the photo wall, walk through the rammed earth building, and tell us what you'd love to see grow here.
+
+No tickets. No agenda. Just neighbours meeting neighbours.
+
+11am – 4pm | 9 Gumland Drive, Witta
+10 minutes from Maleny.
+
+<span class="hashtags">#TheHarvest #Witta #SunshineCoastHinterland #BlackallRange #Maleny #CommunityGathering</span></div>
+  <div class="post-note">Image: something-growing-tile.png (already attached)</div>
+</div>
+
+<div class="post">
+  <div class="post-time">12:00–1:00 PM — Fisher's Oysters</div>
+  <div class="post-platform">Instagram Story + Feed</div>
+  <div class="post-caption" id="p3">Shaun Fisher — Quandamooka oyster farmer, Moreton Bay legend — shucking fresh on the lawn at The Harvest.
+
+This is what community tastes like.
+
+<span class="hashtags">#FishersOysters #MoretonBay #Quandamooka #TheHarvest #Witta</span></div>
+  <button class="copy-btn" onclick="copy('p3')">COPY CAPTION</button>
+  <div class="post-note">Photo: Real-time shot of Shaun shucking / oysters on display</div>
+</div>
+
+<div class="post">
+  <div class="post-time">1:00–2:00 PM — Milk Crate Build</div>
+  <div class="post-platform">Instagram Story</div>
+  <div class="post-caption" id="p4">We collected donated dairy crates from across the Blackall Range.
+
+Today we build them into something together.</div>
+  <button class="copy-btn" onclick="copy('p4')">COPY CAPTION</button>
+  <div class="post-note">Photo/video: People assembling the milk crate structure</div>
+</div>
+
+<div class="post">
+  <div class="post-time">2:00–3:00 PM — Photo Wall</div>
+  <div class="post-platform">Instagram Story</div>
+  <div class="post-caption" id="p5">The photo wall is growing.
+
+Scan the QR code, leave your details, and we'll send you your portrait tonight.
+
+What would you love to see grow here?</div>
+  <button class="copy-btn" onclick="copy('p5')">COPY CAPTION</button>
+  <div class="post-note">Photo: Photo wall setup with QR code visible</div>
+</div>
+
+<div class="post">
+  <div class="post-time">3:00 PM — Afternoon Vibes</div>
+  <div class="post-platform">Instagram Feed + Facebook</div>
+  <div class="post-caption" id="p6">Live music on the lawn. Local drinks. Hinterland views. Good conversation.
+
+This is just the beginning.
+
+<span class="hashtags">#TheHarvest #Witta #BlackallRange #SunshineCoastHinterland</span></div>
+  <button class="copy-btn" onclick="copy('p6')">COPY CAPTION</button>
+  <div class="post-note">Photo: Candid shot — people, music, afternoon light on the rammed earth</div>
+</div>
+
+<div class="post">
+  <div class="post-time">5:00–6:00 PM — Thank You / Wrap-up</div>
+  <div class="post-platform">Instagram Feed + Facebook + LinkedIn</div>
+  <div class="post-caption" id="p7">What a day.
+
+[X] people came through the doors of The Harvest today. We shucked oysters, built a pavilion from milk crates, took portraits for the photo wall, and asked one question:
+
+"What would you love to see grow here?"
+
+The answers were extraordinary. More on that soon.
+
+This was the first gathering — not the last. Something is growing in Witta.
+
+Thank you to everyone who showed up, and to Fisher's Oysters for the incredible Moreton Bay oysters.
+
+<span class="hashtags">#TheHarvest #Witta #SunshineCoastHinterland #CommunityGathering #BlackallRange #Maleny</span></div>
+  <button class="copy-btn" onclick="copy('p7')">COPY CAPTION</button>
+  <div class="post-note">Photo: Best shot of the day — people, building, golden hour light. Update [X] with actual count.</div>
+</div>
+
+<script>
+function copy(id) {
+  const el = document.getElementById(id);
+  const text = el.innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = el.parentElement.querySelector('.copy-btn');
+    btn.textContent = 'COPIED';
+    setTimeout(() => btn.textContent = 'COPY CAPTION', 2000);
+  });
+}
+</script>
+
+</body>
+</html>

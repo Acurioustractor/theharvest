@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Inter:wght@400;500;600&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1800px; height: 1200px; overflow: hidden; background: #1C1917; }
+</style>
+</head>
+<body>
+<div style="
+  width: 1800px;
+  height: 1200px;
+  font-family: Inter, sans-serif;
+  color: #F5F0E8;
+  overflow: hidden;
+  position: relative;
+">
+  <!-- Full bleed background photo -->
+  <img
+    src="/images/compendium/seed-house-front.jpg"
+    alt=""
+    style="
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 75%;
+      display: block;
+    "
+  />
+
+  <!-- Dark overlay — gradient from top -->
+  <div style="
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(28,25,23,0.85) 0%, rgba(28,25,23,0.5) 45%, rgba(28,25,23,0.1) 65%, rgba(28,25,23,0.7) 90%, rgba(28,25,23,0.85) 100%);
+  "></div>
+
+  <!-- Content overlay — centred -->
+  <div style="
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 50px 90px 60px;
+    text-align: center;
+  ">
+    <!-- Logo -->
+    <img
+      src="/images/logo-v1-dark-clean.png"
+      alt="The Harvest"
+      style="
+        height: 80px;
+        filter: brightness(0) invert(1);
+        margin-bottom: 16px;
+      "
+    />
+
+    <!-- Title -->
+    <div style="
+      font-family: Montserrat, sans-serif;
+      font-size: 96px;
+      font-weight: 900;
+      letter-spacing: 0.05em;
+      line-height: 1.0;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+      text-shadow: 0 4px 16px rgba(0,0,0,0.4);
+    ">
+      Witta Gathering
+    </div>
+
+    <!-- Date & time -->
+    <div style="
+      font-size: 36px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      line-height: 1.4;
+      color: #C4922A;
+      margin-bottom: 14px;
+    ">
+      Saturday 7 March · 11 am – 4 pm
+    </div>
+
+    <!-- Location -->
+    <div style="
+      font-size: 28px;
+      line-height: 1.5;
+      color: rgba(245,240,232,0.85);
+      margin-bottom: 28px;
+    ">
+      9 Gumland Drive, Witta · 10 min from Maleny · Free
+    </div>
+
+    <!-- What's on tags -->
+    <div style="
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 20px;
+    ">
+      <div style="font-size: 22px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; padding: 8px 20px; border: 2px solid rgba(196,146,42,0.6); border-radius: 6px; color: #C4922A; background: rgba(28,25,23,0.3);">Oysters</div>
+      <div style="font-size: 22px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; padding: 8px 20px; border: 2px solid rgba(196,146,42,0.6); border-radius: 6px; color: #C4922A; background: rgba(28,25,23,0.3);">Music</div>
+      <div style="font-size: 22px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; padding: 8px 20px; border: 2px solid rgba(196,146,42,0.6); border-radius: 6px; color: #C4922A; background: rgba(28,25,23,0.3);">Making</div>
+      <div style="font-size: 22px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; padding: 8px 20px; border: 2px solid rgba(196,146,42,0.6); border-radius: 6px; color: #C4922A; background: rgba(28,25,23,0.3);">Stories</div>
+    </div>
+
+    <!-- Bring line -->
+    <div style="
+      font-size: 26px;
+      font-style: italic;
+      color: rgba(245,240,232,0.6);
+      line-height: 1.5;
+    ">
+      Bring a chair or blanket. Or nothing at all.
+    </div>
+
+  </div>
+
+  <!-- Footer — absolutely positioned so it never overflows -->
+  <div style="
+    position: absolute;
+    z-index: 2;
+    bottom: 110px;
+    left: 90px;
+    right: 90px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  ">
+    <span style="font-size: 20px; color: rgba(245,240,232,0.45); letter-spacing: 0.02em;">Jinibara Country</span>
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <div style="font-weight: 700; font-size: 24px; color: rgba(245,240,232,0.75); letter-spacing: 0.02em;">theharvestwitta.com.au</div>
+      <img
+        src="/images/qr-website.png"
+        alt="QR code"
+        style="width: 120px; height: 120px;"
+      />
+    </div>
+  </div>
+</div>
+</body>
+</html>

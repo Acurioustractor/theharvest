@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Harvest — Flyer Builder</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --shed: #2C1810;
+    --milk: #F5F0E8;
+    --golden-hour: #D4A843;
+  }
+
+  @page { size: A4; margin: 0; }
+
+  body {
+    font-family: 'Montserrat', sans-serif;
+    background: #1a1a1a;
+    color: var(--milk);
+    min-height: 100vh;
+  }
+
+  /* Layout: sidebar editor + flyer preview */
+  .app { display: grid; grid-template-columns: 320px 1fr; min-height: 100vh; }
+
+  /* Editor sidebar */
+  .editor {
+    background: #111;
+    border-right: 1px solid #333;
+    padding: 1.5rem;
+    overflow-y: auto;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+  }
+  .editor h2 {
+    font-size: 0.8rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--golden-hour);
+    margin-bottom: 0.75rem;
+    margin-top: 1.25rem;
+  }
+  .editor h2:first-child { margin-top: 0; }
+  .editor label {
+    display: block;
+    font-size: 0.65rem;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.3rem;
+    font-weight: 700;
+  }
+  .editor input, .editor textarea, .editor select {
+    width: 100%;
+    background: #222;
+    border: 1px solid #333;
+    border-radius: 4px;
+    padding: 0.5rem;
+    color: var(--milk);
+    font-size: 0.8rem;
+    font-family: inherit;
+    margin-bottom: 0.75rem;
+    resize: vertical;
+  }
+  .editor input:focus, .editor textarea:focus, .editor select:focus {
+    border-color: var(--golden-hour);
+    outline: none;
+  }
+  .editor textarea { min-height: 60px; }
+
+  /* Image picker */
+  .image-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+    margin-bottom: 0.75rem;
+  }
+  .image-grid img {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: 4px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.2s;
+  }
+  .image-grid img:hover { border-color: var(--golden-hour); transform: scale(1.05); }
+  .image-grid img.selected { border-color: var(--golden-hour); }
+
+  .btn {
+    background: var(--golden-hour);
+    color: var(--shed);
+    border: none;
+    padding: 0.6rem 1rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+  .btn:hover { opacity: 0.9; }
+  .btn-secondary {
+    background: #333;
+    color: var(--milk);
+  }
+
+  /* Preview area */
+  .preview {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 2rem;
+    overflow-y: auto;
+  }
+
+  /* Flyer */
+  .flyer {
+    width: 210mm;
+    min-height: 297mm;
+    height: 297mm;
+    background: var(--shed);
+    color: var(--milk);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+    flex-shrink: 0;
+  }
+
+  .flyer-hero {
+    flex: 0 0 50%;
+    position: relative;
+    overflow: hidden;
+  }
+  .flyer-hero img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .flyer-hero-gradient {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 50%;
+    background: linear-gradient(to top, #2C1810 0%, rgba(44,24,16,0) 100%);
+    z-index: 1;
+  }
+
+  .flyer-content {
+    flex: 1;
+    padding: 0 3rem 2rem;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    z-index: 1;
+    margin-top: -3rem;
+  }
+
+  .color-bar {
+    display: flex;
+    gap: 0;
+    height: 5px;
+    width: 80px;
+    margin-bottom: 1rem;
+    overflow: hidden;
+  }
+  .color-bar span { flex: 1; display: block; margin-right: -0.5px; }
+
+  .flyer-headline {
+    font-weight: 900;
+    font-size: 3rem;
+    text-transform: uppercase;
+    line-height: 1.0;
+    letter-spacing: 0.02em;
+    margin-bottom: 0.8rem;
+  }
+
+  .flyer-date {
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: var(--golden-hour);
+    margin-bottom: 0.8rem;
+  }
+
+  .free-badge {
+    display: inline-block;
+    background: var(--golden-hour);
+    color: var(--shed);
+    font-weight: 900;
+    font-size: 0.7rem;
+    padding: 0.25rem 0.7rem;
+    border-radius: 3px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.8rem;
+    align-self: flex-start;
+  }
+
+  .flyer-details {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    opacity: 0.85;
+    margin-bottom: 0.8rem;
+    max-width: 420px;
+  }
+
+  .flyer-address {
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    opacity: 0.7;
+  }
+
+  /* Footer: always at bottom of flyer */
+  .flyer-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem 3rem;
+    background: rgba(0,0,0,0.2);
+    margin-top: auto;
+  }
+
+  .flyer-branding .brand-name {
+    font-weight: 900;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    opacity: 0.5;
+    display: block;
+    margin-bottom: 0.2rem;
+  }
+  .flyer-branding .brand-url {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--golden-hour);
+  }
+
+  .flyer-qr {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .flyer-qr img {
+    width: 72px;
+    height: 72px;
+    border-radius: 4px;
+    background: white;
+    padding: 3px;
+  }
+  .flyer-qr .qr-label {
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    opacity: 0.6;
+    max-width: 70px;
+    line-height: 1.4;
+  }
+
+  /* Print */
+  @media print {
+    body { background: none; }
+    .app { display: block; }
+    .editor { display: none !important; }
+    .preview { padding: 0; }
+    .flyer { box-shadow: none; width: 100%; height: 100vh; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <!-- Editor Sidebar -->
+  <div class="editor">
+    <h1 style="font-size:1rem; font-weight:900; text-transform:uppercase; margin-bottom:0.25rem;">Flyer Builder</h1>
+    <p style="font-size:0.7rem; color:#666; margin-bottom:1.5rem;">Edit content, swap image, then Save as PDF.</p>
+
+    <h2>Image</h2>
+    <div class="image-grid" id="imageGrid"></div>
+    <label>Or paste image URL</label>
+    <input type="text" id="customImageUrl" placeholder="/images/social/..." onchange="setHeroImage(this.value)">
+
+    <h2>Layout</h2>
+    <label>Image position</label>
+    <select id="editLayout" onchange="updateFlyerLayout()">
+      <option value="top">Image Top (text below)</option>
+      <option value="bottom">Image Bottom (text above)</option>
+    </select>
+
+    <h2>Content</h2>
+    <label>Headline</label>
+    <input type="text" id="editHeadline" value="First Gathering" oninput="updateFlyer()">
+
+    <label>Date line</label>
+    <input type="text" id="editDate" value="Saturday 7 March · 11am–4pm" oninput="updateFlyer()">
+
+    <label>Badge</label>
+    <input type="text" id="editBadge" value="Free · Everyone Welcome" oninput="updateFlyer()">
+
+    <label>Body text</label>
+    <textarea id="editBody" rows="4" oninput="updateFlyer()">Oysters from Minjerribah, shucked fresh by Shaun Fisher. Pizza from the trailer. Drinks by Flight Bar. Music. A milk crate build with the kids.</textarea>
+
+    <label>Second paragraph (optional)</label>
+    <textarea id="editBody2" rows="3" oninput="updateFlyer()">The beginning of a community kitchen, garden, and art space. BYO chair or blanket. Kids welcome. Dogs on leads.</textarea>
+
+    <label>Address</label>
+    <input type="text" id="editAddress" value="9 Gumland Drive, Witta QLD 4552" oninput="updateFlyer()">
+
+    <h2>QR Code</h2>
+    <label>URL</label>
+    <input type="text" id="editQrUrl" value="https://theharvestwitta.com.au/gather?utm_source=flyer&utm_medium=print&utm_campaign=first-gathering" oninput="updateQR()">
+
+    <h2 style="margin-top:1.5rem;"></h2>
+    <button class="btn" id="downloadBtn" onclick="downloadFlyer()">⬇ Download PNG</button>
+    <button class="btn btn-secondary" id="downloadPdfBtn" onclick="downloadFlyerPDF()" style="margin-top:0.4rem;">⬇ Download PDF (Print Quality)</button>
+  </div>
+
+  <!-- Flyer Preview -->
+  <div class="preview">
+    <div class="flyer" id="flyer">
+      <div class="flyer-hero">
+        <img id="heroImg" src="/images/compendium/hero-aerial.jpg" alt="">
+        <div class="flyer-hero-gradient"></div>
+      </div>
+
+      <div class="flyer-content">
+        <div class="color-bar">
+          <span style="background:#4A6741;"></span>
+          <span style="background:#C4922A;"></span>
+          <span style="background:#8B4A2A;"></span>
+          <span style="background:#B58B70;"></span>
+        </div>
+        <h1 class="flyer-headline" id="flyerHeadline">First<br>Gathering</h1>
+        <div class="flyer-date" id="flyerDate">Saturday 7 March · 11am–4pm</div>
+        <span class="free-badge" id="flyerBadge">Free · Everyone Welcome</span>
+        <p class="flyer-details" id="flyerBody">Oysters from Minjerribah, shucked fresh by Shaun Fisher. Pizza from the trailer. Drinks by Flight Bar. Music. A milk crate build with the kids.</p>
+        <p class="flyer-details" id="flyerBody2">The beginning of a community kitchen, garden, and art space. BYO chair or blanket. Kids welcome. Dogs on leads.</p>
+        <div class="flyer-address" id="flyerAddress">9 Gumland Drive, Witta QLD 4552</div>
+      </div>
+
+      <div class="flyer-footer">
+        <div class="flyer-branding">
+          <span class="brand-name">The Harvest, Witta</span>
+          <span class="brand-url">theharvestwitta.com.au</span>
+        </div>
+        <div class="flyer-qr">
+          <span class="qr-label">Scan for details</span>
+          <img id="qrImg" src="" alt="QR Code">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Photos only — no sketches
+const socialImages = [
+  '/images/compendium/seed-house-front.jpg',
+  '/images/compendium/hero-aerial.jpg',
+  '/images/compendium/sophie-garden.jpg',
+  '/images/compendium/team-garden-selfie.jpg',
+  '/images/compendium/oyster-lease-poster.jpg',
+  '/images/compendium/canvas-drawing.jpg',
+  '/images/harvest-hero.jpg',
+  '/images/harvest-gather.jpg',
+  '/images/harvest-eat.jpg',
+  '/images/harvest-grow.jpg',
+  '/images/harvest-make.jpg',
+  '/images/community-gathering.jpg',
+  '/images/local-produce.jpg',
+  '/images/market-atmosphere.jpg',
+  '/images/hero-background.jpg',
+  '/images/site-plan/cropped/photo-wide.jpg',
+];
+
+const extraImages = [];
+
+function buildImageGrid() {
+  const grid = document.getElementById('imageGrid');
+  const allImages = [...socialImages, ...extraImages];
+  allImages.forEach(src => {
+    const img = document.createElement('img');
+    img.src = src;
+    img.alt = src.split('/').pop();
+    img.onclick = () => setHeroImage(src);
+    // Check if file exists — hide broken images
+    img.onerror = () => img.style.display = 'none';
+    grid.appendChild(img);
+  });
+}
+
+function setHeroImage(src) {
+  document.getElementById('heroImg').src = src;
+  // Highlight selected in grid
+  document.querySelectorAll('.image-grid img').forEach(img => {
+    img.classList.toggle('selected', img.src.includes(src));
+  });
+  document.getElementById('customImageUrl').value = src;
+}
+
+function updateFlyer() {
+  const headline = document.getElementById('editHeadline').value;
+  // Convert to line breaks for short words
+  const words = headline.split(' ');
+  let lines = [];
+  let current = '';
+  words.forEach(w => {
+    if ((current + ' ' + w).trim().length > 14 && current) {
+      lines.push(current.trim());
+      current = w;
+    } else {
+      current = (current + ' ' + w).trim();
+    }
+  });
+  if (current) lines.push(current.trim());
+  document.getElementById('flyerHeadline').innerHTML = lines.join('<br>');
+
+  document.getElementById('flyerDate').textContent = document.getElementById('editDate').value;
+  document.getElementById('flyerBadge').textContent = document.getElementById('editBadge').value;
+  document.getElementById('flyerBody').textContent = document.getElementById('editBody').value;
+  document.getElementById('flyerBody2').textContent = document.getElementById('editBody2').value;
+  document.getElementById('flyerAddress').textContent = document.getElementById('editAddress').value;
+
+  // Hide badge if empty
+  document.getElementById('flyerBadge').style.display = document.getElementById('editBadge').value ? '' : 'none';
+  // Hide body2 if empty
+  document.getElementById('flyerBody2').style.display = document.getElementById('editBody2').value ? '' : 'none';
+}
+
+function updateFlyerLayout() {
+  const layout = document.getElementById('editLayout').value;
+  const flyer = document.getElementById('flyer');
+  if (layout === 'bottom') {
+    flyer.style.flexDirection = 'column-reverse';
+    document.querySelector('.flyer-hero-gradient').style.background =
+      'linear-gradient(to bottom, #2C1810 0%, rgba(44,24,16,0) 100%)';
+    document.querySelector('.flyer-content').style.marginTop = '0';
+    document.querySelector('.flyer-content').style.marginBottom = '-3rem';
+    document.querySelector('.flyer-content').style.paddingTop = '2rem';
+  } else {
+    flyer.style.flexDirection = 'column';
+    document.querySelector('.flyer-hero-gradient').style.background =
+      'linear-gradient(to top, #2C1810 0%, rgba(44,24,16,0) 100%)';
+    document.querySelector('.flyer-content').style.marginTop = '-3rem';
+    document.querySelector('.flyer-content').style.marginBottom = '0';
+    document.querySelector('.flyer-content').style.paddingTop = '0';
+  }
+}
+
+function updateQR() {
+  const url = document.getElementById('editQrUrl').value;
+  const encoded = encodeURIComponent(url);
+  const qrImg = document.getElementById('qrImg');
+  qrImg.crossOrigin = 'anonymous';
+  qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encoded}`;
+}
+
+async function downloadFlyer() {
+  const btn = document.getElementById('downloadBtn');
+  btn.textContent = '⏳ Rendering...';
+  btn.disabled = true;
+
+  try {
+    const canvas = await renderFlyerCanvas();
+    const a = document.createElement('a');
+    a.download = 'harvest-flyer-first-gathering.png';
+    a.href = canvas.toDataURL('image/png');
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  } catch (err) {
+    console.error('Download failed:', err);
+    alert('Download failed: ' + err.message);
+  }
+
+  btn.textContent = '⬇ Download PNG';
+  btn.disabled = false;
+}
+
+async function renderFlyerCanvas() {
+  // A4 at 300 DPI = 2480 x 3508
+  const W = 2480, H = 3508;
+  const canvas = document.createElement('canvas');
+  canvas.width = W;
+  canvas.height = H;
+  const ctx = canvas.getContext('2d');
+
+  // Background
+  ctx.fillStyle = '#2C1810';
+  ctx.fillRect(0, 0, W, H);
+
+  // Load hero image
+  const heroImg = document.getElementById('heroImg');
+  const img = new Image();
+  img.crossOrigin = 'anonymous';
+  await new Promise((resolve, reject) => {
+    img.onload = resolve;
+    img.onerror = reject;
+    img.src = heroImg.src;
+  });
+
+  const layout = document.getElementById('editLayout').value;
+  const heroH = Math.round(H * 0.45);
+  const iw = img.naturalWidth, ih = img.naturalHeight;
+  const imgScale = Math.max(W / iw, heroH / ih);
+  const sw = W / imgScale, sh = heroH / imgScale;
+  const sx = (iw - sw) / 2, sy = (ih - sh) * 0.45;
+
+  const px = 160; // left padding
+  let y;
+
+  if (layout === 'bottom') {
+    // ── IMAGE BOTTOM layout: content at top, image at bottom ──
+    // Draw image at bottom
+    const imgY = H - heroH;
+    ctx.drawImage(img, sx, sy, sw, sh, 0, imgY, W, heroH);
+    // Gradient fading down from top into image
+    const grad = ctx.createLinearGradient(0, imgY, 0, imgY + heroH * 0.5);
+    grad.addColorStop(0, 'rgba(44,24,16,1)');
+    grad.addColorStop(0.5, 'rgba(44,24,16,0.4)');
+    grad.addColorStop(1, 'rgba(44,24,16,0)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, imgY, W, heroH * 0.5);
+    y = 160; // start content from top
+  } else {
+    // ── IMAGE TOP layout (default): image at top, content below ──
+    ctx.drawImage(img, sx, sy, sw, sh, 0, 0, W, heroH);
+    const grad = ctx.createLinearGradient(0, heroH * 0.35, 0, heroH);
+    grad.addColorStop(0, 'rgba(44,24,16,0)');
+    grad.addColorStop(0.7, 'rgba(44,24,16,0.6)');
+    grad.addColorStop(1, 'rgba(44,24,16,1)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, heroH * 0.35, W, heroH * 0.65);
+    y = heroH - 100;
+  }
+
+  // Color bar
+  const barColors = ['#4A6741', '#C4922A', '#8B4A2A', '#B58B70'];
+  barColors.forEach((c, i) => {
+    ctx.fillStyle = c;
+    ctx.fillRect(px + i * 65, y, 65, 24);
+  });
+  y += 70;
+
+  // Headline — poster size, readable from 2m+
+  const headline = document.getElementById('editHeadline').value || 'First Gathering';
+  ctx.fillStyle = '#F5F0E8';
+  ctx.font = '900 220px Montserrat, sans-serif';
+  ctx.textBaseline = 'top';
+  // Word-wrap headline
+  const words = headline.split(' ');
+  let lines = [];
+  let current = '';
+  words.forEach(w => {
+    const test = current ? current + ' ' + w : w;
+    if (ctx.measureText(test.toUpperCase()).width > W - px * 2 && current) {
+      lines.push(current.toUpperCase());
+      current = w;
+    } else {
+      current = test;
+    }
+  });
+  if (current) lines.push(current.toUpperCase());
+  lines.forEach(line => {
+    ctx.fillText(line, px, y);
+    y += 230;
+  });
+  y += 20;
+
+  // Date — clear from arm's length
+  const dateLine = document.getElementById('editDate').value || '';
+  ctx.fillStyle = '#D4A843';
+  ctx.font = '700 88px Montserrat, sans-serif';
+  ctx.fillText(dateLine, px, y);
+  y += 130;
+
+  // Badge
+  const badge = document.getElementById('editBadge').value || '';
+  if (badge) {
+    ctx.font = '900 50px Montserrat, sans-serif';
+    const badgeW = ctx.measureText(badge.toUpperCase()).width + 60;
+    ctx.fillStyle = '#D4A843';
+    roundRect(ctx, px, y, badgeW, 72, 10);
+    ctx.fill();
+    ctx.fillStyle = '#2C1810';
+    ctx.fillText(badge.toUpperCase(), px + 30, y + 14);
+    y += 120;
+  }
+
+  // Body text — comfortable reading at arm's length
+  ctx.fillStyle = 'rgba(245,240,232,0.85)';
+  ctx.font = '400 62px Montserrat, sans-serif';
+  const body1 = document.getElementById('editBody').value || '';
+  y = drawWrappedText(ctx, body1, px, y, W - px * 2, 88);
+  y += 50;
+
+  const body2 = document.getElementById('editBody2').value || '';
+  if (body2) {
+    y = drawWrappedText(ctx, body2, px, y, W - px * 2, 88);
+    y += 50;
+  }
+
+  // Address
+  const address = document.getElementById('editAddress').value || '';
+  ctx.fillStyle = 'rgba(245,240,232,0.7)';
+  ctx.font = '700 56px Montserrat, sans-serif';
+  ctx.letterSpacing = '4px';
+  ctx.fillText(address.toUpperCase(), px, y);
+  y += 80;
+
+  // Footer bar — at bottom for image-top, above image for image-bottom
+  const footerH = 180;
+  const footerY = layout === 'bottom' ? (H - heroH - footerH) : (H - footerH);
+  ctx.fillStyle = 'rgba(0,0,0,0.25)';
+  ctx.fillRect(0, footerY, W, footerH);
+
+  // Branding
+  ctx.fillStyle = 'rgba(245,240,232,0.5)';
+  ctx.font = '900 36px Montserrat, sans-serif';
+  ctx.fillText('THE HARVEST, WITTA', px, footerY + 50);
+  ctx.fillStyle = '#D4A843';
+  ctx.font = '700 56px Montserrat, sans-serif';
+  ctx.fillText('theharvestwitta.com.au', px, footerY + 105);
+
+  // QR code — reload with CORS to avoid tainted canvas
+  const qrImgEl = document.getElementById('qrImg');
+  const qrLoaded = await new Promise(resolve => {
+    if (!qrImgEl.src || !qrImgEl.naturalWidth) return resolve(null);
+    const qr = new Image();
+    qr.crossOrigin = 'anonymous';
+    qr.onload = () => resolve(qr);
+    qr.onerror = () => resolve(null);
+    qr.src = qrImgEl.src;
+  });
+  if (qrLoaded) {
+    const qrImg = qrLoaded;
+    const qrSize = 130;
+    const qrX = W - px - qrSize;
+    const qrY = footerY + (footerH - qrSize) / 2;
+    // White background for QR
+    ctx.fillStyle = 'white';
+    roundRect(ctx, qrX - 10, qrY - 10, qrSize + 20, qrSize + 20, 8);
+    ctx.fill();
+    ctx.drawImage(qrImg, qrX, qrY, qrSize, qrSize);
+    // Label
+    ctx.fillStyle = 'rgba(245,240,232,0.5)';
+    ctx.font = '700 30px Montserrat, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('SCAN FOR DETAILS', qrX - 20, footerY + 100);
+    ctx.textAlign = 'left';
+  }
+
+  return canvas;
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+
+function drawWrappedText(ctx, text, x, y, maxWidth, lineHeight) {
+  const words = text.split(' ');
+  let line = '';
+  for (const word of words) {
+    const test = line ? line + ' ' + word : word;
+    if (ctx.measureText(test).width > maxWidth && line) {
+      ctx.fillText(line, x, y);
+      line = word;
+      y += lineHeight;
+    } else {
+      line = test;
+    }
+  }
+  if (line) {
+    ctx.fillText(line, x, y);
+    y += lineHeight;
+  }
+  return y;
+}
+
+async function downloadFlyerPDF() {
+  const btn = document.getElementById('downloadPdfBtn');
+  btn.textContent = '⏳ Rendering PDF...';
+  btn.disabled = true;
+
+  try {
+    const canvas = await renderFlyerCanvas();
+    const imgData = canvas.toDataURL('image/jpeg', 0.95);
+
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+    // A4 = 210 x 297mm
+    pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
+    pdf.save('harvest-flyer-first-gathering.pdf');
+  } catch (err) {
+    console.error('PDF download failed:', err);
+    alert('PDF download failed: ' + err.message);
+  }
+
+  btn.textContent = '⬇ Download PDF (Print Quality)';
+  btn.disabled = false;
+}
+
+// Init
+buildImageGrid();
+updateQR();
+</script>
+
+</body>
+</html>
