@@ -703,8 +703,34 @@ export const appRouter = router({
         return { success: true, url };
       }),
 
-    // Get all gallery photos
-    gallery: publicProcedure.query(() => {
+    // Get all gallery photos (list from Supabase storage, fall back to local JSON)
+    gallery: publicProcedure.query(async () => {
+      const supabaseUrl = process.env.VITE_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL;
+      const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+      if (supabaseUrl && serviceKey) {
+        try {
+          const res = await fetch(`${supabaseUrl}/storage/v1/object/list/photo-wall`, {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${serviceKey}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ prefix: "", limit: 500, sortBy: { column: "created_at", order: "desc" } }),
+          });
+          if (res.ok) {
+            const files = await res.json() as Array<{ name: string; created_at: string }>;
+            return files
+              .filter((f: { name: string }) => !f.name.startsWith("."))
+              .map((f: { name: string; created_at: string }) => ({
+                url: `${supabaseUrl}/storage/v1/object/public/photo-wall/${f.name}`,
+                fileName: f.name.replace(/^\d+-/, ""),
+                uploadedAt: f.created_at,
+              }));
+          }
+        } catch (err) {
+          console.error("Failed to list photos from Supabase storage:", err);
+        }
+      }
       return getGalleryPhotos();
     }),
 
