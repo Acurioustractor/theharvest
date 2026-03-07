@@ -113,11 +113,11 @@ export default function PhotoWall() {
 
     for (const file of Array.from(files)) {
       try {
-        const base64 = await fileToBase64(file);
+        const { base64, contentType } = await resizeImage(file);
         await uploadMutation.mutateAsync({
           base64Data: base64,
           fileName: file.name,
-          contentType: file.type,
+          contentType,
         });
         uploaded++;
       } catch (err) {
@@ -358,6 +358,65 @@ export default function PhotoWall() {
         </section>
       )}
 
+      {/* ─── PUBLIC UPLOAD ─── */}
+      <section style={{
+        backgroundColor: colors.shed,
+        padding: isMobile ? "0 28px 48px" : "0 40px 64px",
+        textAlign: "center",
+      }}>
+        <input
+          ref={!isAdmin ? fileInputRef : undefined}
+          type="file"
+          accept="image/*"
+          multiple
+          style={{ display: "none" }}
+          id="public-upload"
+          onChange={(e) => e.target.files && handleUpload(e.target.files)}
+        />
+        <div style={{
+          maxWidth: 480,
+          margin: "0 auto",
+          borderTop: `1px solid rgba(245,240,232,0.1)`,
+          paddingTop: 40,
+        }}>
+          <div
+            style={{
+              border: `1px dashed rgba(245,240,232,0.2)`,
+              padding: isMobile ? "28px 20px" : "36px 32px",
+              cursor: isUploading ? "not-allowed" : "pointer",
+              opacity: isUploading ? 0.6 : 1,
+            }}
+            onClick={() => {
+              if (!isUploading) {
+                const input = document.getElementById("public-upload") as HTMLInputElement;
+                input?.click();
+              }
+            }}
+          >
+            <p style={{
+              fontFamily: fonts.display,
+              fontWeight: 900,
+              fontSize: isMobile ? 16 : 18,
+              letterSpacing: "0.08em",
+              color: colors.milk,
+              margin: "0 0 8px",
+            }}>
+              {isUploading ? "UPLOADING..." : "SHARE YOUR PHOTOS"}
+            </p>
+            <p style={{
+              fontFamily: fonts.body,
+              fontSize: isMobile ? 13 : 14,
+              color: colors.milk,
+              opacity: 0.5,
+              margin: 0,
+              lineHeight: 1.5,
+            }}>
+              Got photos from the gathering? Tap to add them to the wall.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* ─── SIGNUP FORM / THANK YOU ─── */}
       <section style={{
         backgroundColor: colors.shed,
@@ -525,15 +584,26 @@ export default function PhotoWall() {
   );
 }
 
-function fileToBase64(file: File): Promise<string> {
+function resizeImage(file: File, maxWidth = 1920, quality = 0.85): Promise<{ base64: string; contentType: string }> {
   return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      const result = reader.result as string;
-      // Strip the data:...;base64, prefix
-      resolve(result.split(",")[1]);
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      let { width, height } = img;
+      if (width > maxWidth) {
+        height = Math.round((height * maxWidth) / width);
+        width = maxWidth;
+      }
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext("2d")!;
+      ctx.drawImage(img, 0, 0, width, height);
+      const dataUrl = canvas.toDataURL("image/jpeg", quality);
+      resolve({ base64: dataUrl.split(",")[1], contentType: "image/jpeg" });
     };
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
+    img.onerror = reject;
+    img.src = url;
   });
 }
