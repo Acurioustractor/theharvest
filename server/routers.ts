@@ -699,7 +699,6 @@ export const appRouter = router({
         }
 
         const url = `${supabaseUrl}/storage/v1/object/public/photo-wall/${filePath}`;
-        addGalleryPhoto({ url, fileName: input.fileName, uploadedAt: new Date().toISOString() });
         return { success: true, url };
       }),
 
@@ -738,23 +737,22 @@ export const appRouter = router({
     deletePhoto: publicProcedure
       .input(z.object({ url: z.string().min(1) }))
       .mutation(async ({ input }) => {
-        const removed = removeGalleryPhoto(input.url);
-
-        // Also delete from Supabase storage
+        // Delete from Supabase storage
         const supabaseUrl = process.env.VITE_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL;
         const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
         if (supabaseUrl && serviceKey) {
           const prefix = `${supabaseUrl}/storage/v1/object/public/photo-wall/`;
           if (input.url.startsWith(prefix)) {
             const filePath = input.url.slice(prefix.length);
-            fetch(`${supabaseUrl}/storage/v1/object/photo-wall/${filePath}`, {
+            const res = await fetch(`${supabaseUrl}/storage/v1/object/photo-wall/${filePath}`, {
               method: "DELETE",
               headers: { Authorization: `Bearer ${serviceKey}` },
-            }).catch(err => console.error("Supabase storage delete failed:", err));
+            });
+            return { success: res.ok };
           }
         }
 
-        return { success: removed };
+        return { success: false };
       }),
 
     // Add photo-wall-ready tag to all photo-wall contacts (triggers GHL text workflow)
