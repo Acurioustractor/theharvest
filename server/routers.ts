@@ -26,6 +26,16 @@ import { z } from "zod";
 
 const INTEREST_OPTIONS = ["kids-play", "cafe", "garden", "pop-up-events", "art-exhibitions", "something-else"] as const;
 
+// Next upcoming Harvest gathering. Update these three lines per event — the
+// rest of the system reads from them (tags, count query, workflow source).
+const CURRENT_GATHERING_DATE = "2026-06-20";
+const CURRENT_GATHERING_TAG = "witta-gathering-2026-06-20";
+const CURRENT_GATHERING_SWITCHBOARD_TAGS = [
+  `Event: Witta Gathering — ${CURRENT_GATHERING_DATE}`,
+  "Event type: Public launch (50–150)",
+  "Access: Open registration (Public)",
+];
+
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
   system: systemRouter,
@@ -300,21 +310,25 @@ export const appRouter = router({
           firstName,
           lastName,
           phone: input.phone || undefined,
-          source: "EOI Form - First Gathering",
-          tags: ["eoi-gathering-march-2026", "harvest-website"],
+          source: `RSVP — Witta Gathering ${CURRENT_GATHERING_DATE}`,
+          tags: [
+            CURRENT_GATHERING_TAG,
+            "harvest-website",
+            ...CURRENT_GATHERING_SWITCHBOARD_TAGS,
+          ],
         });
 
         if (result.contactId && input.excitement) {
           await addGHLContactNote(result.contactId,
-            `**EOI — First Gathering**\n\n**What excites them:** ${input.excitement}\n**Source:** ${input.source || "Not specified"}`
+            `**RSVP — Witta Gathering ${CURRENT_GATHERING_DATE}**\n\n**What excites them:** ${input.excitement}\n**Source:** ${input.source || "Not specified"}`
           );
         }
 
         if (result.contactId) {
-          const workflowId = process.env.GHL_EOI_WORKFLOW_ID;
+          const workflowId = process.env.GHL_GATHERING_RSVP_WORKFLOW_ID || process.env.GHL_EOI_WORKFLOW_ID;
           if (workflowId) {
             triggerGHLWorkflow(workflowId, result.contactId).catch(err =>
-              console.error("GHL workflow trigger failed (eoi):", err)
+              console.error("GHL workflow trigger failed (gathering rsvp):", err)
             );
           }
         }
@@ -323,59 +337,9 @@ export const appRouter = router({
       }),
 
     count: publicProcedure.query(async () => {
-      const count = await getGHLContactCountByTag("eoi-gathering-march-2026");
+      const count = await getGHLContactCountByTag(CURRENT_GATHERING_TAG);
       return { count };
     }),
-
-    submitLocalsDay: publicProcedure
-      .input(z.object({
-        name: z.string().min(1),
-        email: z.string().email().nullish(),
-        phone: z.string().nullish(),
-        alsoSaturday: z.boolean().optional(),
-      }))
-      .mutation(async ({ input }) => {
-        if (!input.email && !input.phone) {
-          throw new Error("Email or phone is required");
-        }
-        const [firstName, ...rest] = input.name.split(" ");
-        const lastName = rest.join(" ") || undefined;
-
-        const tags = ["locals-day-march-2026", "harvest-website"];
-        if (input.alsoSaturday) {
-          tags.push("eoi-gathering-march-2026");
-        }
-
-        const localsResult = await upsertGHLContact({
-          email: input.email || undefined,
-          firstName,
-          lastName,
-          phone: input.phone || undefined,
-          source: "EOI Form - Locals Day",
-          tags,
-        });
-
-        if (localsResult.contactId) {
-          // Always trigger locals day workflow
-          const localsWorkflowId = process.env.GHL_LOCALS_DAY_WORKFLOW_ID;
-          if (localsWorkflowId) {
-            triggerGHLWorkflow(localsWorkflowId, localsResult.contactId).catch(err =>
-              console.error("GHL workflow trigger failed (locals day):", err)
-            );
-          }
-          // Also trigger Saturday workflow if they opted in
-          if (input.alsoSaturday) {
-            const eoiWorkflowId = process.env.GHL_EOI_WORKFLOW_ID;
-            if (eoiWorkflowId) {
-              triggerGHLWorkflow(eoiWorkflowId, localsResult.contactId).catch(err =>
-                console.error("GHL workflow trigger failed (eoi from locals):", err)
-              );
-            }
-          }
-        }
-
-        return { success: true };
-      }),
   }),
 
   // Workshop bookings via GHL

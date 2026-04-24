@@ -125,5 +125,19 @@
     "overrides": {
       "tailwindcss>nanoid": "3.3.7"
     }
-  }
+  },
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Acurioustractor/theharvest.git"
+  },
+  "keywords": [],
+  "author": "",
+  "bugs": {
+    "url": "https://github.com/Acurioustractor/theharvest/issues"
+  },
+  "homepage": "https://github.com/Acurioustractor/theharvest#readme"
 }

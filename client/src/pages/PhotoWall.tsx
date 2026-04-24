@@ -209,8 +209,8 @@ export default function PhotoWall() {
             lineHeight: 1.6,
           }}>
             {photos.length > 0
-              ? "Browse, download and share your photos from the gathering."
-              : "We'd love to take your portrait today. Leave your details and we'll send you a copy."}
+              ? "Browse, download and share photos from The Harvest."
+              : "Leave your details and we'll send you a portrait next time we gather."}
           </p>
         </motion.div>
       </section>
@@ -353,7 +353,7 @@ export default function PhotoWall() {
             color: colors.milk,
             opacity: 0.4,
           }}>
-            Photos coming soon — check back after the gathering.
+            Photos coming soon.
           </p>
         </section>
       )}
@@ -411,7 +411,7 @@ export default function PhotoWall() {
               margin: 0,
               lineHeight: 1.5,
             }}>
-              Got photos from the gathering? Tap to add them to the wall.
+              Got photos from The Harvest? Tap to add them to the wall.
             </p>
           </div>
         </div>
@@ -448,7 +448,7 @@ export default function PhotoWall() {
             margin: "0 0 28px",
             lineHeight: 1.6,
           }}>
-            Leave your details and we'll send you your photo after the event.
+            Leave your details and we'll send you your portrait.
           </p>
 
           {submitted ? (
@@ -476,7 +476,7 @@ export default function PhotoWall() {
                 lineHeight: 1.6,
                 margin: "0 0 12px",
               }}>
-                We'll send your photo after today's gathering.
+                We'll send your portrait soon.
               </p>
               <p style={{
                 fontFamily: fonts.body,

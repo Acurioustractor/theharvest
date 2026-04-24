@@ -6,22 +6,6 @@ import FadeIn from "@/components/FadeIn";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { rootStyle, colors, fonts } from "@/styles/brand";
 
-const GATHERING_DATE = new Date("2026-03-07T11:00:00+10:00");
-
-function useCountdownDays(target: Date): { daysLeft: number | null; isToday: boolean } {
-  const [now, setNow] = useState(new Date());
-  useEffect(() => {
-    const id = setInterval(() => setNow(new Date()), 60_000);
-    return () => clearInterval(id);
-  }, []);
-  // Check if it's the same calendar day (in local timezone)
-  const isToday = now.toDateString() === target.toDateString();
-  if (isToday) return { daysLeft: 0, isToday: true };
-  const diff = target.getTime() - now.getTime();
-  if (diff <= 0) return { daysLeft: null, isToday: false };
-  return { daysLeft: Math.ceil(diff / 86400000), isToday: false };
-}
-
 const zones = [
   {
     title: "GROW",
@@ -42,13 +26,6 @@ const zones = [
 
 const events = [
   {
-    tag: "Event",
-    date: "Today, 11am - 4pm",
-    title: "FIRST GATHERING",
-    desc: "Oysters, milk crate building, music, drinks from Flight Bar. 9 Gumland Drive, Witta. Free.",
-    href: "/gather",
-  },
-  {
     tag: "Fellowship",
     date: "12-month fellowship",
     title: "RADICAL SCOOPS",
@@ -60,7 +37,6 @@ const events = [
 export default function BauhausHome() {
   const isMobile = useMediaQuery("(max-width: 768px)");
   const [scrollVisible, setScrollVisible] = useState(false);
-  const { daysLeft, isToday } = useCountdownDays(GATHERING_DATE);
 
   useEffect(() => {
     document.title = "The Harvest - Witta, Sunshine Coast Hinterland";
@@ -84,37 +60,6 @@ export default function BauhausHome() {
 
   return (
     <div style={rootStyle}>
-
-      {/* --- GATHERING COUNTDOWN BANNER --- */}
-      {(daysLeft !== null || isToday) && (
-        <Link href={isToday ? "/gather#what-to-expect" : "/gather#rsvp"} style={{ textDecoration: "none" }}>
-          <motion.div
-            initial={{ y: -40 }}
-            animate={{ y: 0 }}
-            transition={{ delay: 1, duration: 0.5, ease: "easeOut" }}
-            style={{
-              position: "fixed",
-              top: 0,
-              left: 0,
-              right: 0,
-              zIndex: 100,
-              backgroundColor: colors.goldenHour,
-              color: colors.shed,
-              textAlign: "center",
-              padding: "10px 20px",
-              fontFamily: fonts.display,
-              fontWeight: 700,
-              fontSize: isMobile ? 12 : 14,
-              letterSpacing: "0.08em",
-              cursor: "pointer",
-            }}
-          >
-            {isToday
-              ? "FIRST GATHERING IS TODAY / WHAT TO EXPECT"
-              : `FIRST GATHERING IN ${daysLeft} ${daysLeft === 1 ? "DAY" : "DAYS"} / SAVE YOUR SPOT`}
-          </motion.div>
-        </Link>
-      )}
 
       {/* --- 1. HERO --- */}
       <section style={{
