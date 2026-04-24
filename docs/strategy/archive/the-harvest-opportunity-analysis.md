@@ -3,7 +3,22 @@
 
 **Date:** January 2026
 **Prepared by:** Strategic Analysis
-**Status:** For Decision
+**Status:** ⚠️ SUPERSEDED
+
+---
+
+> **⚠️ SUPERSEDED 2026-04-24 — archived for historical reference.**
+>
+> This document was a pre-signing decision analysis that helped evaluate whether to proceed with The Harvest lease. It assumes:
+> - Direct-operator model (Harvest Pty runs café via a full-time Site Manager)
+> - Susie as $23K/year workaround for a $60-70K Site Manager hire
+> - Jan 2026 financial numbers that do not reflect the signed lease
+>
+> **The decision was made to proceed.** The lease was signed 17 Feb 2026. The operating model has since evolved to **site-steward** (Harvest Pty does programming/Art Space/garden; sublicences café + retail). See `docs/strategy/the-harvest-strategic-plan-notion.md` (v2.1) for the current model.
+>
+> This file is retained because its ratings framework, risk analysis, and decision logic remain useful reference material for future strategic decisions. Do not cite its operating-model or financial content as current.
+>
+> **Current source of truth:** `docs/strategy/the-harvest-strategic-plan-notion.md` + `thoughts/wiki/operations/*` (dated 2026-04-24).
 
 ---
 

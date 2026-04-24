@@ -2,7 +2,19 @@
 ## First Principles Decision-Making Framework
 
 **Created:** January 2026
+**Status:** ⚠️ SUPERSEDED (for Harvest-specific content)
 **Purpose:** Systematic evaluation of opportunities against mission, resources, and strategic priorities
+
+---
+
+> **⚠️ SUPERSEDED 2026-04-24 — archived for historical reference (Harvest-specific sections only).**
+>
+> This document contains a general first-principles decision framework for ACT that remains valid as a reasoning tool. However, its **Harvest-specific** content (Susie ops references, Site Manager framing in §Resource Availability, Jan 2026 decision-pending context) is superseded by:
+> - Lease signed 17 Feb 2026 (see `thoughts/wiki/operations/lease.md`)
+> - Site-steward operating model (D1 locked 2026-04-24 via `/plan-ceo-review`)
+> - Strategic plan v2.1: `docs/strategy/the-harvest-strategic-plan-notion.md`
+>
+> The framework itself (mission check, resource check, impact check, alignment scoring) remains useful for evaluating future opportunities. Treat Harvest-specific examples as historical illustrations, not current state.
 
 ---
 
