@@ -18,11 +18,16 @@
 
 | Document | Purpose |
 |----------|---------|
-| `act-decision-framework.md` | First principles decision framework |
 | `the-harvest-lease-v2-draft.md` | Amended commercial lease |
 | `the-harvest-lease-legal-review.md` | QLD law considerations |
-| `the-harvest-opportunity-analysis.md` | Opportunity analysis (Jan 2026) |
 | `notion-page-setup.md` | Notion page tree + dashboard template |
+
+**Archived (historical decision support, superseded by this plan — see `docs/strategy/archive/`):**
+
+| Document | Purpose | Status |
+|----------|---------|--------|
+| `archive/act-decision-framework.md` | First principles decision framework | ⚠️ Harvest-specific sections superseded 2026-04-24; general framework still useful |
+| `archive/the-harvest-opportunity-analysis.md` | Pre-signing opportunity analysis (Jan 2026) | ⚠️ Superseded 2026-04-24; retained for historical reference |
 
 **Operational docs (in `thoughts/wiki/operations/` — dated 2026-04-24, canonical source of truth):**
 
