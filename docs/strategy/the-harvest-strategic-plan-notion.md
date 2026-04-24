@@ -18,6 +18,7 @@
 
 | Document | Purpose |
 |----------|---------|
+| `10-week-commencement-plan.md` | **Active tracker — 28 Apr – 1 Jul 2026 execution. Weekly status updates.** |
 | `the-harvest-lease-v2-draft.md` | Amended commercial lease |
 | `the-harvest-lease-legal-review.md` | QLD law considerations |
 | `notion-page-setup.md` | Notion page tree + dashboard template |

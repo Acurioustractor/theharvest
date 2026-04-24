@@ -36,7 +36,7 @@ Key files in that wiki (all dated 2026-04-24, single source of truth for their d
 
 ## Active plan (10 weeks to commencement)
 
-The week-by-week tracker for 28 Apr – 1 Jul 2026 execution lives at `~/.claude/plans/plan-this-al-out-toasty-lake.md` (Ben's local file). Covers five parallel workstreams: entity, insurance, sub-op, working capital, Jinibara engagement. Plus three process items (this file, monthly review, `/schedule` TODOS-hygiene agent).
+The week-by-week tracker for 28 Apr – 1 Jul 2026 execution lives at **`docs/strategy/10-week-commencement-plan.md`**. Covers five parallel workstreams (entity, insurance, sub-op, working capital, Jinibara engagement) plus three process items (this file, monthly review, `/schedule` TODOS-hygiene agent). Status updates committed weekly. For ops detail, each task cross-references the canonical `thoughts/wiki/operations/` file.
 
 ## AI sessions
 
