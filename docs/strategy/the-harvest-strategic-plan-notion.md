@@ -76,7 +76,9 @@ The Harvest is the **shopfront for ACT's mission**—not an end in itself, but a
 | Grant confirms exit vision | 🟡 Partial | Nic | Signed lease is silent on exit vision; open conversation with Grant & Michelle ongoing |
 | First right of refusal in lease | ✅ Secured | Ben | Clause 17.6 of signed lease — 30 days to match bona fide offer |
 | Clawback protection ($100K) | ❌ **Not met** | Ben | **Original ask not in signed lease.** Clause 7.4 gives Fund-financed improvements to landlord at lease end with no clawback. We proceeded without. Flag for `/plan-ceo-review`: does this change the bet? |
-| Susie confirms 4 days/week | ⬜ Pending | Nic | $26K/year (inc super) |
+| Susie confirms Community Steward arrangement (paired with Joey) | ⬜ Pending | Nic | Hours + cost TBC; scope = programming + site ops, paired model |
+| Joey confirms Community Steward co-arrangement | ⬜ Pending | Both | Paired with Susie; covers Wed crew + event ops + site presence while Ben overseas 20 Jun – 15 Aug |
+| Soft-open 20 June 2026 Go/No-Go decision | ⬜ Pending (Week 5-6 decision) | Both | Notion note 23 Apr flagged this as open; Puzzle conference Adelaide conflicts; resolve whether to run invite-only Phase-A event 20 Jun, shift to post-Ben-return, or skip to 1 Jul formal open |
 | Cath confirms garden role | ⬜ Pending | Nic | Scope and cost |
 | Jinibara engagement initiated | ⬜ Pending | Nic | Must precede commencement |
 | Total premises measured | ⬜ Pending | Grant | Under/over 1,000 sqm — determines Retail Shop Leases Act 1994 (QLD) applicability (building 500 sqm, garden centre + outdoor additional) |
@@ -215,6 +217,7 @@ Three funding tracks, kept separate to match the lease structure and site-stewar
 | | | |
 | **Costs** | | |
 | Susie (Community Steward, lighter scope) | ~$1,500 | ~$18,000 |
+| Joey (Community Steward, paired with Susie) | ~$1,500 | ~$18,000 |
 | Base rent (lease clause 3.1) | $4,167 | $50,000 |
 | Outgoings + utilities + property insurance (tenant's) | ~$1,500 | ~$18,000 |
 | Public Liability $20M + contents + business pack | ~$500 | ~$6,000 |
@@ -222,15 +225,15 @@ Three funding tracks, kept separate to match the lease structure and site-stewar
 | Programming costs (facilitators, materials) | ~$1,000 | ~$12,000 |
 | Marketing + website + comms | ~$300 | ~$4,000 |
 | Repairs/maintenance + misc operating | ~$500 | ~$6,000 |
-| **Total Costs** | **~$9,867** | **~$119,000** |
+| **Total Costs** | **~$11,367** | **~$137,000** |
 | | | |
-| **Net Profit (pre-Revenue-Share)** | **~$133** | **~$(2,000)**\* |
+| **Net Profit (pre-Revenue-Share)** | **~$(1,367)** | **~$(20,000)**\* |
 | Revenue Share to Landlord (100% of Net Profit, capped at Target) | ~$0 | ~$0\* |
-| **Harvest Pty Surplus** | **~$0** | **~$0** (break-even by design Year 1) |
+| **Harvest Pty Surplus** | **~$(1,367)** | **~$(20,000)** (Year 1 runs at a small loss; covered by director loan + grants)\* |
 
 \*Revenue Share mechanic (clause 3.2, confirmed against `lease.md`): Base Rent $50K/yr + 100% of Net Profit (Gross − Operating − Base Rent), **capped at Target Rent ($100K/yr)**. Under site-steward, licence fees are Gross Revenue (not pass-through), so Net Profit is Harvest Pty's own bottom line after all costs including base rent. Year 1 is break-even by design; Year 2+ scaling of licence fees + programming + memberships + grant pipeline builds toward Net Profit >$100K that flows above the revenue-share cap back to Harvest Pty.
 
-**Year 1 implication:** The goal for Year 1 is not surplus but **validation**: sub-op signed and trading, programming rhythm established, community embedded, grant pipeline moving, Jinibara partnership live, landlord + community reports on time. Financial survival (break-even + repay director loan) is a floor condition, not the aim.
+**Year 1 implication:** The goal for Year 1 is not surplus but **validation**: sub-op signed and trading, programming rhythm established, community embedded, grant pipeline moving, Jinibara partnership live, landlord + community reports on time. With Joey added as paired Community Steward alongside Susie (D20), Year 1 runs at a projected ~$20K loss instead of break-even. That's a deliberate choice — pairing stewards + richer programming is the Bridged model working, not a shortfall. Loss is covered by director loan ($20-30K per `working-capital-plan.md` Option A) + grant pipeline. If grants land materially ahead of forecast, loss closes or flips to surplus. If grants miss, extend bridge (ACT loan option B or trust capital option C) or review Joey hours before cutting him.
 
 **Property Value re-basing (clause 3.1(b)):** As Fund milestones complete, Property Value rises by the amount spent. Full $250K deployment lifts Property Value to $2.25M and Target Rent to $112,500/yr. Strategic implication: Harvest Pty's upside above the cap pushes further into Year 2-3 as Fund deploys. Deploy Fund thoughtfully, not maximally.
 
@@ -255,17 +258,27 @@ Three funding tracks, kept separate to match the lease structure and site-stewar
 
 **Year-1 operating model: site-steward.** Harvest Pty runs programming, Art Space, and garden directly. Day-to-day hospitality and retail are sublicenced to values-aligned operators. See `thoughts/wiki/operations/sub-operator-sourcing-brief.md` for the full sub-op sourcing plan.
 
+**Programming team: Susie + Joey as paired Community Stewards.** Susie and Joey work together on day-to-day site operations. Wednesday maintenance crew pattern from April 2026 onward (pre-commencement), scaling as commencement approaches.
+
+**Director availability note (critical):** Ben is overseas 20 June – 15 August 2026 (7-week trip: Tanzania, Kenya, Uganda, Sweden, Amsterdam, Spain). **Nic is on-deck in Maleny 20 June – 1 July** for all physical-presence critical-path tasks: insurance broker close-out, tenant-signature on lease, first-week commencement ops, soft-open event (if proceeding — see below). Ben is available for remote-sign decisions only from 20 June onward. See `docs/strategy/10-week-commencement-plan.md` for owner-by-week detail.
+
+**20 June soft-open — pending decision (Week 5-6 2026):** Notion meeting note 2026-04-23 captured active debate about a soft-open event on 20 June 2026 during the rent-free early-access period. Puzzle conference in Adelaide conflicts for some team members. Decision framed as Week 5-6 Go/No-Go in the 10-week plan. Three paths: (a) proceed 20 June invite-only Phase-A event, (b) shift to Aug/Sep post-Ben-return, (c) skip and go straight to 1 July commencement as the community-facing open.
+
 ### The Harvest Team
 
 ```
 Strategic Oversight
 Nic & Ben (4 hrs/week combined — directors of Harvest Pty Ltd)
+│  Note: Ben overseas 20 Jun – 15 Aug 2026; Nic on-deck Maleny critical path
 │
-├── Community Steward: Susie (hours TBC, lighter than original Site Manager framing)
+├── Community Stewards: Susie + Joey (paired)
 │   ├── Programming coordination (events, workshops, pop-ups)
+│   ├── Wednesday maintenance crew + general site presence
 │   ├── Sub-operator liaison (weekly check-ins, quarterly values review)
 │   ├── Community engagement + member intake
-│   └── Day-to-day site presence + volunteer coordination
+│   └── Day-to-day site operations + volunteer coordination
+│       Scaling toward running operations independently while Ben travels
+│       and across longer-term community rotation pattern being explored
 │
 ├── Garden Lead: Cath (TBC)
 │   ├── Garden-as-community-asset development (Year 1)
@@ -294,6 +307,7 @@ Nic & Ben (4 hrs/week combined — directors of Harvest Pty Ltd)
 | Strategic oversight | Nic | 2 hrs/wk | (existing) | Vision, Sonas relationship, community, Jinibara, grant leads |
 | Technical/platform | Ben | 2 hrs/wk | (existing) | Website, systems, accountant/broker, Harvest Pty admin |
 | Community Steward | Susie | TBC (lighter than 32 hrs) | TBC (lower than original $26K) | Programming, sub-op liaison, community, volunteers |
+| Community Steward | Joey | TBC | TBC (paid, Harvest Pty payroll) | Wednesday crew, event setup, site operations, paired with Susie |
 | Garden Lead | Cath | TBC | TBC | Garden dev, nursery Year 1, volunteer coordination |
 | Sub-Op (Café) | TBD | Contract licence | Licence fee to Harvest | Food service — runs own café entity on Harvest site |
 | Sub-Op (Garden Centre) | TBD | Contract licence | Licence fee to Harvest | Retail — runs own nursery entity on site |
@@ -301,10 +315,11 @@ Nic & Ben (4 hrs/week combined — directors of Harvest Pty Ltd)
 ### Hiring + Sourcing Priorities
 
 1. **Susie — Community Steward arrangement** (confirm Week 1, scope per site-steward lighter model)
-2. **Cath — Garden Lead scope + terms** (confirm Week 2)
-3. **Sub-Op Café sourcing** (Tier 1 outreach starts Week 3, target sign Month 2-4 post-commencement)
-4. **Workshop facilitators** (Build roster Month 2-3)
-5. **Sub-Op Garden Centre** (follow-on, Month 6+ or Year 2)
+2. **Joey — Community Steward co-arrangement** (confirm Week 1 alongside Susie — paid, scope covers Wednesday crew + event support + site ops while Ben overseas)
+3. **Cath — Garden Lead scope + terms** (confirm Week 2)
+4. **Sub-Op Café sourcing** (Tier 1 outreach starts Week 3, target sign Month 2-4 post-commencement)
+5. **Workshop facilitators** (Build roster Month 2-3)
+6. **Sub-Op Garden Centre** (follow-on, Month 6+ or Year 2)
 
 ---
 
@@ -561,6 +576,8 @@ Each row names what could go wrong and the **rescue action** (what we actually d
 | Kitchen permits delayed (if Fund-financed kitchen under Harvest scope) | Medium | High | **RESCUE:** Phase A food tier (`food-business-setup-roadmap.md` §1) accommodates 6-12 months of BYO / licensed-caterer events. Sub-op, when signed, holds Food Business Licence in their own name — Harvest Pty does not need one. Only applies if Fund-financed kitchen specification slips. | Ben |
 | Susie declines final Community Steward terms | Low | High | **RESCUE:** Direct Nic referrals (Witta/Maleny network) for backup candidates. Interim: Ben + Nic cover Community Steward duties at 50% cadence. Backstop: pause hire, extend Jul-Sep as lighter-programming period until right fit found. | Nic |
 | Jinibara first conversation reveals mismatch / partnership doesn't land | Low | High | **RESCUE:** Acknowledge openly, respect Jinibara's prerogative on pace. Pathway-to-repair: (a) continue cultural protocol development on site via broader Jinibara-connected practitioners, (b) hold explicit "no formal partnership until / unless Jinibara choose" position, (c) do not co-opt cultural material, (d) revisit conversation at 6- and 12-month points, (e) retain honorary advisor pathway for individuals who may choose to engage. | Nic |
+| Ben overseas 20 Jun – 15 Aug 2026 during critical commencement window | Certain | High | **RESCUE (structural, planned):** Nic on-deck Maleny 20 Jun – 1 Jul; handles broker close-out, PL certificate to Sonas, tenant signature on lease (as Harvest Pty director), first-week commencement ops, soft-open event if proceeding. Ben remote-signs via email/DocuSign on decision-only items. Susie + Joey cover site-presence tasks. Daily director check-in via WhatsApp/Slack during critical days. If Nic has a conflict during this window (Puzzle conference 20-21 Jun is known): negotiate with Sonas 1-week commencement delay or lean on lawyer to sign on director's POA. | Both |
+| Nic + Ben both unavailable simultaneously during critical window | Low | High | **RESCUE:** Susie + Joey brief pre-trip on what can/cannot be decided in directors' absence. Pre-signed POA held by legal counsel for narrow contract-signing scope. Director-level decisions deferred not improvised. | Both |
 | No grant lands by Oct 2026 | Medium | Medium | ✅ Director loan bridge covers Jul-Oct outflow per `working-capital-plan.md` ($20-30K sized for this case). Secondary: activate ACT→Harvest loan option B if ACT has surplus. Tertiary: trust capital option C for longer runway. Keep grant pipeline running (3-5/year cadence). | Ben |
 | Revenue below forecast | Medium | Medium | Conservative projections + director-loan buffer + 100% revenue share means landlord shares downside pressure through capped rent. Quarterly reassess operating pace. | Both |
 | Community doesn't engage | Low | Medium | Pre-launch founding-member outreach + Jinibara engagement + transparent open-book rhythm build trust from Day 1. | Susie |
@@ -733,6 +750,7 @@ Each row names what could go wrong and the **rescue action** (what we actually d
 | 1.0 | Jan 2026 | Ben/Claude | Initial strategic plan — pre-signing decision framework |
 | 2.0 | 2026-04-24 | Ben/Claude | Post-signing fact refresh (AM). Tenant entity → The Harvest Pty Ltd (reg. May 2026). Status → signed 17 Feb 2026, tenant amendments drafted 24 Apr. Improvement Fund corrected $100K → $250K. Revenue Share corrected (50% above breakpoint → 100% of Net Profit capped at Target). PL $20M added. Go/No-Go → Pre-Commencement Checklist with 8 new post-signing items. Year 1 timeline realigned to early-access (H1) → commencement (H2) schedule. Risk Register updated (First Right of Refusal secured, no-clawback flagged as accepted structural risk). |
 | 2.1 | 2026-04-24 | Ben/Claude (via /plan-ceo-review) | Post-CEO-review structural restructure (PM, after discovering v2.0 was internally coherent but still described direct-operator model while all April 2026 ops docs in `thoughts/wiki/operations/` assume site-steward). D1-D10 decisions locked. Changes: (i) **Operating model** → site-steward (D1) — Susie renamed to Community Steward, café becomes sub-op, team structure + financial plan + startup costs + infrastructure roadmap + success metrics + timeline all rewritten to reflect. (ii) **Execution path** → Bridged Year-1 (D2) — pop-ups/guest-chef during sub-op search, capped 2/month pre-sub-op. (iii) **Jinibara engagement plan expanded** (D4). (iv) **NEW section: Transparency Rhythm** — quarterly open-book report, dual-audience (D5). (v) **Community governance** deferred to TODOS.md with dated commitment (D6). (vi) **Risk Register rewritten** with pre-committed rescue actions for 6 previously-GAP failure modes (D7). (vii) **NEW section: Authorization + Accountability** — spend thresholds, complaint flow, sub-op values enforcement (D8). (viii) **Notion Page Structure** moved to `docs/strategy/notion-page-setup.md` (D9). (ix) **TODOS.md** created at repo root (D10). Canonical sources: `thoughts/wiki/operations/*` (all 10 files), `TODOS.md`. CEO plan artifact: `~/.gstack/projects/Acurioustractor-theharvest/ceo-plans/2026-04-24-harvest-strategic-plan-sitesteward.md`. |
+| 2.2 | 2026-04-25 | Ben/Claude | Reconciliation after discovering The Harvest Witta HQ Notion page has materially more current context than v2.1 assumed. D17-D20 decisions: (i) **Ben overseas 20 Jun – 15 Aug 2026** (confirmed in Notion meeting note 23 Apr 2026). Nic on-deck for critical path Weeks 7-10. Ben remote-signs on signature-only decisions. (D17) (ii) **Operating model D1 holds** — site-steward + single sub-op still committed; Notion "rotating community ownership" framing was exploratory, not decided. (D18) (iii) **20 June soft-open Go/No-Go** added as a Week 5-6 decision item in Pre-Commencement Checklist. Three paths: proceed invite-only Phase-A, shift to post-return, or skip to 1 Jul formal open. (D19) (iv) **Joey** added as paired Community Steward alongside Susie. Paid, Harvest Pty payroll. Working capital + Year-1 operating budget adjusted: ~$18K/yr added, Year 1 now runs ~$20K loss instead of break-even. Loss is covered by director loan + grants. (D20) (v) Risk Register gained two rescue actions: Ben's travel window + simultaneous director unavailability. |
 | | | | |
 
 ---

@@ -1,10 +1,14 @@
 # Plan: 10-Week Path to 1 July 2026 Commencement
 
 **Created:** 2026-04-25 (plan mode, via /plan-ceo-review continuation)
+**Updated:** 2026-04-25 v2 reconciliation after Notion HQ discovery (D17-D20 locked)
 **Status:** Approved, in progress (Week 1)
-**Canonical location:** `docs/strategy/10-week-commencement-plan.md` (moved from local `~/.claude/plans/` on 2026-04-25 for Nic visibility + git history of status updates)
-**Owner:** Ben (primary), Nic (visibility + specific Nic-owned tasks)
+**Canonical location:** `docs/strategy/10-week-commencement-plan.md`
+**Owner (split):** Ben primary Weeks 1-6 (28 Apr – 15 Jun); **Nic primary Weeks 7-10 (15 Jun – 1 Jul)** because Ben is overseas 20 Jun – 15 Aug 2026 (Tanzania → Kenya → Uganda → Sweden → Amsterdam → Spain). Ben remote-signs only after 20 Jun. Paired Community Stewards (Susie + Joey) cover site-presence tasks throughout.
 **Deadline:** Lease commences 1 July 2026. No slack in the critical path.
+
+> **⚠️ Critical ownership note (D17):** Ben overseas 20 Jun – 15 Aug 2026. Nic physically in Maleny through Week 7-10. Any task marked `[B]` after 20 Jun is remote-sign-only; any `[N]` or `[BN]` task assumes Nic is on-deck. See Week-by-week tables below for owner column.
+> **⚠️ Pending decision (D19):** 20 June 2026 soft-open Go/No-Go — resolve in Week 5-6. Options: proceed invite-only Phase-A event; shift to post-Ben-return (Aug/Sep); skip to 1 Jul formal open.
 
 ---
 
@@ -70,8 +74,9 @@ Notation: `[B]` Ben, `[N]` Nic, `[BN]` Both, 👁 = Nic visibility checkpoint. D
 | 1.6 | Finalise sub-op Tier-1 candidate list (max 10 names, warm network only) | BN | Sub-op | sourcing-brief §4 Week 1 |
 | 1.7 | Agree Ben+Nic roles on sub-op first conversations (who reaches out, who handles follow-up) | BN | Sub-op | sourcing-brief §4 Week 1 |
 | 1.8 | Draft sub-op one-pager refresh (reflect v2.1 strategic plan + D8 graduated response) | B | Sub-op | sub-operator-one-pager.md |
-| 1.9 | Confirm Susie — Community Steward arrangement (scope, hours, cost) | N | Entity | strategic plan §Team Structure |
-| 1.10 | 👁 Ben + Nic 30-min weekly kickoff — align on the next 10 weeks at a glance | BN | Process | strategic plan §Directors' weekly rhythm |
+| 1.9 | Confirm Susie — Community Steward arrangement (scope, hours, cost, paired model with Joey) | N | Entity | strategic plan §Team Structure |
+| 1.9b | Confirm Joey — Community Steward co-arrangement (paid, Harvest Pty payroll; covers Wed crew + event ops + site presence during Ben's travel) | BN | Entity | strategic plan §Team Structure |
+| 1.10 | 👁 Ben + Nic 30-min weekly kickoff — align on the next 10 weeks at a glance. **Critical agenda item: resolve 20 June soft-open go/no-go by Week 5-6** (D19) | BN | Process | strategic plan §Directors' weekly rhythm |
 
 ### Week 2 · 5 – 11 May 2026 · "File + reach out"
 
@@ -117,6 +122,7 @@ Notation: `[B]` Ben, `[N]` Nic, `[BN]` Both, 👁 = Nic visibility checkpoint. D
 | 5.3 | Execute director loan (funds available to Harvest Pty) | B | Working capital | working-capital-plan.md §5 |
 | 5.4 | Sub-op reference checks + review of candidates' licences, insurance, operational docs | BN | Sub-op | sourcing-brief §4 Week 5-6 |
 | 5.5 | Kitchen permit application research begins (decide: Fund-financed or sub-op-capex) | B | Entity | food-business-roadmap §2 Phase B |
+| 5.6 | **Soft-open 20 June 2026 Go/No-Go decision (D19)** — resolve whether to run invite-only Phase-A event 20 Jun, shift to Aug/Sep post-Ben-return, or skip to 1 Jul formal open. Puzzle conference conflict noted. Lock in this week so logistics can follow. | BN | Programming | strategic plan §Pre-Commencement Checklist, Notion meeting note 2026-04-23 |
 
 ### Week 6 · 2 – 8 Jun 2026 · "Broker quotes, sub-op draft terms"
 
@@ -129,46 +135,50 @@ Notation: `[B]` Ben, `[N]` Nic, `[BN]` Both, 👁 = Nic visibility checkpoint. D
 | 6.5 | Third Jinibara conversation — partnership shape options, if pace allows | N | Jinibara | strategic plan §Indigenous Engagement |
 | 6.6 | 👁 Weekly check-in — **halfway review**: anything slipping? Activate rescues? | BN | Process | strategic plan Risk Register |
 
-### Week 7 · 9 – 15 Jun 2026 · "Bind PL, sign sub-op"
+### Week 7 · 9 – 15 Jun 2026 · "Bind PL, sign sub-op" (Ben still in AU, final on-site week before travel)
 
 | # | Task | Owner | Stream | Ref |
 |---|---|---|---|---|
-| 7.1 | **Select broker; place PL $20M bound in Harvest Pty's name** — hard deadline this week | B | Insurance | incorporation §5 Week 7 |
+| 7.1 | **Select broker; place PL $20M bound in Harvest Pty's name** — hard deadline this week, while Ben is still in AU | B | Insurance | incorporation §5 Week 7 |
 | 7.2 | Certificate of Currency issued to Sonas | B | Insurance | incorporation §5 Week 7 |
 | 7.3 | Contents + business pack bound alongside PL | B | Insurance | insurance-addendum §3 |
-| 7.4 | Register QLD WorkCover (if any paid staff by 1 July — Susie) | B | Entity | incorporation §5 Week 7 |
+| 7.4 | Register QLD WorkCover (Susie + Joey are paid staff by 1 July) | B | Entity | incorporation §5 Week 7 |
 | 7.5 | **Sub-op licence signed with chosen operator OR activate Tier-2 fallback** (if no fit from Tier 1) | BN | Sub-op | sourcing-brief §4 Week 7-8; strategic plan Risk Register rescue |
 | 7.6 | Sub-op starts prep for 1 July alignment (food licence application in their name, insurance binding) | B (coord) | Sub-op | food-business-roadmap §2 Phase B |
+| 7.7 | **Ben pre-trip handover to Nic** — sub-op pipeline status, broker contacts, tenant-signature authority, Slack/WhatsApp daily check-in rhythm, pre-signed POA if needed | BN | Process | D17 |
 
-### Week 8 · 16 – 22 Jun 2026 · "Tenant signature"
+### Week 8 · 16 – 22 Jun 2026 · "Tenant signature" (Ben flies out 20 Jun; Nic takes over physical presence)
 
-| # | Task | Owner | Stream | Ref |
-|---|---|---|---|---|
-| 8.1 | **Tenant signature on lease** — Ben or Nic signs as Harvest Pty director | BN | Entity | incorporation §5 Week 8 |
-| 8.2 | Certificate of Currency physically in Sonas's hands | B | Insurance | incorporation §5 Week 8 |
-| 8.3 | Confirm Standard Ledger BAS registration for Harvest Pty | B | Working capital | incorporation §5 Week 8 |
-| 8.4 | Draft Q1 open-book report template (D5) — ready for use by late Oct 2026 | B | Process | strategic plan §Transparency Rhythm |
-| 8.5 | Write operational playbook handover doc for incoming sub-op (hours, events, values rituals, shared equipment) | B | Sub-op | sourcing-brief §4 Week 9-10 |
-
-### Week 9 · 23 – 29 Jun 2026 · "Final checks, handover prep"
+> **Handover moment:** Ben's trip starts 20 June. Nic is the on-site authority from this point. Ben remote-signs only where a director signature is required and can be DocuSigned.
 
 | # | Task | Owner | Stream | Ref |
 |---|---|---|---|---|
-| 9.1 | Sub-op site induction + operational playbook handover | BN | Sub-op | sourcing-brief §4 Week 9-10 |
-| 9.2 | First-month review date locked in with sub-op | BN | Sub-op | sourcing-brief §4 Week 9-10 |
-| 9.3 | Final Pre-Commencement Checklist review — all ✅ or rescue-activated | BN | Process | strategic plan Pre-Commencement Checklist |
-| 9.4 | Confirm first-week programming (soft launch event for 1 Jul commencement) | N | Programming | strategic plan §Community Activation Calendar |
+| 8.1 | **Tenant signature on lease** — Nic signs as Harvest Pty director (Ben remote-signs via DocuSign if needed) | N (primary) / B (co-sign remote) | Entity | incorporation §5 Week 8 |
+| 8.2 | Certificate of Currency physically in Sonas's hands | N | Insurance | incorporation §5 Week 8 |
+| 8.3 | Confirm Standard Ledger BAS registration for Harvest Pty | B remote (pre-departure) | Working capital | incorporation §5 Week 8 |
+| 8.4 | Draft Q1 open-book report template (D5) — ready for use by late Oct 2026 | B remote | Process | strategic plan §Transparency Rhythm |
+| 8.5 | Write operational playbook handover doc for incoming sub-op (hours, events, values rituals, shared equipment) | BN | Sub-op | sourcing-brief §4 Week 9-10 |
+| 8.6 | If soft-open 20-21 June proceeding (per D19 Week 5-6 decision): **run the event** — Nic leads, Susie + Joey on deck, Ben may attend before flying | varies | Programming | D19 |
+
+### Week 9 · 23 – 29 Jun 2026 · "Final checks, handover prep" (Ben overseas — all tasks Nic + team)
+
+| # | Task | Owner | Stream | Ref |
+|---|---|---|---|---|
+| 9.1 | Sub-op site induction + operational playbook handover | N + Susie/Joey | Sub-op | sourcing-brief §4 Week 9-10 |
+| 9.2 | First-month review date locked in with sub-op | N | Sub-op | sourcing-brief §4 Week 9-10 |
+| 9.3 | Final Pre-Commencement Checklist review — all ✅ or rescue-activated. Daily director check-in Nic→Ben via WhatsApp. | N (Ben remote) | Process | strategic plan Pre-Commencement Checklist |
+| 9.4 | Confirm first-week programming (soft launch event for 1 Jul commencement) | N + Susie/Joey | Programming | strategic plan §Community Activation Calendar |
 | 9.5 | Jinibara partnership — formalise whatever shape has emerged; at minimum, Jinibara-honouring statement in Harvest's public comms | N | Jinibara | strategic plan §Indigenous Engagement |
 
-### Week 10 · 30 Jun – 1 Jul 2026 · "Commencement"
+### Week 10 · 30 Jun – 1 Jul 2026 · "Commencement" (Ben overseas — Nic + team execute)
 
 | # | Task | Owner | Stream | Ref |
 |---|---|---|---|---|
 | 10.1 | 30 Jun — Early access period ends | — | — | lease §2 |
-| 10.2 | **1 Jul — Lease commences. Base rent $50K/yr effective. Harvest Pty trading.** | BN | — | lease §2 |
-| 10.3 | First Harvest Pty transaction (symbolic: pay July rent to Sonas or first Xero-recorded expense) | B | Process | — |
-| 10.4 | Public comms: "We're open" announcement (website, social, newsletter) | BN | Programming | — |
-| 10.5 | 👁 Weekly check-in — start the commencement-era rhythm | BN | Process | strategic plan §Directors' weekly rhythm |
+| 10.2 | **1 Jul — Lease commences. Base rent $50K/yr effective. Harvest Pty trading.** Nic on-site; Ben remote-acknowledges via scheduled call. | N (physical) / B remote | — | lease §2 |
+| 10.3 | First Harvest Pty transaction (pay July rent to Sonas) | B remote from wherever / Standard Ledger auto | Process | — |
+| 10.4 | Public comms: "We're open" announcement (website, social, newsletter) | N + Susie/Joey | Programming | — |
+| 10.5 | 👁 Weekly check-in transitions to commencement-era rhythm. Nic-led until Ben's return 15 Aug; Ben joins remotely. | N (Ben remote) | Process | strategic plan §Directors' weekly rhythm |
 
 ---
 
@@ -309,6 +319,7 @@ No source-code changes expected.
 - Sub-op Tier-1 fit is genuinely uncertain — could succeed Week 6 or require Tier-2 activation Week 7+. Plan accommodates both paths.
 - Jinibara conversation pace is Jinibara's to set, not ours. Plan has milestones but no hard deadlines; if right shape doesn't emerge by Week 8, strategic plan's rescue path activates.
 - Broker quotes $20M PL for a zero-history Pty Ltd may come in higher than $15K/yr budget. Rescue path exists in strategic plan Risk Register (restructure programming, negotiate deductible, last resort negotiate commencement delay).
+- **Travel handover risk (D17):** Ben overseas 20 Jun – 15 Aug. Nic on-deck Weeks 7-10. If Nic has a conflict in the critical Weeks 7-10 window (Puzzle conference 20-21 Jun is known), plan degrades to: negotiate 1-week commencement delay with Sonas, or lean on pre-signed POA held by legal counsel for narrow contract-signing scope. Nic + Ben should not be simultaneously unavailable during Week 7-10; if that emerges, trigger the Risk Register rescue.
 
 These risks are named and have rescues; the plan cannot eliminate them, only respond to them fast.
 
