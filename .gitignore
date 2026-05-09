@@ -155,3 +155,19 @@ docs/vision-prep/audio-transcripts/*.mp3
 docs/vision-prep/audio-transcripts/*.m4a
 docs/vision-prep/audio-transcripts/*.wav
 docs/vision-prep/audio-transcripts/*.ogg
+
+# Playwright MCP traces and Supabase local CLI cache
+.playwright-mcp/
+supabase/.temp/
+
+# Pencil and Morpholio design scratch
+*.pen
+*.morpholiotrace
+
+# Root-level scratch (screenshots, design source files, decks, AI image dumps)
+/*.psd
+/*.pptx
+/harvest-*.png
+/harvest-*-snapshot.md
+/images/
+
