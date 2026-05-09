@@ -171,3 +171,9 @@ supabase/.temp/
 /harvest-*-snapshot.md
 /images/
 
+# Heavy doc assets — keep markdown source, not binaries / WhatsApp exports
+docs/brand/*.pdf
+docs/brand/*.pptx
+docs/brand/screenshots/
+docs/communications/debriefs/_whatsapp-exports/
+
