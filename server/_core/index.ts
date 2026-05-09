@@ -3,6 +3,8 @@ import dotenv from "dotenv";
 dotenv.config({ path: ".env.local", override: true });
 import path from "path";
 import express from "express";
+import { createReadStream } from "fs";
+import { stat } from "fs/promises";
 import { createServer } from "http";
 import net from "net";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
@@ -10,6 +12,7 @@ import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
 import { getApprovedBusinesses, getApprovedEvents } from "../db";
+import { listHarvestLocalMotionFiles } from "../empathyLedgerAdmin";
 import { generateImage, generateSketch } from "../gemini";
 import { refreshGHLToken, persistTokens } from "../gohighlevel";
 
@@ -39,6 +42,65 @@ const requireRegistryToken = (req: express.Request) => {
     return "Invalid registry token.";
   }
   return null;
+};
+
+const isLocalhostRequest = (req: express.Request) => {
+  const host = (req.hostname || req.get("host") || "").toString();
+  return host === "localhost" || host.startsWith("localhost:") || host === "127.0.0.1" || host.startsWith("127.0.0.1:");
+};
+
+const streamLocalMotionPreview = async (req: express.Request, res: express.Response) => {
+  if (process.env.NODE_ENV === "production" || !isLocalhostRequest(req)) {
+    return res.status(404).send("Not found");
+  }
+
+  const requestedPath = typeof req.query.path === "string" ? req.query.path : "";
+  if (!requestedPath) {
+    return res.status(400).send("Missing path");
+  }
+
+  const files = await listHarvestLocalMotionFiles(process.cwd());
+  const file = files.find((candidate) => candidate.relativePath === requestedPath);
+  if (!file) {
+    return res.status(404).send("Motion file not found");
+  }
+
+  const absolutePath = path.resolve(process.cwd(), file.relativePath);
+  const workspaceRoot = path.resolve(process.cwd());
+  if (!absolutePath.startsWith(`${workspaceRoot}${path.sep}`)) {
+    return res.status(400).send("Invalid path");
+  }
+
+  const fileStat = await stat(absolutePath);
+  const range = req.headers.range;
+
+  res.setHeader("Content-Type", file.contentType);
+  res.setHeader("Accept-Ranges", "bytes");
+  res.setHeader("Cache-Control", "no-store");
+
+  if (!range) {
+    res.setHeader("Content-Length", fileStat.size);
+    return createReadStream(absolutePath).pipe(res);
+  }
+
+  const match = /^bytes=(\d*)-(\d*)$/.exec(range);
+  if (!match) {
+    res.setHeader("Content-Range", `bytes */${fileStat.size}`);
+    return res.status(416).end();
+  }
+
+  const start = match[1] ? Number(match[1]) : 0;
+  const end = match[2] ? Math.min(Number(match[2]), fileStat.size - 1) : fileStat.size - 1;
+
+  if (start > end || start >= fileStat.size) {
+    res.setHeader("Content-Range", `bytes */${fileStat.size}`);
+    return res.status(416).end();
+  }
+
+  res.status(206);
+  res.setHeader("Content-Range", `bytes ${start}-${end}/${fileStat.size}`);
+  res.setHeader("Content-Length", end - start + 1);
+  return createReadStream(absolutePath, { start, end }).pipe(res);
 };
 
 const toIsoString = (value: Date | string | null | undefined) => {
@@ -74,6 +136,16 @@ async function startServer() {
   // Configure body parser with larger size limit for file uploads
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
+
+  app.get("/api/admin/media-library/local-motion", async (req, res) => {
+    try {
+      await streamLocalMotionPreview(req, res);
+    } catch (error) {
+      console.error("[MediaLibrary] Local motion preview failed:", error);
+      res.status(500).send("Could not load local motion preview");
+    }
+  });
+
   app.get("/api/registry", async (req, res) => {
     const authError = requireRegistryToken(req);
     if (authError) {

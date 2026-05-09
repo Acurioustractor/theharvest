@@ -1,0 +1,309 @@
+import { motion } from "framer-motion";
+import { Link } from "wouter";
+import { trpc } from "@/lib/trpc";
+import { ArrowLeft, ArrowRight, MapPin, Newspaper, BookOpen, Image as ImageIcon, Mic, Hammer } from "lucide-react";
+import { works } from "@/data/works";
+
+const fadeInUp = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.5 },
+};
+
+function formatDate(iso: string | null): string {
+  if (!iso) return "";
+  const d = new Date(iso);
+  return d.toLocaleDateString("en-AU", { day: "numeric", month: "long", year: "numeric" });
+}
+
+export default function Person({ slug }: { slug: string }) {
+  const { data, isLoading, error } = trpc.harvest.publicStorytellerBySlug.useQuery(
+    { slug },
+    { enabled: !!slug },
+  );
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-stone-50 pt-32">
+        <div className="container mx-auto max-w-3xl">
+          <div className="h-64 animate-pulse rounded-lg border border-stone-200 bg-white" />
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !data) {
+    return (
+      <div className="min-h-screen bg-stone-50 pt-32 pb-16">
+        <div className="container mx-auto max-w-3xl text-center">
+          <h1 className="text-3xl font-serif font-bold text-stone-800">No one here by that name.</h1>
+          <p className="mt-4 text-stone-600">This storyteller might not be on The Harvest project (yet).</p>
+          <Link href="/people">
+            <a className="mt-6 inline-flex items-center gap-2 text-amber-700 hover:text-amber-800">
+              <ArrowLeft className="h-4 w-4" /> Back to all people
+            </a>
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  const s = data;
+  const firstName = s.displayName.toLowerCase().split(/\s+/)[0] ?? "";
+  const fullLower = s.displayName.toLowerCase();
+  const connectedWorks = works.filter((w) =>
+    w.hands.some((h) => {
+      const hn = h.name.toLowerCase();
+      if (hn === fullLower) return true;
+      if (firstName.length >= 3 && hn.split(/\s+/).includes(firstName)) return true;
+      return false;
+    }),
+  );
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-stone-50 to-white">
+      <nav className="absolute top-0 left-0 right-0 z-10 px-6 py-4">
+        <Link href="/">
+          <a className="inline-flex items-center gap-2 text-sm font-mono uppercase tracking-wider text-stone-700 hover:text-amber-700">
+            ← The Harvest
+          </a>
+        </Link>
+      </nav>
+
+      <section className="pt-32 pb-12 bg-gradient-to-b from-amber-50 to-stone-50">
+        <div className="container">
+          <Link href="/people">
+            <a className="mb-6 inline-flex items-center gap-2 text-sm text-stone-600 hover:text-amber-700">
+              <ArrowLeft className="h-4 w-4" /> All people
+            </a>
+          </Link>
+
+          <motion.div {...fadeInUp} className="max-w-3xl">
+            <div className="flex flex-col gap-6 sm:flex-row sm:items-start">
+              {s.avatarUrl ? (
+                <img
+                  src={s.avatarUrl}
+                  alt={s.displayName}
+                  className="h-32 w-32 flex-shrink-0 rounded-full border-2 border-stone-200 object-cover shadow-md"
+                />
+              ) : (
+                <div className="flex h-32 w-32 flex-shrink-0 items-center justify-center rounded-full border-2 border-stone-200 bg-amber-100 text-5xl font-serif font-bold text-amber-700 shadow-md">
+                  {s.displayName.slice(0, 1).toUpperCase()}
+                </div>
+              )}
+              <div className="min-w-0">
+                <h1 className="text-4xl md:text-5xl font-serif font-bold text-stone-800">
+                  {s.displayName}
+                </h1>
+                <div className="mt-3 flex flex-wrap items-center gap-3 text-sm text-stone-600">
+                  {s.location && (
+                    <span className="inline-flex items-center gap-1.5">
+                      <MapPin className="h-4 w-4" /> {s.location}
+                    </span>
+                  )}
+                  {s.projectRole && (
+                    <span className="inline-flex items-center rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-800">
+                      {s.projectRole} on The Harvest
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {s.bio && (
+        <section className="py-12 bg-white">
+          <div className="container mx-auto max-w-3xl">
+            <p className="whitespace-pre-line text-lg leading-relaxed text-stone-700">
+              {s.bio}
+            </p>
+          </div>
+        </section>
+      )}
+
+      {s.localPhotos.length > 0 && (
+        <section className="py-12 bg-stone-100">
+          <div className="container mx-auto max-w-5xl">
+            <h2 className="mb-6 inline-flex items-center gap-2 text-2xl font-serif font-bold text-stone-800">
+              <ImageIcon className="h-5 w-5 text-amber-700" /> Moments with {s.displayName.split(" ")[0]}
+            </h2>
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
+              {s.localPhotos.map((p) => (
+                <figure key={p.src} className="overflow-hidden rounded-lg bg-stone-200 aspect-square">
+                  <img
+                    src={p.src}
+                    alt={p.alt}
+                    loading="lazy"
+                    className="h-full w-full object-cover transition hover:scale-105"
+                  />
+                </figure>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {s.articles.length > 0 && (
+        <section className="py-12 bg-stone-50">
+          <div className="container mx-auto max-w-3xl">
+            <h2 className="mb-6 inline-flex items-center gap-2 text-2xl font-serif font-bold text-stone-800">
+              <Newspaper className="h-5 w-5 text-amber-700" /> Articles by {s.displayName.split(" ")[0]}
+            </h2>
+            <div className="grid gap-4">
+              {s.articles.map((a) => (
+                <Link key={a.id} href={a.slug ? `/blog/${a.slug}` : "#"}>
+                  <a className="group block rounded-lg border border-stone-200 bg-white p-5 transition hover:border-amber-300 hover:shadow-md">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <h3 className="text-lg font-serif font-bold text-stone-800 group-hover:text-amber-700">
+                          {a.title}
+                        </h3>
+                        {a.publishedAt && (
+                          <p className="mt-1 text-xs text-stone-500">{formatDate(a.publishedAt)}</p>
+                        )}
+                        {a.excerpt && (
+                          <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-stone-600">{a.excerpt}</p>
+                        )}
+                        {a.themes.length > 0 && (
+                          <div className="mt-3 flex flex-wrap gap-1.5">
+                            {a.themes.slice(0, 4).map((t) => (
+                              <span key={t} className="inline-flex items-center rounded-full bg-stone-100 px-2 py-0.5 text-[10px] font-medium text-stone-700">
+                                {t}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                      <ArrowRight className="h-4 w-4 flex-shrink-0 text-stone-400 transition group-hover:translate-x-1 group-hover:text-amber-600" />
+                    </div>
+                  </a>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {s.stories.length > 0 && (
+        <section className="py-12 bg-white">
+          <div className="container mx-auto max-w-3xl">
+            <h2 className="mb-6 inline-flex items-center gap-2 text-2xl font-serif font-bold text-stone-800">
+              <BookOpen className="h-5 w-5 text-amber-700" /> Stories
+            </h2>
+            <div className="grid gap-4">
+              {s.stories.map((st) => (
+                <Link key={st.id} href={`/stories/${st.id}`}>
+                  <a className="group block rounded-lg border border-stone-200 bg-stone-50 p-5 transition hover:border-amber-300 hover:shadow-md">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <h3 className="text-lg font-serif font-bold text-stone-800 group-hover:text-amber-700">{st.title}</h3>
+                        {st.summary && (
+                          <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-stone-600">{st.summary}</p>
+                        )}
+                        {st.themes && st.themes.length > 0 && (
+                          <div className="mt-3 flex flex-wrap gap-1.5">
+                            {st.themes.slice(0, 4).map((t) => (
+                              <span key={t} className="inline-flex items-center rounded-full bg-stone-100 px-2 py-0.5 text-[10px] font-medium text-stone-700">
+                                {t}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                      <ArrowRight className="h-4 w-4 flex-shrink-0 text-stone-400 transition group-hover:translate-x-1 group-hover:text-amber-600" />
+                    </div>
+                  </a>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {s.transcripts.length > 0 && (
+        <section className="py-12 bg-stone-50">
+          <div className="container mx-auto max-w-3xl">
+            <h2 className="mb-2 inline-flex items-center gap-2 text-2xl font-serif font-bold text-stone-800">
+              <Mic className="h-5 w-5 text-amber-700" /> Conversations & recordings
+            </h2>
+            <p className="mb-6 text-sm text-stone-600">
+              Transcripts of recorded sessions. Full text is held in the Harvest archive — reach out if you'd like access.
+            </p>
+            <div className="grid gap-3">
+              {s.transcripts.map((t) => {
+                const mins = t.durationSeconds ? Math.round(t.durationSeconds / 60) : null;
+                return (
+                  <article key={t.id} className="rounded-lg border border-stone-200 bg-white p-4">
+                    <h3 className="font-serif font-bold text-stone-800">{t.title}</h3>
+                    <p className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-stone-500">
+                      {t.recordingDate && <span>Recorded {formatDate(t.recordingDate)}</span>}
+                      {t.wordCount && <span>{t.wordCount.toLocaleString()} words</span>}
+                      {mins && <span>{mins} min</span>}
+                    </p>
+                  </article>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {connectedWorks.length > 0 && (
+        <section className="py-12 bg-white">
+          <div className="container mx-auto max-w-3xl">
+            <h2 className="mb-6 inline-flex items-center gap-2 text-2xl font-serif font-bold text-stone-800">
+              <Hammer className="h-5 w-5 text-amber-700" /> Works {firstName.charAt(0).toUpperCase() + firstName.slice(1)} has hands in
+            </h2>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {connectedWorks.map((w) => {
+                const role = w.hands.find((h) => {
+                  const hn = h.name.toLowerCase();
+                  return hn === fullLower || (firstName.length >= 3 && hn.split(/\s+/).includes(firstName));
+                })?.role;
+                return (
+                  <Link key={w.slug} href={`/works/${w.slug}`}>
+                    <a className="group block rounded-lg border border-stone-200 bg-stone-50 p-5 transition hover:border-amber-300 hover:shadow-md">
+                      <h3 className="font-serif font-bold text-stone-800 group-hover:text-amber-700">{w.title}</h3>
+                      {w.subtitle && (
+                        <p className="mt-1 text-sm text-stone-500">{w.subtitle}</p>
+                      )}
+                      {role && (
+                        <p className="mt-3 text-xs text-stone-600">
+                          <span className="font-semibold text-stone-700">{firstName.charAt(0).toUpperCase() + firstName.slice(1)}'s role:</span> {role}
+                        </p>
+                      )}
+                      <p className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-amber-700">
+                        See the work <ArrowRight className="h-3 w-3" />
+                      </p>
+                    </a>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {s.articles.length === 0 && s.stories.length === 0 && s.transcripts.length === 0 && s.localPhotos.length === 0 && connectedWorks.length === 0 && (
+        <section className="py-12 bg-stone-50">
+          <div className="container mx-auto max-w-3xl text-center text-stone-600">
+            <ImageIcon className="mx-auto h-8 w-8 text-stone-400" />
+            <p className="mt-3 text-sm">No published content yet — check back soon.</p>
+          </div>
+        </section>
+      )}
+
+      <section className="py-12 bg-white border-t border-stone-200">
+        <div className="container mx-auto max-w-3xl text-center">
+          <Link href="/people">
+            <a className="inline-flex items-center gap-2 text-amber-700 hover:text-amber-800">
+              <ArrowLeft className="h-4 w-4" /> Back to all people
+            </a>
+          </Link>
+        </div>
+      </section>
+    </div>
+  );
+}

@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { trpc } from "@/lib/trpc";
 import BlogCard, { type ELArticle } from "@/components/BlogCard";
@@ -26,13 +25,16 @@ const staggerContainer = {
 
 export default function Blog() {
   const [theme, setTheme] = useState<BlogTheme>(null);
+  const [workFilter, setWorkFilter] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Fetch articles from Empathy Ledger
-  const { data, isLoading } = useQuery({
-    queryKey: ["blog", "list", theme],
-    queryFn: () => trpc.blog.list.query(theme ? { theme } : undefined),
-  });
+  // Fetch articles from Empathy Ledger — filter server-side by work (project) too
+  const { data, isLoading } = trpc.blog.list.useQuery(
+    {
+      theme: theme ?? undefined,
+      project: workFilter ?? undefined,
+    },
+  );
 
   const articles = data?.articles || [];
 
@@ -75,13 +77,20 @@ export default function Blog() {
               Community stories, transformation journeys, and moments of connection.
               A window into life at The Harvest.
             </p>
+            <div className="mt-6">
+              <Link href="/people">
+                <a className="inline-flex items-center gap-2 text-sm font-semibold text-amber-700 hover:text-amber-800">
+                  Or meet the storytellers <span aria-hidden>→</span>
+                </a>
+              </Link>
+            </div>
           </motion.div>
         </div>
       </section>
 
       {/* Search and Filters */}
       <section className="py-8 border-b border-stone-200 bg-white sticky top-16 z-30">
-        <div className="container">
+        <div className="container space-y-4">
           <div className="flex flex-col lg:flex-row gap-6 items-start lg:items-center justify-between">
             <BlogCategories selected={theme} onChange={setTheme} />
 
@@ -95,6 +104,28 @@ export default function Blog() {
                 className="pl-10 bg-stone-50 border-stone-200"
               />
             </div>
+          </div>
+
+          {/* Work filter — chip row */}
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-xs font-mono uppercase tracking-wider text-stone-400 mr-1">
+              Work:
+            </span>
+            <BlogWorkChip label="All" active={!workFilter} onClick={() => setWorkFilter(null)} />
+            {[
+              { slug: "milk-crate-pavilion", label: "Milk Create Pavilion" },
+              { slug: "the-cedar", label: "The Cedar" },
+              { slug: "the-garden", label: "The Garden" },
+              { slug: "the-sauna", label: "The Sauna" },
+              { slug: "the-shop", label: "The Shop" },
+            ].map((w) => (
+              <BlogWorkChip
+                key={w.slug}
+                label={w.label}
+                active={workFilter === w.slug}
+                onClick={() => setWorkFilter(w.slug)}
+              />
+            ))}
           </div>
         </div>
       </section>
@@ -113,7 +144,7 @@ export default function Blog() {
             <h2 className="text-2xl font-serif font-bold text-stone-800 mb-6">
               Stories from the Land
             </h2>
-            <Link href="/stories">
+            <Link href="/people/barry-rodgerig">
               <Card className="overflow-hidden border-0 bg-stone-800 group cursor-pointer hover:ring-2 hover:ring-amber-500/50 transition-all">
                 <div className="grid md:grid-cols-2">
                   <div className="relative h-64 md:h-auto overflow-hidden">
@@ -225,5 +256,29 @@ export default function Blog() {
       </section>
 
     </div>
+  );
+}
+
+function BlogWorkChip({
+  label,
+  active,
+  onClick,
+}: {
+  label: string;
+  active: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors ${
+        active
+          ? "bg-stone-800 text-amber-300 border-stone-800"
+          : "bg-white text-stone-700 border-stone-300 hover:bg-stone-100"
+      }`}
+    >
+      {label}
+    </button>
   );
 }

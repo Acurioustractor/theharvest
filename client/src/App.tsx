@@ -22,6 +22,20 @@ import GatheringPostcard from "./pages/GatheringPostcard";
 import Social from "./pages/Social";
 import PhotoWall from "./pages/PhotoWall";
 import PhotoWallCheckin from "./pages/PhotoWallCheckin";
+import Witta from "./pages/Witta";
+import Works from "./pages/Works";
+import WorkDetail from "./pages/WorkDetail";
+import Blog from "./pages/Blog";
+import BlogPost from "./pages/BlogPost";
+import People from "./pages/People";
+import Person from "./pages/Person";
+import StoryDetail from "./pages/StoryDetail";
+import GardenLaunch from "./pages/GardenLaunch";
+import LaunchRedesign from "./pages/LaunchRedesign";
+import HarvestReviewTest from "./pages/HarvestReviewTest";
+import AdminDashboard from "./pages/AdminDashboard";
+import MediaLibraryAdmin from "./pages/admin/MediaLibraryAdmin";
+import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 
 function Router() {
@@ -30,6 +44,25 @@ function Router() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [location]);
+
+  // One-click dev admin login: visit any page with ?devAdmin=1 to enable.
+  // Only works on localhost. Runs once on mount; redirects to clean URL.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (window.location.hostname !== "localhost") return;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("devAdmin") === "1") {
+      localStorage.setItem("dev-admin-login", "true");
+      params.delete("devAdmin");
+      const next = window.location.pathname + (params.toString() ? `?${params}` : "");
+      window.location.replace(next);
+    } else if (params.get("devAdmin") === "0") {
+      localStorage.removeItem("dev-admin-login");
+      params.delete("devAdmin");
+      const next = window.location.pathname + (params.toString() ? `?${params}` : "");
+      window.location.replace(next);
+    }
+  }, []);
 
   // All pages are standalone (no PublicLayout)
   if (location === "/") return <BauhausHome />;
@@ -48,6 +81,32 @@ function Router() {
   if (location === "/social") return <Social />;
   if (location === "/photo-wall") return <PhotoWall />;
   if (location.startsWith("/photo-wall/checkin")) return <PhotoWallCheckin />;
+  if (location === "/witta") return <Witta />;
+  if (location === "/login") return <Login />;
+  if (location === "/admin") return <AdminDashboard />;
+  if (location === "/admin/media-library") return <MediaLibraryAdmin />;
+  if (location === "/works") return <Works />;
+  if (location.startsWith("/works/")) {
+    const slug = location.slice("/works/".length).split("/")[0];
+    return <WorkDetail slug={slug} />;
+  }
+  if (location === "/blog") return <Blog />;
+  if (location.startsWith("/blog/")) {
+    const slug = location.slice("/blog/".length).split("/")[0];
+    return <BlogPost slug={slug} />;
+  }
+  if (location === "/people") return <People />;
+  if (location.startsWith("/people/")) {
+    const slug = location.slice("/people/".length).split("/")[0];
+    return <Person slug={slug} />;
+  }
+  if (location.startsWith("/stories/")) {
+    const storyId = location.slice("/stories/".length).split("/")[0];
+    return <StoryDetail storyId={storyId} />;
+  }
+  if (location === "/garden-launch" || location === "/june-20") return <GardenLaunch />;
+  if (location === "/launch-redesign") return <LaunchRedesign />;
+  if (location === "/new-look-test" || location === "/review-test") return <HarvestReviewTest />;
   if (location.startsWith("/feedback")) {
     const eventId = location.split("/feedback/")[1];
     return <EventFeedback eventId={eventId} />;

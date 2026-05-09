@@ -1,7 +1,10 @@
-import { useQuery } from "@tanstack/react-query";
-import { useParams, Link } from "wouter";
+import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { trpc } from "@/lib/trpc";
+import { EditableText } from "@/components/EditableText";
+import { useAuth } from "@/_core/hooks/useAuth";
+import { elLinks } from "@/lib/empathyLedger";
+import { ExternalLink, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import ShareButtons from "@/components/ShareButtons";
@@ -43,28 +46,41 @@ function estimateReadingTime(content: string | null | undefined): number {
   return Math.max(1, Math.ceil(words / 200));
 }
 
-export default function BlogPost() {
-  const params = useParams<{ slug: string }>();
-  const slug = params.slug;
+export default function BlogPost({ slug }: { slug: string }) {
+  const { user } = useAuth();
+  const isAdmin = user?.role === "admin";
 
-  const { data: article, isLoading, error } = useQuery({
-    queryKey: ["blog", "post", slug],
-    queryFn: () => trpc.blog.bySlug.query({ slug: slug! }),
-    enabled: !!slug,
-  });
+  const { data: article, isLoading, error } = trpc.blog.bySlug.useQuery(
+    { slug },
+    { enabled: !!slug },
+  );
 
   // Get related articles (recent articles from same theme)
   const primaryTheme = article?.themes?.[0];
-  const { data: relatedData } = useQuery({
-    queryKey: ["blog", "related", primaryTheme],
-    queryFn: () => trpc.blog.list.query({ theme: primaryTheme }),
-    enabled: !!primaryTheme,
-  });
+  const { data: relatedData } = trpc.blog.list.useQuery(
+    primaryTheme ? { theme: primaryTheme } : undefined,
+    { enabled: !!primaryTheme },
+  );
 
   // Filter out current article and limit to 3
   const relatedArticles = (relatedData?.articles || [])
     .filter((a: ELArticle) => a.id !== article?.id)
     .slice(0, 3);
+
+  // Resolve "is this article by a Harvest storyteller?" so we can link author -> /people/:slug.
+  // Match either by author_name == display_name OR by article slug containing storyteller first name.
+  const { data: harvestStorytellers } = trpc.harvest.publicStorytellers.useQuery(undefined, { staleTime: 5 * 60_000 });
+  const matchedStoryteller = (() => {
+    if (!article || !harvestStorytellers) return null;
+    const authorLower = (article.authorName || "").toLowerCase();
+    const slugLower = (slug || "").toLowerCase();
+    const byName = harvestStorytellers.find((s) => s.displayName.toLowerCase() === authorLower);
+    if (byName) return byName;
+    return harvestStorytellers.find((s) => {
+      const first = s.displayName.toLowerCase().split(/\s+/)[0];
+      return first.length >= 3 && (slugLower.includes(first) || authorLower.includes(first));
+    }) ?? null;
+  })();
 
   const currentUrl = typeof window !== "undefined" ? window.location.href : "";
 
@@ -118,6 +134,28 @@ export default function BlogPost() {
       {/* Hero Section */}
       <section className="pt-32 pb-8">
         <div className="container max-w-4xl">
+          {/* Admin bar — only visible when logged in as admin */}
+          {isAdmin && (
+            <div className="mb-6 rounded-md border border-amber-200 bg-amber-50 px-4 py-3 text-sm flex flex-wrap items-center gap-3">
+              <span className="font-mono text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-amber-500 text-stone-900 font-semibold whitespace-nowrap">
+                Admin
+              </span>
+              <span className="text-stone-700">
+                Title and subtitle are website overrides (hover the
+                <Pencil className="inline h-3 w-3 mx-1" /> pencil). The body lives in EL.
+              </span>
+              <a
+                href={elLinks.articleById(article.id)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="ml-auto inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-white border border-amber-300 text-amber-800 hover:bg-amber-100 transition-colors text-xs"
+              >
+                <ExternalLink className="h-3 w-3" />
+                Edit body in EL
+              </a>
+            </div>
+          )}
+
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -142,23 +180,38 @@ export default function BlogPost() {
               {theme}
             </Badge>
 
-            {/* Title */}
-            <h1 className="text-4xl md:text-5xl font-serif font-bold text-stone-800 leading-tight mb-4">
-              {article.title}
-            </h1>
+            {/* Title — admin-editable on the website (overrides EL display) */}
+            <EditableText
+              page="blog"
+              slot={`${slug}-title`}
+              defaultContent={article.title}
+              as="h1"
+              className="text-4xl md:text-5xl font-serif font-bold text-stone-800 leading-tight mb-4"
+            />
 
-            {/* Subtitle */}
-            {article.subtitle && (
-              <p className="text-xl text-stone-600 mb-6">
-                {article.subtitle}
-              </p>
+            {/* Subtitle — admin-editable */}
+            {(article.subtitle || isAdmin) && (
+              <EditableText
+                page="blog"
+                slot={`${slug}-subtitle`}
+                defaultContent={article.subtitle || ""}
+                as="p"
+                className="text-xl text-stone-600 mb-6"
+                multiline
+              />
             )}
 
             {/* Meta */}
             <div className="flex flex-wrap items-center gap-6 text-stone-500 mb-8">
               <span className="flex items-center gap-2">
                 <User className="h-4 w-4" />
-                {article.authorName}
+                {matchedStoryteller ? (
+                  <Link href={`/people/${matchedStoryteller.slug}`}>
+                    <a className="text-amber-700 underline-offset-2 hover:underline">{article.authorName}</a>
+                  </Link>
+                ) : (
+                  article.authorName
+                )}
               </span>
               <span className="flex items-center gap-2">
                 <Calendar className="h-4 w-4" />
@@ -276,17 +329,49 @@ export default function BlogPost() {
       {/* Author Section */}
       <section className="py-12 bg-stone-50">
         <div className="container max-w-3xl">
-          <div className="flex items-center gap-4">
-            <div className="w-16 h-16 rounded-full bg-amber-100 flex items-center justify-center">
-              <span className="text-2xl font-serif font-bold text-amber-700">
-                {article.authorName.charAt(0)}
-              </span>
+          {matchedStoryteller ? (
+            <Link href={`/people/${matchedStoryteller.slug}`}>
+              <a className="group flex items-start gap-4 rounded-lg border border-stone-200 bg-white p-5 transition hover:border-amber-300 hover:shadow-md">
+                {matchedStoryteller.avatarUrl ? (
+                  <img
+                    src={matchedStoryteller.avatarUrl}
+                    alt={matchedStoryteller.displayName}
+                    className="h-16 w-16 flex-shrink-0 rounded-full border border-stone-200 object-cover"
+                  />
+                ) : (
+                  <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-full bg-amber-100">
+                    <span className="text-2xl font-serif font-bold text-amber-700">
+                      {matchedStoryteller.displayName.charAt(0)}
+                    </span>
+                  </div>
+                )}
+                <div className="min-w-0">
+                  <p className="font-semibold text-stone-800 group-hover:text-amber-700">{matchedStoryteller.displayName}</p>
+                  {matchedStoryteller.location && (
+                    <p className="text-stone-500 text-sm">{matchedStoryteller.location}</p>
+                  )}
+                  {matchedStoryteller.bio && (
+                    <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-stone-600">{matchedStoryteller.bio}</p>
+                  )}
+                  <p className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-amber-700">
+                    More by {matchedStoryteller.displayName.split(" ")[0]} <ChevronRight className="h-3 w-3" />
+                  </p>
+                </div>
+              </a>
+            </Link>
+          ) : (
+            <div className="flex items-center gap-4">
+              <div className="w-16 h-16 rounded-full bg-amber-100 flex items-center justify-center">
+                <span className="text-2xl font-serif font-bold text-amber-700">
+                  {article.authorName.charAt(0)}
+                </span>
+              </div>
+              <div>
+                <p className="font-semibold text-stone-800">{article.authorName}</p>
+                <p className="text-stone-500 text-sm">The Harvest Community</p>
+              </div>
             </div>
-            <div>
-              <p className="font-semibold text-stone-800">{article.authorName}</p>
-              <p className="text-stone-500 text-sm">The Harvest Community</p>
-            </div>
-          </div>
+          )}
         </div>
       </section>
 

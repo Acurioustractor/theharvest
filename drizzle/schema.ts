@@ -261,7 +261,7 @@ export const editableContent = pgTable("editable_content", {
   /** Page identifier (e.g., "journey", "home", "about") */
   page: varchar("page", { length: 100 }).notNull(),
   /** Slot identifier within the page (e.g., "hero-title", "event-1-description") */
-  slot: varchar("slot", { length: 100 }).notNull(),
+  slot: varchar("slot", { length: 200 }).notNull(),
   /** The actual content - can be plain text or markdown */
   content: text("content").notNull(),
   /** Content type for rendering hints */
@@ -338,3 +338,63 @@ export const eventFeedback = pgTable("event_feedback", {
 
 export type EventFeedback = typeof eventFeedback.$inferSelect;
 export type InsertEventFeedback = typeof eventFeedback.$inferInsert;
+
+/**
+ * Witta history community contributions.
+ * Anyone can submit a memory, correction, or photo tied to a year/era.
+ * Admins approve before it appears on /witta.
+ */
+const wittaContributionStatusEnum = pgEnum("witta_contribution_status", [
+  "pending",
+  "approved",
+  "rejected",
+]);
+
+export const wittaContributions = pgTable("witta_contributions", {
+  id: serial("id").primaryKey(),
+  authorName: varchar("author_name", { length: 255 }).notNull(),
+  authorEmail: varchar("author_email", { length: 320 }),
+  /** Free-text year/era anchor — e.g. "1916", "1980s", "Today", "Pre-contact" */
+  yearOrEra: varchar("year_or_era", { length: 100 }).notNull(),
+  /** The contribution itself — memory, correction, story */
+  memory: text("memory").notNull(),
+  /** Optional uploaded image URL */
+  photoUrl: varchar("photo_url", { length: 1000 }),
+  status: wittaContributionStatusEnum("status").default("pending").notNull(),
+  /** Admin notes — visible only to admins */
+  adminNotes: text("admin_notes"),
+  /** Timestamps */
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  approvedAt: timestamp("approved_at", { withTimezone: true }),
+  approvedBy: integer("approved_by"),
+});
+
+export type WittaContribution = typeof wittaContributions.$inferSelect;
+export type InsertWittaContribution = typeof wittaContributions.$inferInsert;
+
+/**
+ * Image overrides — admins can pick an Empathy Ledger photo for any
+ * (page, slot) on the site without redeploying. Public users see the
+ * override; if none set, the page falls back to its bundled default.
+ *
+ * Slot examples:
+ *   page="works"  slot="milk-crate-pavilion-hero"
+ *   page="home"   slot="hero-aerial"
+ */
+export const imageOverrides = pgTable("image_overrides", {
+  id: serial("id").primaryKey(),
+  page: varchar("page", { length: 100 }).notNull(),
+  slot: varchar("slot", { length: 200 }).notNull(),
+  /** EL media_asset UUID — provenance, lookups, future re-fetches */
+  mediaAssetId: varchar("media_asset_id", { length: 64 }).notNull(),
+  /** Cached CDN URL so we don't hit EL on every page render */
+  src: varchar("src", { length: 1000 }).notNull(),
+  altText: varchar("alt_text", { length: 500 }),
+  title: varchar("title", { length: 255 }),
+  setBy: integer("set_by"),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+});
+
+export type ImageOverride = typeof imageOverrides.$inferSelect;
+export type InsertImageOverride = typeof imageOverrides.$inferInsert;

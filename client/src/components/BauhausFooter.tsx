@@ -350,6 +350,8 @@ export default function BauhausFooter({ isMobile }: BauhausFooterProps) {
         <Link href="/" style={linkStyle}>HOME</Link>
         <Link href="/gather" style={linkStyle}>THE GATHERING</Link>
         <Link href="/compendium" style={linkStyle}>THE STORY</Link>
+        <Link href="/people" style={linkStyle}>PEOPLE</Link>
+        <Link href="/blog" style={linkStyle}>JOURNAL</Link>
         <Link href="/contact" style={linkStyle}>CONTACT</Link>
         <Link href="/social" style={linkStyle}>FOLLOW</Link>
       </div>
