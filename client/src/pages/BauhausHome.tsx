@@ -5,6 +5,7 @@ import BauhausFooter from "@/components/BauhausFooter";
 import FadeIn from "@/components/FadeIn";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { rootStyle, colors, fonts } from "@/styles/brand";
+import { trpc } from "@/lib/trpc";
 
 const zones = [
   {
@@ -37,6 +38,7 @@ const events = [
 export default function BauhausHome() {
   const isMobile = useMediaQuery("(max-width: 768px)");
   const [scrollVisible, setScrollVisible] = useState(false);
+  const { data: storytellers } = trpc.harvest.publicStorytellers.useQuery(undefined, { staleTime: 5 * 60_000 });
 
   useEffect(() => {
     document.title = "The Harvest - Witta, Sunshine Coast Hinterland";
@@ -371,6 +373,191 @@ export default function BauhausHome() {
               </FadeIn>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* --- 3.5 PEOPLE OF THE HARVEST --- */}
+      <section style={{
+        backgroundColor: colors.shed,
+        color: colors.milk,
+        padding: isMobile ? "100px 28px" : "160px 40px",
+      }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+          <FadeIn>
+            <div style={{ marginBottom: 64, textAlign: "center" }}>
+              <span style={{
+                fontFamily: fonts.display,
+                fontWeight: 700,
+                fontSize: 12,
+                letterSpacing: "0.4em",
+                color: colors.goldenHour,
+                marginBottom: 24,
+                display: "block",
+              }}>
+                PEOPLE OF THE HARVEST
+              </span>
+              <h2 style={{
+                fontFamily: fonts.display,
+                fontSize: isMobile ? "clamp(32px, 7vw, 48px)" : "clamp(40px, 5vw, 64px)",
+                fontWeight: 900,
+                lineHeight: 1.05,
+                letterSpacing: "-0.01em",
+                margin: 0,
+              }}>
+                The hands behind the work.
+              </h2>
+            </div>
+          </FadeIn>
+
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)",
+            gap: isMobile ? 24 : 40,
+            marginBottom: 56,
+          }}>
+            {(storytellers ?? []).slice(0, 3).map((s, i) => (
+              <FadeIn key={s.id} delay={0.1 + i * 0.1}>
+                <Link href={`/people/${s.slug}`}>
+                  <div style={{
+                    backgroundColor: "rgba(245,240,232,0.05)",
+                    border: `1px solid rgba(245,240,232,0.15)`,
+                    padding: isMobile ? 28 : 36,
+                    cursor: "pointer",
+                    height: "100%",
+                    display: "flex",
+                    flexDirection: "column",
+                    transition: "border-color 0.3s, background-color 0.3s",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.borderColor = colors.goldenHour;
+                    e.currentTarget.style.backgroundColor = "rgba(245,240,232,0.08)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = "rgba(245,240,232,0.15)";
+                    e.currentTarget.style.backgroundColor = "rgba(245,240,232,0.05)";
+                  }}
+                  >
+                    <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 24 }}>
+                      {s.avatarUrl ? (
+                        <img
+                          src={s.avatarUrl}
+                          alt={s.displayName}
+                          style={{
+                            width: 64, height: 64, borderRadius: "50%",
+                            objectFit: "cover",
+                            border: `1px solid rgba(245,240,232,0.3)`,
+                          }}
+                        />
+                      ) : (
+                        <div style={{
+                          width: 64, height: 64, borderRadius: "50%",
+                          backgroundColor: colors.goldenHour,
+                          color: colors.shed,
+                          display: "flex", alignItems: "center", justifyContent: "center",
+                          fontFamily: fonts.display,
+                          fontWeight: 900,
+                          fontSize: 28,
+                        }}>
+                          {s.displayName.charAt(0).toUpperCase()}
+                        </div>
+                      )}
+                      <div>
+                        <h3 style={{
+                          fontFamily: fonts.display,
+                          fontWeight: 900,
+                          fontSize: 22,
+                          margin: 0,
+                          lineHeight: 1.1,
+                        }}>
+                          {s.displayName}
+                        </h3>
+                        {s.location && (
+                          <p style={{
+                            fontFamily: fonts.body,
+                            fontSize: 12,
+                            opacity: 0.6,
+                            margin: "4px 0 0",
+                          }}>
+                            {s.location}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    {s.bio && (
+                      <p style={{
+                        fontFamily: fonts.body,
+                        fontSize: 15,
+                        lineHeight: 1.6,
+                        opacity: 0.85,
+                        margin: 0,
+                        flex: 1,
+                        display: "-webkit-box",
+                        WebkitLineClamp: 4,
+                        WebkitBoxOrient: "vertical",
+                        overflow: "hidden",
+                      }}>
+                        {s.bio}
+                      </p>
+                    )}
+
+                    <div style={{ marginTop: 24, display: "flex", flexWrap: "wrap", gap: 8 }}>
+                      {s.publishedArticleCount > 0 && (
+                        <span style={{ fontFamily: fonts.display, fontSize: 10, letterSpacing: "0.1em", opacity: 0.65 }}>
+                          {s.publishedArticleCount} ARTICLE{s.publishedArticleCount === 1 ? "" : "S"}
+                        </span>
+                      )}
+                      {s.transcriptCount > 0 && (
+                        <span style={{ fontFamily: fonts.display, fontSize: 10, letterSpacing: "0.1em", opacity: 0.65 }}>
+                          · {s.transcriptCount} RECORDING{s.transcriptCount === 1 ? "" : "S"}
+                        </span>
+                      )}
+                    </div>
+
+                    <span style={{
+                      fontFamily: fonts.display,
+                      fontWeight: 700,
+                      fontSize: 11,
+                      letterSpacing: "0.15em",
+                      marginTop: 24,
+                      color: colors.goldenHour,
+                    }}>
+                      READ MORE →
+                    </span>
+                  </div>
+                </Link>
+              </FadeIn>
+            ))}
+          </div>
+
+          <FadeIn delay={0.5}>
+            <div style={{ textAlign: "center" }}>
+              <Link href="/people">
+                <span style={{
+                  display: "inline-block",
+                  border: `2px solid ${colors.milk}`,
+                  fontFamily: fonts.display,
+                  fontWeight: 700,
+                  fontSize: 13,
+                  letterSpacing: "0.2em",
+                  padding: "20px 48px",
+                  color: colors.milk,
+                  cursor: "pointer",
+                  transition: "all 0.3s",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = colors.milk;
+                  e.currentTarget.style.color = colors.shed;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = "transparent";
+                  e.currentTarget.style.color = colors.milk;
+                }}>
+                  MEET ALL THE PEOPLE →
+                </span>
+              </Link>
+            </div>
+          </FadeIn>
         </div>
       </section>
 
