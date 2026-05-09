@@ -194,21 +194,28 @@ export default function Person({ slug }: { slug: string }) {
             </h2>
             <div className="grid gap-4">
               {s.stories.map((st) => (
-                <article key={st.id} className="rounded-lg border border-stone-200 bg-stone-50 p-5">
-                  <h3 className="text-lg font-serif font-bold text-stone-800">{st.title}</h3>
-                  {st.summary && (
-                    <p className="mt-2 text-sm leading-relaxed text-stone-600">{st.summary}</p>
-                  )}
-                  {st.themes && st.themes.length > 0 && (
-                    <div className="mt-3 flex flex-wrap gap-1.5">
-                      {st.themes.slice(0, 4).map((t) => (
-                        <span key={t} className="inline-flex items-center rounded-full bg-stone-100 px-2 py-0.5 text-[10px] font-medium text-stone-700">
-                          {t}
-                        </span>
-                      ))}
+                <Link key={st.id} href={`/stories/${st.id}`}>
+                  <a className="group block rounded-lg border border-stone-200 bg-stone-50 p-5 transition hover:border-amber-300 hover:shadow-md">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <h3 className="text-lg font-serif font-bold text-stone-800 group-hover:text-amber-700">{st.title}</h3>
+                        {st.summary && (
+                          <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-stone-600">{st.summary}</p>
+                        )}
+                        {st.themes && st.themes.length > 0 && (
+                          <div className="mt-3 flex flex-wrap gap-1.5">
+                            {st.themes.slice(0, 4).map((t) => (
+                              <span key={t} className="inline-flex items-center rounded-full bg-stone-100 px-2 py-0.5 text-[10px] font-medium text-stone-700">
+                                {t}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                      <ArrowRight className="h-4 w-4 flex-shrink-0 text-stone-400 transition group-hover:translate-x-1 group-hover:text-amber-600" />
                     </div>
-                  )}
-                </article>
+                  </a>
+                </Link>
               ))}
             </div>
           </div>

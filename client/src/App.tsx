@@ -29,6 +29,7 @@ import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 import People from "./pages/People";
 import Person from "./pages/Person";
+import StoryDetail from "./pages/StoryDetail";
 import GardenLaunch from "./pages/GardenLaunch";
 import LaunchRedesign from "./pages/LaunchRedesign";
 import HarvestReviewTest from "./pages/HarvestReviewTest";
@@ -98,6 +99,10 @@ function Router() {
   if (location.startsWith("/people/")) {
     const slug = location.slice("/people/".length).split("/")[0];
     return <Person slug={slug} />;
+  }
+  if (location.startsWith("/stories/")) {
+    const storyId = location.slice("/stories/".length).split("/")[0];
+    return <StoryDetail storyId={storyId} />;
   }
   if (location === "/garden-launch" || location === "/june-20") return <GardenLaunch />;
   if (location === "/launch-redesign") return <LaunchRedesign />;

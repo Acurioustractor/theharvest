@@ -1751,18 +1751,51 @@ export type HarvestPhotoForAttribution = {
 };
 
 // List recent Harvest media plus which storytellers each is currently tagged
-// with. Used by the admin photo-attribution picker.
-export async function listHarvestMediaForAttribution(limit = 200): Promise<HarvestPhotoForAttribution[]> {
+// with. Used by the admin photo-attribution picker. Optional `work` filter
+// restricts to assets carrying the given harvest-work tag (the-garden,
+// milk-crate-pavilion, etc.) so admins can scope tagging to a single work.
+export async function listHarvestMediaForAttribution(input?: {
+  limit?: number;
+  work?: string | null;
+}): Promise<HarvestPhotoForAttribution[]> {
+  const limit = input?.limit ?? 200;
+  const work = input?.work;
   const { supabase } = await createElAdminContext();
-  const { data, error } = await supabase
+
+  // Resolve work tag id once if filter requested.
+  let workTagAssetIds: Set<string> | null = null;
+  if (work) {
+    const { data: tag } = await supabase
+      .from("tags")
+      .select("id")
+      .eq("slug", work)
+      .eq("category", "harvest-work")
+      .maybeSingle();
+    if (!tag?.id) return []; // unknown work → empty
+    const { data: links } = await supabase
+      .from("media_tags")
+      .select("media_asset_id")
+      .eq("tag_id", (tag as any).id);
+    workTagAssetIds = new Set((links ?? []).map((r: any) => r.media_asset_id));
+    if (workTagAssetIds.size === 0) return [];
+  }
+
+  let query = supabase
     .from("media_assets")
     .select("id, cdn_url, thumbnail_url, original_filename, created_at, metadata, media_type")
     .eq("project_id", HARVEST_PROJECT_ID)
     .eq("media_type", "image")
     .order("created_at", { ascending: false })
-    .limit(limit);
+    .limit(workTagAssetIds ? Math.min(workTagAssetIds.size, limit * 3) : limit);
+
+  if (workTagAssetIds) {
+    query = query.in("id", Array.from(workTagAssetIds));
+  }
+
+  const { data, error } = await query;
   if (error) throw error;
-  return (data ?? []).map((row: any) => {
+
+  return (data ?? []).slice(0, limit).map((row: any) => {
     const tagged = Array.isArray(row.metadata?.harvestStorytellers)
       ? row.metadata.harvestStorytellers.filter((v: any) => typeof v === "string")
       : [];
@@ -1851,4 +1884,80 @@ export async function listElPhotosForStoryteller(storytellerId: string): Promise
     src: row.thumbnail_url || row.cdn_url || "",
     alt: row.original_filename ? `Harvest photo ${row.original_filename}` : "Harvest photo",
   })).filter((p: PublicStorytellerPhoto) => p.src);
+}
+
+// Public-safe Harvest story fetch. Only returns if is_public=true AND
+// the story is on the Harvest project. Includes minimal author info
+// (display name + slug) so the detail page can link back to /people/:slug.
+export type PublicHarvestStoryDetail = {
+  id: string;
+  title: string;
+  content: string;
+  summary: string | null;
+  themes: string[];
+  createdAt: string | null;
+  updatedAt: string | null;
+  wordCount: number | null;
+  author: {
+    id: string;
+    slug: string | null;
+    displayName: string;
+    avatarUrl: string | null;
+  } | null;
+};
+
+export async function getPublicHarvestStoryById(storyId: string): Promise<PublicHarvestStoryDetail | null> {
+  const { supabase } = await createElAdminContext();
+  const { data, error } = await supabase
+    .from("stories")
+    .select("id, title, content, summary, themes, created_at, updated_at, author_id, is_public, project_id")
+    .eq("id", storyId)
+    .maybeSingle();
+  if (error) throw error;
+  if (!data) return null;
+  if (!data.is_public) return null;
+  if (data.project_id !== HARVEST_PROJECT_ID) return null;
+
+  // Resolve author. author_id can be storyteller_id OR profile_id (mixed data).
+  const storytellers = await listPublicHarvestStorytellers();
+  const byStoryteller = storytellers.find((s) => s.id === data.author_id);
+  let author: PublicHarvestStoryDetail["author"] = null;
+  if (byStoryteller) {
+    author = {
+      id: byStoryteller.id,
+      slug: byStoryteller.slug,
+      displayName: byStoryteller.displayName,
+      avatarUrl: byStoryteller.avatarUrl,
+    };
+  } else if (data.author_id) {
+    // Try matching by profile_id via the storytellers join.
+    const { data: stRow } = await supabase
+      .from("storytellers")
+      .select("id, display_name, public_avatar_url")
+      .eq("profile_id", data.author_id)
+      .maybeSingle();
+    if (stRow) {
+      const harvestMatch = storytellers.find((s) => s.id === (stRow as any).id);
+      author = {
+        id: (stRow as any).id,
+        slug: harvestMatch?.slug ?? null,
+        displayName: (stRow as any).display_name ?? "Storyteller",
+        avatarUrl: (stRow as any).public_avatar_url ?? null,
+      };
+    }
+  }
+
+  const wordCount = (data.content ?? "").trim().split(/\s+/).filter(Boolean).length;
+
+  return {
+    id: data.id,
+    title: data.title ?? "(untitled)",
+    content: data.content ?? "",
+    summary: data.summary,
+    themes: Array.isArray(data.themes) ? data.themes : [],
+    createdAt: data.created_at,
+    updatedAt: data.updated_at,
+    wordCount,
+    author,
+  };
 }

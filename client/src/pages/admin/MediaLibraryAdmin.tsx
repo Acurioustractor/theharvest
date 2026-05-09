@@ -480,6 +480,35 @@ export default function MediaLibraryAdmin() {
     staleTime: 60 * 1000,
   });
 
+  // Photo→storyteller attribution map for showing chips on each photo card.
+  // Same query key as StorytellersPanel so React Query dedupes.
+  const photoAttributionsQuery = trpc.mediaLibrary.harvestMediaForAttribution.useQuery(
+    { limit: 500, work: null },
+    { enabled: isAuthenticated && user?.role === "admin", staleTime: 60_000 },
+  );
+  const harvestStorytellersForChipsQuery = trpc.mediaLibrary.harvestStorytellers.useQuery(
+    undefined,
+    { enabled: isAuthenticated && user?.role === "admin", staleTime: 60_000 },
+  );
+  const storytellerSlugsByMediaId = useMemo(() => {
+    const nameMap = new Map<string, { displayName: string }>();
+    for (const s of harvestStorytellersForChipsQuery.data ?? []) {
+      nameMap.set(s.id, { displayName: s.displayName ?? "(unnamed)" });
+    }
+    const map = new Map<string, Array<{ id: string; displayName: string }>>();
+    for (const p of photoAttributionsQuery.data ?? []) {
+      if (p.taggedStorytellerIds.length === 0) continue;
+      map.set(
+        p.id,
+        p.taggedStorytellerIds.map((id: string) => ({
+          id,
+          displayName: nameMap.get(id)?.displayName ?? id.slice(0, 8),
+        })),
+      );
+    }
+    return map;
+  }, [photoAttributionsQuery.data, harvestStorytellersForChipsQuery.data]);
+
   const media = useMemo(() => {
     const first = (firstPage.data?.media ?? []) as AdminMediaAsset[];
     const second = (secondPage.data?.media ?? []) as AdminMediaAsset[];
@@ -640,6 +669,7 @@ export default function MediaLibraryAdmin() {
           onSelectFiltered={selectFilteredMedia}
           onClearSelected={clearSelectedMedia}
           pageUsesByAsset={pageUsesByAsset}
+          storytellerSlugsByMediaId={storytellerSlugsByMediaId}
         />
 
         <div className="mt-8 grid gap-6 lg:grid-cols-[1.25fr_0.75fr]">
@@ -1184,6 +1214,7 @@ function StorytellersPanel() {
   const [editContent, setEditContent] = useState("");
   const [editIsPublic, setEditIsPublic] = useState(false);
   const [taggingPhotosFor, setTaggingPhotosFor] = useState<string | null>(null);
+  const [photoPickerWork, setPhotoPickerWork] = useState<string | null>(null);
 
   useEffect(() => {
     const handle = setTimeout(() => setDebouncedQuery(searchQuery.trim()), 300);
@@ -1261,9 +1292,12 @@ function StorytellersPanel() {
   });
 
   const photosForAttribution = trpc.mediaLibrary.harvestMediaForAttribution.useQuery(
-    { limit: 200 },
+    { limit: 200, work: photoPickerWork ?? undefined },
     { enabled: !!taggingPhotosFor, staleTime: 30_000 },
   );
+
+  // (storyteller-chip lookup lives in MediaLibraryAdmin scope and is shared
+  // across this panel + AllMediaWorkbench via React Query's dedupe.)
   const tagMediaMutation = trpc.mediaLibrary.tagMediaWithStorytellers.useMutation({
     onSuccess: () => {
       photosForAttribution.refetch();
@@ -1605,6 +1639,30 @@ function StorytellersPanel() {
                     <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#8B4A2A]">
                       tag photos · click to attach/detach {s.displayName?.split(" ")[0]}
                     </p>
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      <span className="font-mono text-[10px] uppercase text-stone-500">filter by work:</span>
+                      {[
+                        { slug: null as string | null, label: "all" },
+                        { slug: "milk-crate-pavilion", label: "pavilion" },
+                        { slug: "the-cedar", label: "cedar" },
+                        { slug: "the-garden", label: "garden" },
+                        { slug: "the-sauna", label: "sauna" },
+                        { slug: "the-shop", label: "shop" },
+                      ].map((w) => (
+                        <button
+                          key={w.slug ?? "all"}
+                          type="button"
+                          onClick={() => setPhotoPickerWork(w.slug)}
+                          className={`px-2 py-1 text-[10px] font-mono uppercase border transition ${
+                            photoPickerWork === w.slug
+                              ? "border-[#4A6741] bg-[#4A6741] text-white"
+                              : "border-stone-300 bg-white text-stone-600 hover:border-stone-500"
+                          }`}
+                        >
+                          {w.label}
+                        </button>
+                      ))}
+                    </div>
                     {photosForAttribution.isLoading ? (
                       <p className="text-xs text-stone-600">Loading recent Harvest photos…</p>
                     ) : (
@@ -1761,6 +1819,7 @@ function AllMediaWorkbench({
   onSelectFiltered,
   onClearSelected,
   pageUsesByAsset,
+  storytellerSlugsByMediaId,
 }: {
   media: AdminMediaAsset[];
   filteredMedia: AdminMediaAsset[];
@@ -1783,6 +1842,7 @@ function AllMediaWorkbench({
   onSelectFiltered: () => void;
   onClearSelected: () => void;
   pageUsesByAsset: Map<string, AssetPageUse[]>;
+  storytellerSlugsByMediaId: Map<string, Array<{ id: string; displayName: string }>>;
 }) {
   const [tagMode, setTagMode] = useState<TagMode>("replace");
   const [extraTag, setExtraTag] = useState("");
@@ -1941,6 +2001,7 @@ function AllMediaWorkbench({
               item={item}
               selected={selectedMediaIds.includes(item.id)}
               pageUses={pageUsesByAsset.get(item.id) ?? []}
+              storytellers={storytellerSlugsByMediaId.get(item.id) ?? []}
               onToggleSelected={() => onToggleSelected(item.id)}
             />
           ))
@@ -1983,11 +2044,13 @@ function MediaLibraryCard({
   item,
   selected,
   pageUses,
+  storytellers,
   onToggleSelected,
 }: {
   item: AdminMediaAsset;
   selected: boolean;
   pageUses: AssetPageUse[];
+  storytellers: Array<{ id: string; displayName: string }>;
   onToggleSelected: () => void;
 }) {
   const video = isVideoAsset(item.src);
@@ -2032,6 +2095,16 @@ function MediaLibraryCard({
           {item.themes?.map((theme) => <TagChip key={theme} label={theme} />)}
           {item.category && <TagChip label={item.category} />}
         </div>
+        {storytellers.length > 0 && (
+          <div className="mt-2 flex flex-wrap gap-1">
+            <span className="font-mono text-[9px] uppercase text-stone-400 self-center">depicts:</span>
+            {storytellers.map((st) => (
+              <span key={st.id} className="inline-flex items-center rounded-full bg-[#4A6741]/15 px-2 py-0.5 text-[10px] font-semibold text-[#4A6741]">
+                {st.displayName.split(" ")[0]}
+              </span>
+            ))}
+          </div>
+        )}
         <PageUseChips uses={pageUses} />
       </div>
     </article>
