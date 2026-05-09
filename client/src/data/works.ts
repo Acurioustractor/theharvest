@@ -86,6 +86,8 @@ export type WorkHand = {
 };
 
 export type Work = {
+  /** Catalogue number — "Work 01", "Work 02" etc. Explicit so it stays stable as works are added/reordered */
+  number: string;
   slug: string;
   title: string;
   /** One-line subtitle shown under the title */
@@ -124,8 +126,9 @@ export type Work = {
 
 export const works: Work[] = [
   {
+    number: "Work 02",
     slug: "milk-crate-pavilion",
-    title: "Milk Create Pavilion",
+    title: "Milk Crate Pavilion",
     subtitle: "Milk crate, milk create — the same syllables, both true",
     lifecycleTags: ["building"],
     materials: "Reclaimed milk crates, scaffold, salvaged timber, community hands",
@@ -173,6 +176,7 @@ export const works: Work[] = [
     related: ["the-cedar", "the-garden"],
   },
   {
+    number: "Work 03",
     slug: "the-cedar",
     title: "The Cedar",
     subtitle: "Working with the wood the range almost lost",
@@ -218,6 +222,7 @@ export const works: Work[] = [
     related: ["milk-crate-pavilion", "the-garden"],
   },
   {
+    number: "Work 01",
     slug: "the-garden",
     title: "The Garden",
     subtitle: "The volcano made the soil. The community works the rows.",
@@ -262,6 +267,7 @@ export const works: Work[] = [
     related: ["milk-crate-pavilion", "the-shop"],
   },
   {
+    number: "Work 04",
     slug: "the-sauna",
     title: "The Sauna",
     subtitle: "A communal warmth ritual for a cold-mist hinterland",
@@ -305,6 +311,7 @@ export const works: Work[] = [
     related: ["milk-crate-pavilion", "the-shop"],
   },
   {
+    number: "Work 05",
     slug: "the-shop",
     title: "The Shop",
     subtitle: "Reclaiming the village shop that Witta hasn't had in a generation",

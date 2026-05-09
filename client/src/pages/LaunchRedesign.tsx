@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
+import { HarvestImage } from "@/components/HarvestImage";
 import {
   ArrowRight,
   Calendar,
@@ -85,8 +86,8 @@ const proofItems: Proof[] = [
     eyebrow: "Co-operatives",
     title: "The table comes before the structure.",
     body: "Shared tools, open books, local help, and a practical question: what can this place hold if people build the first version together?",
-    image: "/images/compendium/team-garden-selfie.jpg",
-    alt: "A group at The Harvest garden",
+    image: "/images/community-gathering.jpg",
+    alt: "Community gathering at The Harvest Witta",
   },
 ];
 
@@ -348,13 +349,15 @@ function WorksProof() {
               {...fadeInUp}
               className="overflow-hidden border border-stone-300/70 bg-[#FFFDF7]"
             >
-              <div className="aspect-[5/4] overflow-hidden bg-stone-200">
-                <img
-                  src={item.image}
-                  alt={item.alt}
-                  className="h-full w-full object-cover"
-                />
-              </div>
+              <HarvestImage
+                page="launch-redesign"
+                slot={`thread-${item.eyebrow.toLowerCase().replace(/[^a-z0-9]/g, "-")}`}
+                src={item.image}
+                alt={item.alt}
+                size="card"
+                className="aspect-[5/4] overflow-hidden bg-stone-200"
+                imgClassName="h-full w-full object-cover"
+              />
               <div className="p-6">
                 <p className="font-mono text-xs uppercase tracking-[0.18em] text-[#8B4A2A]">
                   {item.eyebrow}
@@ -455,8 +458,8 @@ function Closing() {
   return (
     <section className="relative overflow-hidden bg-stone-950 py-16 text-white md:py-24">
       <img
-        src="/images/compendium/team-garden-selfie.jpg"
-        alt="People gathered in the garden at The Harvest"
+        src="/images/community-gathering.jpg"
+        alt="Community gathering at The Harvest Witta"
         className="absolute inset-0 h-full w-full object-cover opacity-28"
       />
       <div className="absolute inset-0 bg-stone-950/62" />

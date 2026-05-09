@@ -89,7 +89,7 @@ export default function WorkDetail({ slug }: { slug: string }) {
   const activeTags: LifecycleTag[] = savedTags ?? work.lifecycleTags;
   const lifecycleTags = sortLifecycleTags(activeTags);
   const index = works.findIndex((w) => w.slug === work.slug);
-  const number = String(index + 1).padStart(2, "0");
+  const number = work.number ?? String(index + 1).padStart(2, "0");
   const next = works[(index + 1) % works.length];
 
   return (
@@ -118,21 +118,25 @@ export default function WorkDetail({ slug }: { slug: string }) {
               transition={{ duration: 0.6 }}
               className="grid md:grid-cols-[auto_1fr] gap-x-8 gap-y-3"
             >
-              <p className="font-mono text-stone-400 text-2xl tabular-nums">{number}</p>
-              <div>
-                <div className="flex flex-wrap gap-1.5 mb-5">
+              <div className="flex items-center justify-between gap-4 md:col-span-2">
+                <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-[#8B4A2A]">
+                  {number}
+                </p>
+                <div className="flex flex-wrap gap-1.5">
                   {lifecycleTags.map((tag) => {
                     const meta = LIFECYCLE_VOCAB[tag];
                     return (
                       <span
                         key={tag}
-                        className={`inline-flex items-center px-2.5 py-1 text-[11px] font-medium uppercase tracking-wider rounded-full ${meta.badgeClass}`}
+                        className={`px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.14em] ${meta.badgeClass}`}
                       >
                         {meta.label}
                       </span>
                     );
                   })}
                 </div>
+              </div>
+              <div className="md:col-span-2">
                 {isAdmin && (
                   <LifecycleEditor
                     workSlug={work.slug}
@@ -144,14 +148,14 @@ export default function WorkDetail({ slug }: { slug: string }) {
                   slot={`${work.slug}-title`}
                   defaultContent={work.title}
                   as="h1"
-                  className="text-4xl md:text-6xl font-serif font-bold text-stone-800 leading-[1.05] mb-4"
+                  className="mt-4 text-5xl font-black leading-[0.92] text-[#1C1917] md:text-7xl"
                 />
                 <EditableText
                   page="works"
                   slot={`${work.slug}-subtitle`}
                   defaultContent={work.subtitle}
                   as="p"
-                  className="text-xl md:text-2xl text-stone-600 italic leading-snug"
+                  className="mt-3 text-xl italic leading-snug text-stone-600 md:text-2xl"
                   multiline
                 />
               </div>
