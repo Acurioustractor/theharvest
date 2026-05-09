@@ -709,6 +709,40 @@ export async function createGHLSocialPost(post: GHLSocialPost): Promise<{ succes
 }
 
 /**
+ * Delete a social media post from GHL Social Planner.
+ */
+export async function deleteGHLSocialPost(postId: string): Promise<{ success: boolean; error?: string }> {
+  return withTokenRetry(async () => {
+    const apiKey = getSocialApiKey();
+    const locationId = process.env.GHL_LOCATION_ID;
+
+    if (!apiKey || !locationId) {
+      return { success: false, error: "GHL credentials not configured." };
+    }
+
+    const response = await fetch(`${GHL_API_BASE}/social-media-posting/${locationId}/posts/${postId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        Version: GHL_API_VERSION,
+        Accept: "application/json",
+      },
+    });
+
+    if (response.status === 401) {
+      throw Object.assign(new Error("401 Unauthorized"), { status: 401 });
+    }
+
+    if (!response.ok) {
+      const err = await response.text().catch(() => response.statusText);
+      return { success: false, error: `GHL API error ${response.status}: ${err}` };
+    }
+
+    return { success: true };
+  });
+}
+
+/**
  * Build a map from Notion platform names → GHL account IDs.
  * Calls getGHLSocialAccounts() dynamically so new accounts are auto-detected.
  */

@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Pencil, Check, X, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -40,18 +39,24 @@ export function EditableText({
 }: EditableTextProps) {
   const { isAuthenticated, user } = useAuth();
   const isAdmin = isAuthenticated && user?.role === "admin";
-  const queryClient = useQueryClient();
+  const utils = trpc.useUtils();
 
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState("");
-  const [saving, setSaving] = useState(false);
   const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement>(null);
 
-  // Fetch content from database using vanilla client pattern
-  const { data: savedContent, refetch } = useQuery({
-    queryKey: ["content", page, slot],
-    queryFn: () => trpc.content.get.query({ page, slot }),
-    staleTime: 30000,
+  // Fetch saved override (if any) for this slot
+  const { data: savedContent } = trpc.content.get.useQuery(
+    { page, slot },
+    { staleTime: 30_000 },
+  );
+
+  // Mutation to upsert content
+  const updateMutation = trpc.content.update.useMutation({
+    onSuccess: () => {
+      utils.content.get.invalidate({ page, slot });
+      utils.content.forPage.invalidate({ page });
+    },
   });
 
   const displayContent = savedContent?.content ?? defaultContent;
@@ -74,27 +79,25 @@ export function EditableText({
     setEditValue("");
   };
 
+  const saving = updateMutation.isPending;
+
   const saveContent = async () => {
     if (editValue === displayContent) {
       setIsEditing(false);
       return;
     }
 
-    setSaving(true);
     try {
-      await trpc.content.update.mutate({
+      await updateMutation.mutateAsync({
         page,
         slot,
         content: editValue,
         contentType: multiline ? "markdown" : "text",
       });
-      refetch();
       onContentChange?.(editValue);
       setIsEditing(false);
     } catch (error) {
       console.error("Failed to save content:", error);
-    } finally {
-      setSaving(false);
     }
   };
 
@@ -163,20 +166,31 @@ export function EditableText({
   }
 
   // Display mode
+  if (!isAdmin) {
+    return <Component className={className}>{displayContent}</Component>;
+  }
+
+  // Admin: always-visible edit affordance — click anywhere on the text or the pencil chip.
   return (
-    <div className="relative group inline">
-      <Component className={className}>
+    <div className="relative group">
+      <Component
+        className={cn(className, "cursor-text hover:bg-amber-50/40 rounded-sm transition-colors")}
+        onClick={startEditing}
+      >
         {displayContent}
       </Component>
-      {isAdmin && (
-        <button
-          onClick={startEditing}
-          className="absolute -right-8 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-amber-500 hover:bg-amber-600 text-black rounded-full p-1.5 shadow-lg"
-          title="Edit text"
-        >
-          <Pencil className="h-3 w-3" />
-        </button>
-      )}
+      <button
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation();
+          startEditing();
+        }}
+        className="absolute -top-2 -right-2 z-10 inline-flex items-center gap-1 px-2 py-1 rounded-full bg-amber-500 hover:bg-amber-400 text-stone-900 shadow-md text-[10px] font-mono uppercase tracking-wider font-semibold"
+        title="Edit text"
+      >
+        <Pencil className="h-3 w-3" />
+        Edit
+      </button>
     </div>
   );
 }
@@ -186,11 +200,10 @@ export function EditableText({
  * Useful for pages with many editable fields
  */
 export function usePageContent(page: string) {
-  const { data, isLoading, refetch } = useQuery({
-    queryKey: ["content", "page", page],
-    queryFn: () => trpc.content.forPage.query({ page }),
-    staleTime: 30000,
-  });
+  const { data, isLoading, refetch } = trpc.content.forPage.useQuery(
+    { page },
+    { staleTime: 30_000 },
+  );
 
   const contentMap = new Map<string, string>();
   data?.forEach((item) => {
