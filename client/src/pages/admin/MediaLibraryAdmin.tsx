@@ -616,6 +616,8 @@ export default function MediaLibraryAdmin() {
           onRecipeChange={setRecipeKey}
         />
 
+        <StorytellersPanel />
+
         <AllMediaWorkbench
           media={media}
           filteredMedia={filteredMedia}
@@ -1159,6 +1161,180 @@ function LocalVideoImportPanel({
           )}
         </div>
       </div>
+    </section>
+  );
+}
+
+function StorytellersPanel() {
+  const storytellersQuery = trpc.mediaLibrary.harvestStorytellers.useQuery(undefined, { staleTime: 60_000 });
+  const orphansQuery = trpc.mediaLibrary.orphanedHarvestArticles.useQuery(undefined, { staleTime: 60_000 });
+
+  const tagAsHarvest = trpc.mediaLibrary.tagArticleAsHarvest.useMutation({
+    onSuccess: (result) => {
+      if (result.updated) {
+        toast.success(
+          result.preservedInRelated
+            ? `Tagged as Harvest. Previous "${result.preservedInRelated}" preserved in related_projects.`
+            : "Tagged as Harvest.",
+        );
+      } else {
+        toast.message("Already tagged as Harvest — no change.");
+      }
+      orphansQuery.refetch();
+      storytellersQuery.refetch();
+    },
+    onError: (err) => toast.error(`Tag failed: ${err.message}`),
+  });
+
+  const claimForStoryteller = trpc.mediaLibrary.claimArticleForStoryteller.useMutation({
+    onSuccess: (result) => {
+      toast.success(result.updated ? "Article claimed by storyteller." : "Already claimed.");
+      orphansQuery.refetch();
+      storytellersQuery.refetch();
+    },
+    onError: (err) => toast.error(`Claim failed: ${err.message}`),
+  });
+
+  const storytellers = storytellersQuery.data ?? [];
+  const orphans = orphansQuery.data ?? [];
+  const isLoading = storytellersQuery.isLoading || orphansQuery.isLoading;
+
+  return (
+    <section className="mt-8 border border-stone-300 bg-[#FFFDF7]">
+      <div className="border-b border-stone-200 p-5">
+        <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#8B4A2A]">storytellers</p>
+        <h2 className="mt-2 text-3xl font-black leading-tight">The people behind the work.</h2>
+        <p className="mt-3 max-w-3xl text-sm leading-relaxed text-stone-700 md:text-base">
+          Curated Harvest storytellers (Sophie, Barry, …). Their stories, articles and media uploads roll up here so you can see at a glance who has content live and what's still drafting. Add new IDs in <code className="rounded bg-stone-200 px-1 font-mono text-[11px]">HARVEST_STORYTELLER_IDS</code> in <code className="rounded bg-stone-200 px-1 font-mono text-[11px]">server/empathyLedgerAdmin.ts</code>.
+        </p>
+      </div>
+
+      <div className="grid gap-4 p-5 sm:grid-cols-2">
+        {isLoading ? (
+          Array.from({ length: 2 }).map((_, i) => (
+            <div key={i} className="h-44 animate-pulse border border-stone-200 bg-stone-100" />
+          ))
+        ) : storytellers.length === 0 ? (
+          <div className="col-span-full border border-dashed border-stone-300 bg-stone-50 p-5 text-sm text-stone-600">
+            No curated storytellers configured.
+          </div>
+        ) : (
+          storytellers.map((s) => {
+            const elProfileUrl = s.profileId ? `https://empathyledger.com/admin/storytellers/${s.id}` : null;
+            const publishedArticles = s.articles.filter((a) => a.status === "published").length;
+            const harvestStories = s.stories.filter((st) => st.isHarvestProject).length;
+            return (
+              <article key={s.id} className="grid gap-3 border border-stone-200 bg-white p-4">
+                <header className="flex items-start gap-3">
+                  {s.avatarUrl ? (
+                    <img
+                      src={s.avatarUrl}
+                      alt={s.displayName ?? "Storyteller"}
+                      className="h-14 w-14 flex-shrink-0 rounded-full border border-stone-200 object-cover"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-full border border-stone-200 bg-stone-100 text-base font-black text-stone-500">
+                      {(s.displayName ?? "?").slice(0, 1).toUpperCase()}
+                    </div>
+                  )}
+                  <div className="min-w-0">
+                    <h3 className="text-lg font-black leading-tight text-stone-900">{s.displayName ?? "(unnamed)"}</h3>
+                    <p className="mt-0.5 text-xs text-stone-500">
+                      {s.location ?? "no location"}
+                      {!s.isActive && <span className="ml-2 inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-semibold text-amber-900">inactive</span>}
+                    </p>
+                  </div>
+                </header>
+
+                {s.bio && (
+                  <p className="line-clamp-3 text-sm leading-relaxed text-stone-700">{s.bio}</p>
+                )}
+
+                <div className="flex flex-wrap gap-1.5">
+                  <TagChip label={`${s.stories.length} stories`} tone={s.stories.length > 0 ? "work" : "neutral"} />
+                  <TagChip label={`${harvestStories} Harvest-tagged`} tone={harvestStories > 0 ? "work" : "warn"} />
+                  <TagChip label={`${publishedArticles} published`} tone={publishedArticles > 0 ? "work" : "neutral"} />
+                  <TagChip label={`${s.mediaCount} uploads`} />
+                </div>
+
+                {(s.stories.length > 0 || s.articles.length > 0) && (
+                  <div className="grid gap-1 border-t border-stone-100 pt-3 text-xs text-stone-700">
+                    {s.stories.map((story) => (
+                      <p key={story.id} className="flex items-center gap-2">
+                        <span className={`inline-flex shrink-0 items-center rounded px-1.5 py-0.5 font-mono text-[9px] uppercase ${story.isPublic ? "bg-[#4A6741] text-white" : "bg-stone-200 text-stone-700"}`}>
+                          {story.isPublic ? "pub" : "draft"}
+                        </span>
+                        <span className="truncate">{story.title ?? "(no title)"}</span>
+                      </p>
+                    ))}
+                    {s.articles.map((article) => (
+                      <p key={article.id} className="flex items-center gap-2">
+                        <span className={`inline-flex shrink-0 items-center rounded px-1.5 py-0.5 font-mono text-[9px] uppercase ${article.status === "published" ? "bg-[#4A6741] text-white" : "bg-stone-200 text-stone-700"}`}>
+                          {article.status ?? "?"}
+                        </span>
+                        <span className="truncate">{article.title ?? "(no title)"}</span>
+                        {!article.isHarvestTagged && <span className="shrink-0 text-amber-700">(not Harvest-tagged)</span>}
+                      </p>
+                    ))}
+                  </div>
+                )}
+
+                {elProfileUrl && (
+                  <div className="flex flex-wrap gap-2 border-t border-stone-100 pt-3">
+                    <Button variant="outline" size="sm" asChild>
+                      <a href={elProfileUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs">
+                        Open in EL <ExternalLink className="h-3 w-3" />
+                      </a>
+                    </Button>
+                  </div>
+                )}
+              </article>
+            );
+          })
+        )}
+      </div>
+
+      {orphans.length > 0 && (
+        <div className="border-t border-stone-200 p-5">
+          <h3 className="text-base font-black text-stone-900">Orphaned Harvest content</h3>
+          <p className="mt-1 max-w-3xl text-sm text-stone-600">
+            Articles whose title or slug suggests Harvest content but that aren't tagged with <code className="rounded bg-stone-200 px-1 font-mono text-[11px]">primary_project="the-harvest"</code>. One click adds the tag (preserving any existing project value in <code className="rounded bg-stone-200 px-1 font-mono text-[11px]">related_projects</code>).
+          </p>
+          <div className="mt-3 grid gap-3">
+            {orphans.map((o) => (
+              <div key={o.id} className="grid gap-2 border border-amber-200 bg-amber-50 p-3 sm:grid-cols-[1fr_auto] sm:items-center">
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold text-stone-900">{o.title ?? "(no title)"}</p>
+                  <p className="mt-0.5 truncate font-mono text-[10px] text-stone-600">
+                    {o.slug ?? "(no slug)"} · {o.status ?? "?"} · by {o.authorName ?? "unknown"} · primary={o.primaryProject ?? "(none)"} · related={JSON.stringify(o.relatedProjects ?? [])}
+                  </p>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    size="sm"
+                    onClick={() => tagAsHarvest.mutate({ articleId: o.id })}
+                    disabled={tagAsHarvest.isPending}
+                  >
+                    Tag as Harvest
+                  </Button>
+                  {!o.authorStorytellerId && storytellers.map((s) => (
+                    <Button
+                      key={s.id}
+                      size="sm"
+                      variant="outline"
+                      onClick={() => claimForStoryteller.mutate({ articleId: o.id, storytellerId: s.id })}
+                      disabled={claimForStoryteller.isPending}
+                    >
+                      Claim for {s.displayName?.split(" ")[0]}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </section>
   );
 }

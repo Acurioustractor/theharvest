@@ -802,3 +802,248 @@ export async function importHarvestLocalMotionFilesToEmpathyLedger(input: {
     failed: [...failed, ...upload.failed],
   };
 }
+
+// ---------------------------------------------------------------------------
+// Harvest storytellers + their stories / articles / media
+// ---------------------------------------------------------------------------
+
+// Curated list of storytellers with content tied to The Harvest. Add IDs here
+// as new people join. EL has 370 storytellers total — most aren't Harvest-related,
+// so we keep this list explicit rather than auto-discovering.
+const HARVEST_STORYTELLER_IDS: ReadonlyArray<string> = [
+  "c2ba535c-aa50-42c3-af18-ed61d3330716", // Sophie Hickey
+  "99e753e0-07d6-439a-ab2a-f203bb657efa", // Barry Rodgerig
+];
+
+export type HarvestStorytellerSummary = {
+  id: string;
+  profileId: string | null;
+  displayName: string | null;
+  bio: string | null;
+  avatarUrl: string | null;
+  location: string | null;
+  isActive: boolean;
+  stories: Array<{
+    id: string;
+    title: string | null;
+    isPublic: boolean;
+    projectId: string | null;
+    createdAt: string | null;
+    isHarvestProject: boolean;
+  }>;
+  articles: Array<{
+    id: string;
+    title: string | null;
+    slug: string | null;
+    status: string | null;
+    primaryProject: string | null;
+    relatedProjects: string[] | null;
+    publishedAt: string | null;
+    isHarvestTagged: boolean;
+  }>;
+  mediaCount: number;
+};
+
+export async function listHarvestStorytellersWithContent(): Promise<HarvestStorytellerSummary[]> {
+  const { supabase } = await createElAdminContext();
+
+  const { data: storytellers, error: stErr } = await supabase
+    .from("storytellers")
+    .select("id, profile_id, display_name, bio, public_avatar_url, location, is_active")
+    .in("id", [...HARVEST_STORYTELLER_IDS]);
+  if (stErr) throw stErr;
+  if (!storytellers || storytellers.length === 0) return [];
+
+  const ids = storytellers.map((s: { id: string }) => s.id);
+  const profileIds = storytellers.map((s: { profile_id: string | null }) => s.profile_id).filter(Boolean) as string[];
+  const allAuthorIds = [...ids, ...profileIds];
+
+  // Stories: author_id can reference storyteller_id OR profile_id (data is mixed).
+  const { data: storyRows, error: storyErr } = await supabase
+    .from("stories")
+    .select("id, title, is_public, project_id, created_at, author_id")
+    .in("author_id", allAuthorIds);
+  if (storyErr) throw storyErr;
+
+  const { data: articleRows, error: articleErr } = await supabase
+    .from("articles")
+    .select("id, title, slug, status, primary_project, related_projects, published_at, author_storyteller_id")
+    .in("author_storyteller_id", ids);
+  if (articleErr) throw articleErr;
+
+  // Media uploaded by the linked profiles (uploader_id references profile.id)
+  const mediaCounts = new Map<string, number>();
+  if (profileIds.length > 0) {
+    const { data: mediaRows } = await supabase
+      .from("media_assets")
+      .select("uploader_id")
+      .in("uploader_id", profileIds)
+      .eq("project_id", HARVEST_PROJECT_ID);
+    for (const row of (mediaRows ?? []) as Array<{ uploader_id: string | null }>) {
+      if (!row.uploader_id) continue;
+      mediaCounts.set(row.uploader_id, (mediaCounts.get(row.uploader_id) ?? 0) + 1);
+    }
+  }
+
+  return storytellers.map((s: any): HarvestStorytellerSummary => {
+    const profId = s.profile_id as string | null;
+    const stories = (storyRows ?? [])
+      .filter((row: any) => row.author_id === s.id || (profId && row.author_id === profId))
+      .map((row: any) => ({
+        id: row.id,
+        title: row.title,
+        isPublic: !!row.is_public,
+        projectId: row.project_id,
+        createdAt: row.created_at,
+        isHarvestProject: row.project_id === HARVEST_PROJECT_ID,
+      }));
+    const articles = (articleRows ?? [])
+      .filter((row: any) => row.author_storyteller_id === s.id)
+      .map((row: any) => ({
+        id: row.id,
+        title: row.title,
+        slug: row.slug,
+        status: row.status,
+        primaryProject: row.primary_project,
+        relatedProjects: row.related_projects,
+        publishedAt: row.published_at,
+        isHarvestTagged:
+          row.primary_project === "the-harvest" ||
+          (Array.isArray(row.related_projects) && row.related_projects.includes("the-harvest")),
+      }));
+    return {
+      id: s.id,
+      profileId: profId,
+      displayName: s.display_name,
+      bio: s.bio,
+      avatarUrl: s.public_avatar_url,
+      location: s.location,
+      isActive: !!s.is_active,
+      stories,
+      articles,
+      mediaCount: profId ? mediaCounts.get(profId) ?? 0 : 0,
+    };
+  });
+}
+
+// Orphaned candidates: articles whose title/slug suggests Harvest content but
+// that aren't formally tagged (primary_project != "the-harvest" AND not in
+// related_projects). Includes Sophie's published article which was tagged with
+// a work slug ("the-garden") instead of the actual project slug.
+export type HarvestOrphanArticle = {
+  id: string;
+  title: string | null;
+  slug: string | null;
+  status: string | null;
+  authorName: string | null;
+  authorStorytellerId: string | null;
+  primaryProject: string | null;
+  relatedProjects: string[] | null;
+  publishedAt: string | null;
+};
+
+export async function listOrphanedHarvestArticles(): Promise<HarvestOrphanArticle[]> {
+  const { supabase } = await createElAdminContext();
+  // Pull a wider candidate set then filter in memory; PostgREST `or` syntax
+  // doesn't compose cleanly for "matches name OR matches slug AND not tagged".
+  const { data, error } = await supabase
+    .from("articles")
+    .select("id, title, slug, status, author_name, author_storyteller_id, primary_project, related_projects, published_at")
+    .or("slug.ilike.%harvest%,slug.ilike.%sophie%,slug.ilike.%barry%,slug.ilike.%garden%,slug.ilike.%milk-crate%,slug.ilike.%witta%,title.ilike.%harvest%,author_name.ilike.%harvest%");
+  if (error) throw error;
+  return (data ?? [])
+    .filter((row: any) => {
+      const isTagged =
+        row.primary_project === "the-harvest" ||
+        (Array.isArray(row.related_projects) && row.related_projects.includes("the-harvest"));
+      return !isTagged;
+    })
+    .map((row: any) => ({
+      id: row.id,
+      title: row.title,
+      slug: row.slug,
+      status: row.status,
+      authorName: row.author_name,
+      authorStorytellerId: row.author_storyteller_id,
+      primaryProject: row.primary_project,
+      relatedProjects: row.related_projects,
+      publishedAt: row.published_at,
+    }));
+}
+
+// One-shot fix-up: tag an article's primary_project to "the-harvest" so it
+// surfaces in the public Harvest articles feed. If primary_project already
+// has a different value, that value is preserved by being added to
+// related_projects so we don't lose work-slug categorization.
+export async function tagArticleAsHarvest(articleId: string): Promise<{ updated: boolean; before: string | null; preservedInRelated: string | null }> {
+  const { supabase } = await createElAdminContext();
+  const { data: existing, error: readErr } = await supabase
+    .from("articles")
+    .select("id, primary_project, related_projects")
+    .eq("id", articleId)
+    .maybeSingle();
+  if (readErr) throw readErr;
+  if (!existing) throw new Error(`Article ${articleId} not found in Empathy Ledger.`);
+
+  if (existing.primary_project === "the-harvest") {
+    return { updated: false, before: existing.primary_project, preservedInRelated: null };
+  }
+
+  const previousPrimary = existing.primary_project as string | null;
+  const currentRelated = Array.isArray(existing.related_projects) ? existing.related_projects : [];
+  const nextRelated =
+    previousPrimary && !currentRelated.includes(previousPrimary)
+      ? [...currentRelated, previousPrimary]
+      : currentRelated;
+
+  const { error: updateErr } = await supabase
+    .from("articles")
+    .update({
+      primary_project: "the-harvest",
+      related_projects: nextRelated,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", articleId);
+  if (updateErr) throw updateErr;
+
+  return {
+    updated: true,
+    before: previousPrimary,
+    preservedInRelated: previousPrimary && !currentRelated.includes(previousPrimary) ? previousPrimary : null,
+  };
+}
+
+// Claim an orphan article by linking it to a curated Harvest storyteller.
+// Sets author_storyteller_id and switches author_type to "storyteller".
+export async function claimArticleForStoryteller(input: {
+  articleId: string;
+  storytellerId: string;
+}): Promise<{ updated: boolean; before: string | null }> {
+  if (!HARVEST_STORYTELLER_IDS.includes(input.storytellerId)) {
+    throw new Error(`Storyteller ${input.storytellerId} is not in the curated Harvest list.`);
+  }
+  const { supabase } = await createElAdminContext();
+  const { data: existing, error: readErr } = await supabase
+    .from("articles")
+    .select("id, author_storyteller_id")
+    .eq("id", input.articleId)
+    .maybeSingle();
+  if (readErr) throw readErr;
+  if (!existing) throw new Error(`Article ${input.articleId} not found.`);
+
+  if (existing.author_storyteller_id === input.storytellerId) {
+    return { updated: false, before: existing.author_storyteller_id };
+  }
+
+  const { error: updateErr } = await supabase
+    .from("articles")
+    .update({
+      author_storyteller_id: input.storytellerId,
+      author_type: "storyteller",
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", input.articleId);
+  if (updateErr) throw updateErr;
+
+  return { updated: true, before: existing.author_storyteller_id };
+}
