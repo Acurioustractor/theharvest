@@ -807,14 +807,8 @@ export async function importHarvestLocalMotionFilesToEmpathyLedger(input: {
 // Harvest storytellers + their stories / articles / media
 // ---------------------------------------------------------------------------
 
-// Curated list of storytellers with content tied to The Harvest. Add IDs here
-// as new people join. EL has 370 storytellers total — most aren't Harvest-related,
-// so we keep this list explicit rather than auto-discovering.
-const HARVEST_STORYTELLER_IDS: ReadonlyArray<string> = [
-  "c2ba535c-aa50-42c3-af18-ed61d3330716", // Sophie Hickey
-  "99e753e0-07d6-439a-ab2a-f203bb657efa", // Barry Rodgerig
-];
-
+// Source of truth: the project_storytellers join in EL. Whoever is added to
+// the Harvest project in EL admin shows up here automatically.
 export type HarvestStorytellerSummary = {
   id: string;
   profileId: string | null;
@@ -823,6 +817,10 @@ export type HarvestStorytellerSummary = {
   avatarUrl: string | null;
   location: string | null;
   isActive: boolean;
+  // From project_storytellers join
+  projectRole: string | null;
+  projectStatus: string | null;
+  joinedAt: string | null;
   stories: Array<{
     id: string;
     title: string | null;
@@ -841,37 +839,101 @@ export type HarvestStorytellerSummary = {
     publishedAt: string | null;
     isHarvestTagged: boolean;
   }>;
+  transcripts: Array<{
+    id: string;
+    title: string | null;
+    recordingDate: string | null;
+    durationSeconds: number | null;
+    wordCount: number | null;
+    processingStatus: string | null;
+  }>;
   mediaCount: number;
 };
+
+export type HarvestProjectStats = {
+  storytellerCount: number;
+  storyCount: number;
+  transcriptCount: number;
+  // Three different photo views — EL counts them differently in different places.
+  mediaByProjectId: number;
+  mediaByGalleryAssoc: number;
+  mediaByCollectionId: number;
+};
+
+export async function getHarvestProjectStats(): Promise<HarvestProjectStats> {
+  const { supabase } = await createElAdminContext();
+  const [stCount, storyCount, transcriptCount, byProject, byAssoc, byCollection] = await Promise.all([
+    supabase.from("project_storytellers").select("id", { count: "exact", head: true }).eq("project_id", HARVEST_PROJECT_ID),
+    supabase.from("stories").select("id", { count: "exact", head: true }).eq("project_id", HARVEST_PROJECT_ID),
+    supabase.from("transcripts").select("id", { count: "exact", head: true }).eq("project_id", HARVEST_PROJECT_ID),
+    supabase.from("media_assets").select("id", { count: "exact", head: true }).eq("project_id", HARVEST_PROJECT_ID),
+    supabase.from("gallery_media_associations").select("id", { count: "exact", head: true }).eq("gallery_id", HARVEST_GALLERY_ID),
+    supabase.from("media_assets").select("id", { count: "exact", head: true }).eq("collection_id", HARVEST_GALLERY_ID),
+  ]);
+  return {
+    storytellerCount: stCount.count ?? 0,
+    storyCount: storyCount.count ?? 0,
+    transcriptCount: transcriptCount.count ?? 0,
+    mediaByProjectId: byProject.count ?? 0,
+    mediaByGalleryAssoc: byAssoc.count ?? 0,
+    mediaByCollectionId: byCollection.count ?? 0,
+  };
+}
 
 export async function listHarvestStorytellersWithContent(): Promise<HarvestStorytellerSummary[]> {
   const { supabase } = await createElAdminContext();
 
-  const { data: storytellers, error: stErr } = await supabase
-    .from("storytellers")
-    .select("id, profile_id, display_name, bio, public_avatar_url, location, is_active")
-    .in("id", [...HARVEST_STORYTELLER_IDS]);
-  if (stErr) throw stErr;
-  if (!storytellers || storytellers.length === 0) return [];
+  // 1) Pull project_storytellers join (this is what EL admin shows under People).
+  const { data: links, error: linkErr } = await supabase
+    .from("project_storytellers")
+    .select("storyteller_id, role, status, joined_at, storytellers(id, profile_id, display_name, bio, public_avatar_url, location, is_active)")
+    .eq("project_id", HARVEST_PROJECT_ID);
+  if (linkErr) throw linkErr;
+  if (!links || links.length === 0) return [];
 
-  const ids = storytellers.map((s: { id: string }) => s.id);
-  const profileIds = storytellers.map((s: { profile_id: string | null }) => s.profile_id).filter(Boolean) as string[];
+  type LinkRow = {
+    storyteller_id: string;
+    role: string | null;
+    status: string | null;
+    joined_at: string | null;
+    storytellers: {
+      id: string;
+      profile_id: string | null;
+      display_name: string | null;
+      bio: string | null;
+      public_avatar_url: string | null;
+      location: string | null;
+      is_active: boolean | null;
+    } | null;
+  };
+
+  const rows = (links as unknown as LinkRow[]).filter((r) => r.storytellers !== null);
+  const ids = rows.map((r) => r.storytellers!.id);
+  const profileIds = rows.map((r) => r.storytellers!.profile_id).filter(Boolean) as string[];
   const allAuthorIds = [...ids, ...profileIds];
 
-  // Stories: author_id can reference storyteller_id OR profile_id (data is mixed).
-  const { data: storyRows, error: storyErr } = await supabase
+  // 2) Stories — author_id may reference either storyteller_id or profile_id (data is mixed).
+  const { data: storyRows } = await supabase
     .from("stories")
     .select("id, title, is_public, project_id, created_at, author_id")
     .in("author_id", allAuthorIds);
-  if (storyErr) throw storyErr;
 
-  const { data: articleRows, error: articleErr } = await supabase
+  // 3) Articles authored by these storytellers (formal link only).
+  const { data: articleRows } = await supabase
     .from("articles")
     .select("id, title, slug, status, primary_project, related_projects, published_at, author_storyteller_id")
     .in("author_storyteller_id", ids);
-  if (articleErr) throw articleErr;
 
-  // Media uploaded by the linked profiles (uploader_id references profile.id)
+  // 4) Transcripts. EL doesn't store author_id on transcripts the same way,
+  // so we surface them at the project level — if any show metadata that
+  // includes a storyteller name/email, we attach. Else they appear as
+  // "unattributed" via getHarvestProjectStats.
+  const { data: transcriptRows } = await supabase
+    .from("transcripts")
+    .select("id, title, recording_date, duration_seconds, word_count, processing_status, metadata")
+    .eq("project_id", HARVEST_PROJECT_ID);
+
+  // 5) Media uploads by linked profiles, scoped to the Harvest project.
   const mediaCounts = new Map<string, number>();
   if (profileIds.length > 0) {
     const { data: mediaRows } = await supabase
@@ -885,8 +947,9 @@ export async function listHarvestStorytellersWithContent(): Promise<HarvestStory
     }
   }
 
-  return storytellers.map((s: any): HarvestStorytellerSummary => {
-    const profId = s.profile_id as string | null;
+  return rows.map((r): HarvestStorytellerSummary => {
+    const s = r.storytellers!;
+    const profId = s.profile_id;
     const stories = (storyRows ?? [])
       .filter((row: any) => row.author_id === s.id || (profId && row.author_id === profId))
       .map((row: any) => ({
@@ -911,6 +974,25 @@ export async function listHarvestStorytellersWithContent(): Promise<HarvestStory
           row.primary_project === "the-harvest" ||
           (Array.isArray(row.related_projects) && row.related_projects.includes("the-harvest")),
       }));
+    // Best-effort transcript attribution by display_name match in title or metadata.
+    const nameToken = (s.display_name ?? "").toLowerCase().split(/\s+/).filter(Boolean)[0];
+    const transcripts = nameToken
+      ? (transcriptRows ?? [])
+          .filter((row: any) => {
+            const t = (row.title ?? "").toLowerCase();
+            const m = JSON.stringify(row.metadata ?? {}).toLowerCase();
+            return t.includes(nameToken) || m.includes(nameToken);
+          })
+          .map((row: any) => ({
+            id: row.id,
+            title: row.title,
+            recordingDate: row.recording_date,
+            durationSeconds: row.duration_seconds,
+            wordCount: row.word_count,
+            processingStatus: row.processing_status,
+          }))
+      : [];
+
     return {
       id: s.id,
       profileId: profId,
@@ -919,8 +1001,12 @@ export async function listHarvestStorytellersWithContent(): Promise<HarvestStory
       avatarUrl: s.public_avatar_url,
       location: s.location,
       isActive: !!s.is_active,
+      projectRole: r.role,
+      projectStatus: r.status,
+      joinedAt: r.joined_at,
       stories,
       articles,
+      transcripts,
       mediaCount: profId ? mediaCounts.get(profId) ?? 0 : 0,
     };
   });
@@ -1013,16 +1099,23 @@ export async function tagArticleAsHarvest(articleId: string): Promise<{ updated:
   };
 }
 
-// Claim an orphan article by linking it to a curated Harvest storyteller.
+// Claim an orphan article by linking it to a Harvest project storyteller.
 // Sets author_storyteller_id and switches author_type to "storyteller".
+// Validates the storyteller is actually on the Harvest project_storytellers join.
 export async function claimArticleForStoryteller(input: {
   articleId: string;
   storytellerId: string;
 }): Promise<{ updated: boolean; before: string | null }> {
-  if (!HARVEST_STORYTELLER_IDS.includes(input.storytellerId)) {
-    throw new Error(`Storyteller ${input.storytellerId} is not in the curated Harvest list.`);
-  }
   const { supabase } = await createElAdminContext();
+  const { data: link } = await supabase
+    .from("project_storytellers")
+    .select("id")
+    .eq("project_id", HARVEST_PROJECT_ID)
+    .eq("storyteller_id", input.storytellerId)
+    .maybeSingle();
+  if (!link) {
+    throw new Error(`Storyteller ${input.storytellerId} is not on the Harvest project_storytellers join.`);
+  }
   const { data: existing, error: readErr } = await supabase
     .from("articles")
     .select("id, author_storyteller_id")

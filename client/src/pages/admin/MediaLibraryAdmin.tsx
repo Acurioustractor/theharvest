@@ -1166,6 +1166,7 @@ function LocalVideoImportPanel({
 }
 
 function StorytellersPanel() {
+  const statsQuery = trpc.mediaLibrary.harvestProjectStats.useQuery(undefined, { staleTime: 60_000 });
   const storytellersQuery = trpc.mediaLibrary.harvestStorytellers.useQuery(undefined, { staleTime: 60_000 });
   const orphansQuery = trpc.mediaLibrary.orphanedHarvestArticles.useQuery(undefined, { staleTime: 60_000 });
 
@@ -1195,6 +1196,7 @@ function StorytellersPanel() {
     onError: (err) => toast.error(`Claim failed: ${err.message}`),
   });
 
+  const stats = statsQuery.data;
   const storytellers = storytellersQuery.data ?? [];
   const orphans = orphansQuery.data ?? [];
   const isLoading = storytellersQuery.isLoading || orphansQuery.isLoading;
@@ -1202,11 +1204,22 @@ function StorytellersPanel() {
   return (
     <section className="mt-8 border border-stone-300 bg-[#FFFDF7]">
       <div className="border-b border-stone-200 p-5">
-        <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#8B4A2A]">storytellers</p>
-        <h2 className="mt-2 text-3xl font-black leading-tight">The people behind the work.</h2>
+        <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#8B4A2A]">the harvest · empathy ledger</p>
+        <h2 className="mt-2 text-3xl font-black leading-tight">People, stories, transcripts, photos.</h2>
         <p className="mt-3 max-w-3xl text-sm leading-relaxed text-stone-700 md:text-base">
-          Curated Harvest storytellers (Sophie, Barry, …). Their stories, articles and media uploads roll up here so you can see at a glance who has content live and what's still drafting. Add new IDs in <code className="rounded bg-stone-200 px-1 font-mono text-[11px]">HARVEST_STORYTELLER_IDS</code> in <code className="rounded bg-stone-200 px-1 font-mono text-[11px]">server/empathyLedgerAdmin.ts</code>.
+          This mirrors the EL admin's "The Harvest" project view. Storytellers come from the <code className="rounded bg-stone-200 px-1 font-mono text-[11px]">project_storytellers</code> join — anyone added to the project in EL admin shows up here automatically.
+          <a href="https://empathyledger.com/admin/projects/the-harvest" target="_blank" rel="noopener noreferrer" className="ml-1 inline-flex items-center gap-1 text-[#8B4A2A] underline">Open project in EL <ExternalLink className="h-3 w-3" /></a>
         </p>
+        {stats && (
+          <div className="mt-4 grid grid-cols-3 gap-2 text-xs sm:grid-cols-6">
+            <div className="border border-stone-200 bg-white p-2"><p className="font-mono text-[10px] uppercase text-stone-500">people</p><p className="text-lg font-black text-stone-900">{stats.storytellerCount}</p></div>
+            <div className="border border-stone-200 bg-white p-2"><p className="font-mono text-[10px] uppercase text-stone-500">stories</p><p className="text-lg font-black text-stone-900">{stats.storyCount}</p></div>
+            <div className="border border-stone-200 bg-white p-2"><p className="font-mono text-[10px] uppercase text-stone-500">transcripts</p><p className="text-lg font-black text-stone-900">{stats.transcriptCount}</p></div>
+            <div className="border border-stone-200 bg-white p-2" title="media_assets.project_id = HARVEST_PROJECT_ID"><p className="font-mono text-[10px] uppercase text-stone-500">photos · project</p><p className="text-lg font-black text-stone-900">{stats.mediaByProjectId}</p></div>
+            <div className="border border-stone-200 bg-white p-2" title="gallery_media_associations rows"><p className="font-mono text-[10px] uppercase text-stone-500">photos · gallery</p><p className="text-lg font-black text-stone-900">{stats.mediaByGalleryAssoc}</p></div>
+            <div className="border border-stone-200 bg-white p-2" title="legacy media_assets.collection_id"><p className="font-mono text-[10px] uppercase text-stone-500">photos · collection</p><p className="text-lg font-black text-stone-900">{stats.mediaByCollectionId}</p></div>
+          </div>
+        )}
       </div>
 
       <div className="grid gap-4 p-5 sm:grid-cols-2">
@@ -1240,9 +1253,18 @@ function StorytellersPanel() {
                   )}
                   <div className="min-w-0">
                     <h3 className="text-lg font-black leading-tight text-stone-900">{s.displayName ?? "(unnamed)"}</h3>
-                    <p className="mt-0.5 text-xs text-stone-500">
-                      {s.location ?? "no location"}
-                      {!s.isActive && <span className="ml-2 inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-semibold text-amber-900">inactive</span>}
+                    <p className="mt-0.5 flex flex-wrap items-center gap-1.5 text-xs text-stone-500">
+                      <span>{s.location ?? "no location"}</span>
+                      {s.projectRole && (
+                        <span className="inline-flex items-center rounded-full bg-[#4A6741]/15 px-2 py-0.5 text-[10px] font-semibold text-[#4A6741]">
+                          {s.projectRole}
+                        </span>
+                      )}
+                      {!s.isActive && (
+                        <span className="inline-flex items-center rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-semibold text-amber-900">
+                          profile inactive
+                        </span>
+                      )}
                     </p>
                   </div>
                 </header>
@@ -1255,10 +1277,11 @@ function StorytellersPanel() {
                   <TagChip label={`${s.stories.length} stories`} tone={s.stories.length > 0 ? "work" : "neutral"} />
                   <TagChip label={`${harvestStories} Harvest-tagged`} tone={harvestStories > 0 ? "work" : "warn"} />
                   <TagChip label={`${publishedArticles} published`} tone={publishedArticles > 0 ? "work" : "neutral"} />
+                  <TagChip label={`${s.transcripts.length} transcripts`} tone={s.transcripts.length > 0 ? "work" : "neutral"} />
                   <TagChip label={`${s.mediaCount} uploads`} />
                 </div>
 
-                {(s.stories.length > 0 || s.articles.length > 0) && (
+                {(s.stories.length > 0 || s.articles.length > 0 || s.transcripts.length > 0) && (
                   <div className="grid gap-1 border-t border-stone-100 pt-3 text-xs text-stone-700">
                     {s.stories.map((story) => (
                       <p key={story.id} className="flex items-center gap-2">
@@ -1275,6 +1298,15 @@ function StorytellersPanel() {
                         </span>
                         <span className="truncate">{article.title ?? "(no title)"}</span>
                         {!article.isHarvestTagged && <span className="shrink-0 text-amber-700">(not Harvest-tagged)</span>}
+                      </p>
+                    ))}
+                    {s.transcripts.map((tr) => (
+                      <p key={tr.id} className="flex items-center gap-2">
+                        <span className="inline-flex shrink-0 items-center rounded bg-[#8B4A2A]/15 px-1.5 py-0.5 font-mono text-[9px] uppercase text-[#8B4A2A]">
+                          tr
+                        </span>
+                        <span className="truncate">{tr.title ?? "(untitled transcript)"}</span>
+                        {tr.wordCount && <span className="shrink-0 text-stone-500">· {tr.wordCount.toLocaleString()} words</span>}
                       </p>
                     ))}
                   </div>
