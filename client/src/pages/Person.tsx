@@ -112,6 +112,28 @@ export default function Person({ slug }: { slug: string }) {
         </section>
       )}
 
+      {s.localPhotos.length > 0 && (
+        <section className="py-12 bg-stone-100">
+          <div className="container mx-auto max-w-5xl">
+            <h2 className="mb-6 inline-flex items-center gap-2 text-2xl font-serif font-bold text-stone-800">
+              <ImageIcon className="h-5 w-5 text-amber-700" /> Moments with {s.displayName.split(" ")[0]}
+            </h2>
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
+              {s.localPhotos.map((p) => (
+                <figure key={p.src} className="overflow-hidden rounded-lg bg-stone-200 aspect-square">
+                  <img
+                    src={p.src}
+                    alt={p.alt}
+                    loading="lazy"
+                    className="h-full w-full object-cover transition hover:scale-105"
+                  />
+                </figure>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       {s.articles.length > 0 && (
         <section className="py-12 bg-stone-50">
           <div className="container mx-auto max-w-3xl">
@@ -210,7 +232,7 @@ export default function Person({ slug }: { slug: string }) {
         </section>
       )}
 
-      {s.articles.length === 0 && s.stories.length === 0 && s.transcripts.length === 0 && (
+      {s.articles.length === 0 && s.stories.length === 0 && s.transcripts.length === 0 && s.localPhotos.length === 0 && (
         <section className="py-12 bg-stone-50">
           <div className="container mx-auto max-w-3xl text-center text-stone-600">
             <ImageIcon className="mx-auto h-8 w-8 text-stone-400" />

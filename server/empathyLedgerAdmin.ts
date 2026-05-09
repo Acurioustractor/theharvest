@@ -1591,11 +1591,42 @@ export type PublicStorytellerTranscript = {
   wordCount: number | null;
 };
 
+export type PublicStorytellerPhoto = {
+  src: string;
+  alt: string;
+};
+
 export type PublicHarvestStorytellerDetail = PublicHarvestStoryteller & {
   articles: PublicStorytellerArticle[];
   stories: PublicStorytellerStory[];
   transcripts: PublicStorytellerTranscript[];
+  localPhotos: PublicStorytellerPhoto[];
 };
+
+const PHOTO_EXTS = new Set([".jpg", ".jpeg", ".png", ".webp", ".gif"]);
+
+// Scan client/public/images/compendium/{firstName}/ for local images that
+// have been hand-curated for this storyteller. This is a filesystem-based
+// fallback because EL media_assets don't yet carry storyteller attribution.
+async function listLocalCompendiumPhotos(firstName: string): Promise<PublicStorytellerPhoto[]> {
+  if (firstName.length < 2) return [];
+  const safeName = firstName.replace(/[^a-z0-9-]/g, "");
+  if (!safeName) return [];
+
+  const dir = join(process.cwd(), "client/public/images/compendium", safeName);
+  try {
+    const entries = await readdir(dir);
+    return entries
+      .filter((name) => PHOTO_EXTS.has(extname(name).toLowerCase()))
+      .sort()
+      .map((name) => ({
+        src: `/images/compendium/${safeName}/${name}`,
+        alt: `${firstName.charAt(0).toUpperCase()}${firstName.slice(1)} at The Harvest`,
+      }));
+  } catch {
+    return [];
+  }
+}
 
 export async function getPublicHarvestStorytellerBySlug(
   slug: string,
@@ -1688,5 +1719,7 @@ export async function getPublicHarvestStorytellerBySlug(
       }));
   }
 
-  return { ...match, articles, stories, transcripts };
+  const localPhotos = await listLocalCompendiumPhotos(firstName);
+
+  return { ...match, articles, stories, transcripts, localPhotos };
 }
