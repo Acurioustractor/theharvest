@@ -1,7 +1,8 @@
 import { motion } from "framer-motion";
 import { Link } from "wouter";
 import { trpc } from "@/lib/trpc";
-import { ArrowLeft, ArrowRight, MapPin, Newspaper, BookOpen, Image as ImageIcon, Mic } from "lucide-react";
+import { ArrowLeft, ArrowRight, MapPin, Newspaper, BookOpen, Image as ImageIcon, Mic, Hammer } from "lucide-react";
+import { works } from "@/data/works";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 20 },
@@ -48,6 +49,16 @@ export default function Person({ slug }: { slug: string }) {
   }
 
   const s = data;
+  const firstName = s.displayName.toLowerCase().split(/\s+/)[0] ?? "";
+  const fullLower = s.displayName.toLowerCase();
+  const connectedWorks = works.filter((w) =>
+    w.hands.some((h) => {
+      const hn = h.name.toLowerCase();
+      if (hn === fullLower) return true;
+      if (firstName.length >= 3 && hn.split(/\s+/).includes(firstName)) return true;
+      return false;
+    }),
+  );
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-stone-50 to-white">
@@ -232,7 +243,43 @@ export default function Person({ slug }: { slug: string }) {
         </section>
       )}
 
-      {s.articles.length === 0 && s.stories.length === 0 && s.transcripts.length === 0 && s.localPhotos.length === 0 && (
+      {connectedWorks.length > 0 && (
+        <section className="py-12 bg-white">
+          <div className="container mx-auto max-w-3xl">
+            <h2 className="mb-6 inline-flex items-center gap-2 text-2xl font-serif font-bold text-stone-800">
+              <Hammer className="h-5 w-5 text-amber-700" /> Works {firstName.charAt(0).toUpperCase() + firstName.slice(1)} has hands in
+            </h2>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {connectedWorks.map((w) => {
+                const role = w.hands.find((h) => {
+                  const hn = h.name.toLowerCase();
+                  return hn === fullLower || (firstName.length >= 3 && hn.split(/\s+/).includes(firstName));
+                })?.role;
+                return (
+                  <Link key={w.slug} href={`/works/${w.slug}`}>
+                    <a className="group block rounded-lg border border-stone-200 bg-stone-50 p-5 transition hover:border-amber-300 hover:shadow-md">
+                      <h3 className="font-serif font-bold text-stone-800 group-hover:text-amber-700">{w.title}</h3>
+                      {w.subtitle && (
+                        <p className="mt-1 text-sm text-stone-500">{w.subtitle}</p>
+                      )}
+                      {role && (
+                        <p className="mt-3 text-xs text-stone-600">
+                          <span className="font-semibold text-stone-700">{firstName.charAt(0).toUpperCase() + firstName.slice(1)}'s role:</span> {role}
+                        </p>
+                      )}
+                      <p className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-amber-700">
+                        See the work <ArrowRight className="h-3 w-3" />
+                      </p>
+                    </a>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {s.articles.length === 0 && s.stories.length === 0 && s.transcripts.length === 0 && s.localPhotos.length === 0 && connectedWorks.length === 0 && (
         <section className="py-12 bg-stone-50">
           <div className="container mx-auto max-w-3xl text-center text-stone-600">
             <ImageIcon className="mx-auto h-8 w-8 text-stone-400" />
