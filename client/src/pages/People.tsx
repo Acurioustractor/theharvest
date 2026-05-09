@@ -14,6 +14,14 @@ export default function People() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-stone-50 to-white">
+      <nav className="absolute top-0 left-0 right-0 z-10 px-6 py-4">
+        <Link href="/">
+          <a className="inline-flex items-center gap-2 text-sm font-mono uppercase tracking-wider text-stone-700 hover:text-amber-700">
+            ← The Harvest
+          </a>
+        </Link>
+      </nav>
+
       <section className="pt-32 pb-12 bg-gradient-to-b from-amber-50 to-stone-50">
         <div className="container">
           <motion.div

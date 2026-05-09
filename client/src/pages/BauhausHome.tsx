@@ -155,6 +155,22 @@ export default function BauhausHome() {
                 PHOTO WALL
               </span>
             </Link>
+            <Link href="/people">
+              <span style={{
+                fontFamily: fonts.display,
+                fontWeight: 700,
+                fontSize: 12,
+                letterSpacing: "0.1em",
+                color: colors.milk,
+                backgroundColor: "rgba(255,255,255,0.15)",
+                border: `1px solid rgba(255,255,255,0.3)`,
+                padding: "12px 24px",
+                display: "inline-block",
+                cursor: "pointer",
+              }}>
+                MEET THE PEOPLE
+              </span>
+            </Link>
           </div>
         </div>
         {/* Scroll indicator */}
@@ -427,6 +443,27 @@ export default function BauhausHome() {
             >
               LEARN MORE AT REGIONAL ARTS AUSTRALIA
             </a>
+          </FadeIn>
+          <FadeIn delay={0.3}>
+            <div style={{ marginTop: 32 }}>
+              <Link
+                href="/works"
+                style={{
+                  display: "inline-block",
+                  fontFamily: fonts.display,
+                  fontWeight: 700,
+                  fontSize: 13,
+                  letterSpacing: "0.2em",
+                  color: colors.shed,
+                  textDecoration: "underline",
+                  textDecorationColor: colors.goldenHour,
+                  textDecorationThickness: 2,
+                  textUnderlineOffset: 6,
+                }}
+              >
+                SEE THE COLLECTION →
+              </Link>
+            </div>
           </FadeIn>
         </div>
       </section>
