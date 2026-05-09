@@ -1445,3 +1445,195 @@ export async function deleteHarvestStory(storyId: string): Promise<{ deleted: bo
   if (error) throw error;
   return { deleted: true };
 }
+
+// ---------------------------------------------------------------------------
+// Public-safe surface — for the Harvest website's /people pages. Returns
+// curated fields only (no PII, no internal IDs beyond what the public site
+// already shows). Calls these from publicProcedure tRPC routes.
+// ---------------------------------------------------------------------------
+
+export type PublicHarvestStoryteller = {
+  id: string;
+  slug: string;
+  displayName: string;
+  bio: string | null;
+  avatarUrl: string | null;
+  location: string | null;
+  projectRole: string | null;
+  articleCount: number;
+  publishedArticleCount: number;
+  publishedStoryCount: number;
+};
+
+function slugifyDisplayName(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 80);
+}
+
+export async function listPublicHarvestStorytellers(): Promise<PublicHarvestStoryteller[]> {
+  const { supabase } = await createElAdminContext();
+
+  const { data: links, error: linkErr } = await supabase
+    .from("project_storytellers")
+    .select("role, status, storytellers(id, display_name, bio, public_avatar_url, location, is_active)")
+    .eq("project_id", HARVEST_PROJECT_ID)
+    .eq("status", "active");
+  if (linkErr) throw linkErr;
+  if (!links) return [];
+
+  type LinkRow = {
+    role: string | null;
+    status: string | null;
+    storytellers: {
+      id: string;
+      display_name: string | null;
+      bio: string | null;
+      public_avatar_url: string | null;
+      location: string | null;
+      is_active: boolean | null;
+    } | null;
+  };
+
+  const rows = (links as unknown as LinkRow[]).filter((r) => r.storytellers && r.storytellers.display_name);
+  const ids = rows.map((r) => r.storytellers!.id);
+
+  // Article + story counts per storyteller.
+  const articleCounts = new Map<string, { total: number; published: number }>();
+  const storyCounts = new Map<string, number>();
+  if (ids.length > 0) {
+    const { data: articles } = await supabase
+      .from("articles")
+      .select("author_storyteller_id, status")
+      .in("author_storyteller_id", ids);
+    for (const a of (articles ?? []) as Array<{ author_storyteller_id: string; status: string | null }>) {
+      const cur = articleCounts.get(a.author_storyteller_id) ?? { total: 0, published: 0 };
+      cur.total += 1;
+      if (a.status === "published") cur.published += 1;
+      articleCounts.set(a.author_storyteller_id, cur);
+    }
+
+    const { data: stories } = await supabase
+      .from("stories")
+      .select("author_id, is_public")
+      .eq("project_id", HARVEST_PROJECT_ID)
+      .in("author_id", ids);
+    for (const s of (stories ?? []) as Array<{ author_id: string; is_public: boolean | null }>) {
+      if (s.is_public) storyCounts.set(s.author_id, (storyCounts.get(s.author_id) ?? 0) + 1);
+    }
+  }
+
+  return rows.map((r): PublicHarvestStoryteller => {
+    const s = r.storytellers!;
+    const counts = articleCounts.get(s.id) ?? { total: 0, published: 0 };
+    return {
+      id: s.id,
+      slug: slugifyDisplayName(s.display_name!),
+      displayName: s.display_name!,
+      bio: s.bio,
+      avatarUrl: s.public_avatar_url,
+      location: s.location,
+      projectRole: r.role,
+      articleCount: counts.total,
+      publishedArticleCount: counts.published,
+      publishedStoryCount: storyCounts.get(s.id) ?? 0,
+    };
+  });
+}
+
+export type PublicStorytellerArticle = {
+  id: string;
+  title: string;
+  slug: string | null;
+  excerpt: string | null;
+  publishedAt: string | null;
+  themes: string[];
+  featuredImageId: string | null;
+  primaryProject: string | null;
+};
+
+export type PublicStorytellerStory = {
+  id: string;
+  title: string;
+  summary: string | null;
+  themes: string[] | null;
+  isPublic: boolean;
+  createdAt: string | null;
+};
+
+export type PublicHarvestStorytellerDetail = PublicHarvestStoryteller & {
+  articles: PublicStorytellerArticle[];
+  stories: PublicStorytellerStory[];
+};
+
+export async function getPublicHarvestStorytellerBySlug(
+  slug: string,
+): Promise<PublicHarvestStorytellerDetail | null> {
+  const all = await listPublicHarvestStorytellers();
+  const match = all.find((s) => s.slug === slug);
+  if (!match) return null;
+
+  const { supabase } = await createElAdminContext();
+
+  const { data: claimed } = await supabase
+    .from("articles")
+    .select("id, title, slug, excerpt, published_at, themes, featured_image_id, primary_project, status, author_storyteller_id")
+    .eq("author_storyteller_id", match.id)
+    .order("published_at", { ascending: false, nullsFirst: false });
+
+  // Slug-based fallback: surface published articles whose slug contains the
+  // storyteller's first-name token AND look Harvest-flavoured (slug or title
+  // mentions harvest / garden / milk-crate / witta / one of the work slugs),
+  // EXCLUDING any already claimed (avoid double-listing).
+  const firstName = match.displayName.toLowerCase().split(/\s+/).filter(Boolean)[0] ?? "";
+  let fallback: any[] = [];
+  if (firstName.length >= 3) {
+    const claimedIds = new Set((claimed ?? []).map((a: any) => a.id));
+    const { data: candidates } = await supabase
+      .from("articles")
+      .select("id, title, slug, excerpt, published_at, themes, featured_image_id, primary_project, status, author_storyteller_id")
+      .eq("status", "published")
+      .is("author_storyteller_id", null)
+      .or(`slug.ilike.%${firstName}%,title.ilike.%${firstName}%`);
+    const harvestSignals = ["harvest", "garden", "milk-crate", "witta", "the-cedar", "the-sauna", "the-shop"];
+    fallback = (candidates ?? []).filter((a: any) => {
+      if (claimedIds.has(a.id)) return false;
+      const hay = `${a.slug ?? ""} ${a.title ?? ""} ${a.primary_project ?? ""}`.toLowerCase();
+      return harvestSignals.some((s) => hay.includes(s));
+    });
+  }
+
+  const articles: PublicStorytellerArticle[] = [...(claimed ?? []), ...fallback]
+    .filter((a: any) => a.status === "published")
+    .map((a: any) => ({
+      id: a.id,
+      title: a.title ?? "(untitled)",
+      slug: a.slug,
+      excerpt: a.excerpt,
+      publishedAt: a.published_at,
+      themes: Array.isArray(a.themes) ? a.themes : [],
+      featuredImageId: a.featured_image_id,
+      primaryProject: a.primary_project,
+    }));
+
+  const { data: storyRows } = await supabase
+    .from("stories")
+    .select("id, title, summary, themes, is_public, created_at")
+    .eq("project_id", HARVEST_PROJECT_ID)
+    .eq("author_id", match.id)
+    .eq("is_public", true)
+    .order("created_at", { ascending: false });
+
+  const stories: PublicStorytellerStory[] = (storyRows ?? []).map((s: any) => ({
+    id: s.id,
+    title: s.title ?? "(untitled)",
+    summary: s.summary,
+    themes: s.themes,
+    isPublic: !!s.is_public,
+    createdAt: s.created_at,
+  }));
+
+  return { ...match, articles, stories };
+}
