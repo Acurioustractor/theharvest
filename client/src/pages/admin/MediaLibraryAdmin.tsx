@@ -1179,6 +1179,10 @@ function StorytellersPanel() {
   const [creatingStoryFor, setCreatingStoryFor] = useState<string | null>(null);
   const [storyTitle, setStoryTitle] = useState("");
   const [storyContent, setStoryContent] = useState("");
+  const [editingStoryId, setEditingStoryId] = useState<string | null>(null);
+  const [editTitle, setEditTitle] = useState("");
+  const [editContent, setEditContent] = useState("");
+  const [editIsPublic, setEditIsPublic] = useState(false);
 
   useEffect(() => {
     const handle = setTimeout(() => setDebouncedQuery(searchQuery.trim()), 300);
@@ -1222,6 +1226,37 @@ function StorytellersPanel() {
       refetchAll();
     },
     onError: (e) => toast.error(`Story create failed: ${e.message}`),
+  });
+
+  const editingStoryQuery = trpc.mediaLibrary.getHarvestStory.useQuery(
+    { storyId: editingStoryId ?? "" },
+    { enabled: !!editingStoryId, staleTime: 0 },
+  );
+  // Seed edit fields once the fetch lands.
+  useEffect(() => {
+    if (editingStoryQuery.data && editingStoryQuery.data.id === editingStoryId) {
+      setEditTitle(editingStoryQuery.data.title ?? "");
+      setEditContent(editingStoryQuery.data.content ?? "");
+      setEditIsPublic(editingStoryQuery.data.isPublic);
+    }
+  }, [editingStoryQuery.data, editingStoryId]);
+
+  const updateStory = trpc.mediaLibrary.updateHarvestStory.useMutation({
+    onSuccess: (r) => {
+      toast.success(r.published ? "Story saved & public." : "Story saved as draft.");
+      setEditingStoryId(null);
+      refetchAll();
+    },
+    onError: (e) => toast.error(`Story save failed: ${e.message}`),
+  });
+
+  const deleteStory = trpc.mediaLibrary.deleteHarvestStory.useMutation({
+    onSuccess: () => {
+      toast.success("Story deleted.");
+      setEditingStoryId(null);
+      refetchAll();
+    },
+    onError: (e) => toast.error(`Delete failed: ${e.message}`),
   });
 
   const tagAsHarvest = trpc.mediaLibrary.tagArticleAsHarvest.useMutation({
@@ -1414,14 +1449,90 @@ function StorytellersPanel() {
 
                 {(s.stories.length > 0 || s.articles.length > 0 || s.transcripts.length > 0) && (
                   <div className="grid gap-1 border-t border-stone-100 pt-3 text-xs text-stone-700">
-                    {s.stories.map((story) => (
-                      <p key={story.id} className="flex items-center gap-2">
-                        <span className={`inline-flex shrink-0 items-center rounded px-1.5 py-0.5 font-mono text-[9px] uppercase ${story.isPublic ? "bg-[#4A6741] text-white" : "bg-stone-200 text-stone-700"}`}>
-                          {story.isPublic ? "pub" : "draft"}
-                        </span>
-                        <span className="truncate">{story.title ?? "(no title)"}</span>
-                      </p>
-                    ))}
+                    {s.stories.map((story) => {
+                      const isEditing = editingStoryId === story.id;
+                      if (isEditing) {
+                        const isLoading = editingStoryQuery.isLoading || editingStoryQuery.data?.id !== story.id;
+                        return (
+                          <div key={story.id} className="grid gap-2 border border-[#C4922A] bg-[#C4922A]/8 p-3">
+                            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#8B4A2A]">edit story · id {story.id.slice(0, 8)}…</p>
+                            {isLoading ? (
+                              <p className="text-xs text-stone-600">Loading content…</p>
+                            ) : (
+                              <>
+                                <Input
+                                  value={editTitle}
+                                  onChange={(e) => setEditTitle(e.target.value)}
+                                  placeholder="Story title"
+                                  maxLength={255}
+                                />
+                                <textarea
+                                  value={editContent}
+                                  onChange={(e) => setEditContent(e.target.value)}
+                                  rows={10}
+                                  maxLength={50000}
+                                  className="w-full resize-y border border-stone-300 bg-white p-2 text-sm leading-relaxed text-stone-800"
+                                />
+                                <label className="flex items-center gap-2 text-xs text-stone-700">
+                                  <input
+                                    type="checkbox"
+                                    checked={editIsPublic}
+                                    onChange={(e) => setEditIsPublic(e.target.checked)}
+                                  />
+                                  <span>Public (is_public + privacy_level=public)</span>
+                                </label>
+                                <div className="flex flex-wrap items-center gap-2">
+                                  <Button
+                                    size="sm"
+                                    onClick={() => updateStory.mutate({
+                                      storyId: story.id,
+                                      title: editTitle,
+                                      content: editContent,
+                                      isPublic: editIsPublic,
+                                    })}
+                                    disabled={updateStory.isPending || !editTitle.trim() || !editContent.trim()}
+                                  >
+                                    {updateStory.isPending ? "Saving…" : "Save"}
+                                  </Button>
+                                  <Button size="sm" variant="outline" onClick={() => setEditingStoryId(null)}>
+                                    Cancel
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() => {
+                                      if (window.confirm(`Delete story "${editTitle}"? This cannot be undone.`)) {
+                                        deleteStory.mutate({ storyId: story.id });
+                                      }
+                                    }}
+                                    disabled={deleteStory.isPending}
+                                    className="border-red-300 text-red-700 hover:bg-red-50"
+                                  >
+                                    {deleteStory.isPending ? "Deleting…" : "Delete"}
+                                  </Button>
+                                  <span className="text-[10px] text-stone-500">{editContent.length} / 50000</span>
+                                </div>
+                              </>
+                            )}
+                          </div>
+                        );
+                      }
+                      return (
+                        <div key={story.id} className="flex items-center gap-2">
+                          <span className={`inline-flex shrink-0 items-center rounded px-1.5 py-0.5 font-mono text-[9px] uppercase ${story.isPublic ? "bg-[#4A6741] text-white" : "bg-stone-200 text-stone-700"}`}>
+                            {story.isPublic ? "pub" : "draft"}
+                          </span>
+                          <span className="min-w-0 flex-1 truncate">{story.title ?? "(no title)"}</span>
+                          <button
+                            type="button"
+                            onClick={() => setEditingStoryId(story.id)}
+                            className="shrink-0 px-1.5 py-0.5 font-mono text-[9px] uppercase text-stone-500 hover:bg-stone-100 hover:text-stone-900"
+                          >
+                            edit
+                          </button>
+                        </div>
+                      );
+                    })}
                     {s.articles.map((article) => (
                       <p key={article.id} className="flex items-center gap-2">
                         <span className={`inline-flex shrink-0 items-center rounded px-1.5 py-0.5 font-mono text-[9px] uppercase ${article.status === "published" ? "bg-[#4A6741] text-white" : "bg-stone-200 text-stone-700"}`}>

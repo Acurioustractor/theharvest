@@ -1327,3 +1327,121 @@ export async function createHarvestStory(input: {
   if (!created?.id) throw new Error("Story insert returned no id.");
   return { id: created.id };
 }
+
+// Fetch full story content on-demand for the inline editor. The storyteller
+// summary intentionally omits content (could be 50k chars per story).
+export type HarvestStoryDetail = {
+  id: string;
+  title: string | null;
+  content: string | null;
+  summary: string | null;
+  themes: string[] | null;
+  isPublic: boolean;
+  privacyLevel: string | null;
+  authorId: string | null;
+  createdAt: string | null;
+  updatedAt: string | null;
+};
+
+export async function getHarvestStory(storyId: string): Promise<HarvestStoryDetail> {
+  const { supabase } = await createElAdminContext();
+  const { data, error } = await supabase
+    .from("stories")
+    .select("id, title, content, summary, themes, is_public, privacy_level, author_id, project_id, created_at, updated_at")
+    .eq("id", storyId)
+    .maybeSingle();
+  if (error) throw error;
+  if (!data) throw new Error(`Story ${storyId} not found.`);
+  if (data.project_id !== HARVEST_PROJECT_ID) {
+    throw new Error("This story is not on the Harvest project.");
+  }
+  return {
+    id: data.id,
+    title: data.title,
+    content: data.content,
+    summary: data.summary,
+    themes: data.themes,
+    isPublic: !!data.is_public,
+    privacyLevel: data.privacy_level,
+    authorId: data.author_id,
+    createdAt: data.created_at,
+    updatedAt: data.updated_at,
+  };
+}
+
+// Update an existing story. Restricted to stories on the Harvest project so
+// admins can't edit unrelated stories. Pass undefined to leave a field alone;
+// pass an empty string to clear it.
+export async function updateHarvestStory(input: {
+  storyId: string;
+  title?: string;
+  content?: string;
+  summary?: string;
+  themes?: string[];
+  isPublic?: boolean;
+}): Promise<{ updated: boolean; published: boolean }> {
+  const { supabase } = await createElAdminContext();
+
+  // Confirm the story belongs to the Harvest project.
+  const { data: existing, error: readErr } = await supabase
+    .from("stories")
+    .select("id, project_id, is_public")
+    .eq("id", input.storyId)
+    .maybeSingle();
+  if (readErr) throw readErr;
+  if (!existing) throw new Error(`Story ${input.storyId} not found.`);
+  if (existing.project_id !== HARVEST_PROJECT_ID) {
+    throw new Error("Edit is only allowed for stories on the Harvest project.");
+  }
+
+  const patch: Record<string, unknown> = { updated_at: new Date().toISOString() };
+  if (input.title !== undefined) {
+    if (input.title.trim().length === 0) throw new Error("Title cannot be empty.");
+    patch.title = input.title.trim();
+  }
+  if (input.content !== undefined) {
+    if (input.content.trim().length === 0) throw new Error("Content cannot be empty.");
+    patch.content = input.content.trim();
+  }
+  if (input.summary !== undefined) patch.summary = input.summary.trim() || null;
+  if (input.themes !== undefined) patch.themes = input.themes;
+  if (input.isPublic !== undefined) {
+    patch.is_public = input.isPublic;
+    patch.privacy_level = input.isPublic ? "public" : "private";
+  }
+
+  if (Object.keys(patch).length === 1) {
+    // Only updated_at — nothing real to write.
+    return { updated: false, published: !!existing.is_public };
+  }
+
+  const { error: updateErr } = await supabase
+    .from("stories")
+    .update(patch)
+    .eq("id", input.storyId);
+  if (updateErr) throw updateErr;
+
+  return {
+    updated: true,
+    published: input.isPublic !== undefined ? input.isPublic : !!existing.is_public,
+  };
+}
+
+// Delete a story. Restricted to Harvest project. Hard-delete because EL
+// stories table doesn't have a soft-delete column we can use here.
+export async function deleteHarvestStory(storyId: string): Promise<{ deleted: boolean }> {
+  const { supabase } = await createElAdminContext();
+  const { data: existing, error: readErr } = await supabase
+    .from("stories")
+    .select("id, project_id")
+    .eq("id", storyId)
+    .maybeSingle();
+  if (readErr) throw readErr;
+  if (!existing) throw new Error(`Story ${storyId} not found.`);
+  if (existing.project_id !== HARVEST_PROJECT_ID) {
+    throw new Error("Delete is only allowed for stories on the Harvest project.");
+  }
+  const { error } = await supabase.from("stories").delete().eq("id", storyId);
+  if (error) throw error;
+  return { deleted: true };
+}
