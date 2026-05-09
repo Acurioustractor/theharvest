@@ -1,4 +1,4 @@
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, and } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import {
@@ -24,6 +24,12 @@ import {
   eventFeedback,
   InsertEventFeedback,
   EventFeedback,
+  wittaContributions,
+  InsertWittaContribution,
+  WittaContribution,
+  imageOverrides,
+  InsertImageOverride,
+  ImageOverride,
 } from "../drizzle/schema.js";
 // Blog posts are now fetched from Empathy Ledger Content Hub API
 // See server/empathyLedgerClient.ts for the integration
@@ -730,6 +736,175 @@ export async function getAllEventFeedback(): Promise<EventFeedback[]> {
     return await db.select().from(eventFeedback).orderBy(desc(eventFeedback.createdAt));
   } catch (error) {
     console.error("[Database] Failed to get all event feedback:", error);
+    return [];
+  }
+}
+
+// Witta community contributions
+export async function createWittaContribution(
+  input: InsertWittaContribution,
+): Promise<WittaContribution | undefined> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot create witta contribution: database not available");
+    return undefined;
+  }
+
+  try {
+    const result = await db.insert(wittaContributions).values(input).returning();
+    return result[0];
+  } catch (error) {
+    console.error("[Database] Failed to create witta contribution:", error);
+    throw error;
+  }
+}
+
+export async function getApprovedWittaContributions(): Promise<WittaContribution[]> {
+  const db = await getDb();
+  if (!db) return [];
+
+  try {
+    return await db
+      .select()
+      .from(wittaContributions)
+      .where(eq(wittaContributions.status, "approved"))
+      .orderBy(desc(wittaContributions.approvedAt));
+  } catch (error) {
+    console.error("[Database] Failed to get approved witta contributions:", error);
+    return [];
+  }
+}
+
+export async function getPendingWittaContributions(): Promise<WittaContribution[]> {
+  const db = await getDb();
+  if (!db) return [];
+
+  try {
+    return await db
+      .select()
+      .from(wittaContributions)
+      .where(eq(wittaContributions.status, "pending"))
+      .orderBy(desc(wittaContributions.createdAt));
+  } catch (error) {
+    console.error("[Database] Failed to get pending witta contributions:", error);
+    return [];
+  }
+}
+
+export async function updateWittaContributionStatus(
+  id: number,
+  status: "approved" | "rejected",
+  approvedBy: number,
+  adminNotes?: string,
+): Promise<WittaContribution | undefined> {
+  const db = await getDb();
+  if (!db) return undefined;
+
+  try {
+    const updates: Partial<InsertWittaContribution> = {
+      status,
+      adminNotes: adminNotes ?? null,
+    };
+    if (status === "approved") {
+      updates.approvedAt = new Date();
+      updates.approvedBy = approvedBy;
+    }
+
+    const result = await db
+      .update(wittaContributions)
+      .set(updates)
+      .where(eq(wittaContributions.id, id))
+      .returning();
+    return result[0];
+  } catch (error) {
+    console.error("[Database] Failed to update witta contribution status:", error);
+    throw error;
+  }
+}
+
+// Image overrides — admin-set EL photo for a (page, slot)
+export async function getImageOverride(
+  page: string,
+  slot: string,
+): Promise<ImageOverride | undefined> {
+  const db = await getDb();
+  if (!db) return undefined;
+  try {
+    const rows = await db
+      .select()
+      .from(imageOverrides)
+      .where(and(eq(imageOverrides.page, page), eq(imageOverrides.slot, slot)))
+      .limit(1);
+    return rows[0];
+  } catch (error) {
+    console.error("[Database] Failed to get image override:", error);
+    return undefined;
+  }
+}
+
+export async function setImageOverride(
+  input: InsertImageOverride,
+): Promise<ImageOverride | undefined> {
+  const db = await getDb();
+  if (!db) return undefined;
+  try {
+    const existing = await db
+      .select()
+      .from(imageOverrides)
+      .where(and(eq(imageOverrides.page, input.page), eq(imageOverrides.slot, input.slot)))
+      .limit(1);
+
+    if (existing.length > 0) {
+      const updated = await db
+        .update(imageOverrides)
+        .set({
+          mediaAssetId: input.mediaAssetId,
+          src: input.src,
+          altText: input.altText ?? null,
+          title: input.title ?? null,
+          setBy: input.setBy ?? null,
+          updatedAt: new Date(),
+        })
+        .where(eq(imageOverrides.id, existing[0].id))
+        .returning();
+      return updated[0];
+    }
+
+    const created = await db.insert(imageOverrides).values(input).returning();
+    return created[0];
+  } catch (error) {
+    console.error("[Database] Failed to set image override:", error);
+    throw error;
+  }
+}
+
+export async function clearImageOverride(
+  page: string,
+  slot: string,
+): Promise<boolean> {
+  const db = await getDb();
+  if (!db) return false;
+  try {
+    await db
+      .delete(imageOverrides)
+      .where(and(eq(imageOverrides.page, page), eq(imageOverrides.slot, slot)));
+    return true;
+  } catch (error) {
+    console.error("[Database] Failed to clear image override:", error);
+    return false;
+  }
+}
+
+export async function listImageOverrides(): Promise<ImageOverride[]> {
+  const db = await getDb();
+  if (!db) return [];
+  try {
+    return await db
+      .select()
+      .from(imageOverrides)
+      .orderBy(desc(imageOverrides.updatedAt));
+  } catch (error) {
+    console.error("[Database] Failed to list image overrides:", error);
     return [];
   }
 }
