@@ -1463,6 +1463,7 @@ export type PublicHarvestStoryteller = {
   articleCount: number;
   publishedArticleCount: number;
   publishedStoryCount: number;
+  transcriptCount: number;
 };
 
 function slugifyDisplayName(name: string): string {
@@ -1525,6 +1526,24 @@ export async function listPublicHarvestStorytellers(): Promise<PublicHarvestStor
     }
   }
 
+  // Transcript counts via best-effort name match (transcripts have no formal author link).
+  const { data: trRows } = await supabase
+    .from("transcripts")
+    .select("title, metadata")
+    .eq("project_id", HARVEST_PROJECT_ID);
+  const transcriptCounts = new Map<string, number>();
+  for (const r of rows) {
+    const first = r.storytellers!.display_name!.toLowerCase().split(/\s+/).filter(Boolean)[0] ?? "";
+    if (first.length < 3) continue;
+    let count = 0;
+    for (const tr of (trRows ?? []) as Array<{ title: string | null; metadata: any }>) {
+      const t = (tr.title ?? "").toLowerCase();
+      const m = JSON.stringify(tr.metadata ?? {}).toLowerCase();
+      if (t.includes(first) || m.includes(first)) count += 1;
+    }
+    transcriptCounts.set(r.storytellers!.id, count);
+  }
+
   return rows.map((r): PublicHarvestStoryteller => {
     const s = r.storytellers!;
     const counts = articleCounts.get(s.id) ?? { total: 0, published: 0 };
@@ -1539,6 +1558,7 @@ export async function listPublicHarvestStorytellers(): Promise<PublicHarvestStor
       articleCount: counts.total,
       publishedArticleCount: counts.published,
       publishedStoryCount: storyCounts.get(s.id) ?? 0,
+      transcriptCount: transcriptCounts.get(s.id) ?? 0,
     };
   });
 }
@@ -1563,9 +1583,18 @@ export type PublicStorytellerStory = {
   createdAt: string | null;
 };
 
+export type PublicStorytellerTranscript = {
+  id: string;
+  title: string;
+  recordingDate: string | null;
+  durationSeconds: number | null;
+  wordCount: number | null;
+};
+
 export type PublicHarvestStorytellerDetail = PublicHarvestStoryteller & {
   articles: PublicStorytellerArticle[];
   stories: PublicStorytellerStory[];
+  transcripts: PublicStorytellerTranscript[];
 };
 
 export async function getPublicHarvestStorytellerBySlug(
@@ -1635,5 +1664,29 @@ export async function getPublicHarvestStorytellerBySlug(
     createdAt: s.created_at,
   }));
 
-  return { ...match, articles, stories };
+  // Best-effort transcript attribution — match title or metadata to first-name token.
+  // Only metadata fields surfaced; raw transcript_content stays admin-only since
+  // it's a recording of someone's voice and may not have public-publish consent.
+  let transcripts: PublicStorytellerTranscript[] = [];
+  if (firstName.length >= 3) {
+    const { data: trRows } = await supabase
+      .from("transcripts")
+      .select("id, title, recording_date, duration_seconds, word_count, processing_status, metadata")
+      .eq("project_id", HARVEST_PROJECT_ID);
+    transcripts = (trRows ?? [])
+      .filter((row: any) => {
+        const t = (row.title ?? "").toLowerCase();
+        const m = JSON.stringify(row.metadata ?? {}).toLowerCase();
+        return t.includes(firstName) || m.includes(firstName);
+      })
+      .map((row: any) => ({
+        id: row.id,
+        title: row.title ?? "(untitled transcript)",
+        recordingDate: row.recording_date,
+        durationSeconds: row.duration_seconds,
+        wordCount: row.word_count,
+      }));
+  }
+
+  return { ...match, articles, stories, transcripts };
 }

@@ -105,7 +105,10 @@ export default function People() {
                           {s.publishedStoryCount > 0 && (
                             <span>· {s.publishedStoryCount} {s.publishedStoryCount === 1 ? "story" : "stories"}</span>
                           )}
-                          {s.publishedArticleCount === 0 && s.publishedStoryCount === 0 && (
+                          {s.transcriptCount > 0 && (
+                            <span>· {s.transcriptCount} {s.transcriptCount === 1 ? "recording" : "recordings"}</span>
+                          )}
+                          {s.publishedArticleCount === 0 && s.publishedStoryCount === 0 && s.transcriptCount === 0 && (
                             <span className="text-stone-400">Profile only — content coming</span>
                           )}
                         </div>

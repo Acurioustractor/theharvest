@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Link } from "wouter";
 import { trpc } from "@/lib/trpc";
-import { ArrowLeft, ArrowRight, MapPin, Newspaper, BookOpen, Image as ImageIcon } from "lucide-react";
+import { ArrowLeft, ArrowRight, MapPin, Newspaper, BookOpen, Image as ImageIcon, Mic } from "lucide-react";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 20 },
@@ -182,7 +182,35 @@ export default function Person({ slug }: { slug: string }) {
         </section>
       )}
 
-      {s.articles.length === 0 && s.stories.length === 0 && (
+      {s.transcripts.length > 0 && (
+        <section className="py-12 bg-stone-50">
+          <div className="container mx-auto max-w-3xl">
+            <h2 className="mb-2 inline-flex items-center gap-2 text-2xl font-serif font-bold text-stone-800">
+              <Mic className="h-5 w-5 text-amber-700" /> Conversations & recordings
+            </h2>
+            <p className="mb-6 text-sm text-stone-600">
+              Transcripts of recorded sessions. Full text is held in the Harvest archive — reach out if you'd like access.
+            </p>
+            <div className="grid gap-3">
+              {s.transcripts.map((t) => {
+                const mins = t.durationSeconds ? Math.round(t.durationSeconds / 60) : null;
+                return (
+                  <article key={t.id} className="rounded-lg border border-stone-200 bg-white p-4">
+                    <h3 className="font-serif font-bold text-stone-800">{t.title}</h3>
+                    <p className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-stone-500">
+                      {t.recordingDate && <span>Recorded {formatDate(t.recordingDate)}</span>}
+                      {t.wordCount && <span>{t.wordCount.toLocaleString()} words</span>}
+                      {mins && <span>{mins} min</span>}
+                    </p>
+                  </article>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {s.articles.length === 0 && s.stories.length === 0 && s.transcripts.length === 0 && (
         <section className="py-12 bg-stone-50">
           <div className="container mx-auto max-w-3xl text-center text-stone-600">
             <ImageIcon className="mx-auto h-8 w-8 text-stone-400" />
