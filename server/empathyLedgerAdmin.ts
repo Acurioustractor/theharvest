@@ -1720,6 +1720,135 @@ export async function getPublicHarvestStorytellerBySlug(
   }
 
   const localPhotos = await listLocalCompendiumPhotos(firstName);
+  const elPhotos = await listElPhotosForStoryteller(match.id);
+  // Dedupe: prefer local (curated) over EL when filenames overlap.
+  const localFiles = new Set(localPhotos.map((p) => p.src.split("/").pop() ?? ""));
+  const mergedPhotos = [
+    ...localPhotos,
+    ...elPhotos.filter((p) => {
+      const file = p.src.split("/").pop() ?? "";
+      return !localFiles.has(file);
+    }),
+  ];
 
-  return { ...match, articles, stories, transcripts, localPhotos };
+  return { ...match, articles, stories, transcripts, localPhotos: mergedPhotos };
+}
+
+// ---------------------------------------------------------------------------
+// Photo attribution — link EL Harvest media to specific storytellers via
+// metadata.harvestStorytellers: [storytellerId, ...]. Public profile pages
+// read this to surface "Moments with X" beyond the local /images/compendium
+// hand-curated folders.
+// ---------------------------------------------------------------------------
+
+export type HarvestPhotoForAttribution = {
+  id: string;
+  cdnUrl: string | null;
+  thumbnailUrl: string | null;
+  originalFilename: string | null;
+  createdAt: string | null;
+  taggedStorytellerIds: string[];
+};
+
+// List recent Harvest media plus which storytellers each is currently tagged
+// with. Used by the admin photo-attribution picker.
+export async function listHarvestMediaForAttribution(limit = 200): Promise<HarvestPhotoForAttribution[]> {
+  const { supabase } = await createElAdminContext();
+  const { data, error } = await supabase
+    .from("media_assets")
+    .select("id, cdn_url, thumbnail_url, original_filename, created_at, metadata, media_type")
+    .eq("project_id", HARVEST_PROJECT_ID)
+    .eq("media_type", "image")
+    .order("created_at", { ascending: false })
+    .limit(limit);
+  if (error) throw error;
+  return (data ?? []).map((row: any) => {
+    const tagged = Array.isArray(row.metadata?.harvestStorytellers)
+      ? row.metadata.harvestStorytellers.filter((v: any) => typeof v === "string")
+      : [];
+    return {
+      id: row.id,
+      cdnUrl: row.cdn_url,
+      thumbnailUrl: row.thumbnail_url,
+      originalFilename: row.original_filename,
+      createdAt: row.created_at,
+      taggedStorytellerIds: tagged,
+    };
+  });
+}
+
+// Apply storyteller tags to a batch of media. Mode "merge" appends, "replace"
+// rewrites the harvestStorytellers array. Restricted to media on the Harvest
+// project + storytellers on the Harvest project_storytellers join.
+export async function tagMediaWithStorytellers(input: {
+  mediaIds: string[];
+  storytellerIds: string[];
+  mode: "merge" | "replace";
+}): Promise<{ updated: number }> {
+  if (input.mediaIds.length === 0) return { updated: 0 };
+  const { supabase } = await createElAdminContext();
+
+  // Validate every storyteller is on the Harvest project.
+  if (input.storytellerIds.length > 0) {
+    const { data: links } = await supabase
+      .from("project_storytellers")
+      .select("storyteller_id")
+      .eq("project_id", HARVEST_PROJECT_ID)
+      .in("storyteller_id", input.storytellerIds);
+    const allowed = new Set((links ?? []).map((l: any) => l.storyteller_id));
+    const rejected = input.storytellerIds.filter((id) => !allowed.has(id));
+    if (rejected.length > 0) {
+      throw new Error(`Storyteller(s) not on Harvest project: ${rejected.join(", ")}`);
+    }
+  }
+
+  // Validate every media asset belongs to the Harvest project.
+  const { data: rows, error: rowsErr } = await supabase
+    .from("media_assets")
+    .select("id, project_id, metadata")
+    .in("id", input.mediaIds);
+  if (rowsErr) throw rowsErr;
+  const mismatched = (rows ?? []).filter((r: any) => r.project_id !== HARVEST_PROJECT_ID);
+  if (mismatched.length > 0) {
+    throw new Error(`${mismatched.length} media asset(s) not on Harvest project — refusing to tag.`);
+  }
+
+  let updated = 0;
+  for (const row of rows ?? []) {
+    const existing: string[] = Array.isArray((row as any).metadata?.harvestStorytellers)
+      ? (row as any).metadata.harvestStorytellers.filter((v: any) => typeof v === "string")
+      : [];
+    const next = input.mode === "replace"
+      ? Array.from(new Set(input.storytellerIds))
+      : Array.from(new Set([...existing, ...input.storytellerIds]));
+    if (existing.length === next.length && existing.every((id) => next.includes(id))) continue;
+    const newMetadata = { ...((row as any).metadata ?? {}), harvestStorytellers: next };
+    const { error } = await supabase
+      .from("media_assets")
+      .update({ metadata: newMetadata, updated_at: new Date().toISOString() })
+      .eq("id", (row as any).id);
+    if (error) throw error;
+    updated += 1;
+  }
+  return { updated };
+}
+
+// Public read: list EL media tagged with this storyteller. Used by the
+// public profile to merge with local /images/compendium photos.
+export async function listElPhotosForStoryteller(storytellerId: string): Promise<PublicStorytellerPhoto[]> {
+  const { supabase } = await createElAdminContext();
+  // PostgREST jsonb contains operator: metadata @> '{"harvestStorytellers": ["..."]}'
+  const { data, error } = await supabase
+    .from("media_assets")
+    .select("id, cdn_url, thumbnail_url, original_filename")
+    .eq("project_id", HARVEST_PROJECT_ID)
+    .eq("media_type", "image")
+    .filter("metadata->harvestStorytellers", "cs", `["${storytellerId}"]`)
+    .order("created_at", { ascending: false })
+    .limit(60);
+  if (error) throw error;
+  return (data ?? []).map((row: any) => ({
+    src: row.thumbnail_url || row.cdn_url || "",
+    alt: row.original_filename ? `Harvest photo ${row.original_filename}` : "Harvest photo",
+  })).filter((p: PublicStorytellerPhoto) => p.src);
 }

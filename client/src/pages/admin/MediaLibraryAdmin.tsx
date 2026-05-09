@@ -1183,6 +1183,7 @@ function StorytellersPanel() {
   const [editTitle, setEditTitle] = useState("");
   const [editContent, setEditContent] = useState("");
   const [editIsPublic, setEditIsPublic] = useState(false);
+  const [taggingPhotosFor, setTaggingPhotosFor] = useState<string | null>(null);
 
   useEffect(() => {
     const handle = setTimeout(() => setDebouncedQuery(searchQuery.trim()), 300);
@@ -1257,6 +1258,17 @@ function StorytellersPanel() {
       refetchAll();
     },
     onError: (e) => toast.error(`Delete failed: ${e.message}`),
+  });
+
+  const photosForAttribution = trpc.mediaLibrary.harvestMediaForAttribution.useQuery(
+    { limit: 200 },
+    { enabled: !!taggingPhotosFor, staleTime: 30_000 },
+  );
+  const tagMediaMutation = trpc.mediaLibrary.tagMediaWithStorytellers.useMutation({
+    onSuccess: () => {
+      photosForAttribution.refetch();
+    },
+    onError: (e) => toast.error(`Tag failed: ${e.message}`),
   });
 
   const tagAsHarvest = trpc.mediaLibrary.tagArticleAsHarvest.useMutation({
@@ -1579,7 +1591,66 @@ function StorytellersPanel() {
                       + Story
                     </Button>
                   )}
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => setTaggingPhotosFor(taggingPhotosFor === s.id ? null : s.id)}
+                  >
+                    {taggingPhotosFor === s.id ? "Close photos" : "+ Tag photos"}
+                  </Button>
                 </div>
+
+                {taggingPhotosFor === s.id && (
+                  <div className="grid gap-3 border-t border-[#C4922A] bg-[#C4922A]/8 p-3">
+                    <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#8B4A2A]">
+                      tag photos · click to attach/detach {s.displayName?.split(" ")[0]}
+                    </p>
+                    {photosForAttribution.isLoading ? (
+                      <p className="text-xs text-stone-600">Loading recent Harvest photos…</p>
+                    ) : (
+                      <div className="grid grid-cols-3 gap-1.5 sm:grid-cols-4 lg:grid-cols-5 max-h-96 overflow-y-auto">
+                        {(photosForAttribution.data ?? []).map((photo) => {
+                          const isTagged = photo.taggedStorytellerIds.includes(s.id);
+                          return (
+                            <button
+                              key={photo.id}
+                              type="button"
+                              disabled={tagMediaMutation.isPending}
+                              onClick={() => tagMediaMutation.mutate({
+                                mediaIds: [photo.id],
+                                storytellerIds: isTagged
+                                  ? photo.taggedStorytellerIds.filter((id: string) => id !== s.id)
+                                  : [...photo.taggedStorytellerIds, s.id],
+                                mode: "replace",
+                              })}
+                              className={`relative aspect-square overflow-hidden border-2 transition ${
+                                isTagged ? "border-[#4A6741] ring-2 ring-[#4A6741]/30" : "border-stone-200 hover:border-[#C4922A]"
+                              }`}
+                              title={photo.originalFilename ?? photo.id}
+                            >
+                              {(photo.thumbnailUrl || photo.cdnUrl) ? (
+                                <img
+                                  src={photo.thumbnailUrl ?? photo.cdnUrl ?? ""}
+                                  alt={photo.originalFilename ?? "Harvest photo"}
+                                  loading="lazy"
+                                  className="h-full w-full object-cover"
+                                />
+                              ) : (
+                                <div className="flex h-full w-full items-center justify-center bg-stone-100 text-[10px] text-stone-500">no preview</div>
+                              )}
+                              {isTagged && (
+                                <span className="absolute right-1 top-1 inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#4A6741] text-[10px] font-bold text-white">✓</span>
+                              )}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+                    <p className="text-[10px] text-stone-500">
+                      Showing the {photosForAttribution.data?.length ?? 0} most recent Harvest photos. Tagged photos surface on /people/{s.displayName?.toLowerCase().replace(/\s+/g, "-")} under "Moments".
+                    </p>
+                  </div>
+                )}
 
                 {creatingStoryFor === s.id && (
                   <div className="grid gap-2 border-t border-[#C4922A] bg-[#C4922A]/8 p-3">
