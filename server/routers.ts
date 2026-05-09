@@ -1,6 +1,6 @@
 import { systemRouter } from "./_core/systemRouter.js";
 import { publicProcedure, protectedProcedure, router } from "./_core/trpc.js";
-import { createEvent, getApprovedEvents, getPendingEvents, updateEventStatus, createBusiness, getApprovedBusinesses, getPendingBusinesses, updateBusinessStatus, getBusinessByUserId, getBusinessById, claimBusiness, updateBusinessProfile, getUnclaimedApprovedBusinesses, getProgressImages, createProgressImage, updateProgressImage, deleteProgressImage, promoteUserToAdmin, getAllUsers, getContent, getContentForPage, upsertContent, getAnnotationsForPoint, createAnnotation, deleteAnnotation, createPulseResponse, getPulseResults, createEventFeedbackEntry, getEventFeedbackByEventId, getAllEventFeedback } from "./db.js";
+import { createEvent, getApprovedEvents, getPendingEvents, updateEventStatus, createBusiness, getApprovedBusinesses, getPendingBusinesses, updateBusinessStatus, getBusinessByUserId, getBusinessById, claimBusiness, updateBusinessProfile, getUnclaimedApprovedBusinesses, getProgressImages, createProgressImage, updateProgressImage, deleteProgressImage, promoteUserToAdmin, getAllUsers, getContent, getContentForPage, upsertContent, getAnnotationsForPoint, createAnnotation, deleteAnnotation, createPulseResponse, getPulseResults, createEventFeedbackEntry, getEventFeedbackByEventId, getAllEventFeedback, createWittaContribution, getApprovedWittaContributions, getPendingWittaContributions, updateWittaContributionStatus, getImageOverride, setImageOverride, clearImageOverride, listImageOverrides } from "./db.js";
 import { storagePut } from "./storage.js";
 import { getDb } from "./db.js";
 import { pulseResponses } from "../drizzle/schema.js";
@@ -8,6 +8,29 @@ import { eq } from "drizzle-orm";
 import { upsertGHLContact, addGHLContactNote, addGHLContactTag, getGHLContact, triggerGHLWorkflow, getGHLContactCountByTag, getGHLSocialAccounts, createGHLSocialPost, getGHLSocialPosts, searchGHLContactsByTag, batchTriggerWorkflow, createGHLEmailTemplate } from "./gohighlevel.js";
 import { getGalleryPhotos, addGalleryPhoto, removeGalleryPhoto } from "./photoWallGallery.js";
 import { empathyLedgerClient } from "./empathyLedgerClient.js";
+import {
+  addStorytellerToHarvest,
+  claimArticleForStoryteller,
+  createHarvestStory,
+  deleteHarvestStory,
+  getHarvestProjectStats,
+  getHarvestStory,
+  getPublicHarvestStoryById,
+  getPublicHarvestStorytellerBySlug,
+  importHarvestLocalMotionFilesToEmpathyLedger,
+  listHarvestLocalMotionFilesWithElStatus,
+  listHarvestMediaForAttribution,
+  listHarvestStorytellersWithContent,
+  listOrphanedHarvestArticles,
+  listPublicHarvestStorytellers,
+  searchStorytellers,
+  tagArticleAsHarvest,
+  tagHarvestMediaInEmpathyLedger,
+  tagMediaWithStorytellers,
+  updateHarvestStory,
+  updateStorytellerBio,
+  uploadHarvestMediaToEmpathyLedger,
+} from "./empathyLedgerAdmin.js";
 import {
   loadTimeline,
   loadZones,
@@ -35,6 +58,17 @@ const CURRENT_GATHERING_SWITCHBOARD_TAGS = [
   "Event type: Public launch (50–150)",
   "Access: Open registration (Public)",
 ];
+
+const harvestMediaRecipeInput = z.object({
+  work: z.string().min(1).max(100),
+  themes: z.array(z.string().min(1).max(50)).min(1).max(4),
+  categories: z.array(z.string().min(1).max(80)).min(1).max(4),
+  title: z.string().min(1).max(120),
+  extraTags: z.array(z.object({
+    slug: z.string().min(1).max(80),
+    category: z.string().min(1).max(80),
+  })).max(12).optional(),
+});
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -744,6 +778,7 @@ export const appRouter = router({
       .input(z.object({
         theme: z.string().optional(),
         type: z.string().optional(),
+        project: z.string().optional(), // EL primaryProject — e.g. work slug
         page: z.number().optional(),
         limit: z.number().min(1).max(50).optional(),
       }).optional())
@@ -751,6 +786,7 @@ export const appRouter = router({
         const response = await empathyLedgerClient.fetchArticles({
           theme: input?.theme,
           type: input?.type,
+          project: input?.project,
           page: input?.page,
           limit: input?.limit || 20,
         });
@@ -792,6 +828,26 @@ export const appRouter = router({
           limit: input.limit || 10,
         });
         return results;
+      }),
+  }),
+
+  // Public-facing Harvest content surface (storytellers + their work).
+  // No auth — these power /people pages on the public site.
+  harvest: router({
+    publicStorytellers: publicProcedure.query(async () => {
+      return listPublicHarvestStorytellers();
+    }),
+
+    publicStorytellerBySlug: publicProcedure
+      .input(z.object({ slug: z.string().min(1).max(100) }))
+      .query(async ({ input }) => {
+        return getPublicHarvestStorytellerBySlug(input.slug);
+      }),
+
+    publicStoryById: publicProcedure
+      .input(z.object({ storyId: z.string().uuid() }))
+      .query(async ({ input }) => {
+        return getPublicHarvestStoryById(input.storyId);
       }),
   }),
 
@@ -903,6 +959,8 @@ export const appRouter = router({
         category: z.enum(["all", "before", "during", "after", "milestone", "general"]).optional(),
         tag: z.string().optional(), // Page tag: "home", "journey", "stories", etc.
         theme: z.string().optional(), // Theme: "eat", "grow", "make", "gather"
+        project: z.string().optional(), // Project slug (legacy / project_id filter)
+        work: z.string().optional(), // Harvest work slug — filters by harvest-work tag
         limit: z.number().min(1).max(100).optional(),
         page: z.number().min(1).optional(),
       }).optional())
@@ -911,10 +969,27 @@ export const appRouter = router({
           category: input?.category === "all" ? undefined : input?.category,
           tag: input?.tag,
           theme: input?.theme,
+          project: input?.project,
+          work: input?.work,
           limit: input?.limit || 50,
           page: input?.page,
         });
         return response;
+      }),
+
+    // Public: Get media for a specific Work (one of the 5 collection pieces)
+    // Filters by harvest-work tag (mill-crate-pavilion / the-cedar / etc.)
+    // Tag photos with `harvest-work: <slug>` in EL admin to make them appear here.
+    forWork: publicProcedure
+      .input(z.object({
+        slug: z.string().min(1).max(100), // e.g. "milk-crate-pavilion"
+        limit: z.number().min(1).max(100).optional(),
+      }))
+      .query(async ({ input }) => {
+        return await empathyLedgerClient.fetchHarvestGallery({
+          work: input.slug,
+          limit: input.limit ?? 24,
+        });
       }),
 
     // Public: Get media for a specific page
@@ -1111,13 +1186,332 @@ export const appRouter = router({
     }),
   }),
 
+  // Witta history community contributions
+  witta: router({
+    // Public: submit a memory/correction tied to a year/era
+    submit: publicProcedure
+      .input(z.object({
+        authorName: z.string().min(1).max(255),
+        authorEmail: z.string().email().optional().or(z.literal("")),
+        yearOrEra: z.string().min(1).max(100),
+        memory: z.string().min(10).max(4000),
+        photoUrl: z.string().max(1000).optional().or(z.literal("")),
+      }))
+      .mutation(async ({ input }) => {
+        const contribution = await createWittaContribution({
+          authorName: input.authorName,
+          authorEmail: input.authorEmail || null,
+          yearOrEra: input.yearOrEra,
+          memory: input.memory,
+          photoUrl: input.photoUrl || null,
+          status: "pending",
+        });
+        return { success: true, id: contribution?.id };
+      }),
+
+    // Public: list approved community memories
+    approved: publicProcedure.query(async () => {
+      return await getApprovedWittaContributions();
+    }),
+
+    // Admin: list pending memories awaiting moderation
+    pending: protectedProcedure.query(async ({ ctx }) => {
+      if (ctx.user.role !== "admin") {
+        throw new Error("Unauthorized");
+      }
+      return await getPendingWittaContributions();
+    }),
+
+    // Admin: approve or reject a memory
+    moderate: protectedProcedure
+      .input(z.object({
+        id: z.number(),
+        status: z.enum(["approved", "rejected"]),
+        adminNotes: z.string().max(1000).optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== "admin") {
+          throw new Error("Unauthorized");
+        }
+        const updated = await updateWittaContributionStatus(
+          input.id,
+          input.status,
+          ctx.user.id,
+          input.adminNotes,
+        );
+        return { success: true, id: updated?.id };
+      }),
+  }),
+
+  mediaLibrary: router({
+    localVideos: protectedProcedure.query(async ({ ctx }) => {
+      if (ctx.user.role !== "admin") {
+        throw new Error("Unauthorized");
+      }
+      return listHarvestLocalMotionFilesWithElStatus();
+    }),
+
+    applyTags: protectedProcedure
+      .input(z.object({
+        recipe: harvestMediaRecipeInput,
+        mediaIds: z.array(z.string().min(1).max(80)).min(1).max(100),
+        mode: z.enum(["merge", "replace"]).optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== "admin") {
+          throw new Error("Unauthorized");
+        }
+        return tagHarvestMediaInEmpathyLedger({
+          mediaIds: input.mediaIds,
+          recipe: input.recipe,
+          mode: input.mode,
+        });
+      }),
+
+    uploadToEL: protectedProcedure
+      .input(z.object({
+        recipe: harvestMediaRecipeInput,
+        files: z.array(z.object({
+          fileName: z.string().min(1).max(255),
+          contentType: z.string().min(1).max(120),
+          base64Data: z.string().min(1),
+        })).min(1).max(12),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== "admin") {
+          throw new Error("Unauthorized");
+        }
+        return uploadHarvestMediaToEmpathyLedger({
+          files: input.files,
+          recipe: input.recipe,
+          uploadedBy: ctx.user.id,
+        });
+      }),
+
+    importLocalVideos: protectedProcedure
+      .input(z.object({
+        recipe: harvestMediaRecipeInput,
+        paths: z.array(z.string().min(1).max(500)).min(1).max(30),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== "admin") {
+          throw new Error("Unauthorized");
+        }
+        return importHarvestLocalMotionFilesToEmpathyLedger({
+          paths: input.paths,
+          recipe: input.recipe,
+          uploadedBy: ctx.user.id,
+        });
+      }),
+
+    // Project-level rollup matching EL admin's Harvest project view.
+    harvestProjectStats: protectedProcedure
+      .query(async ({ ctx }) => {
+        if (ctx.user.role !== "admin") throw new Error("Unauthorized");
+        return getHarvestProjectStats();
+      }),
+
+    // Storytellers on the Harvest project_storytellers join (Chris, Barry,
+    // Sophie, plus anyone added via EL admin) with their stories, articles,
+    // transcripts, and media counts rolled up.
+    harvestStorytellers: protectedProcedure
+      .query(async ({ ctx }) => {
+        if (ctx.user.role !== "admin") throw new Error("Unauthorized");
+        return listHarvestStorytellersWithContent();
+      }),
+
+    // Articles whose title/slug suggests Harvest content but that aren't
+    // formally project-tagged. Click "Tag as Harvest" to rescue them.
+    orphanedHarvestArticles: protectedProcedure
+      .query(async ({ ctx }) => {
+        if (ctx.user.role !== "admin") throw new Error("Unauthorized");
+        return listOrphanedHarvestArticles();
+      }),
+
+    tagArticleAsHarvest: protectedProcedure
+      .input(z.object({ articleId: z.string().uuid() }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== "admin") throw new Error("Unauthorized");
+        return tagArticleAsHarvest(input.articleId);
+      }),
+
+    claimArticleForStoryteller: protectedProcedure
+      .input(z.object({
+        articleId: z.string().uuid(),
+        storytellerId: z.string().uuid(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== "admin") throw new Error("Unauthorized");
+        return claimArticleForStoryteller(input);
+      }),
+
+    // Phase 2: write into EL from the Harvest admin
+
+    searchStorytellers: protectedProcedure
+      .input(z.object({ query: z.string().min(0).max(120) }))
+      .query(async ({ ctx, input }) => {
+        if (ctx.user.role !== "admin") throw new Error("Unauthorized");
+        return searchStorytellers(input.query);
+      }),
+
+    addStorytellerToHarvest: protectedProcedure
+      .input(z.object({
+        storytellerId: z.string().uuid(),
+        role: z.enum(["participant", "contributor", "owner", "subject"]),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== "admin") throw new Error("Unauthorized");
+        return addStorytellerToHarvest(input);
+      }),
+
+    updateStorytellerBio: protectedProcedure
+      .input(z.object({
+        storytellerId: z.string().uuid(),
+        bio: z.string().min(0).max(5000),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== "admin") throw new Error("Unauthorized");
+        return updateStorytellerBio(input);
+      }),
+
+    createHarvestStory: protectedProcedure
+      .input(z.object({
+        title: z.string().min(1).max(255),
+        content: z.string().min(1).max(50000),
+        summary: z.string().max(1000).optional(),
+        themes: z.array(z.string().max(80)).max(10).optional(),
+        authorStorytellerId: z.string().uuid(),
+        isPublic: z.boolean().optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== "admin") throw new Error("Unauthorized");
+        return createHarvestStory(input);
+      }),
+
+    getHarvestStory: protectedProcedure
+      .input(z.object({ storyId: z.string().uuid() }))
+      .query(async ({ ctx, input }) => {
+        if (ctx.user.role !== "admin") throw new Error("Unauthorized");
+        return getHarvestStory(input.storyId);
+      }),
+
+    updateHarvestStory: protectedProcedure
+      .input(z.object({
+        storyId: z.string().uuid(),
+        title: z.string().min(1).max(255).optional(),
+        content: z.string().min(1).max(50000).optional(),
+        summary: z.string().max(1000).optional(),
+        themes: z.array(z.string().max(80)).max(10).optional(),
+        isPublic: z.boolean().optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== "admin") throw new Error("Unauthorized");
+        return updateHarvestStory(input);
+      }),
+
+    deleteHarvestStory: protectedProcedure
+      .input(z.object({ storyId: z.string().uuid() }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== "admin") throw new Error("Unauthorized");
+        return deleteHarvestStory(input.storyId);
+      }),
+
+    // Photo attribution: list recent Harvest media + which storytellers each
+    // is currently tagged with. Powers the per-storyteller photo picker.
+    harvestMediaForAttribution: protectedProcedure
+      .input(z.object({
+        limit: z.number().min(1).max(500).optional(),
+        work: z.string().min(1).max(100).nullable().optional(),
+      }).optional())
+      .query(async ({ ctx, input }) => {
+        if (ctx.user.role !== "admin") throw new Error("Unauthorized");
+        return listHarvestMediaForAttribution({
+          limit: input?.limit ?? 200,
+          work: input?.work ?? null,
+        });
+      }),
+
+    tagMediaWithStorytellers: protectedProcedure
+      .input(z.object({
+        mediaIds: z.array(z.string().uuid()).min(1).max(200),
+        storytellerIds: z.array(z.string().uuid()).max(20),
+        mode: z.enum(["merge", "replace"]),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== "admin") throw new Error("Unauthorized");
+        return tagMediaWithStorytellers(input);
+      }),
+  }),
+
+  // Image overrides — admins can pick an EL photo for any (page, slot)
+  imageOverrides: router({
+    // Public: read the current override for a (page, slot)
+    get: publicProcedure
+      .input(z.object({
+        page: z.string().min(1).max(100),
+        slot: z.string().min(1).max(200),
+      }))
+      .query(async ({ input }) => {
+        const row = await getImageOverride(input.page, input.slot);
+        return row ?? null;
+      }),
+
+    // Admin: set / replace the override
+    set: protectedProcedure
+      .input(z.object({
+        page: z.string().min(1).max(100),
+        slot: z.string().min(1).max(200),
+        mediaAssetId: z.string().min(1).max(64),
+        src: z.string().min(1).max(1000),
+        altText: z.string().max(500).optional(),
+        title: z.string().max(255).optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== "admin") {
+          throw new Error("Unauthorized");
+        }
+        const row = await setImageOverride({
+          page: input.page,
+          slot: input.slot,
+          mediaAssetId: input.mediaAssetId,
+          src: input.src,
+          altText: input.altText ?? null,
+          title: input.title ?? null,
+          setBy: ctx.user.id,
+        });
+        return { success: true, id: row?.id };
+      }),
+
+    // Admin: clear an override (reverts to bundled / EL-tag fallback)
+    clear: protectedProcedure
+      .input(z.object({
+        page: z.string().min(1).max(100),
+        slot: z.string().min(1).max(200),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== "admin") {
+          throw new Error("Unauthorized");
+        }
+        const ok = await clearImageOverride(input.page, input.slot);
+        return { success: ok };
+      }),
+
+    // Admin: list all overrides (for an audit panel)
+    list: protectedProcedure.query(async ({ ctx }) => {
+      if (ctx.user.role !== "admin") {
+        throw new Error("Unauthorized");
+      }
+      return await listImageOverrides();
+    }),
+  }),
+
   // Editable content for inline CMS
   content: router({
     // Public: Get content for a specific slot
     get: publicProcedure
       .input(z.object({
         page: z.string().min(1).max(100),
-        slot: z.string().min(1).max(100),
+        slot: z.string().min(1).max(200),
       }))
       .query(async ({ input }) => {
         const content = await getContent(input.page, input.slot);
@@ -1137,7 +1531,7 @@ export const appRouter = router({
     update: protectedProcedure
       .input(z.object({
         page: z.string().min(1).max(100),
-        slot: z.string().min(1).max(100),
+        slot: z.string().min(1).max(200),
         content: z.string(),
         contentType: z.enum(["text", "markdown", "html"]).optional(),
       }))
