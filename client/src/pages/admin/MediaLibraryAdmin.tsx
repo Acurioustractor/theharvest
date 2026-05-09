@@ -1215,6 +1215,16 @@ function StorytellersPanel() {
   const [editIsPublic, setEditIsPublic] = useState(false);
   const [taggingPhotosFor, setTaggingPhotosFor] = useState<string | null>(null);
   const [photoPickerWork, setPhotoPickerWork] = useState<string | null>(null);
+  const [creatingArticleFor, setCreatingArticleFor] = useState<string | null>(null);
+  const [articleTitle, setArticleTitle] = useState("");
+  const [articleContent, setArticleContent] = useState("");
+  const [articleExcerpt, setArticleExcerpt] = useState("");
+  const [articlePublish, setArticlePublish] = useState(false);
+  const [editingArticleId, setEditingArticleId] = useState<string | null>(null);
+  const [editArticleTitle, setEditArticleTitle] = useState("");
+  const [editArticleContent, setEditArticleContent] = useState("");
+  const [editArticleExcerpt, setEditArticleExcerpt] = useState("");
+  const [editArticlePublish, setEditArticlePublish] = useState(false);
 
   useEffect(() => {
     const handle = setTimeout(() => setDebouncedQuery(searchQuery.trim()), 300);
@@ -1303,6 +1313,50 @@ function StorytellersPanel() {
       photosForAttribution.refetch();
     },
     onError: (e) => toast.error(`Tag failed: ${e.message}`),
+  });
+
+  const createArticle = trpc.mediaLibrary.createHarvestArticle.useMutation({
+    onSuccess: (r) => {
+      toast.success(`Article ${articlePublish ? "published" : "saved as draft"} (${r.slug}).`);
+      setCreatingArticleFor(null);
+      setArticleTitle("");
+      setArticleContent("");
+      setArticleExcerpt("");
+      setArticlePublish(false);
+      refetchAll();
+    },
+    onError: (e) => toast.error(`Article create failed: ${e.message}`),
+  });
+
+  const editingArticleQuery = trpc.mediaLibrary.getHarvestArticle.useQuery(
+    { articleId: editingArticleId ?? "" },
+    { enabled: !!editingArticleId, staleTime: 0 },
+  );
+  useEffect(() => {
+    if (editingArticleQuery.data && editingArticleQuery.data.id === editingArticleId) {
+      setEditArticleTitle(editingArticleQuery.data.title ?? "");
+      setEditArticleContent(editingArticleQuery.data.content ?? "");
+      setEditArticleExcerpt(editingArticleQuery.data.excerpt ?? "");
+      setEditArticlePublish(editingArticleQuery.data.status === "published");
+    }
+  }, [editingArticleQuery.data, editingArticleId]);
+
+  const updateArticle = trpc.mediaLibrary.updateHarvestArticle.useMutation({
+    onSuccess: (r) => {
+      toast.success(r.published ? "Article saved & public." : "Article saved as draft.");
+      setEditingArticleId(null);
+      refetchAll();
+    },
+    onError: (e) => toast.error(`Article save failed: ${e.message}`),
+  });
+
+  const deleteArticle = trpc.mediaLibrary.deleteHarvestArticle.useMutation({
+    onSuccess: () => {
+      toast.success("Article deleted.");
+      setEditingArticleId(null);
+      refetchAll();
+    },
+    onError: (e) => toast.error(`Delete failed: ${e.message}`),
   });
 
   const tagAsHarvest = trpc.mediaLibrary.tagArticleAsHarvest.useMutation({
@@ -1579,15 +1633,80 @@ function StorytellersPanel() {
                         </div>
                       );
                     })}
-                    {s.articles.map((article) => (
-                      <p key={article.id} className="flex items-center gap-2">
-                        <span className={`inline-flex shrink-0 items-center rounded px-1.5 py-0.5 font-mono text-[9px] uppercase ${article.status === "published" ? "bg-[#4A6741] text-white" : "bg-stone-200 text-stone-700"}`}>
-                          {article.status ?? "?"}
-                        </span>
-                        <span className="truncate">{article.title ?? "(no title)"}</span>
-                        {!article.isHarvestTagged && <span className="shrink-0 text-amber-700">(not Harvest-tagged)</span>}
-                      </p>
-                    ))}
+                    {s.articles.map((article) => {
+                      const isEditing = editingArticleId === article.id;
+                      if (isEditing) {
+                        const isLoading = editingArticleQuery.isLoading || editingArticleQuery.data?.id !== article.id;
+                        return (
+                          <div key={article.id} className="grid gap-2 border border-[#8B4A2A] bg-[#8B4A2A]/8 p-3">
+                            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#8B4A2A]">edit article · slug {editingArticleQuery.data?.slug ?? article.slug ?? "—"}</p>
+                            {isLoading ? (
+                              <p className="text-xs text-stone-600">Loading content…</p>
+                            ) : (
+                              <>
+                                <Input value={editArticleTitle} onChange={(e) => setEditArticleTitle(e.target.value)} placeholder="Title" maxLength={255} />
+                                <Input value={editArticleExcerpt} onChange={(e) => setEditArticleExcerpt(e.target.value)} placeholder="Excerpt" maxLength={500} />
+                                <textarea
+                                  value={editArticleContent}
+                                  onChange={(e) => setEditArticleContent(e.target.value)}
+                                  rows={12}
+                                  maxLength={100000}
+                                  className="w-full resize-y border border-stone-300 bg-white p-2 text-sm leading-relaxed text-stone-800"
+                                />
+                                <label className="flex items-center gap-2 text-xs text-stone-700">
+                                  <input type="checkbox" checked={editArticlePublish} onChange={(e) => setEditArticlePublish(e.target.checked)} />
+                                  <span>Published</span>
+                                </label>
+                                <div className="flex flex-wrap items-center gap-2">
+                                  <Button
+                                    size="sm"
+                                    onClick={() => updateArticle.mutate({
+                                      articleId: article.id,
+                                      title: editArticleTitle,
+                                      content: editArticleContent,
+                                      excerpt: editArticleExcerpt,
+                                      status: editArticlePublish ? "published" : "draft",
+                                    })}
+                                    disabled={updateArticle.isPending || !editArticleTitle.trim() || !editArticleContent.trim()}
+                                  >
+                                    {updateArticle.isPending ? "Saving…" : "Save"}
+                                  </Button>
+                                  <Button size="sm" variant="outline" onClick={() => setEditingArticleId(null)}>Cancel</Button>
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() => {
+                                      if (window.confirm(`Delete article "${editArticleTitle}"?`)) deleteArticle.mutate({ articleId: article.id });
+                                    }}
+                                    disabled={deleteArticle.isPending}
+                                    className="border-red-300 text-red-700 hover:bg-red-50"
+                                  >
+                                    {deleteArticle.isPending ? "Deleting…" : "Delete"}
+                                  </Button>
+                                  <span className="text-[10px] text-stone-500">{editArticleContent.length} / 100000</span>
+                                </div>
+                              </>
+                            )}
+                          </div>
+                        );
+                      }
+                      return (
+                        <div key={article.id} className="flex items-center gap-2">
+                          <span className={`inline-flex shrink-0 items-center rounded px-1.5 py-0.5 font-mono text-[9px] uppercase ${article.status === "published" ? "bg-[#4A6741] text-white" : "bg-stone-200 text-stone-700"}`}>
+                            {article.status ?? "?"}
+                          </span>
+                          <span className="min-w-0 flex-1 truncate">{article.title ?? "(no title)"}</span>
+                          {!article.isHarvestTagged && <span className="shrink-0 text-amber-700">(not Harvest)</span>}
+                          <button
+                            type="button"
+                            onClick={() => setEditingArticleId(article.id)}
+                            className="shrink-0 px-1.5 py-0.5 font-mono text-[9px] uppercase text-stone-500 hover:bg-stone-100 hover:text-stone-900"
+                          >
+                            edit
+                          </button>
+                        </div>
+                      );
+                    })}
                     {s.transcripts.map((tr) => (
                       <p key={tr.id} className="flex items-center gap-2">
                         <span className="inline-flex shrink-0 items-center rounded bg-[#8B4A2A]/15 px-1.5 py-0.5 font-mono text-[9px] uppercase text-[#8B4A2A]">
@@ -1625,6 +1744,14 @@ function StorytellersPanel() {
                       + Story
                     </Button>
                   )}
+                  {creatingArticleFor !== s.id && (
+                    <Button
+                      size="sm"
+                      onClick={() => { setCreatingArticleFor(s.id); setArticleTitle(""); setArticleContent(""); setArticleExcerpt(""); setArticlePublish(false); }}
+                    >
+                      + Article
+                    </Button>
+                  )}
                   <Button
                     size="sm"
                     variant="outline"
@@ -1633,6 +1760,60 @@ function StorytellersPanel() {
                     {taggingPhotosFor === s.id ? "Close photos" : "+ Tag photos"}
                   </Button>
                 </div>
+
+                {creatingArticleFor === s.id && (
+                  <div className="grid gap-2 border-t border-[#8B4A2A] bg-[#8B4A2A]/8 p-3">
+                    <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#8B4A2A]">new article · author: {s.displayName}</p>
+                    <Input
+                      value={articleTitle}
+                      onChange={(e) => setArticleTitle(e.target.value)}
+                      placeholder="Article title"
+                      maxLength={255}
+                    />
+                    <Input
+                      value={articleExcerpt}
+                      onChange={(e) => setArticleExcerpt(e.target.value)}
+                      placeholder="Excerpt / dek (optional, ≤500 chars)"
+                      maxLength={500}
+                    />
+                    <textarea
+                      value={articleContent}
+                      onChange={(e) => setArticleContent(e.target.value)}
+                      rows={10}
+                      placeholder="Article body (markdown ok)…"
+                      maxLength={100000}
+                      className="w-full resize-y border border-stone-300 bg-white p-2 text-sm leading-relaxed text-stone-800"
+                    />
+                    <label className="flex items-center gap-2 text-xs text-stone-700">
+                      <input
+                        type="checkbox"
+                        checked={articlePublish}
+                        onChange={(e) => setArticlePublish(e.target.checked)}
+                      />
+                      <span>Publish immediately (otherwise save as draft)</span>
+                    </label>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <Button
+                        size="sm"
+                        onClick={() => createArticle.mutate({
+                          title: articleTitle,
+                          content: articleContent,
+                          excerpt: articleExcerpt || undefined,
+                          authorStorytellerId: s.id,
+                          status: articlePublish ? "published" : "draft",
+                          articleType: "story_feature",
+                        })}
+                        disabled={createArticle.isPending || !articleTitle.trim() || !articleContent.trim()}
+                      >
+                        {createArticle.isPending ? "Saving…" : (articlePublish ? "Publish" : "Save draft")}
+                      </Button>
+                      <Button size="sm" variant="outline" onClick={() => { setCreatingArticleFor(null); setArticleTitle(""); setArticleContent(""); setArticleExcerpt(""); setArticlePublish(false); }}>
+                        Cancel
+                      </Button>
+                      <span className="text-[10px] text-stone-500">primary_project=harvest · slug auto-generated · type=story_feature</span>
+                    </div>
+                  </div>
+                )}
 
                 {taggingPhotosFor === s.id && (
                   <div className="grid gap-3 border-t border-[#C4922A] bg-[#C4922A]/8 p-3">

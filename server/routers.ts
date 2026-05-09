@@ -11,8 +11,11 @@ import { empathyLedgerClient } from "./empathyLedgerClient.js";
 import {
   addStorytellerToHarvest,
   claimArticleForStoryteller,
+  createHarvestArticle,
   createHarvestStory,
+  deleteHarvestArticle,
   deleteHarvestStory,
+  getHarvestArticle,
   getHarvestProjectStats,
   getHarvestStory,
   getPublicHarvestStoryById,
@@ -27,6 +30,7 @@ import {
   tagArticleAsHarvest,
   tagHarvestMediaInEmpathyLedger,
   tagMediaWithStorytellers,
+  updateHarvestArticle,
   updateHarvestStory,
   updateStorytellerBio,
   uploadHarvestMediaToEmpathyLedger,
@@ -1440,6 +1444,61 @@ export const appRouter = router({
       .mutation(async ({ ctx, input }) => {
         if (ctx.user.role !== "admin") throw new Error("Unauthorized");
         return tagMediaWithStorytellers(input);
+      }),
+
+    // Article CRUD — author + publish polished articles directly into Harvest
+    createHarvestArticle: protectedProcedure
+      .input(z.object({
+        title: z.string().min(1).max(255),
+        content: z.string().min(1).max(100000),
+        slug: z.string().max(120).optional(),
+        excerpt: z.string().max(500).optional(),
+        subtitle: z.string().max(255).optional(),
+        themes: z.array(z.string().max(80)).max(10).optional(),
+        authorStorytellerId: z.string().uuid(),
+        articleType: z.enum([
+          "story_feature", "editorial", "community_news", "project_update",
+          "program_spotlight", "impact_report", "community_event",
+        ]).optional(),
+        status: z.enum(["draft", "published", "archived"]).optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== "admin") throw new Error("Unauthorized");
+        return createHarvestArticle(input);
+      }),
+
+    getHarvestArticle: protectedProcedure
+      .input(z.object({ articleId: z.string().uuid() }))
+      .query(async ({ ctx, input }) => {
+        if (ctx.user.role !== "admin") throw new Error("Unauthorized");
+        return getHarvestArticle(input.articleId);
+      }),
+
+    updateHarvestArticle: protectedProcedure
+      .input(z.object({
+        articleId: z.string().uuid(),
+        title: z.string().min(1).max(255).optional(),
+        content: z.string().min(1).max(100000).optional(),
+        slug: z.string().max(120).optional(),
+        excerpt: z.string().max(500).optional(),
+        subtitle: z.string().max(255).optional(),
+        themes: z.array(z.string().max(80)).max(10).optional(),
+        articleType: z.enum([
+          "story_feature", "editorial", "community_news", "project_update",
+          "program_spotlight", "impact_report", "community_event",
+        ]).optional(),
+        status: z.enum(["draft", "published", "archived"]).optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== "admin") throw new Error("Unauthorized");
+        return updateHarvestArticle(input);
+      }),
+
+    deleteHarvestArticle: protectedProcedure
+      .input(z.object({ articleId: z.string().uuid() }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== "admin") throw new Error("Unauthorized");
+        return deleteHarvestArticle(input.articleId);
       }),
   }),
 

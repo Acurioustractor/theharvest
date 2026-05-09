@@ -1961,3 +1961,237 @@ export async function getPublicHarvestStoryById(storyId: string): Promise<Public
     author,
   };
 }
+
+// ---------------------------------------------------------------------------
+// Article CRUD — admin can author + publish polished articles directly into
+// the Harvest project. Sister API to the story CRUD; articles surface on
+// /blog and /people/:slug.
+// ---------------------------------------------------------------------------
+
+const HARVEST_ARTICLE_STATUSES = ["draft", "published", "archived"] as const;
+const HARVEST_ARTICLE_TYPES = [
+  "story_feature",
+  "editorial",
+  "community_news",
+  "project_update",
+  "program_spotlight",
+  "impact_report",
+  "community_event",
+] as const;
+type HarvestArticleStatus = (typeof HARVEST_ARTICLE_STATUSES)[number];
+type HarvestArticleType = (typeof HARVEST_ARTICLE_TYPES)[number];
+
+export type HarvestArticleDetail = {
+  id: string;
+  title: string;
+  slug: string | null;
+  subtitle: string | null;
+  excerpt: string | null;
+  content: string | null;
+  themes: string[] | null;
+  status: HarvestArticleStatus;
+  articleType: HarvestArticleType | null;
+  authorStorytellerId: string | null;
+  authorName: string | null;
+  primaryProject: string | null;
+  relatedProjects: string[] | null;
+  publishedAt: string | null;
+  createdAt: string | null;
+  updatedAt: string | null;
+};
+
+function slugifyArticleTitle(title: string): string {
+  return title
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[^\w\s-]/g, "")
+    .trim()
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
+    .slice(0, 100) || `article-${Date.now()}`;
+}
+
+async function ensureUniqueArticleSlug(supabase: any, slug: string, excludeId?: string): Promise<string> {
+  let candidate = slug;
+  let i = 0;
+  while (true) {
+    const query = supabase.from("articles").select("id").eq("slug", candidate);
+    const { data } = excludeId ? await query.neq("id", excludeId).maybeSingle() : await query.maybeSingle();
+    if (!data) return candidate;
+    i += 1;
+    candidate = `${slug}-${i}`;
+    if (i > 50) throw new Error("Could not generate unique article slug");
+  }
+}
+
+export async function createHarvestArticle(input: {
+  title: string;
+  content: string;
+  slug?: string;
+  excerpt?: string;
+  subtitle?: string;
+  themes?: string[];
+  authorStorytellerId: string;
+  articleType?: HarvestArticleType;
+  status?: HarvestArticleStatus;
+}): Promise<{ id: string; slug: string }> {
+  if (!input.title.trim()) throw new Error("Title is required.");
+  if (!input.content.trim()) throw new Error("Content is required.");
+
+  const { supabase } = await createElAdminContext();
+
+  // Validate author is on Harvest project_storytellers + fetch their display name.
+  const { data: link } = await supabase
+    .from("project_storytellers")
+    .select("storytellers(display_name)")
+    .eq("project_id", HARVEST_PROJECT_ID)
+    .eq("storyteller_id", input.authorStorytellerId)
+    .maybeSingle();
+  if (!link) throw new Error("Author must be a storyteller on the Harvest project.");
+  const authorName = (link as any).storytellers?.display_name ?? "Storyteller";
+
+  const baseSlug = input.slug?.trim() ? slugifyArticleTitle(input.slug) : slugifyArticleTitle(input.title);
+  const slug = await ensureUniqueArticleSlug(supabase, baseSlug);
+  const status = input.status ?? "draft";
+  const articleType = input.articleType ?? "story_feature";
+
+  const { data: created, error } = await supabase
+    .from("articles")
+    .insert({
+      title: input.title.trim(),
+      slug,
+      subtitle: input.subtitle?.trim() || null,
+      content: input.content.trim(),
+      excerpt: input.excerpt?.trim() || null,
+      themes: input.themes ?? [],
+      tags: [],
+      status,
+      article_type: articleType,
+      author_type: "storyteller",
+      author_storyteller_id: input.authorStorytellerId,
+      author_name: authorName,
+      primary_project: "the-harvest",
+      related_projects: [],
+      published_at: status === "published" ? new Date().toISOString() : null,
+    })
+    .select("id, slug")
+    .single();
+  if (error) throw error;
+  if (!created?.id) throw new Error("Article insert returned no id.");
+  return { id: created.id, slug: created.slug };
+}
+
+export async function getHarvestArticle(articleId: string): Promise<HarvestArticleDetail> {
+  const { supabase } = await createElAdminContext();
+  const { data, error } = await supabase
+    .from("articles")
+    .select("id, title, slug, subtitle, excerpt, content, themes, status, article_type, author_storyteller_id, author_name, primary_project, related_projects, published_at, created_at, updated_at")
+    .eq("id", articleId)
+    .maybeSingle();
+  if (error) throw error;
+  if (!data) throw new Error(`Article ${articleId} not found.`);
+  if (data.primary_project !== "the-harvest" && !(Array.isArray(data.related_projects) && data.related_projects.includes("the-harvest"))) {
+    throw new Error("This article is not on the Harvest project.");
+  }
+  return {
+    id: data.id,
+    title: data.title,
+    slug: data.slug,
+    subtitle: data.subtitle,
+    excerpt: data.excerpt,
+    content: data.content,
+    themes: data.themes,
+    status: data.status,
+    articleType: data.article_type,
+    authorStorytellerId: data.author_storyteller_id,
+    authorName: data.author_name,
+    primaryProject: data.primary_project,
+    relatedProjects: data.related_projects,
+    publishedAt: data.published_at,
+    createdAt: data.created_at,
+    updatedAt: data.updated_at,
+  };
+}
+
+export async function updateHarvestArticle(input: {
+  articleId: string;
+  title?: string;
+  content?: string;
+  slug?: string;
+  excerpt?: string;
+  subtitle?: string;
+  themes?: string[];
+  articleType?: HarvestArticleType;
+  status?: HarvestArticleStatus;
+}): Promise<{ updated: boolean; published: boolean }> {
+  const { supabase } = await createElAdminContext();
+  const { data: existing, error: readErr } = await supabase
+    .from("articles")
+    .select("id, primary_project, related_projects, status, slug")
+    .eq("id", input.articleId)
+    .maybeSingle();
+  if (readErr) throw readErr;
+  if (!existing) throw new Error(`Article ${input.articleId} not found.`);
+  const isHarvest = existing.primary_project === "the-harvest" ||
+    (Array.isArray(existing.related_projects) && existing.related_projects.includes("the-harvest"));
+  if (!isHarvest) throw new Error("Edit is only allowed for Harvest articles.");
+
+  const patch: Record<string, unknown> = { updated_at: new Date().toISOString() };
+  if (input.title !== undefined) {
+    if (!input.title.trim()) throw new Error("Title cannot be empty.");
+    patch.title = input.title.trim();
+  }
+  if (input.content !== undefined) {
+    if (!input.content.trim()) throw new Error("Content cannot be empty.");
+    patch.content = input.content.trim();
+  }
+  if (input.subtitle !== undefined) patch.subtitle = input.subtitle.trim() || null;
+  if (input.excerpt !== undefined) patch.excerpt = input.excerpt.trim() || null;
+  if (input.themes !== undefined) patch.themes = input.themes;
+  if (input.articleType !== undefined) patch.article_type = input.articleType;
+
+  if (input.slug !== undefined && input.slug.trim()) {
+    const candidate = slugifyArticleTitle(input.slug);
+    if (candidate !== existing.slug) {
+      patch.slug = await ensureUniqueArticleSlug(supabase, candidate, input.articleId);
+    }
+  }
+
+  if (input.status !== undefined) {
+    patch.status = input.status;
+    if (input.status === "published" && existing.status !== "published") {
+      patch.published_at = new Date().toISOString();
+    }
+  }
+
+  if (Object.keys(patch).length === 1) {
+    return { updated: false, published: existing.status === "published" };
+  }
+
+  const { error: updateErr } = await supabase
+    .from("articles")
+    .update(patch)
+    .eq("id", input.articleId);
+  if (updateErr) throw updateErr;
+
+  return {
+    updated: true,
+    published: input.status !== undefined ? input.status === "published" : existing.status === "published",
+  };
+}
+
+export async function deleteHarvestArticle(articleId: string): Promise<{ deleted: boolean }> {
+  const { supabase } = await createElAdminContext();
+  const { data: existing } = await supabase
+    .from("articles")
+    .select("id, primary_project, related_projects")
+    .eq("id", articleId)
+    .maybeSingle();
+  if (!existing) throw new Error(`Article ${articleId} not found.`);
+  const isHarvest = existing.primary_project === "the-harvest" ||
+    (Array.isArray(existing.related_projects) && existing.related_projects.includes("the-harvest"));
+  if (!isHarvest) throw new Error("Delete is only allowed for Harvest articles.");
+  const { error } = await supabase.from("articles").delete().eq("id", articleId);
+  if (error) throw error;
+  return { deleted: true };
+}
