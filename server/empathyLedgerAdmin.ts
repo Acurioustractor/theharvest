@@ -1,7 +1,9 @@
 import dotenv from "dotenv";
 import { createClient } from "@supabase/supabase-js";
+import { spawn } from "node:child_process";
 import { randomUUID } from "node:crypto";
-import { readdir, readFile, stat } from "node:fs/promises";
+import { readdir, readFile, stat, unlink } from "node:fs/promises";
+import { tmpdir } from "node:os";
 import { basename, extname, join, relative } from "node:path";
 
 dotenv.config({ path: ".env.local", override: false, quiet: true });
@@ -77,6 +79,12 @@ type HarvestUploadSource = {
   base64Data?: string;
   absolutePath?: string;
   sourcePath?: string;
+  proxyMetadata?: {
+    originalFileName: string;
+    originalSize: number;
+    proxySize: number;
+    preset: string;
+  };
 };
 
 type TagMode = "merge" | "replace";
@@ -381,6 +389,7 @@ async function uploadHarvestMediaSourcesToEmpathyLedger(input: {
             harvestUploadedBy: input.uploadedBy,
             harvestRecipe: input.recipe,
             harvestSourcePath: file.sourcePath ?? null,
+            harvestProxy: file.proxyMetadata ?? null,
           },
         })
         .select("id")
@@ -672,6 +681,60 @@ export async function listHarvestLocalMotionFilesWithElStatus(cwd = process.cwd(
   }
 }
 
+// Files this size or larger get re-encoded through ffmpeg before upload.
+// Below the threshold the cost (encode time, two writes) outweighs storage win.
+const VIDEO_PROXY_SIZE_THRESHOLD = 5 * 1024 * 1024;
+const VIDEO_PROXY_PRESET = "h264-crf24-720p-aac96k-faststart";
+
+type CompressedProxy = {
+  buffer: Buffer;
+  fileName: string;
+  contentType: "video/mp4";
+  originalSize: number;
+  proxySize: number;
+  preset: string;
+};
+
+async function compressVideoToProxy(absolutePath: string, originalFileName: string): Promise<CompressedProxy> {
+  const tempPath = join(tmpdir(), `harvest-proxy-${randomUUID()}.mp4`);
+
+  try {
+    await new Promise<void>((resolve, reject) => {
+      const proc = spawn("ffmpeg", [
+        "-hide_banner", "-loglevel", "error", "-y",
+        "-i", absolutePath,
+        "-vf", "scale='min(1280,iw)':'-2'",
+        "-c:v", "libx264", "-preset", "medium", "-crf", "24", "-pix_fmt", "yuv420p",
+        "-c:a", "aac", "-b:a", "96k",
+        "-movflags", "+faststart",
+        tempPath,
+      ]);
+      let stderr = "";
+      proc.stderr.on("data", (chunk) => { stderr += chunk.toString(); });
+      proc.on("error", reject);
+      proc.on("close", (code) => {
+        if (code === 0) resolve();
+        else reject(new Error(`ffmpeg exit ${code}: ${stderr.slice(-400) || "unknown"}`));
+      });
+    });
+
+    const buffer = await readFile(tempPath);
+    const originalSize = (await stat(absolutePath)).size;
+    const proxyName = originalFileName.replace(/\.[^.]+$/, "") + "-proxy.mp4";
+
+    return {
+      buffer,
+      fileName: proxyName,
+      contentType: "video/mp4",
+      originalSize,
+      proxySize: buffer.length,
+      preset: VIDEO_PROXY_PRESET,
+    };
+  } finally {
+    await unlink(tempPath).catch(() => {});
+  }
+}
+
 export async function importHarvestLocalMotionFilesToEmpathyLedger(input: {
   paths: string[];
   recipe: HarvestUploadRecipe;
@@ -685,14 +748,57 @@ export async function importHarvestLocalMotionFilesToEmpathyLedger(input: {
     throw new Error("One or more selected video files are no longer available in the codebase.");
   }
 
-  return uploadHarvestMediaSourcesToEmpathyLedger({
-    files: selected.map((file) => ({
-      fileName: file.fileName,
-      contentType: file.contentType,
-      absolutePath: join(process.cwd(), file.relativePath),
-      sourcePath: file.relativePath,
-    })),
+  const sources: HarvestUploadSource[] = [];
+  const failed: Array<{ fileName: string; error: string }> = [];
+
+  for (const file of selected) {
+    const absolutePath = join(process.cwd(), file.relativePath);
+    const shouldCompress = file.kind === "video" && file.size >= VIDEO_PROXY_SIZE_THRESHOLD;
+
+    if (!shouldCompress) {
+      sources.push({
+        fileName: file.fileName,
+        contentType: file.contentType,
+        absolutePath,
+        sourcePath: file.relativePath,
+      });
+      continue;
+    }
+
+    try {
+      const proxy = await compressVideoToProxy(absolutePath, file.fileName);
+      sources.push({
+        fileName: proxy.fileName,
+        contentType: proxy.contentType,
+        base64Data: proxy.buffer.toString("base64"),
+        sourcePath: file.relativePath,
+        proxyMetadata: {
+          originalFileName: file.fileName,
+          originalSize: proxy.originalSize,
+          proxySize: proxy.proxySize,
+          preset: proxy.preset,
+        },
+      });
+    } catch (error) {
+      failed.push({
+        fileName: file.fileName,
+        error: `proxy compression failed: ${(error as Error).message}`,
+      });
+    }
+  }
+
+  if (sources.length === 0) {
+    return { uploaded: [], failed };
+  }
+
+  const upload = await uploadHarvestMediaSourcesToEmpathyLedger({
+    files: sources,
     recipe: input.recipe,
     uploadedBy: input.uploadedBy,
   });
+
+  return {
+    uploaded: upload.uploaded,
+    failed: [...failed, ...upload.failed],
+  };
 }
