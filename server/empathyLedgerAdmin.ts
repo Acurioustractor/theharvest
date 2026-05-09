@@ -1140,3 +1140,190 @@ export async function claimArticleForStoryteller(input: {
 
   return { updated: true, before: existing.author_storyteller_id };
 }
+
+// ---------------------------------------------------------------------------
+// Phase 2 — write capabilities into Empathy Ledger from the Harvest admin.
+// ---------------------------------------------------------------------------
+
+const VALID_HARVEST_ROLES = ["participant", "contributor", "owner", "subject"] as const;
+type HarvestRole = (typeof VALID_HARVEST_ROLES)[number];
+
+export type StorytellerSearchResult = {
+  id: string;
+  displayName: string | null;
+  location: string | null;
+  isActive: boolean;
+  profileId: string | null;
+  alreadyOnHarvest: boolean;
+};
+
+// Search EL storytellers by display_name. Used by the Harvest admin's
+// "Add storyteller…" picker. Capped at 20 results to keep the dropdown sane.
+export async function searchStorytellers(query: string): Promise<StorytellerSearchResult[]> {
+  const trimmed = query.trim();
+  if (trimmed.length < 2) return [];
+  const { supabase } = await createElAdminContext();
+
+  const { data: rows, error } = await supabase
+    .from("storytellers")
+    .select("id, display_name, location, is_active, profile_id")
+    .ilike("display_name", `%${trimmed}%`)
+    .order("display_name")
+    .limit(20);
+  if (error) throw error;
+
+  // Find which of these are already on Harvest so the UI can mark them.
+  const ids = (rows ?? []).map((r: any) => r.id);
+  const onHarvest = new Set<string>();
+  if (ids.length > 0) {
+    const { data: links } = await supabase
+      .from("project_storytellers")
+      .select("storyteller_id")
+      .eq("project_id", HARVEST_PROJECT_ID)
+      .in("storyteller_id", ids);
+    for (const l of (links ?? []) as Array<{ storyteller_id: string }>) onHarvest.add(l.storyteller_id);
+  }
+
+  return (rows ?? []).map((r: any) => ({
+    id: r.id,
+    displayName: r.display_name,
+    location: r.location,
+    isActive: !!r.is_active,
+    profileId: r.profile_id,
+    alreadyOnHarvest: onHarvest.has(r.id),
+  }));
+}
+
+// Add a storyteller to The Harvest project (project_storytellers join).
+export async function addStorytellerToHarvest(input: {
+  storytellerId: string;
+  role: HarvestRole;
+}): Promise<{ added: boolean; alreadyMember: boolean }> {
+  if (!VALID_HARVEST_ROLES.includes(input.role)) {
+    throw new Error(`Role must be one of: ${VALID_HARVEST_ROLES.join(", ")}`);
+  }
+  const { supabase } = await createElAdminContext();
+
+  // Confirm storyteller exists.
+  const { data: st, error: stErr } = await supabase
+    .from("storytellers")
+    .select("id")
+    .eq("id", input.storytellerId)
+    .maybeSingle();
+  if (stErr) throw stErr;
+  if (!st) throw new Error(`Storyteller ${input.storytellerId} not found in EL.`);
+
+  // Check existing membership.
+  const { data: existing } = await supabase
+    .from("project_storytellers")
+    .select("id")
+    .eq("project_id", HARVEST_PROJECT_ID)
+    .eq("storyteller_id", input.storytellerId)
+    .maybeSingle();
+  if (existing) return { added: false, alreadyMember: true };
+
+  const { error: insertErr } = await supabase
+    .from("project_storytellers")
+    .insert({
+      project_id: HARVEST_PROJECT_ID,
+      storyteller_id: input.storytellerId,
+      role: input.role,
+      status: "active",
+      joined_at: new Date().toISOString(),
+    });
+  if (insertErr) throw insertErr;
+  return { added: true, alreadyMember: false };
+}
+
+// Update a storyteller's bio. Restricted to people on the Harvest project so
+// admins can't accidentally edit unrelated EL profiles.
+export async function updateStorytellerBio(input: {
+  storytellerId: string;
+  bio: string;
+}): Promise<{ updated: boolean }> {
+  if (input.bio.length > 5000) {
+    throw new Error("Bio is too long (max 5000 characters).");
+  }
+  const { supabase } = await createElAdminContext();
+
+  const { data: link } = await supabase
+    .from("project_storytellers")
+    .select("id")
+    .eq("project_id", HARVEST_PROJECT_ID)
+    .eq("storyteller_id", input.storytellerId)
+    .maybeSingle();
+  if (!link) {
+    throw new Error("Bio editing is only allowed for storytellers on the Harvest project.");
+  }
+
+  const { error } = await supabase
+    .from("storytellers")
+    .update({ bio: input.bio, updated_at: new Date().toISOString() })
+    .eq("id", input.storytellerId);
+  if (error) throw error;
+  return { updated: true };
+}
+
+// Create a new story tagged to The Harvest project. Author can be any
+// Harvest project storyteller; the story starts as a draft (is_public = false).
+export async function createHarvestStory(input: {
+  title: string;
+  content: string;
+  summary?: string;
+  themes?: string[];
+  authorStorytellerId: string;
+  isPublic?: boolean;
+}): Promise<{ id: string }> {
+  if (input.title.trim().length === 0) throw new Error("Title is required.");
+  if (input.content.trim().length === 0) throw new Error("Content is required.");
+
+  const { supabase, gallery } = await createElAdminContext();
+
+  // Validate author is on the Harvest project.
+  const { data: link } = await supabase
+    .from("project_storytellers")
+    .select("storyteller_id, storytellers(profile_id)")
+    .eq("project_id", HARVEST_PROJECT_ID)
+    .eq("storyteller_id", input.authorStorytellerId)
+    .maybeSingle();
+  if (!link) {
+    throw new Error("Author must be a storyteller on the Harvest project.");
+  }
+  const linkRow = link as unknown as { storyteller_id: string; storytellers: { profile_id: string | null } | null };
+  const authorProfileId = linkRow.storytellers?.profile_id ?? null;
+
+  // Tenant comes from the gallery owner profile (already used by uploads).
+  const { data: ownerProfile } = await supabase
+    .from("profiles")
+    .select("tenant_id")
+    .eq("id", gallery.created_by)
+    .maybeSingle();
+  const tenantId = ownerProfile?.tenant_id;
+  if (!tenantId) throw new Error("Could not resolve EL tenant for new story.");
+
+  // Note: stories.author_id is mixed type in EL (sometimes storyteller_id,
+  // sometimes profile_id). Use profile_id when available since that's what
+  // most existing rows seem to use; fall back to storyteller_id otherwise.
+  const authorId = authorProfileId ?? input.authorStorytellerId;
+
+  const { data: created, error } = await supabase
+    .from("stories")
+    .insert({
+      tenant_id: tenantId,
+      author_id: authorId,
+      project_id: HARVEST_PROJECT_ID,
+      title: input.title.trim(),
+      content: input.content.trim(),
+      summary: input.summary?.trim() || null,
+      themes: input.themes ?? [],
+      privacy_level: input.isPublic ? "public" : "private",
+      is_public: !!input.isPublic,
+      cultural_sensitivity_level: "standard",
+      requires_elder_approval: false,
+    })
+    .select("id")
+    .single();
+  if (error) throw error;
+  if (!created?.id) throw new Error("Story insert returned no id.");
+  return { id: created.id };
+}

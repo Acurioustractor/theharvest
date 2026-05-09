@@ -1170,6 +1170,60 @@ function StorytellersPanel() {
   const storytellersQuery = trpc.mediaLibrary.harvestStorytellers.useQuery(undefined, { staleTime: 60_000 });
   const orphansQuery = trpc.mediaLibrary.orphanedHarvestArticles.useQuery(undefined, { staleTime: 60_000 });
 
+  // Phase 2 write state
+  const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedQuery, setDebouncedQuery] = useState("");
+  const [addRole, setAddRole] = useState<"participant" | "contributor" | "subject" | "owner">("participant");
+  const [editingBioId, setEditingBioId] = useState<string | null>(null);
+  const [bioDraft, setBioDraft] = useState("");
+  const [creatingStoryFor, setCreatingStoryFor] = useState<string | null>(null);
+  const [storyTitle, setStoryTitle] = useState("");
+  const [storyContent, setStoryContent] = useState("");
+
+  useEffect(() => {
+    const handle = setTimeout(() => setDebouncedQuery(searchQuery.trim()), 300);
+    return () => clearTimeout(handle);
+  }, [searchQuery]);
+
+  const searchResultsQuery = trpc.mediaLibrary.searchStorytellers.useQuery(
+    { query: debouncedQuery },
+    { enabled: debouncedQuery.length >= 2, staleTime: 30_000 },
+  );
+
+  const refetchAll = () => {
+    storytellersQuery.refetch();
+    statsQuery.refetch();
+    searchResultsQuery.refetch();
+  };
+
+  const addStoryteller = trpc.mediaLibrary.addStorytellerToHarvest.useMutation({
+    onSuccess: (r, vars) => {
+      toast.success(r.alreadyMember ? "Already a member." : `Added storyteller as ${vars.role}.`);
+      setSearchQuery("");
+      refetchAll();
+    },
+    onError: (e) => toast.error(`Add failed: ${e.message}`),
+  });
+  const updateBio = trpc.mediaLibrary.updateStorytellerBio.useMutation({
+    onSuccess: () => {
+      toast.success("Bio updated.");
+      setEditingBioId(null);
+      setBioDraft("");
+      storytellersQuery.refetch();
+    },
+    onError: (e) => toast.error(`Bio update failed: ${e.message}`),
+  });
+  const createStory = trpc.mediaLibrary.createHarvestStory.useMutation({
+    onSuccess: (r) => {
+      toast.success(`Story created (id ${r.id.slice(0, 8)}…).`);
+      setCreatingStoryFor(null);
+      setStoryTitle("");
+      setStoryContent("");
+      refetchAll();
+    },
+    onError: (e) => toast.error(`Story create failed: ${e.message}`),
+  });
+
   const tagAsHarvest = trpc.mediaLibrary.tagArticleAsHarvest.useMutation({
     onSuccess: (result) => {
       if (result.updated) {
@@ -1222,6 +1276,60 @@ function StorytellersPanel() {
         )}
       </div>
 
+      <div className="border-b border-stone-200 p-5">
+        <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-stone-500">add storyteller to the harvest</p>
+        <div className="mt-2 grid gap-2 sm:grid-cols-[1fr_auto]">
+          <div className="relative">
+            <Input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search EL storytellers by name (≥ 2 chars)…"
+              className="border-stone-300"
+            />
+            {debouncedQuery.length >= 2 && (searchResultsQuery.data ?? []).length > 0 && (
+              <div className="absolute z-20 mt-1 w-full max-h-72 overflow-y-auto border border-stone-300 bg-white shadow-lg">
+                {(searchResultsQuery.data ?? []).map((r) => (
+                  <button
+                    key={r.id}
+                    type="button"
+                    disabled={r.alreadyOnHarvest || addStoryteller.isPending}
+                    onClick={() => addStoryteller.mutate({ storytellerId: r.id, role: addRole })}
+                    className={`flex w-full items-center justify-between gap-2 border-b border-stone-100 px-3 py-2 text-left text-sm transition ${
+                      r.alreadyOnHarvest ? "cursor-not-allowed bg-stone-50 text-stone-400" : "hover:bg-[#C4922A]/8"
+                    }`}
+                  >
+                    <span className="min-w-0 truncate">
+                      <span className="font-semibold">{r.displayName ?? "(unnamed)"}</span>
+                      <span className="ml-2 text-xs text-stone-500">{r.location ?? "no location"}</span>
+                      {!r.isActive && <span className="ml-1 text-[10px] text-amber-700">(inactive)</span>}
+                    </span>
+                    {r.alreadyOnHarvest ? (
+                      <span className="shrink-0 text-[10px] font-mono uppercase text-[#4A6741]">on harvest</span>
+                    ) : (
+                      <span className="shrink-0 text-[10px] font-mono uppercase text-stone-500">add as {addRole}</span>
+                    )}
+                  </button>
+                ))}
+              </div>
+            )}
+            {debouncedQuery.length >= 2 && searchResultsQuery.data?.length === 0 && !searchResultsQuery.isLoading && (
+              <p className="absolute z-20 mt-1 w-full border border-stone-300 bg-white px-3 py-2 text-xs text-stone-600 shadow-lg">No matches.</p>
+            )}
+          </div>
+          <select
+            value={addRole}
+            onChange={(e) => setAddRole(e.target.value as typeof addRole)}
+            className="border border-stone-300 bg-white px-2 text-sm"
+          >
+            <option value="participant">participant</option>
+            <option value="contributor">contributor</option>
+            <option value="subject">subject</option>
+            <option value="owner">owner</option>
+          </select>
+        </div>
+      </div>
+
       <div className="grid gap-4 p-5 sm:grid-cols-2">
         {isLoading ? (
           Array.from({ length: 2 }).map((_, i) => (
@@ -1269,8 +1377,31 @@ function StorytellersPanel() {
                   </div>
                 </header>
 
-                {s.bio && (
-                  <p className="line-clamp-3 text-sm leading-relaxed text-stone-700">{s.bio}</p>
+                {editingBioId === s.id ? (
+                  <div className="grid gap-2">
+                    <textarea
+                      value={bioDraft}
+                      onChange={(e) => setBioDraft(e.target.value)}
+                      rows={6}
+                      maxLength={5000}
+                      className="w-full resize-y border border-stone-300 bg-white p-2 text-sm leading-relaxed text-stone-800"
+                    />
+                    <div className="flex flex-wrap items-center gap-2">
+                      <Button
+                        size="sm"
+                        onClick={() => updateBio.mutate({ storytellerId: s.id, bio: bioDraft })}
+                        disabled={updateBio.isPending || bioDraft === (s.bio ?? "")}
+                      >
+                        {updateBio.isPending ? "Saving…" : "Save bio"}
+                      </Button>
+                      <Button size="sm" variant="outline" onClick={() => { setEditingBioId(null); setBioDraft(""); }}>
+                        Cancel
+                      </Button>
+                      <span className="text-[10px] text-stone-500">{bioDraft.length} / 5000</span>
+                    </div>
+                  </div>
+                ) : (
+                  s.bio && <p className="line-clamp-3 text-sm leading-relaxed text-stone-700">{s.bio}</p>
                 )}
 
                 <div className="flex flex-wrap gap-1.5">
@@ -1312,13 +1443,68 @@ function StorytellersPanel() {
                   </div>
                 )}
 
-                {elProfileUrl && (
-                  <div className="flex flex-wrap gap-2 border-t border-stone-100 pt-3">
+                <div className="flex flex-wrap gap-2 border-t border-stone-100 pt-3">
+                  {elProfileUrl && (
                     <Button variant="outline" size="sm" asChild>
                       <a href={elProfileUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs">
                         Open in EL <ExternalLink className="h-3 w-3" />
                       </a>
                     </Button>
+                  )}
+                  {editingBioId !== s.id && (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => { setEditingBioId(s.id); setBioDraft(s.bio ?? ""); }}
+                    >
+                      Edit bio
+                    </Button>
+                  )}
+                  {creatingStoryFor !== s.id && (
+                    <Button
+                      size="sm"
+                      onClick={() => { setCreatingStoryFor(s.id); setStoryTitle(""); setStoryContent(""); }}
+                    >
+                      + Story
+                    </Button>
+                  )}
+                </div>
+
+                {creatingStoryFor === s.id && (
+                  <div className="grid gap-2 border-t border-[#C4922A] bg-[#C4922A]/8 p-3">
+                    <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#8B4A2A]">new story · author: {s.displayName}</p>
+                    <Input
+                      value={storyTitle}
+                      onChange={(e) => setStoryTitle(e.target.value)}
+                      placeholder="Story title"
+                      maxLength={255}
+                    />
+                    <textarea
+                      value={storyContent}
+                      onChange={(e) => setStoryContent(e.target.value)}
+                      rows={8}
+                      placeholder="Story content (markdown ok)…"
+                      maxLength={50000}
+                      className="w-full resize-y border border-stone-300 bg-white p-2 text-sm leading-relaxed text-stone-800"
+                    />
+                    <div className="flex flex-wrap items-center gap-2">
+                      <Button
+                        size="sm"
+                        onClick={() => createStory.mutate({
+                          title: storyTitle,
+                          content: storyContent,
+                          authorStorytellerId: s.id,
+                          isPublic: false,
+                        })}
+                        disabled={createStory.isPending || !storyTitle.trim() || !storyContent.trim()}
+                      >
+                        {createStory.isPending ? "Creating…" : "Create draft"}
+                      </Button>
+                      <Button size="sm" variant="outline" onClick={() => { setCreatingStoryFor(null); setStoryTitle(""); setStoryContent(""); }}>
+                        Cancel
+                      </Button>
+                      <span className="text-[10px] text-stone-500">draft · is_public=false · project_id=Harvest</span>
+                    </div>
                   </div>
                 )}
               </article>
