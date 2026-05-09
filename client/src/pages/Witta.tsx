@@ -1,6 +1,10 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 import { Link } from "wouter";
 import {
   Mountain,
@@ -11,7 +15,11 @@ import {
   Camera,
   TreePine,
   Milestone,
+  Sparkles,
+  CheckCircle2,
 } from "lucide-react";
+import { trpc } from "@/lib/trpc";
+import { toast } from "sonner";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
@@ -651,6 +659,9 @@ export default function Witta() {
         </div>
       </section>
 
+      {/* Community memories — contributed history */}
+      <CommunityMemoriesSection />
+
       {/* Photo Gallery */}
       <section className="py-24 bg-stone-50">
         <div className="container">
@@ -766,5 +777,257 @@ export default function Witta() {
         </div>
       </section>
     </div>
+  );
+}
+
+/* ---------- Community Memories ---------- */
+
+function CommunityMemoriesSection() {
+  const approvedQuery = trpc.witta.approved.useQuery();
+  const memories = approvedQuery.data ?? [];
+
+  return (
+    <>
+      {/* Approved memories — only render the band if there's content */}
+      {memories.length > 0 && (
+        <section className="py-20 bg-stone-50">
+          <div className="container">
+            <motion.div {...fadeInUp} className="text-center mb-12 max-w-2xl mx-auto">
+              <span className="inline-flex items-center gap-2 px-4 py-2 mb-6 text-sm font-medium bg-amber-100 text-amber-700 rounded-full">
+                <Sparkles className="h-4 w-4" />
+                Community memories
+              </span>
+              <h2 className="text-4xl font-serif font-bold text-stone-800 mb-4">
+                Witta, told by the people who live here.
+              </h2>
+              <p className="text-stone-600 leading-relaxed">
+                These are stories, corrections, and photographs added by community
+                members. Each one was reviewed before it appeared. Add yours below.
+              </p>
+            </motion.div>
+
+            <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-6">
+              {memories.map((m) => (
+                <motion.div
+                  key={m.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <Card className="h-full border-0 shadow-sm bg-white">
+                    <CardContent className="p-6">
+                      <p className="text-amber-600 font-mono text-xs font-medium mb-3 uppercase tracking-wider">
+                        {m.yearOrEra}
+                      </p>
+                      <p className="text-stone-700 leading-relaxed whitespace-pre-line">
+                        {m.memory}
+                      </p>
+                      {m.photoUrl && (
+                        <img
+                          src={m.photoUrl}
+                          alt={`Memory from ${m.authorName}`}
+                          className="w-full rounded-md mt-4 shadow-sm"
+                          loading="lazy"
+                        />
+                      )}
+                      <p className="text-stone-500 text-sm mt-4 italic">
+                        — {m.authorName}
+                      </p>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Contribution form — always visible */}
+      <ContributeMemoryForm />
+    </>
+  );
+}
+
+function ContributeMemoryForm() {
+  const submitMutation = trpc.witta.submit.useMutation();
+  const utils = trpc.useUtils();
+
+  const [authorName, setAuthorName] = useState("");
+  const [authorEmail, setAuthorEmail] = useState("");
+  const [yearOrEra, setYearOrEra] = useState("");
+  const [memory, setMemory] = useState("");
+  const [photoUrl, setPhotoUrl] = useState("");
+  const [submitted, setSubmitted] = useState(false);
+
+  const canSubmit =
+    authorName.trim().length > 0 &&
+    yearOrEra.trim().length > 0 &&
+    memory.trim().length >= 10 &&
+    !submitMutation.isPending;
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!canSubmit) return;
+    try {
+      await submitMutation.mutateAsync({
+        authorName: authorName.trim(),
+        authorEmail: authorEmail.trim() || undefined,
+        yearOrEra: yearOrEra.trim(),
+        memory: memory.trim(),
+        photoUrl: photoUrl.trim() || undefined,
+      });
+      setSubmitted(true);
+      setAuthorName("");
+      setAuthorEmail("");
+      setYearOrEra("");
+      setMemory("");
+      setPhotoUrl("");
+      toast.success("Thank you. Your memory is in the queue for review.");
+      utils.witta.approved.invalidate();
+    } catch (err) {
+      console.error("Failed to submit memory:", err);
+      toast.error("Couldn't submit just now — please try again in a moment.");
+    }
+  };
+
+  return (
+    <section className="py-24 bg-stone-100">
+      <div className="container">
+        <div className="max-w-3xl mx-auto">
+          <motion.div {...fadeInUp} className="text-center mb-10">
+            <span className="inline-flex items-center gap-2 px-4 py-2 mb-6 text-sm font-medium bg-stone-800 text-amber-300 rounded-full">
+              <Heart className="h-4 w-4" />
+              Add to the history
+            </span>
+            <h2 className="text-3xl md:text-4xl font-serif font-bold text-stone-800 mb-4">
+              Remember a moment? Add it.
+            </h2>
+            <p className="text-stone-600 leading-relaxed">
+              A photograph, a story, a correction, a name we missed.
+              Memories of Witta — old or recent — that belong on this page.
+              We review every contribution before it's published.
+            </p>
+          </motion.div>
+
+          <Card className="border-0 shadow-md">
+            <CardContent className="p-6 md:p-8">
+              {submitted ? (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="text-center py-10"
+                >
+                  <CheckCircle2 className="h-12 w-12 text-amber-500 mx-auto mb-4" />
+                  <h3 className="text-2xl font-serif font-bold text-stone-800 mb-2">
+                    Thank you.
+                  </h3>
+                  <p className="text-stone-600 max-w-md mx-auto">
+                    Your memory is in the queue. We'll read it, and if it fits we'll
+                    publish it on this page within a few days.
+                  </p>
+                  <Button
+                    variant="outline"
+                    className="mt-6"
+                    onClick={() => setSubmitted(false)}
+                  >
+                    Add another memory
+                  </Button>
+                </motion.div>
+              ) : (
+                <form onSubmit={handleSubmit} className="space-y-5">
+                  <div className="grid sm:grid-cols-2 gap-5">
+                    <div className="space-y-2">
+                      <Label htmlFor="memory-name">Your name *</Label>
+                      <Input
+                        id="memory-name"
+                        value={authorName}
+                        onChange={(e) => setAuthorName(e.target.value)}
+                        placeholder="e.g. Barry Rodgerig"
+                        required
+                        maxLength={255}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="memory-email">Email (optional)</Label>
+                      <Input
+                        id="memory-email"
+                        type="email"
+                        value={authorEmail}
+                        onChange={(e) => setAuthorEmail(e.target.value)}
+                        placeholder="So we can ask if we have questions"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="memory-year">Year or era *</Label>
+                    <Input
+                      id="memory-year"
+                      value={yearOrEra}
+                      onChange={(e) => setYearOrEra(e.target.value)}
+                      placeholder="e.g. 1916, 1980s, the dairy years, today"
+                      required
+                      maxLength={100}
+                    />
+                    <p className="text-stone-500 text-xs">
+                      A rough anchor in time. Doesn't need to be exact.
+                    </p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="memory-text">The memory *</Label>
+                    <Textarea
+                      id="memory-text"
+                      value={memory}
+                      onChange={(e) => setMemory(e.target.value)}
+                      placeholder="What you remember, what someone told you, a story passed down. A correction is welcome too."
+                      required
+                      minLength={10}
+                      maxLength={4000}
+                      rows={6}
+                    />
+                    <p className="text-stone-500 text-xs">
+                      {memory.length}/4000 — minimum 10 characters
+                    </p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="memory-photo">Photo URL (optional)</Label>
+                    <Input
+                      id="memory-photo"
+                      type="url"
+                      value={photoUrl}
+                      onChange={(e) => setPhotoUrl(e.target.value)}
+                      placeholder="https://..."
+                      maxLength={1000}
+                    />
+                    <p className="text-stone-500 text-xs">
+                      If you have a photograph hosted somewhere, drop the link here. Direct
+                      uploads coming soon.
+                    </p>
+                  </div>
+
+                  <div className="pt-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                    <p className="text-stone-500 text-sm italic">
+                      Contributions are reviewed before publishing.
+                    </p>
+                    <Button
+                      type="submit"
+                      disabled={!canSubmit}
+                      className="bg-stone-800 hover:bg-stone-900 text-amber-300 font-semibold"
+                      size="lg"
+                    >
+                      {submitMutation.isPending ? "Submitting…" : "Add this memory"}
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                  </div>
+                </form>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </section>
   );
 }
