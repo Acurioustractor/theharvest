@@ -78,6 +78,8 @@ export interface ELMediaAsset {
   location: string | null;
   tags: string[]; // Tags for page distribution: "home", "journey", "stories", etc.
   themes: string[]; // Themes: "eat", "grow", "make", "gather", etc.
+  special?: string[]; // Special tags: "hero", "featured"
+  works?: string[]; // Harvest work slugs: "milk-crate-pavilion", "the-cedar", etc.
   projectId: string | null;
   sortOrder: number;
   isPublished: boolean;
@@ -312,6 +314,9 @@ class EmpathyLedgerClient {
     tag?: string;      // Page tag: "home", "journey", "stories", etc.
     theme?: string;    // Theme: "eat", "grow", "make", "gather"
     category?: string; // Category: "before", "during", "after", "milestone", "general"
+    project?: string;  // Project slug — kept for backwards compat (resolves to project_id)
+    work?: string;     // Harvest work slug: "milk-crate-pavilion", "the-cedar", etc.
+                       // Primary mechanism for per-work filtering. Filters by harvest-work tag.
   } = {}): Promise<ELMediaResponse> {
     const params = new URLSearchParams();
 
@@ -320,6 +325,8 @@ class EmpathyLedgerClient {
     if (options.tag) params.append("tag", options.tag);
     if (options.theme) params.append("theme", options.theme);
     if (options.category) params.append("category", options.category);
+    if (options.project) params.append("project", options.project);
+    if (options.work) params.append("work", options.work);
 
     const queryString = params.toString();
     const endpoint = `/api/v1/harvest/gallery${queryString ? `?${queryString}` : ""}`;
