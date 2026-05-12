@@ -62,6 +62,25 @@ export interface ELStory {
   isPublic: boolean;
 }
 
+export interface ELStoryteller {
+  id: string;
+  displayName: string;
+  bio: string | null;
+  avatarUrl: string | null;
+  culturalBackground?: string[];
+  location?: string | null;
+  elderStatus?: boolean;
+  featured?: boolean;
+  themes?: string[];
+  transcriptCount?: number;
+  qualityScore?: number | null;
+}
+
+export interface ELStorytellersResponse {
+  storytellers: ELStoryteller[];
+  pagination: ELPagination;
+}
+
 export interface ELStoriesResponse {
   stories: ELStory[];
   pagination: ELPagination;
@@ -219,6 +238,27 @@ class EmpathyLedgerClient {
     } catch (error) {
       console.error("[EmpathyLedger] Failed to fetch stories:", error);
       return { stories: [], pagination: { page: 1, limit: 20, total: 0, hasMore: false } };
+    }
+  }
+
+  /**
+   * Fetch storytellers from the content-hub.
+   * Public, no auth needed. Filter by project slug to scope to one site.
+   */
+  async fetchStorytellers(options: { project?: string; limit?: number; page?: number } = {}): Promise<ELStorytellersResponse> {
+    const params = new URLSearchParams();
+    if (options.project) params.append("project", options.project);
+    if (options.limit) params.append("limit", options.limit.toString());
+    if (options.page) params.append("page", options.page.toString());
+
+    const queryString = params.toString();
+    const endpoint = `/api/v1/content-hub/storytellers${queryString ? `?${queryString}` : ""}`;
+
+    try {
+      return await this.fetch<ELStorytellersResponse>(endpoint);
+    } catch (error) {
+      console.error("[EmpathyLedger] Failed to fetch storytellers:", error);
+      return { storytellers: [], pagination: { page: 1, limit: 20, total: 0, hasMore: false } };
     }
   }
 
