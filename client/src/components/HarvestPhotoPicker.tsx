@@ -12,10 +12,9 @@ import { Input } from "@/components/ui/input";
 import { trpc } from "@/lib/trpc";
 
 const WORKS = [
-  { slug: "milk-crate-pavilion", label: "Milk Create Pavilion" },
+  { slug: "milk-crate-pavilion", label: "Milk Crate Pavilion" },
   { slug: "the-cedar", label: "The Cedar" },
   { slug: "the-garden", label: "The Garden" },
-  { slug: "the-sauna", label: "The Sauna" },
   { slug: "the-shop", label: "The Shop" },
 ] as const;
 
