@@ -340,6 +340,100 @@ class EmpathyLedgerClient {
   }
 
   /**
+   * Fetch the full Harvest media library, including untagged photos.
+   *
+   * The strict `/harvest/gallery` endpoint only returns photos that carry the
+   * Harvest tagging (themes, works, etc). For the photo picker we want every
+   * photo in the project, even untagged ones, so editors can find and use
+   * recently-uploaded images before re-tagging.
+   *
+   * Pulls from `/content-hub/media?project=the-harvest` (returns the full 394+
+   * photo library) and adapts the broader schema to the gallery shape the
+   * website consumes.
+   */
+  async fetchAllHarvestMedia(options: {
+    page?: number;
+    limit?: number;
+  } = {}): Promise<ELMediaResponse> {
+    const requestedLimit = options.limit ?? 50;
+    // EL backend caps each /content-hub/media request at 50. To satisfy
+    // larger requested limits (the photo picker asks for 100), loop pages.
+    const EL_PAGE_SIZE = 50;
+    const startPage = options.page ?? 1;
+
+    type RawMedia = {
+      id: string;
+      url: string;
+      thumbnailUrl?: string | null;
+      title: string | null;
+      description: string | null;
+      altText: string | null;
+      mediaType?: string | null;
+      projectId: string | null;
+      createdAt: string;
+    };
+
+    const collected: RawMedia[] = [];
+    let pagination: ELPagination = { page: startPage, limit: EL_PAGE_SIZE, total: 0, hasMore: false };
+
+    try {
+      let cursor = startPage;
+      while (collected.length < requestedLimit) {
+        const params = new URLSearchParams();
+        params.append("project", "the-harvest");
+        params.append("limit", EL_PAGE_SIZE.toString());
+        params.append("page", cursor.toString());
+
+        const raw = await this.fetch<{ media: RawMedia[]; pagination: ELPagination }>(
+          `/api/v1/content-hub/media?${params.toString()}`,
+        );
+        pagination = raw.pagination;
+
+        collected.push(...raw.media);
+
+        if (!raw.pagination.hasMore || raw.media.length === 0) break;
+        cursor += 1;
+      }
+    } catch (error) {
+      console.error("[EmpathyLedger] Failed to fetch full Harvest media:", error);
+      return { media: [], pagination: { page: 1, limit: 20, total: 0, hasMore: false } };
+    }
+
+    // Map the broader content-hub schema onto the gallery schema the website
+    // consumes. Untagged photos get empty arrays so the UI keeps working.
+    const sliced = collected.slice(0, requestedLimit);
+    const media: ELMediaAsset[] = sliced.map((item, index) => ({
+      id: item.id,
+      src: item.url,
+      title: item.title || item.altText || "Untitled",
+      description: item.description,
+      altText: item.altText,
+      category: "general",
+      date: item.createdAt?.slice(0, 7) ?? null,
+      location: null,
+      tags: [],
+      themes: [],
+      special: [],
+      works: [],
+      projectId: item.projectId,
+      sortOrder: index,
+      isPublished: true,
+      createdAt: item.createdAt,
+      updatedAt: item.createdAt,
+    }));
+
+    return {
+      media,
+      pagination: {
+        page: startPage,
+        limit: requestedLimit,
+        total: pagination.total,
+        hasMore: pagination.total > collected.length,
+      },
+    };
+  }
+
+  /**
    * Fetch Harvest gallery images for a specific page
    */
   async fetchHarvestMediaForPage(pageTag: string, limit: number = 10): Promise<ELMediaAsset[]> {

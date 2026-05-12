@@ -36,14 +36,19 @@ Deno.serve(async req => {
   const payload = await req.json();
   const { name, email, subject, message, subscribe } = payload;
 
-  if (!email || !message) {
-    return jsonResponse({ success: false, error: "Email and message are required" }, 400);
+  if (!name || !email || !message) {
+    return jsonResponse({ success: false, error: "Name, email and message are required" }, 400);
   }
 
   // Parse name into first/last
-  const nameParts = (name || "").trim().split(" ");
+  const nameParts = String(name).trim().split(/\s+/).filter(Boolean);
   const firstName = nameParts[0] || undefined;
   const lastName = nameParts.slice(1).join(" ") || undefined;
+  const tags = [
+    "contact-form",
+    "harvest-website",
+    ...(subscribe ? ["newsletter", "harvest-newsletter"] : []),
+  ];
 
   // Create/update contact in GHL
   const contactResponse = await fetch(`${GHL_API_BASE}/contacts/upsert`, {
@@ -60,7 +65,6 @@ Deno.serve(async req => {
       lastName,
       locationId,
       source: "Website Contact Form",
-      tags: ["contact-form", "harvest-website", ...(subscribe ? ["newsletter"] : [])],
     }),
   });
 
@@ -78,8 +82,23 @@ Deno.serve(async req => {
   const contactData = await contactResponse.json();
   const contactId = contactData?.contact?.id;
 
-  // Add a note to the contact with the message
   if (contactId) {
+    try {
+      await fetch(`${GHL_API_BASE}/contacts/${contactId}/tags`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "Authorization": `Bearer ${apiKey}`,
+          "Version": GHL_API_VERSION,
+        },
+        body: JSON.stringify({ tags }),
+      });
+    } catch {
+      // Tag failure shouldn't block the message.
+    }
+
+    // Add a note to the contact with the message
     await fetch(`${GHL_API_BASE}/contacts/${contactId}/notes`, {
       method: "POST",
       headers: {
