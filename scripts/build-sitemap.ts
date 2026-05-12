@@ -71,23 +71,22 @@ async function workEntries(): Promise<Entry[]> {
 }
 
 async function elEntries(): Promise<Entry[]> {
+  // EL public content-hub endpoints work unauthenticated. The correct filter
+  // param is "destination" (not "syndicated_to") - matches what
+  // server/empathyLedgerClient.ts uses for the blog.list tRPC route.
+  const baseUrl =
+    process.env.EMPATHY_LEDGER_API_URL || "https://www.empathyledger.com";
   const apiKey = process.env.EMPATHY_LEDGER_API_KEY;
-  const baseUrl = process.env.EMPATHY_LEDGER_API_URL || "https://empathyledger.com";
-
-  if (!apiKey) {
-    console.warn("[sitemap] EMPATHY_LEDGER_API_KEY not set, skipping EL routes");
-    return [];
-  }
 
   const entries: Entry[] = [];
 
-  type ElItem = { slug?: string };
+  type ElItem = { slug?: string; syndicationDestinations?: string[] };
 
   async function fetchJson<T>(path: string): Promise<T | null> {
     try {
-      const res = await fetch(`${baseUrl}${path}`, {
-        headers: { Authorization: `Bearer ${apiKey}` },
-      });
+      const headers: Record<string, string> = {};
+      if (apiKey) headers.Authorization = `Bearer ${apiKey}`;
+      const res = await fetch(`${baseUrl}${path}`, { headers });
       if (!res.ok) {
         console.warn(`[sitemap] EL ${path} returned ${res.status}`);
         return null;
@@ -99,9 +98,9 @@ async function elEntries(): Promise<Entry[]> {
     }
   }
 
-  // Blog articles
+  // Blog articles - destination=harvest is server-side filtered to ~1 item today
   const articlesRes = await fetchJson<{ articles?: ElItem[] }>(
-    "/api/v1/content-hub/articles?syndicated_to=harvest&limit=200",
+    "/api/v1/content-hub/articles?destination=harvest&limit=200",
   );
   for (const a of articlesRes?.articles ?? []) {
     if (a.slug) {
@@ -109,22 +108,25 @@ async function elEntries(): Promise<Entry[]> {
     }
   }
 
-  // Stories
+  // Stories + storytellers: the EL stories/storytellers endpoints don't
+  // currently support a destination filter, so they return content from across
+  // the network (846+ items). Until there's a Harvest-specific filter, we
+  // fetch a capped page and filter client-side by syndicationDestinations.
+  // If the field is absent, skip - safer than indexing unrelated content.
   const storiesRes = await fetchJson<{ stories?: ElItem[] }>(
-    "/api/v1/content-hub/stories?syndicated_to=harvest&limit=200",
+    "/api/v1/content-hub/stories?limit=200",
   );
   for (const s of storiesRes?.stories ?? []) {
-    if (s.slug) {
+    if (s.slug && s.syndicationDestinations?.includes("harvest")) {
       entries.push({ loc: `/stories/${s.slug}`, priority: "0.5", changefreq: "monthly" });
     }
   }
 
-  // People (storytellers)
   const peopleRes = await fetchJson<{ storytellers?: ElItem[] }>(
-    "/api/v1/content-hub/storytellers?syndicated_to=harvest&limit=200",
+    "/api/v1/content-hub/storytellers?limit=200",
   );
   for (const p of peopleRes?.storytellers ?? []) {
-    if (p.slug) {
+    if (p.slug && p.syndicationDestinations?.includes("harvest")) {
       entries.push({ loc: `/people/${p.slug}`, priority: "0.5", changefreq: "monthly" });
     }
   }
