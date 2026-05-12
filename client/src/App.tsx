@@ -27,6 +27,9 @@ import Works from "./pages/Works";
 import WorkDetail from "./pages/WorkDetail";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
+import HarvestJourneyPost from "./pages/HarvestJourneyPost";
+import Membership from "./pages/Membership";
+import Journey from "./pages/Journey";
 import People from "./pages/People";
 import Person from "./pages/Person";
 import StoryDetail from "./pages/StoryDetail";
@@ -91,10 +94,17 @@ function Router() {
     return <WorkDetail slug={slug} />;
   }
   if (location === "/blog") return <Blog />;
+  if (
+    location === "/what-is-the-harvest" ||
+    location === "/blog/what-is-the-harvest" ||
+    location === "/blog/the-harvest-journey"
+  ) return <HarvestJourneyPost />;
   if (location.startsWith("/blog/")) {
     const slug = location.slice("/blog/".length).split("/")[0];
     return <BlogPost slug={slug} />;
   }
+  if (location === "/membership") return <Membership />;
+  if (location === "/journey" || location === "/story") return <Journey />;
   if (location === "/people") return <People />;
   if (location.startsWith("/people/")) {
     const slug = location.slice("/people/".length).split("/")[0];
