@@ -1,5 +1,5 @@
 {
-  "buildCommand": "pnpm exec vite build",
+  "buildCommand": "pnpm exec vite build && pnpm exec tsx scripts/build-sitemap.ts",
   "outputDirectory": "dist/public",
   "rewrites": [
     { "source": "/api/trpc/:path*", "destination": "/api/trpc/[trpc]" },
