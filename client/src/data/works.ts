@@ -126,102 +126,6 @@ export type Work = {
 
 export const works: Work[] = [
   {
-    number: "Work 02",
-    slug: "milk-crate-pavilion",
-    title: "Milk Crate Pavilion",
-    subtitle: "Milk crate, milk create — the same syllables, both true",
-    lifecycleTags: ["building"],
-    materials: "Reclaimed milk crates, scaffold, salvaged timber, community hands",
-    year: "Built March 2026",
-    heroImage: "/images/social/04-radical-scoops.png",
-    heroAlt: "The Milk Create Pavilion under construction at The Harvest, March 2026",
-    heroCredit: "Radical Scoops fellowship · Regional Arts Australia",
-    blurb:
-      "Eighty people built it together in a single weekend. Milk crates from the dairy industry, scaffold poles, found timber. The first piece of architecture on the site is also the most communal.",
-    whatItIs:
-      "A modular open-air pavilion at the heart of The Harvest. Roughly 14m × 9m, sized to fit comfortably under the pecan trees. Plays the role of gallery, theatre, market hall, dining room and weather shelter — sometimes in the same afternoon. Designed to come apart, rearrange, and grow.",
-    why:
-      "We needed a shared roof before we needed walls. A pavilion lets the community show up before the buildings finish — markets, exhibitions, films, dinners, conversations. It says clearly: this place is for gathering, and gathering is the first work.",
-    how:
-      "Built across one weekend in March 2026 with more than eighty community members under the Radical Scoops fellowship. Milk crates were sourced from the dairy industry that once powered Witta. Scaffold was hired and rebuilt as structure. Timber was offcuts, salvage, and gifts. No single builder — everyone took a corner.",
-    wittaThreads: [
-      {
-        year: "1904",
-        moment: "Maleny's first butter factory opens — the co-operative model takes root.",
-        thread:
-          "The crate is the icon of that century. Stacked, shared, returned, restacked. We took the form and made it a roof.",
-      },
-      {
-        year: "1960s",
-        moment: "Dairy industry peak — around 300 butter and cheese factories across the hinterland.",
-        thread:
-          "These crates carried the milk that built every house on this ridge. Reusing them keeps the lineage in the room.",
-      },
-      {
-        year: "2000",
-        moment: "Dairy deregulation. Farms that sustained families for generations become unviable.",
-        thread:
-          "What was discarded after deregulation becomes the architecture of the next chapter. Not nostalgia — repurpose.",
-      },
-    ],
-    hands: [
-      { name: "Eighty community members", role: "Builders, weekend of 7 March 2026" },
-      { name: "Regional Arts Australia", role: "Radical Scoops fellowship funder" },
-      { name: "Ben Knight & Nicholas Marchesi", role: "Co-founders, project leads" },
-    ],
-    link: {
-      label: "Radical Scoops fellowship",
-      href: "https://regionalarts.com.au/resources/radical-scoops",
-    },
-    related: ["the-cedar", "the-garden"],
-  },
-  {
-    number: "Work 03",
-    slug: "the-cedar",
-    title: "The Cedar",
-    subtitle: "Working with the wood the range almost lost",
-    lifecycleTags: ["building", "making"],
-    materials: "Red cedar and hoop pine from local properties · second- and third-growth",
-    year: "Sourced 2026",
-    heroImage: "/images/witta/history/bullock-team-eudlo-1905.jpg",
-    heroAlt: "Bullock teams hauling cedar logs, Eudlo district, c. 1905",
-    heroCredit: "State Library of Queensland",
-    blurb:
-      "Cedar came back. Not the giants — those went to London and never came home. But what's grown back belongs to the people who stayed. We're working with timber from a Witta resident's land.",
-    whatItIs:
-      "An ongoing collection of timber pieces being built into The Harvest — bench seats, a bar, gallery rails, the kitchen pass. Mostly red cedar and hoop pine, sourced locally rather than imported. Each piece is documented: where it came from, who milled it, where it sits.",
-    why:
-      "The range was stripped of cedar inside two generations. By 1906 it was commercially extinct. The wood we now use carries that history — it is what came back after the rush. Choosing local timber over plantation hardwood is a small act of repair, and an act of recognition.",
-    how:
-      "Sourced from Barry Rodgerig's property and other Witta residents who have nursed second-growth stands for decades. Milled by local sawyers. Used unfinished where possible. The grain stays visible. Where a knot or split tells a story, we keep it.",
-    wittaThreads: [
-      {
-        year: "1860",
-        moment: "Bunya pine reserve rescinded. Timber-getters flood in. The 'red gold' rush begins.",
-        thread:
-          "What was extracted is what we are now restoring — slowly, plank by plank.",
-      },
-      {
-        year: "1886",
-        moment: "Two giant cedar logs shipped to the Indian and Colonial Exhibition in London. No buyer — too large for any mill in the world.",
-        thread:
-          "Half of one of those logs is reportedly still in a London museum. The wood we use today is from the descendants the loggers missed.",
-      },
-      {
-        year: "1906",
-        moment: "Red cedar faces commercial extinction. One-third of Queensland's hoop and bunya pine already gone.",
-        thread:
-          "Every cedar plank in The Harvest is a quiet refusal of that ending.",
-      },
-    ],
-    hands: [
-      { name: "Barry Rodgerig", role: "27-year nurseryman, primary timber source" },
-      { name: "Local sawyers", role: "Milling and dressing" },
-      { name: "Nicholas Marchesi", role: "Material lead, gallery rail design" },
-    ],
-    related: ["milk-crate-pavilion", "the-garden"],
-  },
-  {
     number: "Work 01",
     slug: "the-garden",
     title: "The Garden",
@@ -234,11 +138,11 @@ export const works: Work[] = [
     blurb:
       "The reason anything grows here is Jurassic. Volcanic red soil, two metres of rain a year, mist from the coast that gets pushed up the range. The garden is half landscape, half practice.",
     whatItIs:
-      "The productive garden at The Harvest — beds for kitchen herbs, salad, fruiting vegetables, perennials, and a slowly building food forest. Tended by the Wednesday Maintenance Crew and a rotating roster of volunteers. Not a display garden. A working one.",
+      "The productive garden at The Harvest. Beds for kitchen herbs, salad, fruiting vegetables, perennials, and a slowly building food forest. Tended by the Wednesday Maintenance Crew and a rotating roster of volunteers. Not a display garden. A working one.",
     why:
-      "If we don't grow some of what we eat, we are not what we say we are. The garden is the daily proof. It also gives us a reason for people to come back every week — caring for something living is the strongest invitation we have.",
+      "If we don't grow some of what we eat, we are not what we say we are. The garden is the daily proof. It also gives us a reason for people to come back every week. Caring for something living is the strongest invitation we have.",
     how:
-      "Beds were laid out in late 2025 around the existing canopy. Wednesday Maintenance Crew runs weekly through the seasons — weeding, mulching, planting, harvesting. Cuttings go to the kitchen, surplus to neighbours, scraps back to compost. Decisions are made in the bed, not on paper.",
+      "Beds were laid out in late 2025 around the existing canopy. Wednesday Maintenance Crew runs weekly through the seasons. Weeding, mulching, planting, harvesting. Cuttings go to the kitchen, surplus to neighbours, scraps back to compost. Decisions are made in the bed, not on paper.",
     wittaThreads: [
       {
         year: "Time immemorial",
@@ -267,65 +171,116 @@ export const works: Work[] = [
     related: ["milk-crate-pavilion", "the-shop"],
   },
   {
-    number: "Work 04",
-    slug: "the-sauna",
-    title: "The Sauna",
-    subtitle: "A communal warmth ritual for a cold-mist hinterland",
-    lifecycleTags: ["concept", "consulting"],
-    materials: "Cedar lining · timber-fire heater · spring-fed cold plunge (proposed)",
-    year: "Proposed 2026–27",
-    heroImage: "/images/sketch-share.png",
-    heroAlt: "A sketch placeholder for the proposed Witta sauna",
+    number: "Work 02",
+    slug: "milk-crate-pavilion",
+    title: "Milk Crate Pavilion",
+    subtitle: "Milk crate, milk create. The same syllables, both true.",
+    lifecycleTags: ["building"],
+    materials: "Reclaimed milk crates, scaffold, salvaged timber, community hands",
+    year: "Built March 2026",
+    heroImage: "/images/social/04-radical-scoops.png",
+    heroAlt: "The Milk Crate Pavilion under construction at The Harvest, March 2026",
+    heroCredit: "Radical Scoops fellowship · Regional Arts Australia",
     blurb:
-      "Five hundred and sixty metres up. Five to ten degrees cooler than the coast. Mist on the ridge most mornings. A sauna is not a luxury here — it is a way the community already wants to gather.",
+      "Eighty people built it together in a single weekend. Milk crates from the dairy industry, scaffold poles, found timber. The first piece of architecture on the site is also the most communal.",
     whatItIs:
-      "A small communal sauna planned for The Harvest site, sized for six to eight people. Wood-fired. Designed to sit close to the garden, with a cold-water plunge or shower nearby. Bookable by members and open at scheduled community sessions.",
+      "A modular open-air pavilion at the heart of The Harvest. Roughly 14m × 9m, sized to fit comfortably under the pecan trees. Plays the role of gallery, theatre, market hall, dining room and weather shelter, sometimes in the same afternoon. Designed to come apart, rearrange, and grow.",
     why:
-      "Witta's first European settlers were German, and the cooperative culture they brought — shared equipment, shared facilities — is part of why this place exists. A sauna is a tiny, useful version of that: a warm room nobody owns alone. It also answers a real question of the climate. The range is wet, cool, and often misty. Heat is a gift here, and shared heat doubles as conversation.",
+      "We needed a shared roof before we needed walls. A pavilion lets the community show up before the buildings finish. Markets, exhibitions, films, dinners, conversations. It says clearly: this place is for gathering, and gathering is the first work.",
     how:
-      "Concept stage. Likely cedar-lined (see The Cedar) and stove-heated, with an off-grid or low-draw electrical setup. Build sequence depends on sub-operator and member feedback. May be the first piece The Harvest builds with its own revenue rather than grant funding.",
+      "Built across one weekend in March 2026 with more than eighty community members under the Radical Scoops fellowship. Milk crates were sourced from the dairy industry that once powered Witta. Scaffold was hired and rebuilt as structure. Timber was offcuts, salvage, and gifts. No single builder. Everyone took a corner.",
     wittaThreads: [
       {
-        year: "561m elevation",
-        moment: "Witta sits high. Cooler, mistier, and 5–10°C below the coast.",
+        year: "1904",
+        moment: "Maleny's first butter factory opens. The co-operative model takes root.",
         thread:
-          "A sauna does for the body what the kitchen does for the table. It makes the climate hospitable on the climate's terms.",
+          "The crate is the icon of that century. Stacked, shared, returned, restacked. We took the form and made it a roof.",
       },
       {
-        year: "1887",
-        moment: "German families from Brisbane's Logan district select land and name the settlement Teutoburg.",
+        year: "1960s",
+        moment: "Dairy industry peak. Around 300 butter and cheese factories across the hinterland.",
         thread:
-          "Communal warmth has European roots in this village. We're not importing the practice — we're returning to one.",
+          "These crates carried the milk that built every house on this ridge. Reusing them keeps the lineage in the room.",
       },
       {
-        year: "Cooperative roots",
-        moment: "Maleny co-op region: shared butter factories, pooled equipment, mutual infrastructure.",
+        year: "2000",
+        moment: "Dairy deregulation. Farms that sustained families for generations become unviable.",
         thread:
-          "A sauna is co-op infrastructure for the body. Same logic, smaller scale.",
+          "What was discarded after deregulation becomes the architecture of the next chapter. Not nostalgia. Repurpose.",
       },
     ],
     hands: [
-      { name: "Community members", role: "Co-design (open from late 2026)" },
-      { name: "Local builders", role: "TBC" },
+      { name: "Eighty community members", role: "Builders, weekend of 7 March 2026" },
+      { name: "Regional Arts Australia", role: "Radical Scoops fellowship funder" },
+      { name: "Ben Knight & Nicholas Marchesi", role: "Co-founders, project leads" },
     ],
-    related: ["milk-crate-pavilion", "the-shop"],
+    link: {
+      label: "Radical Scoops fellowship",
+      href: "https://regionalarts.com.au/resources/radical-scoops",
+    },
+    related: ["the-cedar", "the-garden"],
   },
   {
-    number: "Work 05",
+    number: "Work 03",
+    slug: "the-cedar",
+    title: "The Cedar",
+    subtitle: "Working with the wood the range almost lost",
+    lifecycleTags: ["building", "making"],
+    materials: "Red cedar and hoop pine from local properties · second- and third-growth",
+    year: "Sourced 2026",
+    heroImage: "/images/compendium/barry/IMG_5699.jpg",
+    heroAlt: "Barry in his shed at Witta, the primary source of cedar for The Harvest",
+    blurb:
+      "Cedar came back. Not the giants. Those went to London and never came home. But what's grown back belongs to the people who stayed. We're working with timber from a Witta resident's land.",
+    whatItIs:
+      "An ongoing collection of timber pieces being built into The Harvest. Bench seats, a bar, gallery rails, the kitchen pass. Mostly red cedar and hoop pine, sourced locally rather than imported. Each piece is documented: where it came from, who milled it, where it sits.",
+    why:
+      "The range was stripped of cedar inside two generations. By 1906 it was commercially extinct. The wood we now use carries that history. It is what came back after the rush. Choosing local timber over plantation hardwood is a small act of repair, and an act of recognition.",
+    how:
+      "Sourced from Barry Rodgerig's property and other Witta residents who have nursed second-growth stands for decades. Milled by local sawyers. Used unfinished where possible. The grain stays visible. Where a knot or split tells a story, we keep it.",
+    wittaThreads: [
+      {
+        year: "1860",
+        moment: "Bunya pine reserve rescinded. Timber-getters flood in. The 'red gold' rush begins.",
+        thread:
+          "What was extracted is what we are now restoring, slowly, plank by plank.",
+      },
+      {
+        year: "1886",
+        moment: "Two giant cedar logs shipped to the Indian and Colonial Exhibition in London. No buyer, too large for any mill in the world.",
+        thread:
+          "Half of one of those logs is reportedly still in a London museum. The wood we use today is from the descendants the loggers missed.",
+      },
+      {
+        year: "1906",
+        moment: "Red cedar faces commercial extinction. One-third of Queensland's hoop and bunya pine already gone.",
+        thread:
+          "Every cedar plank in The Harvest is a quiet refusal of that ending.",
+      },
+    ],
+    hands: [
+      { name: "Barry Rodgerig", role: "27-year nurseryman, primary timber source" },
+      { name: "Local sawyers", role: "Milling and dressing" },
+      { name: "Nicholas Marchesi", role: "Material lead, gallery rail design" },
+    ],
+    related: ["milk-crate-pavilion", "the-garden"],
+  },
+  {
+    number: "Work 04",
     slug: "the-shop",
     title: "The Shop",
     subtitle: "Reclaiming the village shop that Witta hasn't had in a generation",
     lifecycleTags: ["concept", "planned"],
-    materials: "Local makers · co-op model · low overhead · honesty more than ornament",
+    materials: "Local makers · shared shelf test · low overhead · honesty more than ornament",
     year: "Proposed 2027",
-    heroImage: "/images/sketch-food.png",
-    heroAlt: "A sketch placeholder for the proposed community shop at The Harvest",
+    heroImage: "/images/local-produce.jpg",
+    heroAlt: "Local produce gathered for The Harvest shop test",
     blurb:
-      "Witta has roughly 1,300 residents and no shops, no pub. The Shop is a small, slow attempt to put one back — on co-operative terms, with the makers who already live here.",
+      "Witta has roughly 1,300 residents and no shops, no pub. The Shop is a small, slow attempt to put one back with a shared shelf and the makers who already live here.",
     whatItIs:
-      "A small retail space at The Harvest stocking what Witta and the surrounding hinterland produces — preserves, ferments, ceramics, prints, oils, herbs, baked goods, gifts from the residencies. Run on a consignment-and-co-op model rather than a buy-low-sell-high one. Sublicenced under the lease, at arm's length from Harvest Pty's programming.",
+      "A small retail space at The Harvest stocking what Witta and the surrounding hinterland produces. Preserves, ferments, ceramics, prints, oils, herbs, baked goods, gifts from the residencies. Run as a consignment and shared-shelf test rather than a buy-low-sell-high shop. Sublicenced under the lease, at arm's length from Harvest Pty's programming.",
     why:
-      "The strategic plan calls for sub-licenced retail. The deeper reason is that Witta's last shop closed inside living memory and the gap is felt every week. A village without a shop has to drive for everything. A shop with the right shape — not Coles, not boutique — gives makers a shelf and gives neighbours a reason to walk past.",
+      "The strategic plan calls for sub-licenced retail. The deeper reason is that Witta's last shop closed inside living memory and the gap is felt every week. A village without a shop has to drive for everything. A shop with the right shape, not Coles, not boutique, gives makers a shelf and gives neighbours a reason to walk past.",
     how:
       "Sub-licenced under the lease, capital-light by design. Co-design with local makers and the Wednesday Maintenance Crew. Honest signage: who made it, where it came from, what they got paid. Open progressively as products and operators are ready, not all at once.",
     wittaThreads: [
@@ -339,7 +294,7 @@ export const works: Work[] = [
         year: "1904",
         moment: "Maleny's first butter factory opens. The co-operative model takes root.",
         thread:
-          "The first commerce here was co-operative. The Shop returns to that operating system, scaled to a village.",
+          "The first commerce here was co-operative. The Shop tests that shared operating instinct at village scale before any formal structure is claimed.",
       },
       {
         year: "1980s",

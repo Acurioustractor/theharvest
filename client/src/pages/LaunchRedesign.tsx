@@ -40,7 +40,7 @@ const rooms: Room[] = [
   {
     name: "Garden",
     verb: "Grow",
-    body: "Beds, nursery life, working bees, kids, soil, and food in the ground.",
+    body: "Beds, nursery life, work days, kids, soil, and food in the ground.",
     image: "/images/compendium/sophie-garden.jpg",
     alt: "Sophie working in the garden at The Harvest",
     icon: Sprout,

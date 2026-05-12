@@ -31,7 +31,7 @@ interface ProgressImage {
 // Progress images featuring the transformation journey
 // These images showcase different aspects of The Harvest:
 // - before: Original state when the nursery was acquired
-// - during: Renovation and community working bees
+// - during: Renovation and community work days
 // - after: Completed spaces in action
 // - milestone: Key moments in the community's story
 const sampleProgressImages: ProgressImage[] = [
@@ -85,7 +85,7 @@ const sampleProgressImages: ProgressImage[] = [
   {
     id: "6",
     src: "/images/community-gathering.jpg",
-    title: "Community Working Bee",
+    title: "Community Work Day",
     description: "Neighbours came together on clearing days, turning an overgrown nursery into a community hub.",
     date: "2024-06",
     category: "during",

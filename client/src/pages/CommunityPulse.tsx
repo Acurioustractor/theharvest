@@ -1,5 +1,6 @@
 import { useState, useEffect, type CSSProperties } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
 import BauhausFooter from "@/components/BauhausFooter";
 
@@ -479,7 +480,7 @@ function Step3({ data, update, isMobile }: {
         padding: 24,
       }}>
         <QuestionLabel>Stay connected (optional)</QuestionLabel>
-        <QuestionHint>We'll only use this to keep you in the loop about The Harvest.</QuestionHint>
+        <QuestionHint>Add your name if you want email follow-up from The Harvest.</QuestionHint>
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           <TextInput
             value={data.name}
@@ -600,6 +601,10 @@ export default function CommunityPulse() {
   const handleSubmit = async () => {
     setSubmitting(true);
     try {
+      if (data.email && !data.name.trim()) {
+        toast.error("Add your name before using email follow-up.");
+        return;
+      }
       await submitMutation.mutateAsync({
         ...data,
         email: data.email || undefined,

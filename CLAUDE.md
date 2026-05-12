@@ -87,7 +87,7 @@ drizzle/            # Schema + migrations
 ## Design Direction
 
 Current exploration: Bauhaus-inspired brand identity (see `/bauhaus` route).
-- Three zones: Garden, Kitchen, Art Space
+- Three zones: Garden, Events, Art Space (brand top-line). "Kitchen" still exists as a future sublicenced operation but is no longer the top-line public-facing room.
 - Principle: simplicity and intentionality — "if you do a bit of everything, what the fuck is it?"
 - iPhone unboxing metaphor: clear first impression, depth behind it
 - Co-design ethos: kids build the kids area, artists shape the art space

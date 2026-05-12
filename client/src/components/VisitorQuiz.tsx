@@ -267,6 +267,7 @@ export function VisitorQuiz({ trigger, onComplete }: VisitorQuizProps) {
   const [answers, setAnswers] = useState<Record<string, string | string[]>>({});
   const [showResult, setShowResult] = useState(false);
   const [persona, setPersona] = useState<PersonaResult | null>(null);
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -317,13 +318,14 @@ export function VisitorQuiz({ trigger, onComplete }: VisitorQuizProps) {
   const quizMutation = trpc.quiz.submit.useMutation();
 
   const handleEmailSubmit = async () => {
-    if (!email || !persona) return;
+    if (!name.trim() || !email.trim() || !persona) return;
 
     setIsSubmitting(true);
 
     try {
       await quizMutation.mutateAsync({
-        email,
+        name: name.trim(),
+        email: email.trim(),
         persona: persona.id,
         ghlTags: persona.ghlTags,
         motivation: answers.motivation as string | undefined,
@@ -360,6 +362,7 @@ export function VisitorQuiz({ trigger, onComplete }: VisitorQuizProps) {
       setAnswers({});
       setShowResult(false);
       setPersona(null);
+      setName("");
       setEmail("");
     }, 300);
   };
@@ -519,17 +522,24 @@ export function VisitorQuiz({ trigger, onComplete }: VisitorQuizProps) {
                       <p className="text-sm text-stone-600 mb-3">
                         Get personalized updates based on your interests?
                       </p>
-                      <div className="flex gap-2">
+                      <div className="grid gap-2 sm:grid-cols-[1fr_1fr_auto]">
+                        <Input
+                          type="text"
+                          placeholder="Your name"
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
+                          className="min-w-0"
+                        />
                         <Input
                           type="email"
                           placeholder="Your email"
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
-                          className="flex-1"
+                          className="min-w-0"
                         />
                         <Button
                           onClick={handleEmailSubmit}
-                          disabled={!email || isSubmitting}
+                          disabled={!name.trim() || !email.trim() || isSubmitting}
                           className="bg-amber-500 hover:bg-amber-600 text-black"
                         >
                           {isSubmitting ? (

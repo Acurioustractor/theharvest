@@ -44,7 +44,7 @@ export function EventSubmissionDialog({ onEventSubmitted }: { onEventSubmitted?:
         category: category as "market" | "community" | "arts" | "workshop" | "music",
         description: formData.get("description") as string,
         contactEmail: formData.get("contact") as string,
-        submittedBy: formData.get("submittedBy") as string || undefined,
+        submittedBy: String(formData.get("submittedBy") || "").trim(),
       });
     } finally {
       setIsSubmitting(false);
@@ -121,8 +121,8 @@ export function EventSubmissionDialog({ onEventSubmitted }: { onEventSubmitted?:
           </div>
 
           <div className="grid gap-2">
-            <Label htmlFor="submittedBy">Your Name (optional)</Label>
-            <Input id="submittedBy" name="submittedBy" placeholder="Your name or organization" />
+            <Label htmlFor="submittedBy">Your Name</Label>
+            <Input id="submittedBy" name="submittedBy" placeholder="Your name or organization" required />
           </div>
 
           <DialogFooter>

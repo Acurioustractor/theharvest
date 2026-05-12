@@ -26,8 +26,12 @@ const isDevMode = () => {
 };
 
 // Enable dev login
-export const enableDevLogin = () => {
+export const enableDevLogin = (redirectTo?: string) => {
   localStorage.setItem("dev-admin-login", "true");
+  if (redirectTo) {
+    window.location.href = redirectTo;
+    return;
+  }
   window.location.reload();
 };
 

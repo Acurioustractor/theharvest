@@ -101,7 +101,7 @@ export default function Login() {
   // Dev mode: simple login bypass - no Supabase, just localStorage
   const handleDevLogin = () => {
     toast.success("Logging in as Dev Admin...");
-    enableDevLogin(); // Sets localStorage flag and reloads
+    enableDevLogin(redirectTo); // Sets localStorage flag and returns to the requested page.
   };
 
   const isDev = window.location.hostname === "localhost";

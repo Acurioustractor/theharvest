@@ -300,8 +300,11 @@ export default function WorkDetail({ slug }: { slug: string }) {
                   >
                     <p className="text-stone-800 font-medium">
                       {linked ? (
-                        <Link href={`/people/${linked.slug}`}>
-                          <a className="underline-offset-2 hover:text-amber-700 hover:underline">{h.name}</a>
+                        <Link
+                          href={`/people/${linked.slug}`}
+                          className="underline-offset-2 hover:text-amber-700 hover:underline"
+                        >
+                          {h.name}
                         </Link>
                       ) : (
                         h.name
@@ -328,10 +331,11 @@ export default function WorkDetail({ slug }: { slug: string }) {
             )}
 
             <div className="mt-6">
-              <Link href="/people">
-                <a className="inline-flex items-center gap-2 text-sm font-semibold text-stone-600 hover:text-amber-700">
-                  Meet the people of The Harvest <ArrowRight className="h-4 w-4" />
-                </a>
+              <Link
+                href="/people"
+                className="inline-flex items-center gap-2 text-sm font-semibold text-stone-600 hover:text-amber-700"
+              >
+                Meet the people of The Harvest <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
           </div>
@@ -779,7 +783,7 @@ function WorkHero({ work }: { work: import("@/data/works").Work }) {
     );
   }
 
-  const photos = query.data?.media ?? [];
+  const photos = (query.data?.media ?? []).filter((photo) => isImageMediaSrc(photo.src));
   const elHero = photos.find((p) => p.special?.includes("hero")) ?? photos[0];
 
   const fallbackSrc = elHero?.src ?? work.heroImage;
@@ -942,7 +946,7 @@ function WorkPhotographsSection({ slug }: { slug: string }) {
   const { user } = useAuth();
   const isAdmin = user?.role === "admin";
   const query = trpc.gallery.forWork.useQuery({ slug, limit: 24 });
-  const photos = query.data?.media ?? [];
+  const photos = (query.data?.media ?? []).filter((photo) => isImageMediaSrc(photo.src));
 
   // For visitors: hide section entirely when there are no photos.
   // For admins: still render the section so the "Add photo" CTA is reachable.
@@ -986,7 +990,7 @@ function WorkPhotographsSection({ slug }: { slug: string }) {
               <p className="text-stone-600 mb-2">No photos tagged for this work yet.</p>
               <p className="text-stone-500 text-sm">
                 Click <strong>Add a photo to this work</strong> above. In EL admin, find or
-                upload your photo, then add the <code className="font-mono bg-stone-100 px-1.5 py-0.5 rounded">Milk Create Pavilion</code>{" "}
+                upload your photo, then add the <code className="font-mono bg-stone-100 px-1.5 py-0.5 rounded">Milk Crate Pavilion</code>{" "}
                 tag (or whichever work this is). It'll appear here within a few minutes.
               </p>
             </div>
@@ -1028,6 +1032,11 @@ function WorkPhotographsSection({ slug }: { slug: string }) {
       </div>
     </section>
   );
+}
+
+function isImageMediaSrc(src?: string | null) {
+  if (!src) return false;
+  return !/\.(mp4|mov|m4v|webm|avi)$/i.test(src.split("?")[0]);
 }
 
 type JournalBucket = "past" | "present" | "forthcoming";

@@ -69,7 +69,7 @@ const FORMS: FormConfig[] = [
     icon: Lightbulb,
     tagline: "Every good thing starts with someone saying 'what if we...'",
     fields: [
-      { name: "name", label: "Your name", type: "text" },
+      { name: "name", label: "Your name", type: "text", required: true },
       { name: "email", label: "Email", type: "email", required: true },
       {
         name: "ideaType",
