@@ -67,7 +67,6 @@ type ElAdminContext = {
     id: string;
     title: string | null;
     organization_id: string | null;
-    tenant_id: string | null;
     created_by: string;
   };
   tenantId: string;

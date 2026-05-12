@@ -278,7 +278,7 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
                                         location === item.href ? "text-amber-700" : "text-stone-900"
                                       )}>
                                         {item.label}
-                                        {"badge" in item && item.badge && (
+                                        {"badge" in item && typeof item.badge === "string" && item.badge && (
                                           <span className="px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide bg-amber-100 text-amber-700 rounded">
                                             {item.badge}
                                           </span>

@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -146,18 +145,15 @@ export function ProgressGallery({
   const [lightboxIndex, setLightboxIndex] = useState(0);
 
   // Fetch from local database API
-  const { data: localImages } = useQuery({
-    queryKey: ["gallery", "list"],
-    queryFn: () => trpc.gallery.list.query(),
+  const { data: localImages } = trpc.gallery.list.useQuery(undefined, {
     enabled: source === "local",
   });
 
   // Fetch from Empathy Ledger
-  const { data: elResponse } = useQuery({
-    queryKey: ["gallery", "fromEL", pageTag, theme],
-    queryFn: () => trpc.gallery.fromEL.query({ tag: pageTag, theme }),
-    enabled: source === "empathy-ledger",
-  });
+  const { data: elResponse } = trpc.gallery.fromEL.useQuery(
+    { tag: pageTag, theme },
+    { enabled: source === "empathy-ledger" },
+  );
 
   // Transform local DB images to match our interface
   const transformedLocalImages: ProgressImage[] | undefined = localImages?.map((img: {

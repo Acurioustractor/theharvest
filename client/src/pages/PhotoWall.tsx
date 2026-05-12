@@ -47,7 +47,7 @@ export default function PhotoWall() {
   const isMobile = useMediaQuery("(max-width: 768px)");
   const { isAdmin, toggle: toggleAdmin } = useAdmin();
   const tapCount = useRef(0);
-  const tapTimer = useRef<ReturnType<typeof setTimeout>>();
+  const tapTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   const handleLogoTap = () => {
     tapCount.current++;

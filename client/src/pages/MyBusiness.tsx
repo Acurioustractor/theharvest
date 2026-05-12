@@ -248,9 +248,9 @@ export default function MyBusiness() {
                                     size="sm" 
                                     className="bg-[#c17c54] hover:bg-[#a06543] shrink-0"
                                     onClick={() => handleClaim(business.id)}
-                                    disabled={claimBusiness.isPending}
+                                    disabled={claimBusinessMutation.isPending}
                                   >
-                                    {claimBusiness.isPending ? (
+                                    {claimBusinessMutation.isPending ? (
                                       <Loader2 className="h-4 w-4 animate-spin" />
                                     ) : (
                                       "Claim"
