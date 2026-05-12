@@ -5,6 +5,7 @@ import { randomUUID } from "node:crypto";
 import { readdir, readFile, stat, unlink } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { basename, extname, join, relative } from "node:path";
+import { empathyLedgerClient } from "./empathyLedgerClient.js";
 
 dotenv.config({ path: ".env.local", override: false, quiet: true });
 
@@ -1474,16 +1475,36 @@ function slugifyDisplayName(name: string): string {
 }
 
 export async function listPublicHarvestStorytellers(): Promise<PublicHarvestStoryteller[]> {
-  const { supabase } = await createElAdminContext();
+  // Refactored 2026-05-13: was hitting EL's Supabase via service-role keys, which
+  // requires EMPATHY_LEDGER_SUPABASE_URL/SERVICE_ROLE_KEY env vars not set in Vercel
+  // prod. Now uses EL's public content-hub API (same pattern as fetchArticles +
+  // photo picker). No service-role keys needed anywhere on the public path.
+  const tellersRes = await empathyLedgerClient.fetchStorytellers({
+    project: "the-harvest",
+    limit: 200,
+  });
 
-  const { data: links, error: linkErr } = await supabase
-    .from("project_storytellers")
-    .select("role, status, storytellers(id, display_name, bio, public_avatar_url, location, is_active)")
-    .eq("project_id", HARVEST_PROJECT_ID)
-    .eq("status", "active");
-  if (linkErr) throw linkErr;
-  if (!links) return [];
+  // For article counts: fetch the project's articles once and group by storyteller.
+  // EL's storyteller list doesn't include counts. Stories/transcripts not exposed
+  // in a way we can attribute here yet (see PR notes), so leave those at 0.
+  type ArticleWithStoryteller = { storyteller?: { id?: string } | null };
+  const articlesRes = await empathyLedgerClient.fetchArticles({
+    project: "the-harvest",
+    limit: 200,
+  });
+  const articleCounts = new Map<string, { total: number; published: number }>();
+  for (const a of (articlesRes.articles ?? []) as ArticleWithStoryteller[]) {
+    const id = a.storyteller?.id;
+    if (!id) continue;
+    const cur = articleCounts.get(id) ?? { total: 0, published: 0 };
+    cur.total += 1;
+    cur.published += 1; // public API only returns published
+    articleCounts.set(id, cur);
+  }
+  const storyCounts = new Map<string, number>(); // empty until EL public stories filter works
 
+  // Adapter so the existing transcript-attribution logic below can keep shape.
+  // EL public API does expose transcriptCount per storyteller.
   type LinkRow = {
     role: string | null;
     status: string | null;
@@ -1496,52 +1517,26 @@ export async function listPublicHarvestStorytellers(): Promise<PublicHarvestStor
       is_active: boolean | null;
     } | null;
   };
-
-  const rows = (links as unknown as LinkRow[]).filter((r) => r.storytellers && r.storytellers.display_name);
+  const rows: LinkRow[] = tellersRes.storytellers.map((t) => ({
+    role: null, // public API doesn't expose per-project role yet
+    status: "active",
+    storytellers: {
+      id: t.id,
+      display_name: t.displayName,
+      bio: t.bio,
+      public_avatar_url: t.avatarUrl,
+      location: t.location ?? null,
+      is_active: true,
+    },
+  }));
   const ids = rows.map((r) => r.storytellers!.id);
 
-  // Article + story counts per storyteller.
-  const articleCounts = new Map<string, { total: number; published: number }>();
-  const storyCounts = new Map<string, number>();
-  if (ids.length > 0) {
-    const { data: articles } = await supabase
-      .from("articles")
-      .select("author_storyteller_id, status")
-      .in("author_storyteller_id", ids);
-    for (const a of (articles ?? []) as Array<{ author_storyteller_id: string; status: string | null }>) {
-      const cur = articleCounts.get(a.author_storyteller_id) ?? { total: 0, published: 0 };
-      cur.total += 1;
-      if (a.status === "published") cur.published += 1;
-      articleCounts.set(a.author_storyteller_id, cur);
-    }
-
-    const { data: stories } = await supabase
-      .from("stories")
-      .select("author_id, is_public")
-      .eq("project_id", HARVEST_PROJECT_ID)
-      .in("author_id", ids);
-    for (const s of (stories ?? []) as Array<{ author_id: string; is_public: boolean | null }>) {
-      if (s.is_public) storyCounts.set(s.author_id, (storyCounts.get(s.author_id) ?? 0) + 1);
-    }
+  // Transcript counts come straight from the storyteller API response.
+  const transcriptCountByTeller = new Map<string, number>();
+  for (const t of tellersRes.storytellers) {
+    if (typeof t.transcriptCount === "number") transcriptCountByTeller.set(t.id, t.transcriptCount);
   }
-
-  // Transcript counts via best-effort name match (transcripts have no formal author link).
-  const { data: trRows } = await supabase
-    .from("transcripts")
-    .select("title, metadata")
-    .eq("project_id", HARVEST_PROJECT_ID);
-  const transcriptCounts = new Map<string, number>();
-  for (const r of rows) {
-    const first = r.storytellers!.display_name!.toLowerCase().split(/\s+/).filter(Boolean)[0] ?? "";
-    if (first.length < 3) continue;
-    let count = 0;
-    for (const tr of (trRows ?? []) as Array<{ title: string | null; metadata: any }>) {
-      const t = (tr.title ?? "").toLowerCase();
-      const m = JSON.stringify(tr.metadata ?? {}).toLowerCase();
-      if (t.includes(first) || m.includes(first)) count += 1;
-    }
-    transcriptCounts.set(r.storytellers!.id, count);
-  }
+  void ids;
 
   return rows.map((r): PublicHarvestStoryteller => {
     const s = r.storytellers!;
@@ -1557,7 +1552,7 @@ export async function listPublicHarvestStorytellers(): Promise<PublicHarvestStor
       articleCount: counts.total,
       publishedArticleCount: counts.published,
       publishedStoryCount: storyCounts.get(s.id) ?? 0,
-      transcriptCount: transcriptCounts.get(s.id) ?? 0,
+      transcriptCount: transcriptCountByTeller.get(s.id) ?? 0,
     };
   });
 }
@@ -1630,107 +1625,61 @@ async function listLocalCompendiumPhotos(firstName: string): Promise<PublicStory
 export async function getPublicHarvestStorytellerBySlug(
   slug: string,
 ): Promise<PublicHarvestStorytellerDetail | null> {
+  // Refactored 2026-05-13: was hitting EL's Supabase via service-role keys
+  // (broken in prod). Now uses EL public content-hub API.
+  //
+  // Coverage today vs old Supabase-direct path:
+  //   articles        - same (filters by storyteller.id from articles API)
+  //   articles fallback (slug name-match) - DROPPED (EL doesn't expose unattributed
+  //                                          articles via public API; the fallback
+  //                                          was a hack for unclaimed legacy posts)
+  //   stories         - EMPTY until EL exposes `?project=the-harvest` filter on stories
+  //   transcripts     - EMPTY (no public transcripts endpoint)
+  //   localPhotos     - local compendium folder (filesystem) still works
+  //   EL photos       - DROPPED until EL exposes `?storyteller=<id>` filter on /media
+  //                     (current /media endpoint returns same 394 items regardless)
   const all = await listPublicHarvestStorytellers();
   const match = all.find((s) => s.slug === slug);
   if (!match) return null;
 
-  const { supabase } = await createElAdminContext();
-
-  const { data: claimed } = await supabase
-    .from("articles")
-    .select("id, title, slug, excerpt, published_at, themes, featured_image_id, primary_project, status, author_storyteller_id")
-    .eq("author_storyteller_id", match.id)
-    .order("published_at", { ascending: false, nullsFirst: false });
-
-  // Slug-based fallback: surface published articles whose slug contains the
-  // storyteller's first-name token AND look Harvest-flavoured (slug or title
-  // mentions harvest / garden / milk-crate / witta / one of the work slugs),
-  // EXCLUDING any already claimed (avoid double-listing).
   const firstName = match.displayName.toLowerCase().split(/\s+/).filter(Boolean)[0] ?? "";
-  let fallback: any[] = [];
-  if (firstName.length >= 3) {
-    const claimedIds = new Set((claimed ?? []).map((a: any) => a.id));
-    const { data: candidates } = await supabase
-      .from("articles")
-      .select("id, title, slug, excerpt, published_at, themes, featured_image_id, primary_project, status, author_storyteller_id")
-      .eq("status", "published")
-      .is("author_storyteller_id", null)
-      .or(`slug.ilike.%${firstName}%,title.ilike.%${firstName}%`);
-    const harvestSignals = ["harvest", "garden", "milk-crate", "witta", "the-cedar", "the-shop"];
-    fallback = (candidates ?? []).filter((a: any) => {
-      if (claimedIds.has(a.id)) return false;
-      const hay = `${a.slug ?? ""} ${a.title ?? ""} ${a.primary_project ?? ""}`.toLowerCase();
-      return harvestSignals.some((s) => hay.includes(s));
-    });
-  }
 
-  const articles: PublicStorytellerArticle[] = [...(claimed ?? []), ...fallback]
-    .filter((a: any) => a.status === "published")
-    .map((a: any) => ({
+  type ArticleWithStoryteller = {
+    id: string;
+    title: string | null;
+    slug: string | null;
+    excerpt: string | null;
+    publishedAt: string | null;
+    themes?: string[];
+    featuredImageUrl?: string | null;
+    primaryProject?: string | null;
+    storyteller?: { id?: string } | null;
+  };
+
+  const articlesRes = await empathyLedgerClient.fetchArticles({
+    project: "the-harvest",
+    limit: 200,
+  });
+  const articles: PublicStorytellerArticle[] = (
+    articlesRes.articles as unknown as ArticleWithStoryteller[]
+  )
+    .filter((a) => a.storyteller?.id === match.id)
+    .map((a) => ({
       id: a.id,
       title: a.title ?? "(untitled)",
       slug: a.slug,
       excerpt: a.excerpt,
-      publishedAt: a.published_at,
+      publishedAt: a.publishedAt,
       themes: Array.isArray(a.themes) ? a.themes : [],
-      featuredImageId: a.featured_image_id,
-      primaryProject: a.primary_project,
+      featuredImageId: null, // public API returns URL not id; not used downstream
+      primaryProject: a.primaryProject ?? null,
     }));
 
-  const { data: storyRows } = await supabase
-    .from("stories")
-    .select("id, title, summary, themes, is_public, created_at")
-    .eq("project_id", HARVEST_PROJECT_ID)
-    .eq("author_id", match.id)
-    .eq("is_public", true)
-    .order("created_at", { ascending: false });
-
-  const stories: PublicStorytellerStory[] = (storyRows ?? []).map((s: any) => ({
-    id: s.id,
-    title: s.title ?? "(untitled)",
-    summary: s.summary,
-    themes: s.themes,
-    isPublic: !!s.is_public,
-    createdAt: s.created_at,
-  }));
-
-  // Best-effort transcript attribution — match title or metadata to first-name token.
-  // Only metadata fields surfaced; raw transcript_content stays admin-only since
-  // it's a recording of someone's voice and may not have public-publish consent.
-  let transcripts: PublicStorytellerTranscript[] = [];
-  if (firstName.length >= 3) {
-    const { data: trRows } = await supabase
-      .from("transcripts")
-      .select("id, title, recording_date, duration_seconds, word_count, processing_status, metadata")
-      .eq("project_id", HARVEST_PROJECT_ID);
-    transcripts = (trRows ?? [])
-      .filter((row: any) => {
-        const t = (row.title ?? "").toLowerCase();
-        const m = JSON.stringify(row.metadata ?? {}).toLowerCase();
-        return t.includes(firstName) || m.includes(firstName);
-      })
-      .map((row: any) => ({
-        id: row.id,
-        title: row.title ?? "(untitled transcript)",
-        recordingDate: row.recording_date,
-        durationSeconds: row.duration_seconds,
-        wordCount: row.word_count,
-      }));
-  }
-
+  const stories: PublicStorytellerStory[] = [];
+  const transcripts: PublicStorytellerTranscript[] = [];
   const localPhotos = await listLocalCompendiumPhotos(firstName);
-  const elPhotos = await listElPhotosForStoryteller(match.id);
-  // Dedupe: prefer local (curated) over EL when filenames overlap.
-  const localFiles = new Set(localPhotos.map((p) => p.src.split("/").pop() ?? ""));
-  const mergedPhotos = [
-    ...localPhotos,
-    ...elPhotos.filter((p) => {
-      const file = p.src.split("/").pop() ?? "";
-      return !localFiles.has(file);
-    }),
-  ];
 
-  return { ...match, articles, stories, transcripts, localPhotos: mergedPhotos };
+  return { ...match, articles, stories, transcripts, localPhotos };
 }
 
 // ---------------------------------------------------------------------------
@@ -1905,60 +1854,17 @@ export type PublicHarvestStoryDetail = {
   } | null;
 };
 
-export async function getPublicHarvestStoryById(storyId: string): Promise<PublicHarvestStoryDetail | null> {
-  const { supabase } = await createElAdminContext();
-  const { data, error } = await supabase
-    .from("stories")
-    .select("id, title, content, summary, themes, created_at, updated_at, author_id, is_public, project_id")
-    .eq("id", storyId)
-    .maybeSingle();
-  if (error) throw error;
-  if (!data) return null;
-  if (!data.is_public) return null;
-  if (data.project_id !== HARVEST_PROJECT_ID) return null;
-
-  // Resolve author. author_id can be storyteller_id OR profile_id (mixed data).
-  const storytellers = await listPublicHarvestStorytellers();
-  const byStoryteller = storytellers.find((s) => s.id === data.author_id);
-  let author: PublicHarvestStoryDetail["author"] = null;
-  if (byStoryteller) {
-    author = {
-      id: byStoryteller.id,
-      slug: byStoryteller.slug,
-      displayName: byStoryteller.displayName,
-      avatarUrl: byStoryteller.avatarUrl,
-    };
-  } else if (data.author_id) {
-    // Try matching by profile_id via the storytellers join.
-    const { data: stRow } = await supabase
-      .from("storytellers")
-      .select("id, display_name, public_avatar_url")
-      .eq("profile_id", data.author_id)
-      .maybeSingle();
-    if (stRow) {
-      const harvestMatch = storytellers.find((s) => s.id === (stRow as any).id);
-      author = {
-        id: (stRow as any).id,
-        slug: harvestMatch?.slug ?? null,
-        displayName: (stRow as any).display_name ?? "Storyteller",
-        avatarUrl: (stRow as any).public_avatar_url ?? null,
-      };
-    }
-  }
-
-  const wordCount = (data.content ?? "").trim().split(/\s+/).filter(Boolean).length;
-
-  return {
-    id: data.id,
-    title: data.title ?? "(untitled)",
-    content: data.content ?? "",
-    summary: data.summary,
-    themes: Array.isArray(data.themes) ? data.themes : [],
-    createdAt: data.created_at,
-    updatedAt: data.updated_at,
-    wordCount,
-    author,
-  };
+export async function getPublicHarvestStoryById(_storyId: string): Promise<PublicHarvestStoryDetail | null> {
+  // Refactored 2026-05-13: was hitting EL's Supabase via service-role keys
+  // (broken in prod). EL public content-hub API doesn't yet expose a
+  // /stories/:id or /stories/:slug endpoint for a single story, so this
+  // path returns null and the /stories/:slug page renders the not-found state.
+  //
+  // To re-enable: have EL expose GET /api/v1/content-hub/stories/:slug
+  // publicly (same access model as /articles/:slug), then swap this body to
+  // empathyLedgerClient.fetchStoryBySlug(_storyId) + author resolution from
+  // listPublicHarvestStorytellers (already API-driven).
+  return null;
 }
 
 // ---------------------------------------------------------------------------
