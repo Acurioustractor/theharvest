@@ -1,0 +1,22 @@
+User-agent: *
+Allow: /
+
+# Internal tools, admin and dev surfaces - not for search engines
+Disallow: /admin
+Disallow: /admin/
+Disallow: /login
+Disallow: /feedback
+Disallow: /brand-guide
+Disallow: /zone-workshop
+Disallow: /social-planner
+Disallow: /social
+Disallow: /logo-story
+Disallow: /logo-lab
+Disallow: /growing-h
+Disallow: /gathering-postcard
+Disallow: /photo-wall/checkin
+Disallow: /new-look-test
+Disallow: /review-test
+Disallow: /launch-redesign
+
+Sitemap: https://www.theharvestwitta.com.au/sitemap.xml
