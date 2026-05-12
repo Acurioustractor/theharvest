@@ -70,6 +70,7 @@ export function HarvestImage({
   const rawSrc = override?.src ?? defaultSrc;
   const src = optimize(rawSrc, size);
   const alt = override?.altText ?? defaultAlt;
+  const hasExplicitPosition = /\b(?:absolute|fixed|sticky)\b/.test(className ?? "");
 
   const handlePick = async (photo: PickedPhoto) => {
     await setMutation.mutateAsync({
@@ -94,7 +95,7 @@ export function HarvestImage({
   const showSkeleton = isResolving || !loaded;
 
   return (
-    <div className={`relative group ${className ?? ""} ${showSkeleton ? "bg-stone-200 animate-pulse" : ""}`}>
+    <div className={`${hasExplicitPosition ? "" : "relative"} group ${className ?? ""} ${showSkeleton ? "bg-stone-200 animate-pulse" : ""}`}>
       {!isResolving && src && (
         <img
           src={src}

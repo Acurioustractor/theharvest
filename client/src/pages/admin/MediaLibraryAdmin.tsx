@@ -185,12 +185,28 @@ const publicSlots: PageSlot[] = [
     note: "Card for St Mary's timber and paths.",
   },
   {
+    label: "Kids playground card",
+    page: "new-look-test",
+    slot: "kids-playground-card",
+    defaultWorkSlug: "the-garden",
+    publicUrl: "/new-look-test#work",
+    note: "Card for the co-designed kids playground.",
+  },
+  {
     label: "Shop table card",
     page: "new-look-test",
     slot: "co-op-shop-card",
     defaultWorkSlug: "the-shop",
     publicUrl: "/new-look-test#work",
     note: "Card for the produce shelf / co-op type shop.",
+  },
+  {
+    label: "Future kitchen card",
+    page: "new-look-test",
+    slot: "future-kitchen-food-loop-card",
+    defaultWorkSlug: "the-shop",
+    publicUrl: "/new-look-test#work",
+    note: "Card for the future kitchen and food loop.",
   },
   {
     label: "Garden work hero",
@@ -1824,10 +1840,9 @@ function StorytellersPanel() {
                       <span className="font-mono text-[10px] uppercase text-stone-500">filter by work:</span>
                       {[
                         { slug: null as string | null, label: "all" },
+                        { slug: "the-garden", label: "garden" },
                         { slug: "milk-crate-pavilion", label: "pavilion" },
                         { slug: "the-cedar", label: "cedar" },
-                        { slug: "the-garden", label: "garden" },
-                        { slug: "the-sauna", label: "sauna" },
                         { slug: "the-shop", label: "shop" },
                       ].map((w) => (
                         <button

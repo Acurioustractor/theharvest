@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "wouter";
-import type { CSSProperties, FormEvent } from "react";
+import type { CSSProperties } from "react";
 import { Facebook, Instagram } from "lucide-react";
 import { colors, fonts, formInputStyle } from "@/styles/brand";
 import { trpc } from "@/lib/trpc";
@@ -20,41 +20,29 @@ interface BauhausFooterProps {
 
 export default function BauhausFooter({ isMobile }: BauhausFooterProps) {
   const [line] = useState(() => FOOTER_LINES[Math.floor(Math.random() * FOOTER_LINES.length)]);
-  const [photoName, setPhotoName] = useState("");
-  const [photoEmail, setPhotoEmail] = useState("");
-  const [photoContactId, setPhotoContactId] = useState<string | null>(null);
-  const [photoError, setPhotoError] = useState("");
+  const [nlName, setNlName] = useState("");
   const [nlEmail, setNlEmail] = useState("");
   const [nlDone, setNlDone] = useState(false);
   const [nlError, setNlError] = useState("");
-
-  const photoWallMutation = trpc.photoWall.submit.useMutation({
-    onSuccess: (data) => {
-      if (data.contactId) setPhotoContactId(data.contactId);
-    },
-    onError: (err) => setPhotoError(err.message || "Something went wrong"),
-  });
 
   const nlMutation = trpc.newsletter.subscribe.useMutation({
     onSuccess: () => setNlDone(true),
     onError: (err) => setNlError(err.message || "Something went wrong"),
   });
 
-  const handlePhotoSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    setPhotoError("");
-    if (!photoName.trim() || !photoEmail.trim()) return;
-    photoWallMutation.mutate({
-      firstName: photoName.trim(),
-      email: photoEmail.trim(),
-    });
-  };
-
-  const handleNlSubmit = (e: FormEvent) => {
+  const handleNlSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setNlError("");
-    if (!nlEmail.trim()) return;
-    nlMutation.mutate({ email: nlEmail.trim(), source: "gathering-footer" });
+    if (!nlName.trim() || !nlEmail.trim()) return;
+    const [firstName, ...rest] = nlName.trim().split(/\s+/);
+    nlMutation.mutate({
+      email: nlEmail.trim(),
+      firstName,
+      lastName: rest.join(" ") || undefined,
+      source: "site-footer-member-list",
+      interests: ["membership", "community"],
+      member: true,
+    });
   };
 
   return (
@@ -64,7 +52,7 @@ export default function BauhausFooter({ isMobile }: BauhausFooterProps) {
       borderTop: `1px solid rgba(245,240,232,0.08)`,
       textAlign: "center",
     }}>
-      {/* Photo Wall signup */}
+      {/* Community day teaser + main paths */}
       <div style={{
         maxWidth: 480,
         margin: "0 auto 32px",
@@ -79,137 +67,28 @@ export default function BauhausFooter({ isMobile }: BauhausFooterProps) {
           color: colors.goldenHour,
           margin: "0 0 6px",
         }}>
-          PHOTO WALL
+          NEXT COMMUNITY DAY · LATE JUNE
         </p>
-        {photoContactId ? (
-          <div style={{ textAlign: "center" }}>
-            <p style={{
-              fontFamily: fonts.display,
-              fontWeight: 700,
-              fontSize: 16,
-              color: colors.milk,
-              margin: "0 0 4px",
-            }}>
-              You're in, {photoName}!
-            </p>
-            <p style={{
-              fontFamily: fonts.body,
-              fontSize: 13,
-              color: colors.milk,
-              opacity: 0.5,
-              margin: "0 0 12px",
-              lineHeight: 1.5,
-            }}>
-              Show this QR code at the photo wall to get your portrait taken.
-              <br />
-              We'll send your photos to {photoEmail} after the event.
-            </p>
-            <img
-              src={`https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(`${window.location.origin}/photo-wall/checkin?id=${photoContactId}`)}&size=200x200`}
-              alt="QR code for photo wall check-in"
-              width={200}
-              height={200}
-              style={{ borderRadius: 8, background: "#fff", padding: 8 }}
-            />
-            <div style={{ marginTop: 16 }}>
-              <Link href="/photo-wall" style={{
-                fontFamily: fonts.display,
-                fontWeight: 700,
-                fontSize: 11,
-                letterSpacing: "0.1em",
-                color: colors.goldenHour,
-                textDecoration: "none",
-                opacity: 0.7,
-              }}>
-                LEARN MORE ABOUT THE PHOTO WALL →
-              </Link>
-            </div>
-          </div>
-        ) : (
-          <>
-            <p style={{
-              fontFamily: fonts.body,
-              fontSize: 13,
-              color: colors.milk,
-              opacity: 0.5,
-              margin: "0 0 6px",
-              lineHeight: 1.5,
-            }}>
-              Get a free portrait taken at the gathering.
-              <br />
-              Sign up and we'll email your photos afterwards.
-            </p>
-            <Link href="/photo-wall" style={{
-              fontFamily: fonts.display,
-              fontWeight: 700,
-              fontSize: 10,
-              letterSpacing: "0.1em",
-              color: colors.goldenHour,
-              textDecoration: "none",
-              opacity: 0.6,
-            }}>
-              WHAT'S THE PHOTO WALL? →
-            </Link>
-            <form onSubmit={handlePhotoSubmit} style={{
-              display: "flex",
-              flexDirection: isMobile ? "column" : "row",
-              gap: 8,
-              alignItems: "stretch",
-              marginTop: 14,
-            }}>
-              <input
-                type="text"
-                placeholder="First name"
-                value={photoName}
-                onChange={e => setPhotoName(e.target.value)}
-                required
-                style={{
-                  ...formInputStyle,
-                  fontSize: 14,
-                  padding: "10px 14px",
-                  flex: 1,
-                }}
-              />
-              <input
-                type="email"
-                placeholder="Email"
-                value={photoEmail}
-                onChange={e => setPhotoEmail(e.target.value)}
-                required
-                style={{
-                  ...formInputStyle,
-                  fontSize: 14,
-                  padding: "10px 14px",
-                  flex: 1,
-                }}
-              />
-              <button
-                type="submit"
-                disabled={photoWallMutation.isPending}
-                style={{
-                  fontFamily: fonts.display,
-                  fontWeight: 700,
-                  fontSize: 11,
-                  letterSpacing: "0.1em",
-                  color: colors.shed,
-                  backgroundColor: colors.goldenHour,
-                  border: "none",
-                  padding: "10px 20px",
-                  cursor: photoWallMutation.isPending ? "wait" : "pointer",
-                  opacity: photoWallMutation.isPending ? 0.6 : 1,
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {photoWallMutation.isPending ? "..." : "SIGN UP"}
-              </button>
-            </form>
-            {photoError && (
-              <p style={{ fontFamily: fonts.body, fontSize: 12, color: colors.calendula, margin: "8px 0 0", opacity: 0.8 }}>
-                {photoError}
-              </p>
-            )}
-          </>
-        )}
+        <p style={{
+          fontFamily: fonts.body,
+          fontSize: 13,
+          color: colors.milk,
+          opacity: 0.5,
+          margin: "0 0 14px",
+          lineHeight: 1.5,
+        }}>
+          A community open day around the end of June 2026. Date being confirmed. Join the member list to hear first.
+        </p>
+        <div style={{
+          display: "flex",
+          flexWrap: "wrap",
+          justifyContent: "center",
+          gap: 12,
+        }}>
+          <Link href="/membership" style={smallActionStyle}>JOIN MEMBER LIST</Link>
+          <Link href="/what-is-the-harvest" style={smallActionStyle}>WHAT IS THE HARVEST?</Link>
+          <Link href="/works" style={smallActionStyle}>SEE THE WORKS</Link>
+        </div>
       </div>
 
       {/* Newsletter signup */}
@@ -227,7 +106,7 @@ export default function BauhausFooter({ isMobile }: BauhausFooterProps) {
           color: colors.goldenHour,
           margin: "0 0 6px",
         }}>
-          STAY IN THE LOOP
+          MEMBER LIST
         </p>
         {nlDone ? (
           <p style={{
@@ -249,7 +128,7 @@ export default function BauhausFooter({ isMobile }: BauhausFooterProps) {
               margin: "0 0 12px",
               lineHeight: 1.5,
             }}>
-              Get updates on what's happening at The Harvest.
+              Weekly notes, invites, practical asks, and first-access opportunities.
             </p>
             <form onSubmit={handleNlSubmit} style={{
               display: "flex",
@@ -257,6 +136,19 @@ export default function BauhausFooter({ isMobile }: BauhausFooterProps) {
               gap: 8,
               alignItems: "stretch",
             }}>
+              <input
+                type="text"
+                placeholder="Your name"
+                value={nlName}
+                onChange={e => setNlName(e.target.value)}
+                required
+                style={{
+                  ...formInputStyle,
+                  fontSize: 14,
+                  padding: "10px 14px",
+                  flex: 1,
+                }}
+              />
               <input
                 type="email"
                 placeholder="Your email"
@@ -287,7 +179,7 @@ export default function BauhausFooter({ isMobile }: BauhausFooterProps) {
                   whiteSpace: "nowrap",
                 }}
               >
-                {nlMutation.isPending ? "..." : "SUBSCRIBE"}
+                {nlMutation.isPending ? "..." : "JOIN"}
               </button>
             </form>
             {nlError && (
@@ -348,7 +240,9 @@ export default function BauhausFooter({ isMobile }: BauhausFooterProps) {
         flexWrap: "wrap",
       }}>
         <Link href="/" style={linkStyle}>HOME</Link>
-        <Link href="/gather" style={linkStyle}>THE GATHERING</Link>
+        <Link href="/what-is-the-harvest" style={linkStyle}>WHAT IS THE HARVEST?</Link>
+        <Link href="/membership" style={linkStyle}>MEMBER LIST</Link>
+        <Link href="/works" style={linkStyle}>WORKS</Link>
         <Link href="/compendium" style={linkStyle}>THE STORY</Link>
         <Link href="/people" style={linkStyle}>PEOPLE</Link>
         <Link href="/blog" style={linkStyle}>JOURNAL</Link>
@@ -358,6 +252,18 @@ export default function BauhausFooter({ isMobile }: BauhausFooterProps) {
     </footer>
   );
 }
+
+const smallActionStyle: CSSProperties = {
+  fontFamily: fonts.display,
+  fontWeight: 700,
+  fontSize: 10,
+  letterSpacing: "0.1em",
+  color: colors.goldenHour,
+  textDecoration: "none",
+  borderBottom: `1px solid ${colors.goldenHour}`,
+  paddingBottom: 2,
+  opacity: 0.75,
+};
 
 const linkStyle: CSSProperties = {
   fontFamily: fonts.display,

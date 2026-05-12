@@ -86,6 +86,7 @@ const footerGroups = {
 };
 
 function FooterNewsletter() {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
@@ -93,13 +94,24 @@ function FooterNewsletter() {
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
-    if (!email.trim()) return;
+    if (!name.trim() || !email.trim()) return;
     setStatus("loading");
     try {
-      const result = await subscribeNewsletter({ email: email.trim(), phone: phone.trim() || undefined, source: "footer" });
+      const [firstName, ...rest] = name.trim().split(/\s+/);
+      const result = await subscribeNewsletter({
+        email: email.trim(),
+        phone: phone.trim() || undefined,
+        firstName,
+        lastName: rest.join(" ") || undefined,
+        source: "footer-member-list",
+        interests: ["membership", "community"],
+        member: true,
+      });
       if (result.success) {
         setStatus("success");
+        setName("");
         setEmail("");
+        setPhone("");
       } else {
         setErrorMsg(result.error || "Something went wrong.");
         setStatus("error");
@@ -130,7 +142,15 @@ function FooterNewsletter() {
             Stories from the land, upcoming gatherings, and ways to be part of something worth building.
           </p>
           <form onSubmit={handleSubmit} className="max-w-md mx-auto space-y-2">
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-2">
+              <input
+                type="text"
+                required
+                value={name}
+                onChange={(e) => { setName(e.target.value); if (status === "error") setStatus("idle"); }}
+                placeholder="Your name"
+                className="flex-1 px-4 py-2.5 rounded-lg bg-stone-700 border border-stone-600 text-stone-200 placeholder:text-stone-500 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+              />
               <input
                 type="email"
                 required
@@ -138,6 +158,15 @@ function FooterNewsletter() {
                 onChange={(e) => { setEmail(e.target.value); if (status === "error") setStatus("idle"); }}
                 placeholder="Your email"
                 className="flex-1 px-4 py-2.5 rounded-lg bg-stone-700 border border-stone-600 text-stone-200 placeholder:text-stone-500 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+              />
+            </div>
+            <div className="flex gap-2">
+              <input
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="Phone (optional)"
+                className="min-w-0 flex-1 px-4 py-2.5 rounded-lg bg-stone-700 border border-stone-600 text-stone-200 placeholder:text-stone-500 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
               />
               <button
                 type="submit"
@@ -148,13 +177,6 @@ function FooterNewsletter() {
                 Join
               </button>
             </div>
-            <input
-              type="tel"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              placeholder="Phone (optional — for text updates)"
-              className="w-full px-4 py-2.5 rounded-lg bg-stone-700 border border-stone-600 text-stone-200 placeholder:text-stone-500 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
-            />
           </form>
           {status === "error" && (
             <p className="text-red-400 text-xs">{errorMsg}</p>
@@ -254,6 +276,7 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
                       <ul className="grid w-[400px] gap-1 p-4">
                         {group.items.map((item) => {
                           const Icon = item.icon;
+                          const badge = "badge" in item && typeof item.badge === "string" ? item.badge : null;
                           return (
                             <li key={item.href}>
                               <NavigationMenuLink asChild>
@@ -278,9 +301,9 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
                                         location === item.href ? "text-amber-700" : "text-stone-900"
                                       )}>
                                         {item.label}
-                                        {"badge" in item && typeof item.badge === "string" && item.badge && (
+                                        {badge && (
                                           <span className="px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide bg-amber-100 text-amber-700 rounded">
-                                            {item.badge}
+                                            {badge}
                                           </span>
                                         )}
                                       </div>

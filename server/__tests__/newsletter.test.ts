@@ -1,5 +1,15 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { createGHLContact, upsertGHLContact } from "../gohighlevel";
+import { appRouter, buildNewsletterTags } from "../routers";
+import type { TrpcContext } from "../_core/context";
+
+vi.mock("../db", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("../db")>();
+  return {
+    ...actual,
+    createPulseResponse: vi.fn().mockResolvedValue({ id: 123 }),
+  };
+});
 
 // Mock fetch globally
 const mockFetch = vi.fn();
@@ -15,6 +25,11 @@ describe("Go High Level Newsletter Integration", () => {
       ...originalEnv,
       GHL_API_KEY: "test-api-key",
       GHL_LOCATION_ID: "test-location-id",
+      GHL_NEWSLETTER_WORKFLOW_ID: "newsletter-workflow",
+      GHL_MEMBER_WELCOME_WORKFLOW_ID: "member-welcome-workflow",
+      GHL_MEMBER_QUESTION_WORKFLOW_ID: "member-question-workflow",
+      GHL_GATHERING_RSVP_WORKFLOW_ID: "gathering-rsvp-workflow",
+      GHL_CONTACT_FORM_WORKFLOW_ID: "contact-form-workflow",
     };
   });
 
@@ -163,6 +178,179 @@ describe("Go High Level Newsletter Integration", () => {
 
       expect(result.success).toBe(false);
       expect(result.error).toBeDefined();
+    });
+  });
+
+  describe("newsletter and member router flows", () => {
+    const ctx = {
+      user: null,
+      req: {
+        protocol: "https",
+        headers: {},
+      },
+      res: {},
+    } as TrpcContext;
+
+    beforeEach(() => {
+      mockFetch.mockResolvedValue({
+        ok: true,
+        json: async () => ({
+          contact: {
+            id: "contact-123",
+            email: "test@example.com",
+            locationId: "test-location-id",
+          },
+        }),
+      });
+    });
+
+    it("builds Harvest member tags without losing newsletter compatibility", () => {
+      const tags = buildNewsletterTags({
+        member: true,
+        interests: ["membership", "community", "volunteering"],
+      });
+
+      expect(tags).toEqual(expect.arrayContaining([
+        "newsletter",
+        "harvest-newsletter",
+        "harvest-website",
+        "harvest-member",
+        "interest-membership",
+        "interest-community",
+        "interest-volunteer",
+      ]));
+    });
+
+    it("tags member signup with the Harvest member audience and selected interests", async () => {
+      const caller = appRouter.createCaller(ctx);
+
+      await caller.newsletter.subscribe({
+        email: "member@example.com",
+        firstName: "Mira",
+        source: "Harvest member list",
+        interests: ["membership", "community", "sustainability"],
+        member: true,
+      });
+
+      const tagCall = mockFetch.mock.calls.find(([url]) =>
+        String(url).endsWith("/contacts/contact-123/tags")
+      );
+      expect(tagCall).toBeDefined();
+      expect(JSON.parse(tagCall![1].body)).toEqual({
+        tags: expect.arrayContaining([
+          "newsletter",
+          "harvest-newsletter",
+          "harvest-member",
+          "interest-membership",
+          "interest-community",
+          "interest-sustainability",
+        ]),
+      });
+
+      const workflowCall = mockFetch.mock.calls.find(([url]) =>
+        String(url).endsWith("/contacts/contact-123/workflow/member-welcome-workflow")
+      );
+      expect(workflowCall).toBeDefined();
+    });
+
+    it("does not sync pulse survey submissions to GHL without a name", async () => {
+      const caller = appRouter.createCaller(ctx);
+
+      await caller.pulse.submit({
+        email: "pulse-only@example.com",
+        wouldUse: ["Community garden"],
+      });
+
+      expect(mockFetch).not.toHaveBeenCalled();
+    });
+
+    it("requires a name for newsletter and member signups", async () => {
+      const caller = appRouter.createCaller(ctx);
+
+      await expect(caller.newsletter.subscribe({
+        email: "no-name@example.com",
+        interests: ["membership"],
+        member: true,
+      } as any)).rejects.toThrow();
+    });
+
+    it("sends visitor quiz names through to GHL", async () => {
+      const caller = appRouter.createCaller(ctx);
+
+      await caller.quiz.submit({
+        name: "Mira Stone",
+        email: "quiz@example.com",
+        persona: "maker",
+        ghlTags: ["quiz-maker"],
+      });
+
+      const upsertCall = mockFetch.mock.calls.find(([url]) =>
+        String(url).endsWith("/contacts/upsert")
+      );
+      expect(upsertCall).toBeDefined();
+      const upsertBody = JSON.parse(upsertCall![1].body);
+      expect(upsertBody.firstName).toBe("Mira");
+      expect(upsertBody.lastName).toBe("Stone");
+    });
+
+    it("stores a member question as a note and triggers the member question workflow", async () => {
+      const caller = appRouter.createCaller(ctx);
+
+      await caller.members.question({
+        name: "Mira Stone",
+        email: "mira@example.com",
+        phone: "0400000000",
+        question: "Can kids help design the play area?",
+        source: "Membership page question form",
+      });
+
+      const tagCall = mockFetch.mock.calls.find(([url]) =>
+        String(url).endsWith("/contacts/contact-123/tags")
+      );
+      expect(JSON.parse(tagCall![1].body).tags).toEqual(expect.arrayContaining([
+        "harvest-member",
+        "harvest-newsletter",
+        "interest-membership",
+        "member-question",
+      ]));
+
+      const noteCall = mockFetch.mock.calls.find(([url]) =>
+        String(url).endsWith("/contacts/contact-123/notes")
+      );
+      expect(noteCall).toBeDefined();
+      expect(JSON.parse(noteCall![1].body).body).toContain("Can kids help design the play area?");
+
+      const workflowCall = mockFetch.mock.calls.find(([url]) =>
+        String(url).endsWith("/contacts/contact-123/workflow/member-question-workflow")
+      );
+      expect(workflowCall).toBeDefined();
+    });
+
+    it("tags June 20 phone-only RSVP with the gathering and event attendee tags", async () => {
+      const caller = appRouter.createCaller(ctx);
+
+      await caller.eoi.submit({
+        name: "Phone Guest",
+        phone: "0400000000",
+        source: "Garden Launch page",
+      });
+
+      const upsertCall = mockFetch.mock.calls.find(([url]) =>
+        String(url).endsWith("/contacts/upsert")
+      );
+      expect(upsertCall).toBeDefined();
+      const upsertBody = JSON.parse(upsertCall![1].body);
+      expect(upsertBody.email).toBeUndefined();
+      expect(upsertBody.phone).toBe("0400000000");
+
+      const tagCall = mockFetch.mock.calls.find(([url]) =>
+        String(url).endsWith("/contacts/contact-123/tags")
+      );
+      expect(JSON.parse(tagCall![1].body).tags).toEqual(expect.arrayContaining([
+        "witta-gathering-2026-06-20",
+        "harvest-event-attendee",
+        "harvest-website",
+      ]));
     });
   });
 });

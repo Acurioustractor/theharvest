@@ -22,7 +22,7 @@ export default function Contact() {
   const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
-    document.title = "Get In Touch — The Harvest";
+    document.title = "Get In Touch - The Harvest";
     const meta = (name: string, content: string) => {
       let el = document.querySelector(`meta[property="${name}"]`) as HTMLMetaElement | null;
       if (!el) {
@@ -32,7 +32,7 @@ export default function Contact() {
       }
       el.content = content;
     };
-    meta("og:title", "Get In Touch — The Harvest");
+    meta("og:title", "Get In Touch - The Harvest");
     meta("og:description", "Questions, ideas, or just want to say hello.");
   }, []);
 
@@ -97,11 +97,12 @@ export default function Contact() {
             color: colors.shed,
             opacity: 0.6,
             margin: "16px 0 0",
-            maxWidth: 480,
+            maxWidth: 540,
             marginLeft: "auto",
             marginRight: "auto",
+            lineHeight: 1.55,
           }}>
-            Have a question, want to get involved, or just want to say hello? We'd love to hear from you.
+            The Harvest is in Witta, on Jinibara Country, at the old nursery. We're not open for casual drop-ins yet. Use the form below, or one of the paths beneath it.
           </p>
         </motion.div>
       </section>
@@ -254,7 +255,7 @@ export default function Contact() {
                     color: colors.milk,
                     opacity: 0.7,
                   }}>
-                    Keep me in the loop — send me occasional updates
+                    Keep me in the loop, send me occasional updates
                   </span>
                 </label>
               </div>
@@ -338,11 +339,11 @@ export default function Contact() {
 
           <FadeIn delay={0.3}>
             <div>
-              <h3 style={detailLabelStyle}>HOURS</h3>
-              <p style={detailTextStyle}>Wed–Fri: 8am – 3pm</p>
-              <p style={detailTextStyle}>Saturday: 7am – 2pm</p>
-              <p style={detailTextStyle}>Sunday: 8am – 2pm</p>
-              <p style={{ ...detailTextStyle, opacity: 0.4 }}>Mon–Tue: Closed</p>
+              <h3 style={detailLabelStyle}>VISITS</h3>
+              <p style={detailTextStyle}>Not open for casual drop-ins yet.</p>
+              <p style={{ ...detailTextStyle, opacity: 0.5, fontSize: 14, marginTop: 8 }}>
+                Come through on Saturday 20 June by RSVP, or send a message to arrange a visit.
+              </p>
             </div>
           </FadeIn>
         </div>

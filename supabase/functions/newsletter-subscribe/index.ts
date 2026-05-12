@@ -14,6 +14,44 @@ function jsonResponse(body: Record<string, unknown>, status = 200) {
   });
 }
 
+const INTEREST_TAGS: Record<string, string> = {
+  events: "interest-events",
+  workshops: "interest-workshops",
+  markets: "interest-markets",
+  "venue-hire": "interest-venue",
+  "garden-centre": "interest-garden",
+  "food-kitchen": "interest-food",
+  community: "interest-community",
+  volunteering: "interest-volunteer",
+  membership: "interest-membership",
+  sustainability: "interest-sustainability",
+};
+
+function splitName(name: string) {
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  return {
+    firstName: parts[0],
+    lastName: parts.slice(1).join(" ") || undefined,
+  };
+}
+
+function buildNewsletterTags(payload: Record<string, unknown>) {
+  const interests = Array.isArray(payload?.interests) ? payload.interests.map(String) : [];
+  const tags = new Set(["newsletter", "harvest-newsletter", "harvest-website"]);
+
+  for (const interest of interests) {
+    const tag = INTEREST_TAGS[interest];
+    if (tag) tags.add(tag);
+  }
+
+  if (payload?.member === true || interests.includes("membership")) {
+    tags.add("harvest-member");
+    tags.add("interest-membership");
+  }
+
+  return Array.from(tags);
+}
+
 Deno.serve(async req => {
   // Handle CORS preflight
   if (req.method === "OPTIONS") {
@@ -34,12 +72,14 @@ Deno.serve(async req => {
   }
 
   const payload = await req.json();
-  const email = payload?.email;
+  const email = String(payload?.email ?? "").trim();
   if (!email) return jsonResponse({ success: false, error: "Email is required" }, 400);
 
-  const tags = Array.isArray(payload?.interests)
-    ? ["newsletter", "harvest-website", ...payload.interests.map((i: string) => `interest-${i}`)]
-    : ["newsletter", "harvest-website"];
+  const fullName = String(payload?.name ?? [payload?.firstName, payload?.lastName].filter(Boolean).join(" ")).trim();
+  if (!fullName) return jsonResponse({ success: false, error: "Name is required" }, 400);
+
+  const { firstName, lastName } = splitName(fullName);
+  const tags = buildNewsletterTags(payload);
 
   const response = await fetch(`${GHL_API_BASE}/contacts/upsert`, {
     method: "POST",
@@ -51,12 +91,11 @@ Deno.serve(async req => {
     },
     body: JSON.stringify({
       email,
-      firstName: payload?.firstName ?? undefined,
-      lastName: payload?.lastName ?? undefined,
+      firstName,
+      lastName,
       phone: payload?.phone ?? undefined,
       locationId,
       source: payload?.source ?? "The Harvest Website",
-      tags,
     }),
   });
 
@@ -74,8 +113,28 @@ Deno.serve(async req => {
   const data = await response.json();
   const contactId = data?.contact?.id ?? null;
 
+  if (contactId) {
+    try {
+      await fetch(`${GHL_API_BASE}/contacts/${contactId}/tags`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "Authorization": `Bearer ${apiKey}`,
+          "Version": GHL_API_VERSION,
+        },
+        body: JSON.stringify({ tags }),
+      });
+    } catch {
+      // Tag failure should not block the signup.
+    }
+  }
+
   // Trigger GHL workflow for newsletter welcome
-  const workflowId = Deno.env.get("GHL_NEWSLETTER_WORKFLOW_ID");
+  const isMember = tags.includes("harvest-member");
+  const workflowId = isMember
+    ? Deno.env.get("GHL_MEMBER_WELCOME_WORKFLOW_ID") ?? Deno.env.get("GHL_NEWSLETTER_WORKFLOW_ID")
+    : Deno.env.get("GHL_NEWSLETTER_WORKFLOW_ID");
   if (workflowId && contactId) {
     try {
       await fetch(`${GHL_API_BASE}/workflows/${workflowId}/subscribe`, {

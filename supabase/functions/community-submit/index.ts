@@ -21,6 +21,7 @@ const TYPE_TAGS: Record<string, string[]> = {
   "business-interest": ["business-interest", "harvest-website"],
   "workshop-suggestion": ["workshop-suggestion", "harvest-website"],
   "story-feature": ["story-feature", "harvest-website"],
+  "venue-enquiry": ["venue-enquiry", "harvest-website"],
 };
 
 Deno.serve(async (req) => {
@@ -43,17 +44,17 @@ Deno.serve(async (req) => {
   const payload = await req.json();
   const { type, email, name, ...fields } = payload;
 
-  if (!type || !email) {
-    return jsonResponse({ success: false, error: "Type and email are required." }, 400);
+  if (!type || !email || !name) {
+    return jsonResponse({ success: false, error: "Type, name and email are required." }, 400);
   }
 
-  const tags = TYPE_TAGS[type] ?? ["harvest-website"];
+  const tags = [...(TYPE_TAGS[type] ?? ["harvest-website"])];
   if (fields.residencyType) tags.push(`residency-${fields.residencyType}`);
   if (fields.ideaType) tags.push(`idea-${fields.ideaType}`);
   if (fields.interestType) tags.push(`biz-${fields.interestType}`);
 
   // Parse name
-  const nameParts = (name || "").trim().split(" ");
+  const nameParts = String(name).trim().split(/\s+/).filter(Boolean);
   const firstName = nameParts[0] || undefined;
   const lastName = nameParts.slice(1).join(" ") || undefined;
 
@@ -75,7 +76,6 @@ Deno.serve(async (req) => {
         phone: fields.phone ?? undefined,
         locationId,
         source: `Website - ${type}`,
-        tags,
       }),
     });
     if (ghlRes.ok) {
@@ -88,6 +88,21 @@ Deno.serve(async (req) => {
 
   // 2. Add a note to the GHL contact
   if (ghlContactId) {
+    try {
+      await fetch(`${GHL_API_BASE}/contacts/${ghlContactId}/tags`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: `Bearer ${apiKey}`,
+          Version: GHL_API_VERSION,
+        },
+        body: JSON.stringify({ tags }),
+      });
+    } catch {
+      // Non-critical
+    }
+
     const noteLines = [`**${type.toUpperCase()} submission from website**`];
     if (fields.title) noteLines.push(`**Title:** ${fields.title}`);
     if (fields.description) noteLines.push(`**Description:** ${fields.description}`);

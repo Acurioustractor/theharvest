@@ -19,10 +19,46 @@ function getBearerToken(req: CreateExpressContextOptions["req"]) {
   return token;
 }
 
+/**
+ * Dev-only synthetic admin user. Returned when:
+ *   - NODE_ENV !== "production"
+ *   - the request hostname is localhost
+ *   - the client sent header `x-dev-admin: true`
+ * Mirrors DEV_ADMIN_USER on the client (client/src/_core/hooks/useAuth.ts).
+ */
+const DEV_ADMIN_USER: User = {
+  id: 1,
+  openId: "dev-admin-local",
+  name: "Dev Admin",
+  email: "benjamin@act.place",
+  role: "admin",
+  loginMethod: "dev",
+  createdAt: new Date(),
+  updatedAt: new Date(),
+  lastSignedIn: new Date(),
+};
+
+function isDevAdminRequest(req: CreateExpressContextOptions["req"]): boolean {
+  if (process.env.NODE_ENV === "production") return false;
+  const header = req.headers["x-dev-admin"];
+  if (header !== "true" && header !== "1") return false;
+  const host = (req.hostname || req.headers.host || "").toString();
+  return host === "localhost" || host.startsWith("localhost:") || host === "127.0.0.1" || host.startsWith("127.0.0.1:");
+}
+
 export async function createContext(
   opts: CreateExpressContextOptions
 ): Promise<TrpcContext> {
   let user: User | null = null;
+
+  // Dev shortcut: localhost + header → synthetic admin. Skipped in production.
+  if (isDevAdminRequest(opts.req)) {
+    return {
+      req: opts.req,
+      res: opts.res,
+      user: DEV_ADMIN_USER,
+    };
+  }
 
   try {
     const token = getBearerToken(opts.req);

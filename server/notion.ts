@@ -8,7 +8,7 @@
 
 import { Client } from "@notionhq/client";
 import type { EditorialPost, EditorialProject } from "../client/src/types/social";
-import { getGHLAccountMap, createGHLSocialPost, getGHLSocialPosts } from "./gohighlevel.js";
+import { getGHLAccountMap, createGHLSocialPost, getGHLSocialAccounts, getGHLSocialPosts } from "./gohighlevel.js";
 
 // ── Notion client singleton ───────────────────────────────────
 
@@ -33,6 +33,50 @@ function getDbId(): string {
 /** Data source ID — used for dataSources.query (Notion SDK v5+) */
 function getDataSourceId(): string {
   return process.env.NOTION_EDITORIAL_DS_ID || getDbId();
+}
+
+function notionObjectNotFound(error: unknown): boolean {
+  const err = error as { code?: string; status?: number; message?: string };
+  return err?.code === "object_not_found"
+    || err?.status === 404
+    || Boolean(err?.message?.toLowerCase().includes("could not find"));
+}
+
+function editorialDataSourceCandidates(): string[] {
+  return Array.from(new Set([getDataSourceId(), getDbId()].filter(Boolean)));
+}
+
+async function queryEditorialDataSource(notion: Client, query: Omit<Parameters<Client["dataSources"]["query"]>[0], "data_source_id">) {
+  let lastError: unknown;
+
+  for (const dataSourceId of editorialDataSourceCandidates()) {
+    try {
+      return await notion.dataSources.query({
+        data_source_id: dataSourceId,
+        ...query,
+      });
+    } catch (error) {
+      lastError = error;
+      if (!notionObjectNotFound(error)) throw error;
+    }
+  }
+
+  throw lastError;
+}
+
+async function retrieveEditorialDataSource(notion: Client) {
+  let lastError: unknown;
+
+  for (const dataSourceId of editorialDataSourceCandidates()) {
+    try {
+      return await notion.dataSources.retrieve({ data_source_id: dataSourceId });
+    } catch (error) {
+      lastError = error;
+      if (!notionObjectNotFound(error)) throw error;
+    }
+  }
+
+  throw lastError;
 }
 
 // ── Rate limiter (token bucket, 3 RPS) ───────────────────────
@@ -126,11 +170,105 @@ function getFileUrl(page: NotionPage, prop: string): string | null {
   return null;
 }
 
+function isTemporaryNotionFileUrl(url: string): boolean {
+  return url.includes("notion") || url.includes("prod-files-secure.s3") || url.includes("X-Amz-");
+}
+
+function extensionFromContentType(contentType: string): string {
+  if (contentType.includes("png")) return "png";
+  if (contentType.includes("webp")) return "webp";
+  if (contentType.includes("gif")) return "gif";
+  if (contentType.includes("mp4")) return "mp4";
+  if (contentType.includes("quicktime")) return "mov";
+  return "jpg";
+}
+
+function safeStorageName(value: string): string {
+  return value.toLowerCase().replace(/[^a-z0-9.-]+/g, "-").replace(/^-+|-+$/g, "") || "media";
+}
+
+async function mirrorNotionMediaUrl(url: string, postId: string): Promise<string> {
+  if (!isTemporaryNotionFileUrl(url)) return url;
+
+  const supabaseUrl = process.env.VITE_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL;
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!supabaseUrl || !serviceKey) {
+    console.warn("[AutoSync] Supabase credentials missing — sending original media URL");
+    return url;
+  }
+
+  const response = await fetch(url);
+  if (!response.ok) {
+    console.warn(`[AutoSync] Could not download Notion media (${response.status}) — sending original media URL`);
+    return url;
+  }
+
+  const contentType = response.headers.get("content-type") || "image/jpeg";
+  const ext = extensionFromContentType(contentType);
+  const key = `social-posts/${postId}/${Date.now()}-${safeStorageName(postId)}.${ext}`;
+  const body = Buffer.from(await response.arrayBuffer());
+
+  const upload = await fetch(`${supabaseUrl}/storage/v1/object/photo-wall/${key}`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${serviceKey}`,
+      "Content-Type": contentType,
+      "x-upsert": "true",
+    },
+    body,
+  });
+
+  if (!upload.ok) {
+    const err = await upload.text().catch(() => upload.statusText);
+    console.warn(`[AutoSync] Supabase media mirror failed (${upload.status}): ${err}`);
+    return url;
+  }
+
+  return `${supabaseUrl}/storage/v1/object/public/photo-wall/${key}`;
+}
+
 /** Extract relation page IDs */
 function getRelationIds(page: NotionPage, prop: string): string[] {
   const rel = page.properties?.[prop]?.relation;
   if (!Array.isArray(rel)) return [];
   return rel.map((r: any) => r.id).filter(Boolean);
+}
+
+function richTextToPlain(richText: any[] | undefined): string {
+  if (!Array.isArray(richText)) return "";
+  return richText.map((text) => text.plain_text || "").join("");
+}
+
+function blockToPlainText(block: any): string {
+  const type = block.type;
+  const value = block[type];
+  if (!value) return "";
+
+  switch (type) {
+    case "paragraph":
+    case "heading_1":
+    case "heading_2":
+    case "heading_3":
+    case "quote":
+    case "callout":
+      return richTextToPlain(value.rich_text);
+    case "bulleted_list_item": {
+      const text = richTextToPlain(value.rich_text);
+      return text ? `- ${text}` : "";
+    }
+    case "numbered_list_item": {
+      const text = richTextToPlain(value.rich_text);
+      return text ? `1. ${text}` : "";
+    }
+    case "to_do": {
+      const text = richTextToPlain(value.rich_text);
+      return text ? `- ${text}` : "";
+    }
+    case "code":
+      return richTextToPlain(value.rich_text);
+    default:
+      return "";
+  }
 }
 
 // ── Status mapping (Notion ↔ Social Planner) ────────────────
@@ -234,8 +372,7 @@ export async function queryEditorialCalendar(opts?: {
     });
   }
 
-  const response = await notion.dataSources.query({
-    data_source_id: getDataSourceId(),
+  const response = await queryEditorialDataSource(notion, {
     filter: filters.length > 1
       ? { and: filters }
       : filters.length === 1
@@ -269,6 +406,40 @@ export async function getEditorialPost(pageId: string): Promise<EditorialPost | 
   } catch {
     return null;
   }
+}
+
+/**
+ * Read the body content of a Notion editorial page as plain social copy.
+ * This lets the team write captions in the page body instead of a table cell.
+ */
+export async function getEditorialPostCopy(pageId: string): Promise<string> {
+  const cacheKey = `body:${pageId}`;
+  const cached = getCached<string>(cacheKey);
+  if (cached !== null) return cached;
+
+  await rateLimit();
+  const notion = getNotionClient();
+  const lines: string[] = [];
+  let cursor: string | undefined;
+
+  do {
+    const response = await notion.blocks.children.list({
+      block_id: pageId,
+      start_cursor: cursor,
+      page_size: 100,
+    });
+
+    for (const block of response.results as any[]) {
+      const text = blockToPlainText(block).trim();
+      if (text) lines.push(text);
+    }
+
+    cursor = response.has_more ? response.next_cursor || undefined : undefined;
+  } while (cursor);
+
+  const body = lines.join("\n\n").trim();
+  setCache(cacheKey, body);
+  return body;
 }
 
 /**
@@ -337,6 +508,7 @@ export async function createEditorialPost(post: {
   link?: string;
   utmContent?: string;
   projectId?: string;
+  ghlPostId?: string;
 }): Promise<string> {
   await rateLimit();
   const notion = getNotionClient();
@@ -368,7 +540,19 @@ export async function createEditorialPost(post: {
     properties["Notes"] = { rich_text: [{ text: { content: post.editorialNote } }] };
   }
   if (post.mediaUrl) {
-    properties["Video link"] = { url: post.mediaUrl };
+    if (/\.(mp4|mov|webm|avi)(\?|$)/i.test(post.mediaUrl)) {
+      properties["Video link"] = { url: post.mediaUrl };
+    } else {
+      properties["Image"] = {
+        files: [
+          {
+            name: post.title || "GHL media",
+            type: "external",
+            external: { url: post.mediaUrl },
+          },
+        ],
+      };
+    }
   }
   if (post.format) {
     properties["Format"] = { select: { name: post.format } };
@@ -381,6 +565,11 @@ export async function createEditorialPost(post: {
   }
   if (post.projectId) {
     properties["Project"] = { relation: [{ id: post.projectId }] };
+  }
+  if (post.ghlPostId) {
+    properties["GHL Post ID"] = {
+      rich_text: [{ text: { content: post.ghlPostId } }],
+    };
   }
 
   const response = await notion.pages.create({
@@ -405,7 +594,7 @@ export async function getEditorialProjects(): Promise<EditorialProject[]> {
   const notion = getNotionClient();
 
   // Get the Projects database ID from the relation property
-  const ds = await notion.dataSources.retrieve({ data_source_id: getDataSourceId() });
+  const ds = await retrieveEditorialDataSource(notion);
   const projectProp = (ds as any).properties?.Project;
   const projectsDbId = projectProp?.relation?.database_id;
   if (!projectsDbId) {
@@ -443,7 +632,7 @@ export async function getEditorialCommunicationTypes(): Promise<string[]> {
   await rateLimit();
   const notion = getNotionClient();
 
-  const ds = await notion.dataSources.retrieve({ data_source_id: getDataSourceId() });
+  const ds = await retrieveEditorialDataSource(notion);
   const commTypeProp = (ds as any).properties?.["Communication Type"];
   const options = commTypeProp?.select?.options || [];
   const types = options.map((o: any) => o.name as string);
@@ -496,8 +685,12 @@ export async function syncReadyPosts(): Promise<{
       continue;
     }
 
-    // Skip posts with no caption
-    if (!post.caption) {
+    const pageCopy = await getEditorialPostCopy(post.id);
+    const summary = pageCopy || post.caption;
+    const mediaUrl = post.mediaUrl ? await mirrorNotionMediaUrl(post.mediaUrl, post.id) : null;
+
+    // Skip posts with no page body or fallback caption
+    if (!summary) {
       console.warn(`[AutoSync] Skipping post "${post.title}" — no caption`);
       skipped++;
       continue;
@@ -505,9 +698,9 @@ export async function syncReadyPosts(): Promise<{
 
     try {
       const result = await createGHLSocialPost({
-        summary: post.caption,
+        summary,
         accountIds,
-        mediaUrls: post.mediaUrl ? [post.mediaUrl] : undefined,
+        mediaUrls: mediaUrl ? [mediaUrl] : undefined,
         scheduledAt: post.scheduledDate || undefined,
       });
 
@@ -565,4 +758,180 @@ export async function syncPublishedPosts(): Promise<{ updated: number }> {
   }
 
   return { updated };
+}
+
+function titleFromSummary(summary: string): string {
+  const firstLine = summary.split("\n").find((line) => line.trim())?.trim() || "GHL social post";
+  return firstLine.length > 70 ? `${firstLine.slice(0, 67)}...` : firstLine;
+}
+
+function notionPlatformName(platform: string): string {
+  const normalized = platform.toLowerCase();
+  if (normalized === "facebook") return "Facebook";
+  if (normalized === "instagram") return "Instagram";
+  if (normalized === "google") return "Google Business";
+  if (normalized === "youtube") return "YouTube";
+  if (normalized === "twitter") return "Twitter";
+  if (normalized === "bluesky") return "Bluesky";
+  return platform;
+}
+
+function notionCommunicationType(platforms: string[]): string {
+  if (platforms.includes("Facebook")) return "Facebook";
+  if (platforms.includes("Instagram")) return "Instagram";
+  if (platforms.includes("LinkedIn (Company)") || platforms.includes("LinkedIn (Personal)")) return "LinkedIn Post";
+  return platforms[0] || "Facebook";
+}
+
+function notionStatusFromGHL(status: string): EditorialPost["status"] {
+  const normalized = status.toLowerCase();
+  if (normalized === "published") return "published";
+  if (normalized === "scheduled") return "scheduled";
+  if (normalized === "failed") return "draft";
+  return "draft";
+}
+
+type GHLPostGroup = {
+  id: string;
+  posts: any[];
+  summary: string;
+  status: EditorialPost["status"];
+  date: string | null;
+  platforms: string[];
+  mediaUrl: string | null;
+};
+
+function platformsFromGHLPost(post: any, accountPlatformMap: Map<string, string>): string[] {
+  const accountIds = Array.isArray(post.accountIds)
+    ? post.accountIds
+    : post.accountId
+      ? [post.accountId]
+      : [];
+  const platforms = accountIds
+    .map((accountId: string) => accountPlatformMap.get(accountId))
+    .filter(Boolean) as string[];
+
+  if (platforms.length) return platforms;
+
+  return [notionPlatformName(post.platform || "")].filter(Boolean);
+}
+
+function groupGHLPosts(posts: any[], accountPlatformMap: Map<string, string>): GHLPostGroup[] {
+  const groups = new Map<string, any[]>();
+
+  for (const post of posts) {
+    const id = post.parentPostId || post._id || post.id || post.postId;
+    if (!id) continue;
+    const existing = groups.get(id) || [];
+    existing.push(post);
+    groups.set(id, existing);
+  }
+
+  return Array.from(groups.entries()).map(([id, groupPosts]) => {
+    const first = groupPosts[0] || {};
+    const summary = first.summary || "";
+    const platforms = Array.from(new Set(
+      groupPosts.flatMap((post) => platformsFromGHLPost(post, accountPlatformMap)).filter(Boolean)
+    ));
+    const statuses = groupPosts.map((post) => notionStatusFromGHL(post.status || ""));
+    const status = statuses.every((s) => s === "published")
+      ? "published"
+      : statuses.some((s) => s === "scheduled")
+        ? "scheduled"
+        : "draft";
+    const date = first.publishedAt || first.displayDate || first.scheduleDate || first.createdAt || null;
+    const mediaUrl = first.media?.[0]?.url || null;
+
+    return { id, posts: groupPosts, summary, status, date, platforms, mediaUrl };
+  });
+}
+
+/**
+ * Pull GHL Social Planner posts back into Notion for record keeping.
+ * GHL is treated as the working source; Notion receives grouped archive rows.
+ */
+export async function syncGHLPostsToNotion(opts: { apply?: boolean } = {}): Promise<{
+  mode: "dry-run" | "apply";
+  created: number;
+  skipped: number;
+  rows: Array<{
+    id: string;
+    title: string;
+    status: string;
+    date: string | null;
+    platforms: string[];
+    media: boolean;
+    action: "create" | "skip";
+  }>;
+}> {
+  const ghlResult = await getGHLSocialPosts();
+  if (!ghlResult.success || !ghlResult.posts) {
+    throw new Error(ghlResult.error || "Failed to fetch GHL posts");
+  }
+
+  const existing = await queryEditorialCalendar();
+  const existingIds = new Set(existing.map((post) => post.ghlPostId).filter(Boolean));
+  const harvestProjectId = process.env.NOTION_HARVEST_PROJECT_ID || "11debcf981cf80828fd0d6031a9709f2";
+  const accountResult = await getGHLSocialAccounts();
+  const accountPlatformMap = new Map(
+    (accountResult.accounts || []).map((account) => [account.id, notionPlatformName(account.platform)])
+  );
+  const groups = groupGHLPosts(ghlResult.posts, accountPlatformMap);
+
+  let created = 0;
+  let skipped = 0;
+  const rows: Array<{
+    id: string;
+    title: string;
+    status: string;
+    date: string | null;
+    platforms: string[];
+    media: boolean;
+    action: "create" | "skip";
+  }> = [];
+
+  for (const group of groups) {
+    const title = titleFromSummary(group.summary);
+    const action = existingIds.has(group.id) ? "skip" : "create";
+
+    rows.push({
+      id: group.id,
+      title,
+      status: group.status,
+      date: group.date,
+      platforms: group.platforms,
+      media: Boolean(group.mediaUrl),
+      action,
+    });
+
+    if (action === "skip") {
+      skipped++;
+      continue;
+    }
+
+    if (opts.apply) {
+      const mediaUrl = group.mediaUrl ? await mirrorNotionMediaUrl(group.mediaUrl, group.id) : null;
+      await createEditorialPost({
+        title,
+        communicationType: notionCommunicationType(group.platforms),
+        status: group.status,
+        scheduledDate: group.date || undefined,
+        platforms: group.platforms,
+        caption: group.summary,
+        editorialNote: `Imported from GHL. Child post IDs: ${group.posts.map((post) => post._id || post.id || post.postId).filter(Boolean).join(", ")}`,
+        mediaUrl: mediaUrl || undefined,
+        projectId: harvestProjectId,
+        ghlPostId: group.id,
+      });
+      existingIds.add(group.id);
+      created++;
+    }
+  }
+
+  return {
+    mode: opts.apply ? "apply" : "dry-run",
+    created,
+    skipped,
+    rows,
+  };
 }

@@ -4,12 +4,14 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { Calendar, Clock, MapPin, Mail, User, CheckCircle, XCircle, Loader2, ShieldAlert, LogIn, Building2, Phone, Globe, Facebook, Instagram } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { Calendar, Clock, MapPin, Mail, User, CheckCircle, XCircle, Loader2, ShieldAlert, LogIn, Building2, Phone, Globe, Facebook, Instagram, Sparkles } from "lucide-react";
 import { listPendingEvents, listPendingBusinesses, updateEventStatus, updateBusinessStatus } from "@/lib/api";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { getLoginUrl } from "@/const";
 import { toast } from "sonner";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { trpc } from "@/lib/trpc";
 
 export default function AdminDashboard() {
   const { user, isAuthenticated, loading: authLoading } = useAuth();
@@ -199,9 +201,18 @@ export default function AdminDashboard() {
               <p className="text-white/80">Manage community submissions</p>
             </div>
           </div>
-          <div className="flex items-center gap-2 text-sm text-white/70">
-            <User className="h-4 w-4" />
-            <span>Signed in as {user?.name || user?.email || "Admin"}</span>
+          <div className="flex flex-wrap items-center gap-3 text-sm text-white/70">
+            <span className="inline-flex items-center gap-2">
+              <User className="h-4 w-4" />
+              Signed in as {user?.name || user?.email || "Admin"}
+            </span>
+            <a
+              href="/admin/media-library"
+              className="inline-flex items-center gap-2 rounded-full border border-white/20 px-3 py-1.5 text-white transition hover:bg-white/10"
+            >
+              <Sparkles className="h-4 w-4" />
+              Media library
+            </a>
           </div>
         </div>
       </section>
@@ -228,6 +239,11 @@ export default function AdminDashboard() {
                     {pendingBusinesses.length}
                   </Badge>
                 )}
+              </TabsTrigger>
+              <TabsTrigger value="witta" className="gap-2">
+                <Sparkles className="h-4 w-4" />
+                Witta memories
+                <WittaPendingBadge />
               </TabsTrigger>
               <TabsTrigger value="stats">Statistics</TabsTrigger>
             </TabsList>
@@ -516,6 +532,11 @@ export default function AdminDashboard() {
               )}
             </TabsContent>
 
+            {/* Witta Memories Tab */}
+            <TabsContent value="witta">
+              <WittaMemoriesAdmin />
+            </TabsContent>
+
             {/* Stats Tab */}
             <TabsContent value="stats">
               <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -565,5 +586,178 @@ export default function AdminDashboard() {
         </div>
       </section>
     </>
+  );
+}
+
+/* ──────────────────────────────────────
+   Witta memories — moderation
+   ────────────────────────────────────── */
+
+function WittaPendingBadge() {
+  const { data } = trpc.witta.pending.useQuery(undefined, {
+    refetchOnWindowFocus: false,
+  });
+  if (!data || data.length === 0) return null;
+  return (
+    <Badge variant="secondary" className="bg-[#c17c54] text-white ml-2">
+      {data.length}
+    </Badge>
+  );
+}
+
+function WittaMemoriesAdmin() {
+  const utils = trpc.useUtils();
+  const { data, isLoading } = trpc.witta.pending.useQuery();
+  const moderate = trpc.witta.moderate.useMutation({
+    onSuccess: (_, vars) => {
+      toast.success(`Memory ${vars.status}`);
+      utils.witta.pending.invalidate();
+      utils.witta.approved.invalidate();
+    },
+    onError: (err) => toast.error("Failed to moderate", { description: err.message }),
+  });
+
+  const [notesById, setNotesById] = useState<Record<number, string>>({});
+  const [busyId, setBusyId] = useState<number | null>(null);
+
+  const handle = async (id: number, status: "approved" | "rejected") => {
+    setBusyId(id);
+    try {
+      await moderate.mutateAsync({ id, status, adminNotes: notesById[id] || undefined });
+      setNotesById((prev) => {
+        const next = { ...prev };
+        delete next[id];
+        return next;
+      });
+    } finally {
+      setBusyId(null);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center py-20">
+        <Loader2 className="h-8 w-8 animate-spin text-[#2c4c3b]" />
+        <span className="ml-3 text-muted-foreground">Loading pending memories...</span>
+      </div>
+    );
+  }
+
+  if (!data || data.length === 0) {
+    return (
+      <Card className="text-center py-16">
+        <CardContent>
+          <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
+            <CheckCircle className="h-8 w-8 text-green-600" />
+          </div>
+          <h3 className="font-serif text-xl text-[#2c4c3b] mb-2">All Caught Up!</h3>
+          <p className="text-muted-foreground">
+            No pending Witta memories to review.
+          </p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <div className="grid gap-6">
+      {data.map((m) => (
+        <Card key={m.id} className="border-l-4 border-l-[#c17c54]">
+          <CardHeader>
+            <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+              <div>
+                <CardTitle className="font-serif text-xl text-[#2c4c3b] mb-2">
+                  {m.yearOrEra}
+                </CardTitle>
+                <div className="flex flex-wrap gap-2">
+                  <Badge variant="outline" className="border-[#c17c54] text-[#c17c54]">
+                    Pending Review
+                  </Badge>
+                </div>
+              </div>
+              <div className="text-sm text-muted-foreground">
+                Submitted {new Date(m.createdAt).toLocaleString()}
+              </div>
+            </div>
+            <CardDescription className="mt-2 flex items-center gap-2 text-sm">
+              <User className="h-4 w-4 text-[#c17c54]" />
+              {m.authorName}
+              {m.authorEmail && <span className="text-muted-foreground">· {m.authorEmail}</span>}
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <p className="text-gray-700 whitespace-pre-line leading-relaxed">{m.memory}</p>
+            {m.photoUrl && (
+              <div>
+                <p className="text-sm text-muted-foreground mb-2">Submitted photo:</p>
+                <img
+                  src={m.photoUrl}
+                  alt={`From ${m.authorName}`}
+                  className="max-w-md rounded-lg shadow-md"
+                  onError={(e) => (e.currentTarget.style.display = "none")}
+                />
+              </div>
+            )}
+            <div>
+              <label className="text-sm text-muted-foreground block mb-1">
+                Admin notes (optional, not shown publicly)
+              </label>
+              <Textarea
+                rows={2}
+                value={notesById[m.id] ?? ""}
+                onChange={(e) =>
+                  setNotesById((prev) => ({ ...prev, [m.id]: e.target.value }))
+                }
+                placeholder="Why approved/rejected, or context for future moderation."
+              />
+            </div>
+          </CardContent>
+          <CardFooter className="flex gap-3 pt-4 border-t">
+            <Button
+              className="bg-green-600 hover:bg-green-700 text-white"
+              onClick={() => handle(m.id, "approved")}
+              disabled={busyId === m.id}
+            >
+              {busyId === m.id ? (
+                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+              ) : (
+                <CheckCircle className="h-4 w-4 mr-2" />
+              )}
+              Approve
+            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="border-red-300 text-red-600 hover:bg-red-50"
+                  disabled={busyId === m.id}
+                >
+                  <XCircle className="h-4 w-4 mr-2" />
+                  Reject
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Reject this memory?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Reject {m.authorName}'s memory ({m.yearOrEra}). It will not be deleted —
+                    just marked rejected.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    className="bg-red-600 hover:bg-red-700"
+                    onClick={() => handle(m.id, "rejected")}
+                  >
+                    Reject memory
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </CardFooter>
+        </Card>
+      ))}
+    </div>
   );
 }

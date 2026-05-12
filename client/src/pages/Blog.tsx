@@ -6,7 +6,7 @@ import BlogCategories, { type BlogTheme } from "@/components/BlogCategories";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, Newspaper } from "lucide-react";
+import { ArrowRight, Mail, Newspaper, Search } from "lucide-react";
 import { Link } from "wouter";
 
 const fadeInUp = {
@@ -28,7 +28,7 @@ export default function Blog() {
   const [workFilter, setWorkFilter] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Fetch articles from Empathy Ledger — filter server-side by work (project) too
+  // Fetch articles from Empathy Ledger, filter server-side by work (project) too
   const { data, isLoading } = trpc.blog.list.useQuery(
     {
       theme: theme ?? undefined,
@@ -74,13 +74,13 @@ export default function Blog() {
               The Harvest Journal
             </h1>
             <p className="text-lg text-stone-600 leading-relaxed">
-              Community stories, transformation journeys, and moments of connection.
-              A window into life at The Harvest.
+              Start with What is The Harvest, then follow the people, work, and
+              notes coming out of the garden, kitchen, and art space.
             </p>
             <div className="mt-6">
-              <Link href="/people">
+              <Link href="/what-is-the-harvest">
                 <a className="inline-flex items-center gap-2 text-sm font-semibold text-amber-700 hover:text-amber-800">
-                  Or meet the storytellers <span aria-hidden>→</span>
+                  Read What is The Harvest? <ArrowRight className="h-4 w-4" />
                 </a>
               </Link>
             </div>
@@ -106,17 +106,16 @@ export default function Blog() {
             </div>
           </div>
 
-          {/* Work filter — chip row */}
+          {/* Work filter, chip row */}
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-xs font-mono uppercase tracking-wider text-stone-400 mr-1">
               Work:
             </span>
             <BlogWorkChip label="All" active={!workFilter} onClick={() => setWorkFilter(null)} />
             {[
-              { slug: "milk-crate-pavilion", label: "Milk Create Pavilion" },
-              { slug: "the-cedar", label: "The Cedar" },
               { slug: "the-garden", label: "The Garden" },
-              { slug: "the-sauna", label: "The Sauna" },
+              { slug: "milk-crate-pavilion", label: "Milk Crate Pavilion" },
+              { slug: "the-cedar", label: "The Cedar" },
               { slug: "the-shop", label: "The Shop" },
             ].map((w) => (
               <BlogWorkChip
@@ -142,8 +141,44 @@ export default function Blog() {
               Featured
             </p>
             <h2 className="text-2xl font-serif font-bold text-stone-800 mb-6">
-              Stories from the Land
+              Read this first
             </h2>
+            <Link href="/what-is-the-harvest">
+              <Card className="mb-8 overflow-hidden border-0 bg-[#1C1917] group cursor-pointer transition-all hover:ring-2 hover:ring-amber-500/50">
+                <div className="grid md:grid-cols-2">
+                  <div className="relative h-64 overflow-hidden md:h-auto">
+                    <img
+                      src="/images/compendium/hero-aerial.jpg"
+                      alt="Aerial view of The Harvest site in Witta"
+                      className="h-full w-full object-cover opacity-80 transition-transform duration-500 group-hover:scale-105"
+                    />
+                  </div>
+                  <CardContent className="flex flex-col justify-center p-8">
+                    <span className="mb-2 font-mono text-xs uppercase tracking-wider text-amber-400">
+                      Start here
+                    </span>
+                    <h3 className="mb-3 text-2xl font-serif font-bold text-white md:text-3xl">
+                      What is The Harvest?
+                    </h3>
+                    <p className="mb-4 leading-relaxed text-stone-300">
+                      The old Witta nursery, the three rooms, and the first public
+                      member list as the place takes shape.
+                    </p>
+                    <p className="inline-flex items-center gap-2 text-sm font-medium text-amber-500 transition-colors group-hover:text-amber-400">
+                      Read the story <ArrowRight className="h-4 w-4" />
+                    </p>
+                  </CardContent>
+                </div>
+              </Card>
+            </Link>
+            <div className="mb-6 flex items-center gap-3 text-stone-500">
+              <Mail className="h-4 w-4 text-amber-600" />
+              <Link href="/membership">
+                <a className="text-sm font-semibold text-amber-700 underline-offset-2 hover:underline">
+                  Become a member for letters, invites, and early opportunities.
+                </a>
+              </Link>
+            </div>
             <Link href="/people/barry-rodgerig">
               <Card className="overflow-hidden border-0 bg-stone-800 group cursor-pointer hover:ring-2 hover:ring-amber-500/50 transition-all">
                 <div className="grid md:grid-cols-2">
@@ -163,7 +198,7 @@ export default function Blog() {
                     </h3>
                     <p className="text-stone-300 leading-relaxed mb-4">
                       Barry has been on this land since 1972. His shed is full of machines
-                      that built the hinterland — log trucks, Blitz trucks, a little Italian
+                      that built the hinterland: log trucks, Blitz trucks, a little Italian
                       tractor with a Lombardini diesel.
                     </p>
                     <p className="text-amber-500 text-sm font-medium group-hover:text-amber-400 transition-colors">

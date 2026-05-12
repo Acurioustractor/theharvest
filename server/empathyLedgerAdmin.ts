@@ -1656,7 +1656,7 @@ export async function getPublicHarvestStorytellerBySlug(
       .eq("status", "published")
       .is("author_storyteller_id", null)
       .or(`slug.ilike.%${firstName}%,title.ilike.%${firstName}%`);
-    const harvestSignals = ["harvest", "garden", "milk-crate", "witta", "the-cedar", "the-sauna", "the-shop"];
+    const harvestSignals = ["harvest", "garden", "milk-crate", "witta", "the-cedar", "the-shop"];
     fallback = (candidates ?? []).filter((a: any) => {
       if (claimedIds.has(a.id)) return false;
       const hay = `${a.slug ?? ""} ${a.title ?? ""} ${a.primary_project ?? ""}`.toLowerCase();

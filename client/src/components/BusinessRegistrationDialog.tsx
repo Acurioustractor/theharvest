@@ -82,6 +82,9 @@ export default function BusinessRegistrationDialog({ trigger }: BusinessRegistra
     if (formData.description.trim().length < 20) {
       newErrors.description = "Description must be at least 20 characters";
     }
+    if (!formData.submittedBy.trim()) {
+      newErrors.submittedBy = "Your name is required";
+    }
     if (!formData.submitterEmail.trim()) {
       newErrors.submitterEmail = "Your email is required";
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.submitterEmail)) {
@@ -119,7 +122,7 @@ export default function BusinessRegistrationDialog({ trigger }: BusinessRegistra
       facebook: formData.facebook || undefined,
       instagram: formData.instagram || undefined,
       imageUrl: formData.imageUrl || undefined,
-      submittedBy: formData.submittedBy || undefined,
+      submittedBy: formData.submittedBy.trim(),
       submitterEmail: formData.submitterEmail,
     });
   };
@@ -387,13 +390,15 @@ export default function BusinessRegistrationDialog({ trigger }: BusinessRegistra
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="submittedBy">Your Name</Label>
+                    <Label htmlFor="submittedBy">Your Name *</Label>
                     <Input
                       id="submittedBy"
                       value={formData.submittedBy}
                       onChange={(e) => setFormData({ ...formData, submittedBy: e.target.value })}
                       placeholder="e.g., John Smith"
+                      className={errors.submittedBy ? "border-red-500" : ""}
                     />
+                    {errors.submittedBy && <p className="text-sm text-red-500">{errors.submittedBy}</p>}
                   </div>
 
                   <div className="space-y-2">

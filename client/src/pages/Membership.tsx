@@ -1,422 +1,549 @@
-import { useState } from "react";
-import { motion } from "framer-motion";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useEffect, useState } from "react";
+import { Link } from "wouter";
+import { toast } from "sonner";
+import {
+  ArrowLeft,
+  ArrowRight,
+  Bell,
+  Calendar,
+  ExternalLink,
+  Mail,
+  Sprout,
+  Users,
+} from "lucide-react";
+import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Link } from "wouter";
-import {
-  Heart,
-  Leaf,
-  Crown,
-  Check,
-  ArrowRight,
-  Users,
-  Sparkles,
-  Gift,
-  Bell,
-  Mail,
-} from "lucide-react";
-import { useMutation } from "@tanstack/react-query";
-import { subscribeNewsletter } from "@/lib/api";
-import { toast } from "sonner";
+import { Textarea } from "@/components/ui/textarea";
 import { InterestSelector, type Interest } from "@/components/InterestSelector";
+import { EditableText } from "@/components/EditableText";
+import { HarvestImage } from "@/components/HarvestImage";
+import { HarvestMediaGallery } from "@/components/HarvestMediaGallery";
+import { elLinks } from "@/lib/empathyLedger";
+import { trpc } from "@/lib/trpc";
 
-const fadeInUp = {
-  initial: { opacity: 0, y: 30 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.6 },
-};
-
-const staggerContainer = {
-  animate: {
-    transition: {
-      staggerChildren: 0.15,
-    },
-  },
-};
-
-interface MembershipTier {
-  id: string;
-  name: string;
-  price: number;
-  period: string;
-  tagline: string;
-  description: string;
-  icon: React.ComponentType<{ className?: string }>;
-  color: string;
-  bgGradient: string;
-  features: string[];
-  highlighted?: boolean;
-}
-
-const membershipTiers: MembershipTier[] = [
+const memberPromises = [
   {
-    id: "friend",
-    name: "Friend",
-    price: 50,
-    period: "year",
-    tagline: "Support the vision",
-    description:
-      "Perfect for those who believe in what we're building and want to help it grow. Your contribution directly supports community programs.",
-    icon: Heart,
-    color: "text-amber-600",
-    bgGradient: "from-amber-50 to-white",
-    features: [
-      "Monthly newsletter with behind-the-scenes updates",
-      "10% discount on workshops",
-      "Early access to event bookings",
-      "Name on our supporters wall",
-      "Invitation to annual members gathering",
-    ],
+    title: "The Harvest Note",
+    body: "A monthly letter from Ben or Nic. What happened in the garden. What's coming next. One honest question. One small ask. Same shape every time so you know what to expect.",
+    icon: Mail,
   },
   {
-    id: "steward",
-    name: "Steward",
-    price: 150,
-    period: "year",
-    tagline: "Grow with us",
-    description:
-      "For committed community members who want deeper involvement. Help shape the future of The Harvest while enjoying exclusive benefits.",
-    icon: Leaf,
-    color: "text-amber-700",
-    bgGradient: "from-stone-50 to-white",
-    highlighted: true,
-    features: [
-      "Everything in Friend, plus:",
-      "One free workshop per quarter",
-      "Priority venue hire booking",
-      "20% discount at the garden centre",
-      "Quarterly steward gatherings",
-      "Input into programming decisions",
-      "Free coffee on every visit",
-    ],
+    title: "First call",
+    body: "Members hear about community days, work days, workshops, residencies and meals before they go public. The next community day around the end of June lands here first.",
+    icon: Calendar,
   },
   {
-    id: "patron",
-    name: "Patron",
-    price: 500,
-    period: "year",
-    tagline: "Champion the cause",
-    description:
-      "Our most generous supporters who make ambitious projects possible. Patrons are true partners in building this community asset.",
-    icon: Crown,
-    color: "text-amber-600",
-    bgGradient: "from-amber-50 to-white",
-    features: [
-      "Everything in Steward, plus:",
-      "Unlimited free workshops",
-      "Private venue hire once per year",
-      "Named tree in the food forest",
-      "Quarterly dinner with founders",
-      "Input into strategic direction",
-      "Recognition on all major signage",
-      "Tax-deductible (DGR pending)",
-    ],
+    title: "Invitations to help",
+    body: "Not 'volunteer opportunities'. Specific calls. Hands needed for a path. Someone who knows old timber. A driver for a load of crates. The work is real and so are the asks.",
+    icon: Sprout,
   },
 ];
 
-
-function MembershipCard({ tier }: { tier: MembershipTier }) {
-  return (
-    <motion.div variants={fadeInUp} className="h-full">
-      <Card
-        className={`h-full border-0 shadow-lg hover:shadow-xl transition-shadow overflow-hidden ${
-          tier.highlighted ? "ring-2 ring-amber-500 ring-offset-2" : ""
-        }`}
-      >
-        <div className={`bg-gradient-to-br ${tier.bgGradient}`}>
-          {tier.highlighted && (
-            <div className="bg-amber-500 text-white text-center py-1 text-sm font-medium">
-              Most Popular
-            </div>
-          )}
-          <CardHeader className="text-center pt-8 pb-4">
-            <div
-              className={`w-16 h-16 rounded-full bg-white shadow-md flex items-center justify-center mx-auto mb-4`}
-            >
-              <tier.icon className={`h-8 w-8 ${tier.color}`} />
-            </div>
-            <CardTitle className="text-2xl font-serif">{tier.name}</CardTitle>
-            <p className={`text-sm font-medium ${tier.color}`}>{tier.tagline}</p>
-          </CardHeader>
-
-          <CardContent className="text-center pb-6">
-            <div className="mb-4">
-              <span className="text-5xl font-serif font-bold text-stone-800">
-                ${tier.price}
-              </span>
-              <span className="text-stone-500">/{tier.period}</span>
-            </div>
-            <p className="text-stone-600 text-sm leading-relaxed mb-6">
-              {tier.description}
-            </p>
-          </CardContent>
-        </div>
-
-        <CardContent className="pt-6 pb-8">
-          <ul className="space-y-3 mb-8">
-            {tier.features.map((feature, index) => (
-              <li key={index} className="flex items-start gap-3">
-                <Check
-                  className={`h-5 w-5 ${tier.color} shrink-0 mt-0.5`}
-                />
-                <span className="text-sm text-stone-600">{feature}</span>
-              </li>
-            ))}
-          </ul>
-
-          <Button
-            className={`w-full ${
-              tier.highlighted
-                ? "bg-amber-500 hover:bg-amber-600 text-black"
-                : "bg-stone-800 hover:bg-stone-900 text-white"
-            }`}
-            size="lg"
-            asChild
-          >
-            <a href="#express-interest">
-              Express Interest
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </a>
-          </Button>
-        </CardContent>
-      </Card>
-    </motion.div>
-  );
+function splitName(name: string) {
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  return {
+    firstName: parts[0] || name.trim(),
+    lastName: parts.slice(1).join(" ") || undefined,
+  };
 }
 
 export default function Membership() {
+  const { user } = useAuth();
+  const isAdmin = user?.role === "admin";
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [interests, setInterests] = useState<Interest[]>([]);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [interests, setInterests] = useState<Interest[]>(["events", "community", "membership"]);
+  const [questionName, setQuestionName] = useState("");
+  const [questionEmail, setQuestionEmail] = useState("");
+  const [questionPhone, setQuestionPhone] = useState("");
+  const [question, setQuestion] = useState("");
 
-  const newsletterMutation = useMutation({
-    mutationFn: subscribeNewsletter,
+  useEffect(() => {
+    document.title = "Become a Harvest member";
+
+    let meta = document.querySelector('meta[name="description"]') as HTMLMetaElement | null;
+    if (!meta) {
+      meta = document.createElement("meta");
+      meta.name = "description";
+      document.head.appendChild(meta);
+    }
+    meta.content =
+      "Join the Harvest member list for regular notes, event invitations, work day calls, and early opportunities.";
+  }, []);
+
+  const joinMutation = trpc.newsletter.subscribe.useMutation({
     onSuccess: () => {
-      toast.success("You're on the list!", {
-        description: "We'll notify you as soon as membership opens.",
-      });
+      toast.success("You are on the Harvest member list.");
+      setName("");
       setEmail("");
-      setInterests([]);
-      setIsSubmitting(false);
+      setPhone("");
+      setInterests(["events", "community", "membership"]);
     },
-    onError: (error: Error) => {
-      toast.error("Something went wrong", {
-        description: error.message || "Please try again later.",
+    onError: (error) => {
+      toast.error("Could not add you to the list", {
+        description: error.message || "Please try again.",
       });
-      setIsSubmitting(false);
     },
   });
 
-  const handleInterestSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email) return;
-    setIsSubmitting(true);
-    newsletterMutation.mutate({
-      email,
+  const questionMutation = trpc.members.question.useMutation({
+    onSuccess: () => {
+      toast.success("Question sent.");
+      setQuestionName("");
+      setQuestionEmail("");
+      setQuestionPhone("");
+      setQuestion("");
+    },
+    onError: (error) => {
+      toast.error("Could not send the question", {
+        description: error.message || "Please try again.",
+      });
+    },
+  });
+
+  function handleSubmit(event: React.FormEvent) {
+    event.preventDefault();
+    const { firstName, lastName } = splitName(name);
+    const taggedInterests = Array.from(new Set<Interest>(["membership", ...interests]));
+
+    joinMutation.mutate({
+      email: email.trim(),
       phone: phone.trim() || undefined,
-      source: "Membership Interest",
-      interests: interests.length > 0 ? interests : undefined,
+      firstName,
+      lastName,
+      source: "Harvest member list",
+      interests: taggedInterests,
+      member: true,
     });
-  };
+  }
+
+  function handleQuestionSubmit(event: React.FormEvent) {
+    event.preventDefault();
+    questionMutation.mutate({
+      name: questionName.trim(),
+      email: questionEmail.trim(),
+      phone: questionPhone.trim() || null,
+      question: question.trim(),
+      source: "Membership page question form",
+    });
+  }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Coming Soon Banner */}
-      <div className="bg-amber-500 text-black py-3">
-        <div className="container">
-          <div className="flex items-center justify-center gap-3 text-center">
-            <Bell className="h-5 w-5" />
-            <p className="font-medium">
-              Membership is launching soon! Express your interest below to be first in line.
-            </p>
+    <main className="min-h-screen bg-[#F5F0E8] text-[#1C1917]">
+      <section className="relative overflow-hidden bg-[#1C1917] text-[#F5F0E8]">
+        <HarvestImage
+          page="membership"
+          slot="hero-image"
+          src="/images/compendium/seed-house-front.jpg"
+          alt="The front of The Harvest building in Witta"
+          size="hero"
+          priority
+          className="absolute inset-0 h-full w-full"
+          imgClassName="h-full w-full object-cover opacity-[0.38]"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#1C1917] via-[#1C1917]/82 to-[#1C1917]/40" />
+
+        <div className="relative z-10 mx-auto flex min-h-[78vh] max-w-6xl flex-col justify-between px-5 py-6 md:px-8">
+          <nav className="flex items-center justify-between gap-4 font-mono text-[11px] uppercase tracking-[0.16em] text-white/68">
+            <Link href="/" className="hover:text-white">
+              The Harvest Witta
+            </Link>
+            <Link href="/what-is-the-harvest" className="inline-flex items-center gap-2 hover:text-white">
+              <ArrowLeft className="h-3.5 w-3.5" />
+              What is The Harvest?
+            </Link>
+          </nav>
+
+          <div className="grid gap-10 pb-10 md:grid-cols-[1fr_0.78fr] md:items-end md:pb-14">
+            <div>
+              <EditableText
+                page="membership"
+                slot="hero-eyebrow"
+                defaultContent="Member list now open"
+                as="p"
+                className="mb-5 font-mono text-xs uppercase tracking-[0.24em] text-[#C4922A]"
+              />
+              <EditableText
+                page="membership"
+                slot="hero-title"
+                defaultContent="Become a Harvest member."
+                as="h1"
+                className="max-w-3xl text-5xl font-black leading-[0.92] tracking-normal md:text-7xl"
+              />
+              <EditableText
+                page="membership"
+                slot="hero-body"
+                defaultContent="For now, membership means this: your name is on the Harvest list. You get the letters, invitations, first calls, and early opportunities while the place is being made."
+                as="p"
+                className="mt-7 max-w-2xl text-xl leading-relaxed text-white/80 md:text-2xl"
+                multiline
+              />
+            </div>
+
+            <div className="border border-white/14 bg-white/[0.08] p-6 backdrop-blur-sm">
+              <Sprout className="h-9 w-9 text-[#C4922A]" />
+              <EditableText
+                page="membership"
+                slot="hero-note-title"
+                defaultContent="The legal structure comes later."
+                as="p"
+                className="mt-5 text-xl font-semibold"
+              />
+              <EditableText
+                page="membership"
+                slot="hero-note-body"
+                defaultContent="This is the front gate list for people who want to stay close, turn up, and help shape the first version."
+                as="p"
+                className="mt-3 leading-relaxed text-white/66"
+                multiline
+              />
+            </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* Hero Section */}
-      <section className="relative py-24 bg-gradient-to-b from-stone-100 to-white overflow-hidden">
-        <div className="container">
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="max-w-3xl mx-auto text-center"
-          >
-            <span className="inline-flex items-center gap-2 px-4 py-2 mb-6 text-sm font-medium bg-amber-100 text-amber-700 rounded-full">
-              <Sparkles className="h-4 w-4" />
-              Coming Soon
-            </span>
+      {isAdmin && <MembershipAdminLedgerPanel />}
 
-            <h1 className="text-5xl md:text-6xl font-serif font-bold text-stone-800 mb-6">
-              Become a <span className="text-amber-600">Member</span>
-            </h1>
+      <section className="py-14 md:py-20">
+        <div className="mx-auto max-w-6xl px-5 md:px-8">
+          <EditableText
+            page="membership"
+            slot="benefits-eyebrow"
+            defaultContent="What you get on the list"
+            as="p"
+            className="font-mono text-xs uppercase tracking-[0.2em] text-[#8B4A2A]"
+          />
+          <EditableText
+            page="membership"
+            slot="benefits-title"
+            defaultContent="Three concrete things. Nothing performative."
+            as="h2"
+            className="mt-3 max-w-3xl text-4xl font-black leading-[0.98] md:text-5xl"
+          />
 
-            <p className="text-xl text-stone-600 mb-8 leading-relaxed">
-              The Harvest grows through community support. Membership helps fund
-              programs, maintain the space, and keep prices accessible for everyone.
-              We're putting the finishing touches on our membership program.
-            </p>
-
-            <div className="flex flex-wrap justify-center gap-4">
-              <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-sm">
-                <Gift className="h-5 w-5 text-amber-500" />
-                <span className="text-stone-700 font-medium">Exclusive benefits</span>
-              </div>
-              <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-sm">
-                <Heart className="h-5 w-5 text-amber-500" />
-                <span className="text-stone-700 font-medium">Support the mission</span>
-              </div>
-              <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-sm">
-                <Users className="h-5 w-5 text-amber-600" />
-                <span className="text-stone-700 font-medium">Join the community</span>
-              </div>
-            </div>
-          </motion.div>
+          <div className="mt-10 grid gap-5 md:grid-cols-3">
+            {memberPromises.map((item, index) => {
+              const Icon = item.icon;
+              return (
+                <section key={item.title} className="border border-stone-300 bg-[#FFFDF7] p-6">
+                  <Icon className="h-8 w-8 text-[#8B4A2A]" />
+                  <EditableText
+                    page="membership"
+                    slot={`benefit-${index + 1}-title`}
+                    defaultContent={item.title}
+                    as="h3"
+                    className="mt-5 text-2xl font-black"
+                  />
+                  <EditableText
+                    page="membership"
+                    slot={`benefit-${index + 1}-body`}
+                    defaultContent={item.body}
+                    as="p"
+                    className="mt-3 leading-relaxed text-stone-700"
+                    multiline
+                  />
+                </section>
+              );
+            })}
+          </div>
         </div>
       </section>
 
-      {/* Membership Tiers */}
-      <section className="py-24 bg-white">
-        <div className="container">
-          <motion.div
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true }}
-            variants={staggerContainer}
-            className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto"
-          >
-            {membershipTiers.map((tier) => (
-              <MembershipCard key={tier.id} tier={tier} />
-            ))}
-          </motion.div>
-        </div>
-      </section>
+      <section id="join" className="border-y border-stone-300/70 bg-[#FFFDF7] py-14 md:py-20">
+        <div className="mx-auto grid max-w-6xl gap-10 px-5 md:grid-cols-[0.82fr_1fr] md:px-8">
+          <div>
+            <EditableText
+              page="membership"
+              slot="join-eyebrow"
+              defaultContent="Sign up"
+              as="p"
+              className="font-mono text-xs uppercase tracking-[0.2em] text-[#8B4A2A]"
+            />
+            <EditableText
+              page="membership"
+              slot="join-title"
+              defaultContent="Put your name on the list."
+              as="h2"
+              className="mt-3 text-4xl font-black leading-[0.98] md:text-5xl"
+            />
+            <EditableText
+              page="membership"
+              slot="join-body"
+              defaultContent="Free. Just your name, an email, and the things you're curious about. We'll send the welcome note straight after."
+              as="p"
+              className="mt-6 max-w-xl text-lg leading-relaxed text-stone-700"
+              multiline
+            />
+            <EditableText
+              page="membership"
+              slot="join-legal-note"
+              defaultContent="No paid membership is being sold here. No formal co-op membership is being claimed here. This is the public Harvest member list. The deeper structures come later, with care, after we've earned them."
+              as="p"
+              className="mt-5 max-w-xl text-sm leading-relaxed text-stone-500"
+              multiline
+            />
+          </div>
 
-
-      {/* FAQ Section */}
-      <section className="py-24 bg-white">
-        <div className="container max-w-3xl">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
-            <h2 className="text-3xl md:text-4xl font-serif font-bold text-stone-800 mb-4">
-              Questions?
-            </h2>
-          </motion.div>
-
-          <motion.div
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true }}
-            variants={staggerContainer}
-            className="space-y-6"
-          >
-            {[
-              {
-                q: "Can I change my membership level later?",
-                a: "Absolutely. You can upgrade or downgrade at any time. If upgrading, you'll just pay the difference for the remaining period.",
-              },
-              {
-                q: "Is my membership tax-deductible?",
-                a: "We're currently applying for DGR (Deductible Gift Recipient) status. Once approved, Patron memberships will be partially tax-deductible. We'll notify members when this is confirmed.",
-              },
-              {
-                q: "Can I gift a membership?",
-                a: "Yes! Memberships make wonderful gifts. Contact us directly and we'll set up a gift membership with a personalized welcome.",
-              },
-              {
-                q: "What if I can't afford membership but want to help?",
-                a: "We value all contributions. Volunteering is a wonderful way to be part of The Harvest community. Check our volunteer opportunities or simply spread the word about what we're doing.",
-              },
-            ].map((faq, index) => (
-              <motion.div
-                key={index}
-                variants={fadeInUp}
-                className="bg-stone-50 rounded-lg p-6"
-              >
-                <h3 className="font-semibold text-stone-800 mb-2">{faq.q}</h3>
-                <p className="text-stone-600">{faq.a}</p>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Express Interest CTA */}
-      <section id="express-interest" className="py-24 bg-stone-900 text-white">
-        <div className="container">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="max-w-2xl mx-auto text-center"
-          >
-            <Mail className="h-12 w-12 text-amber-400 mx-auto mb-6" />
-            <h2 className="text-4xl md:text-5xl font-serif font-bold mb-6">
-              Be First to Know
-            </h2>
-            <p className="text-xl text-stone-300 mb-10 leading-relaxed">
-              Membership is launching soon. Leave your email and we'll notify you
-              the moment it's ready. Early supporters may receive special benefits.
-            </p>
-
-            <form onSubmit={handleInterestSubmit} className="space-y-6">
-              <div className="flex flex-col sm:flex-row gap-4">
+          <form onSubmit={handleSubmit} className="border border-stone-300 bg-[#F5F0E8] p-5 md:p-7">
+            <div className="grid gap-4">
+              <div>
+                <label className="mb-2 block font-mono text-[11px] uppercase tracking-[0.16em] text-stone-500">
+                  Name
+                </label>
                 <Input
-                  type="email"
-                  placeholder="Your email address"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="flex-1 bg-white/10 border-white/20 text-white placeholder:text-white/50 h-12"
+                  value={name}
+                  onChange={(event) => setName(event.target.value)}
+                  placeholder="Your name"
+                  className="h-12 rounded-none border-stone-300 bg-white"
                   required
                 />
-                <Button
-                  type="submit"
-                  size="lg"
-                  className="bg-amber-500 hover:bg-amber-600 text-black font-semibold h-12 px-8"
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? "Joining..." : "Notify Me"}
-                  <Bell className="ml-2 h-5 w-5" />
-                </Button>
               </div>
-              <Input
-                type="tel"
-                placeholder="Phone (optional — for text updates)"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                className="bg-white/10 border-white/20 text-white placeholder:text-white/50 h-12"
-              />
-              <InterestSelector
-                selected={interests}
-                onChange={setInterests}
-                variant="dark"
-              />
-            </form>
+              <div>
+                <label className="mb-2 block font-mono text-[11px] uppercase tracking-[0.16em] text-stone-500">
+                  Email
+                </label>
+                <Input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
+                  placeholder="you@example.com"
+                  className="h-12 rounded-none border-stone-300 bg-white"
+                />
+              </div>
+              <div>
+                <label className="mb-2 block font-mono text-[11px] uppercase tracking-[0.16em] text-stone-500">
+                  Phone, optional
+                </label>
+                <Input
+                  type="tel"
+                  value={phone}
+                  onChange={(event) => setPhone(event.target.value)}
+                  placeholder="For text updates"
+                  className="h-12 rounded-none border-stone-300 bg-white"
+                />
+              </div>
 
-            <p className="text-stone-400 text-sm mt-6">
-              No spam, ever. Just a notification when membership opens.
-            </p>
+              <InterestSelector selected={interests} onChange={setInterests} />
 
-            <div className="mt-10 pt-10 border-t border-white/10">
-              <p className="text-stone-400 mb-4">Have questions before then?</p>
               <Button
-                variant="outline"
-                className="border-white/30 text-white hover:bg-white/10"
-                asChild
+                type="submit"
+                disabled={joinMutation.isPending}
+                className="mt-2 h-12 rounded-none bg-[#C4922A] font-semibold text-stone-950 hover:bg-[#E0AD43]"
               >
-                <Link href="/contact">Get in Touch</Link>
+                {joinMutation.isPending ? "Joining..." : "Join the member list"}
+                <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </div>
-          </motion.div>
+          </form>
         </div>
       </section>
-    </div>
+
+      <section id="questions" className="bg-[#F5F0E8] py-14 md:py-20">
+        <div className="mx-auto grid max-w-6xl gap-10 px-5 md:grid-cols-[0.8fr_1fr] md:px-8">
+          <div>
+            <EditableText
+              page="membership"
+              slot="questions-eyebrow"
+              defaultContent="Or ask a question first"
+              as="p"
+              className="font-mono text-xs uppercase tracking-[0.2em] text-[#8B4A2A]"
+            />
+            <EditableText
+              page="membership"
+              slot="questions-title"
+              defaultContent="Not ready to join? Send a question."
+              as="h2"
+              className="mt-3 text-4xl font-black leading-[0.98] md:text-5xl"
+            />
+            <EditableText
+              page="membership"
+              slot="questions-body"
+              defaultContent="Sometimes you want to know something before you sign anything up. Ben or Nic will reply within 48 hours, sometimes faster."
+              as="p"
+              className="mt-6 max-w-xl text-lg leading-relaxed text-stone-700"
+              multiline
+            />
+          </div>
+
+          <form onSubmit={handleQuestionSubmit} className="border border-stone-300 bg-[#FFFDF7] p-5 md:p-7">
+            <div className="grid gap-4">
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <label className="mb-2 block font-mono text-[11px] uppercase tracking-[0.16em] text-stone-500">
+                    Name
+                  </label>
+                  <Input
+                    value={questionName}
+                    onChange={(event) => setQuestionName(event.target.value)}
+                    placeholder="Your name"
+                    className="h-12 rounded-none border-stone-300 bg-white"
+                    required
+                    maxLength={120}
+                  />
+                </div>
+                <div>
+                  <label className="mb-2 block font-mono text-[11px] uppercase tracking-[0.16em] text-stone-500">
+                    Email
+                  </label>
+                  <Input
+                    type="email"
+                    value={questionEmail}
+                    onChange={(event) => setQuestionEmail(event.target.value)}
+                    placeholder="you@example.com"
+                    className="h-12 rounded-none border-stone-300 bg-white"
+                    required
+                    maxLength={180}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="mb-2 block font-mono text-[11px] uppercase tracking-[0.16em] text-stone-500">
+                  Phone, optional
+                </label>
+                <Input
+                  type="tel"
+                  value={questionPhone}
+                  onChange={(event) => setQuestionPhone(event.target.value)}
+                  placeholder="For a call or text back"
+                  className="h-12 rounded-none border-stone-300 bg-white"
+                  maxLength={60}
+                />
+              </div>
+
+              <div>
+                <label className="mb-2 block font-mono text-[11px] uppercase tracking-[0.16em] text-stone-500">
+                  Question
+                </label>
+                <Textarea
+                  value={question}
+                  onChange={(event) => setQuestion(event.target.value)}
+                  placeholder="What would you like to ask?"
+                  className="min-h-36 rounded-none border-stone-300 bg-white"
+                  required
+                  maxLength={2000}
+                />
+              </div>
+
+              <Button
+                type="submit"
+                disabled={questionMutation.isPending}
+                className="mt-2 h-12 rounded-none bg-[#1C1917] font-semibold text-[#F5F0E8] hover:bg-[#3D3832]"
+              >
+                {questionMutation.isPending ? "Sending..." : "Send question"}
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <section className="bg-[#1C1917] py-14 text-[#F5F0E8] md:py-20">
+        <div className="mx-auto flex max-w-6xl flex-col gap-6 px-5 md:flex-row md:items-center md:justify-between md:px-8">
+          <div>
+            <EditableText
+              page="membership"
+              slot="footer-eyebrow"
+              defaultContent="Start here"
+              as="p"
+              className="font-mono text-xs uppercase tracking-[0.2em] text-[#C4922A]"
+            />
+            <EditableText
+              page="membership"
+              slot="footer-title"
+              defaultContent="Read What is The Harvest, or open the collection."
+              as="h2"
+              className="mt-3 max-w-2xl text-4xl font-black leading-[0.98]"
+            />
+          </div>
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <Link
+              href="/what-is-the-harvest"
+              className="inline-flex min-h-12 items-center justify-center gap-2 border border-white/22 px-6 py-3 font-semibold text-white transition hover:border-white hover:bg-white/10"
+            >
+              What is The Harvest?
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Link
+              href="/works"
+              className="inline-flex min-h-12 items-center justify-center gap-2 bg-[#C4922A] px-6 py-3 font-semibold text-[#1C1917] transition hover:bg-[#E0AD43]"
+            >
+              See the works
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+        </div>
+      </section>
+    </main>
+  );
+}
+
+function MembershipAdminLedgerPanel() {
+  return (
+    <section className="border-b border-amber-500/30 bg-amber-50 px-5 py-5 md:px-8">
+      <div className="mx-auto grid max-w-6xl gap-5 lg:grid-cols-[0.74fr_1fr]">
+        <div className="border border-amber-300 bg-white p-5">
+          <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[#8B4A2A]">
+            Admin editing
+          </p>
+          <h2 className="mt-2 text-2xl font-black leading-tight">
+            Membership page copy and media are editable here.
+          </h2>
+          <p className="mt-3 text-sm leading-relaxed text-stone-700">
+            Click any amber <strong>Edit</strong> pill to rewrite copy. Hover the hero image and use
+            <strong> Swap photo</strong> to choose from Empathy Ledger. Form field labels stay fixed
+            so the signup flow remains stable while you edit the public story.
+          </p>
+          <div className="mt-5 flex flex-wrap gap-2">
+            <AdminLedgerLink href="/admin/media-library" label="Harvest media library" />
+            <AdminLedgerLink href={elLinks.photoManager()} label="EL photo manager" external />
+            <AdminLedgerLink href={elLinks.galleries()} label="EL galleries" external />
+            <AdminLedgerLink href={elLinks.bulkEdit()} label="EL bulk edit" external />
+          </div>
+        </div>
+
+        <HarvestMediaGallery
+          title="Membership media"
+          eyebrow="Empathy Ledger widget"
+          description="A quick view of EL assets tagged for gathering/community use. Use this as the source pool while you choose hero or support images."
+          theme="gather"
+          limit={4}
+          tagHint="theme:gather + Harvest gallery"
+          className="min-h-full"
+        />
+      </div>
+    </section>
+  );
+}
+
+function AdminLedgerLink({
+  href,
+  label,
+  external = false,
+}: {
+  href: string;
+  label: string;
+  external?: boolean;
+}) {
+  const className =
+    "inline-flex min-h-10 items-center justify-center gap-2 border border-stone-900/16 bg-[#1C1917] px-3 py-2 text-xs font-semibold text-[#F5F0E8] transition hover:bg-[#3D3832]";
+
+  if (external) {
+    return (
+      <a href={href} target="_blank" rel="noopener noreferrer" className={className}>
+        {label}
+        <ExternalLink className="h-3.5 w-3.5" />
+      </a>
+    );
+  }
+
+  return (
+    <Link href={href} className={className}>
+      {label}
+      <ArrowRight className="h-3.5 w-3.5" />
+    </Link>
   );
 }

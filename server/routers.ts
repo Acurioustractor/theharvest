@@ -58,10 +58,69 @@ const INTEREST_OPTIONS = ["kids-play", "cafe", "garden", "pop-up-events", "art-e
 const CURRENT_GATHERING_DATE = "2026-06-20";
 const CURRENT_GATHERING_TAG = "witta-gathering-2026-06-20";
 const CURRENT_GATHERING_SWITCHBOARD_TAGS = [
-  `Event: Witta Gathering — ${CURRENT_GATHERING_DATE}`,
-  "Event type: Public launch (50–150)",
+  `Event: Witta Gathering - ${CURRENT_GATHERING_DATE}`,
+  "Event type: Public launch (50-150)",
   "Access: Open registration (Public)",
 ];
+
+export const NEWSLETTER_INTEREST_OPTIONS = [
+  "events",
+  "workshops",
+  "markets",
+  "venue-hire",
+  "garden-centre",
+  "food-kitchen",
+  "community",
+  "volunteering",
+  "membership",
+  "sustainability",
+] as const;
+
+type NewsletterInterest = (typeof NEWSLETTER_INTEREST_OPTIONS)[number];
+
+const NEWSLETTER_INTEREST_TAGS: Record<NewsletterInterest, string> = {
+  events: "interest-events",
+  workshops: "interest-workshops",
+  markets: "interest-markets",
+  "venue-hire": "interest-venue",
+  "garden-centre": "interest-garden",
+  "food-kitchen": "interest-food",
+  community: "interest-community",
+  volunteering: "interest-volunteer",
+  membership: "interest-membership",
+  sustainability: "interest-sustainability",
+};
+
+function splitPersonName(name: string) {
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  return {
+    firstName: parts[0],
+    lastName: parts.slice(1).join(" ") || undefined,
+  };
+}
+
+export function buildNewsletterTags(input: {
+  interests?: NewsletterInterest[];
+  member?: boolean;
+  extraTags?: string[];
+}) {
+  const tags = new Set(["newsletter", "harvest-newsletter", "harvest-website"]);
+
+  for (const interest of input.interests || []) {
+    tags.add(NEWSLETTER_INTEREST_TAGS[interest]);
+  }
+
+  if (input.member || input.interests?.includes("membership")) {
+    tags.add("harvest-member");
+    tags.add("interest-membership");
+  }
+
+  for (const tag of input.extraTags || []) {
+    tags.add(tag);
+  }
+
+  return Array.from(tags);
+}
 
 const harvestMediaRecipeInput = z.object({
   work: z.string().min(1).max(100),
@@ -130,7 +189,7 @@ export const appRouter = router({
         category: z.enum(["market", "community", "arts", "workshop", "music"]),
         description: z.string().min(1),
         contactEmail: z.string().email(),
-        submittedBy: z.string().optional(),
+        submittedBy: z.string().trim().min(1).max(120),
       }))
       .mutation(async ({ input }) => {
         const event = await createEvent({
@@ -141,11 +200,11 @@ export const appRouter = router({
 
         // Create/update GHL contact with event submission tags
         try {
-          const [firstName, ...rest] = (input.submittedBy || "").split(" ");
+          const { firstName, lastName } = splitPersonName(input.submittedBy);
           const result = await upsertGHLContact({
             email: input.contactEmail,
-            firstName: firstName || undefined,
-            lastName: rest.join(" ") || undefined,
+            firstName,
+            lastName,
             source: "Website - Event Submission",
             tags: ["event-submission", "harvest-website"],
           });
@@ -211,7 +270,7 @@ export const appRouter = router({
         facebook: z.string().max(500).optional(),
         instagram: z.string().max(500).optional(),
         imageUrl: z.string().url().optional().or(z.literal("")),
-        submittedBy: z.string().optional(),
+        submittedBy: z.string().trim().min(1).max(120),
         submitterEmail: z.string().email(),
       }))
       .mutation(async ({ input }) => {
@@ -222,11 +281,11 @@ export const appRouter = router({
 
         // Create/update GHL contact with business registration tags
         try {
-          const [firstName, ...rest] = (input.submittedBy || "").split(" ");
+          const { firstName, lastName } = splitPersonName(input.submittedBy);
           const result = await upsertGHLContact({
             email: input.submitterEmail,
-            firstName: firstName || undefined,
-            lastName: rest.join(" ") || undefined,
+            firstName,
+            lastName,
             phone: input.phone,
             source: "Website - Business Registration",
             tags: ["business-registration", "harvest-website"],
@@ -340,17 +399,17 @@ export const appRouter = router({
         if (!input.email && !input.phone) {
           throw new Error("Email or phone is required");
         }
-        const [firstName, ...rest] = input.name.split(" ");
-        const lastName = rest.join(" ") || undefined;
+        const { firstName, lastName } = splitPersonName(input.name);
 
         const result = await upsertGHLContact({
           email: input.email || undefined,
           firstName,
           lastName,
           phone: input.phone || undefined,
-          source: `RSVP — Witta Gathering ${CURRENT_GATHERING_DATE}`,
+          source: `RSVP - Witta Gathering ${CURRENT_GATHERING_DATE}`,
           tags: [
             CURRENT_GATHERING_TAG,
+            "harvest-event-attendee",
             "harvest-website",
             ...CURRENT_GATHERING_SWITCHBOARD_TAGS,
           ],
@@ -358,7 +417,7 @@ export const appRouter = router({
 
         if (result.contactId && input.excitement) {
           await addGHLContactNote(result.contactId,
-            `**RSVP — Witta Gathering ${CURRENT_GATHERING_DATE}**\n\n**What excites them:** ${input.excitement}\n**Source:** ${input.source || "Not specified"}`
+            `**RSVP - Witta Gathering ${CURRENT_GATHERING_DATE}**\n\n**What excites them:** ${input.excitement}\n**Source:** ${input.source || "Not specified"}`
           );
         }
 
@@ -394,8 +453,7 @@ export const appRouter = router({
         specialRequests: z.string().optional(),
       }))
       .mutation(async ({ input }) => {
-        const [firstName, ...rest] = input.name.split(" ");
-        const lastName = rest.join(" ") || undefined;
+        const { firstName, lastName } = splitPersonName(input.name);
 
         const result = await upsertGHLContact({
           email: input.email,
@@ -427,6 +485,7 @@ export const appRouter = router({
   quiz: router({
     submit: publicProcedure
       .input(z.object({
+        name: z.string().trim().min(1).max(120),
         email: z.string().email(),
         persona: z.string().min(1),
         ghlTags: z.array(z.string()),
@@ -435,8 +494,11 @@ export const appRouter = router({
         interests: z.array(z.string()).optional(),
       }))
       .mutation(async ({ input }) => {
+        const { firstName, lastName } = splitPersonName(input.name);
         const result = await upsertGHLContact({
           email: input.email,
+          firstName,
+          lastName,
           source: "Website - Visitor Quiz",
           tags: [...input.ghlTags, "quiz-completed", "harvest-website"],
         });
@@ -502,23 +564,18 @@ export const appRouter = router({
       .input(z.object({
         email: z.string().email(),
         phone: z.string().nullish(),
-        firstName: z.string().max(100).optional(),
-        lastName: z.string().max(100).optional(),
+        firstName: z.string().trim().min(1).max(100),
+        lastName: z.string().trim().max(100).optional(),
         source: z.string().max(100).optional(),
-        interests: z.array(z.enum([
-          "events",
-          "workshops",
-          "markets",
-          "venue-hire",
-          "garden-centre",
-          "food-kitchen"
-        ])).optional(),
+        interests: z.array(z.enum(NEWSLETTER_INTEREST_OPTIONS)).optional(),
+        member: z.boolean().optional(),
       }))
       .mutation(async ({ input }) => {
-        // Build tags array from interests
-        const baseTags = ["newsletter", "harvest-website"];
-        const interestTags = input.interests?.map(interest => `interest-${interest}`) || [];
-        const allTags = [...baseTags, ...interestTags];
+        const interests = input.interests || [];
+        const allTags = buildNewsletterTags({
+          interests,
+          member: input.member,
+        });
 
         const result = await upsertGHLContact({
           email: input.email,
@@ -534,7 +591,10 @@ export const appRouter = router({
         }
 
         if (result.contactId) {
-          const workflowId = process.env.GHL_NEWSLETTER_WORKFLOW_ID;
+          const isMember = Boolean(input.member || interests.includes("membership"));
+          const workflowId = isMember
+            ? process.env.GHL_MEMBER_WELCOME_WORKFLOW_ID || process.env.GHL_NEWSLETTER_WORKFLOW_ID
+            : process.env.GHL_NEWSLETTER_WORKFLOW_ID;
           if (workflowId) {
             triggerGHLWorkflow(workflowId, result.contactId).catch(err =>
               console.error("GHL workflow trigger failed (newsletter):", err)
@@ -544,7 +604,7 @@ export const appRouter = router({
 
         return {
           success: true,
-          message: "Successfully subscribed to the newsletter!",
+          message: input.member ? "Successfully joined the Harvest member list!" : "Successfully subscribed to the newsletter!",
         };
       }),
 
@@ -581,6 +641,57 @@ export const appRouter = router({
           failed: batchResult.failed,
           error: batchResult.error,
         };
+      }),
+  }),
+
+  members: router({
+    question: publicProcedure
+      .input(z.object({
+        name: z.string().min(1).max(120),
+        email: z.string().email(),
+        phone: z.string().max(60).nullish(),
+        question: z.string().min(1).max(2000),
+        source: z.string().max(100).optional(),
+      }))
+      .mutation(async ({ input }) => {
+        const [firstName, ...rest] = input.name.trim().split(/\s+/);
+        const result = await upsertGHLContact({
+          email: input.email,
+          firstName,
+          lastName: rest.join(" ") || undefined,
+          phone: input.phone || undefined,
+          source: input.source || "Harvest member question",
+          tags: buildNewsletterTags({
+            member: true,
+            interests: ["membership"],
+            extraTags: ["member-question"],
+          }),
+        });
+
+        if (!result.success) {
+          throw new Error(result.error || "Failed to send question");
+        }
+
+        if (result.contactId) {
+          const noteResult = await addGHLContactNote(
+            result.contactId,
+            `**Member question**\n\n**Question:**\n${input.question}\n\n**Source:** ${input.source || "Membership page"}`
+          );
+
+          if (!noteResult.success) {
+            throw new Error(noteResult.error || "Failed to save question");
+          }
+
+          const workflowId = process.env.GHL_MEMBER_QUESTION_WORKFLOW_ID || process.env.GHL_CONTACT_FORM_WORKFLOW_ID;
+          if (workflowId) {
+            const workflowResult = await triggerGHLWorkflow(workflowId, result.contactId);
+            if (!workflowResult.success) {
+              console.error("GHL workflow trigger failed (member question):", workflowResult.error);
+            }
+          }
+        }
+
+        return { success: true };
       }),
   }),
 
@@ -957,7 +1068,18 @@ export const appRouter = router({
       }),
 
     // Public: Get gallery images from Empathy Ledger
-    // Uses dedicated Harvest gallery API with Harvest-specific tags
+    //
+    // Strategy:
+    //   - When ANY filter is set (work, theme, tag, category) → use the strict
+    //     /harvest/gallery endpoint which returns only tagged photos with the
+    //     rich metadata (themes, works, special, etc).
+    //   - When NO filter is set → fall back to the full /content-hub/media
+    //     endpoint scoped to project=the-harvest. This returns the entire ~394
+    //     photo library including untagged uploads, so the photo picker shows
+    //     everything an editor might want.
+    //   - Merging: strict-tagged photos are returned first (they have richer
+    //     metadata for filtering/display), then any untagged photos from the
+    //     full library that aren't already in the strict set.
     fromEL: publicProcedure
       .input(z.object({
         category: z.enum(["all", "before", "during", "after", "milestone", "general"]).optional(),
@@ -965,20 +1087,37 @@ export const appRouter = router({
         theme: z.string().optional(), // Theme: "eat", "grow", "make", "gather"
         project: z.string().optional(), // Project slug (legacy / project_id filter)
         work: z.string().optional(), // Harvest work slug — filters by harvest-work tag
-        limit: z.number().min(1).max(100).optional(),
+        limit: z.number().min(1).max(200).optional(),
         page: z.number().min(1).optional(),
       }).optional())
       .query(async ({ input }) => {
-        const response = await empathyLedgerClient.fetchHarvestGallery({
-          category: input?.category === "all" ? undefined : input?.category,
-          tag: input?.tag,
-          theme: input?.theme,
-          project: input?.project,
-          work: input?.work,
-          limit: input?.limit || 50,
+        const limit = input?.limit || 50;
+        const hasFilter = Boolean(
+          input?.work || input?.theme || input?.tag ||
+          (input?.category && input.category !== "all") ||
+          input?.project,
+        );
+
+        // Filtered — use the strict /harvest/gallery endpoint that returns
+        // only tagged photos with the rich metadata needed for filtering.
+        if (hasFilter) {
+          return await empathyLedgerClient.fetchHarvestGallery({
+            category: input?.category === "all" ? undefined : input?.category,
+            tag: input?.tag,
+            theme: input?.theme,
+            project: input?.project,
+            work: input?.work,
+            limit,
+            page: input?.page,
+          });
+        }
+
+        // No filter — return the full library so untagged uploads appear too.
+        // /content-hub/media?project=the-harvest returns all ~394 photos.
+        return await empathyLedgerClient.fetchAllHarvestMedia({
+          limit,
           page: input?.page,
         });
-        return response;
       }),
 
     // Public: Get media for a specific Work (one of the 5 collection pieces)
@@ -1125,18 +1264,19 @@ export const appRouter = router({
       }))
       .mutation(async ({ input }) => {
         const cleanEmail = input.email || undefined;
+        const cleanName = input.name?.trim() || undefined;
         const response = await createPulseResponse({
           ...input,
           email: cleanEmail,
         });
 
-        // If email provided, upsert GHL contact with pulse tags
-        if (cleanEmail) {
+        // Only sync to GHL when we have both email and a real name.
+        if (cleanEmail && cleanName) {
           const interestTags = (input.wouldUse || []).map(u => `interest-${u}`);
           const pulseResult = await upsertGHLContact({
             email: cleanEmail,
-            firstName: input.name?.split(" ")[0],
-            lastName: input.name?.split(" ").slice(1).join(" ") || undefined,
+            firstName: cleanName.split(" ")[0],
+            lastName: cleanName.split(" ").slice(1).join(" ") || undefined,
             source: "Community Pulse Survey",
             tags: ["pulse-respondent", "harvest-website", ...interestTags],
           });
@@ -1149,6 +1289,8 @@ export const appRouter = router({
               );
             }
           }
+        } else if (cleanEmail && !cleanName) {
+          console.warn("[Pulse] Skipping GHL sync because email was provided without a name.");
         }
 
         return { success: true, id: response?.id };

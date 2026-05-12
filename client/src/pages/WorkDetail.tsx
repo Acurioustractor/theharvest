@@ -89,7 +89,7 @@ export default function WorkDetail({ slug }: { slug: string }) {
   const activeTags: LifecycleTag[] = savedTags ?? work.lifecycleTags;
   const lifecycleTags = sortLifecycleTags(activeTags);
   const index = works.findIndex((w) => w.slug === work.slug);
-  const number = String(index + 1).padStart(2, "0");
+  const number = work.number ?? String(index + 1).padStart(2, "0");
   const next = works[(index + 1) % works.length];
 
   return (
@@ -118,21 +118,25 @@ export default function WorkDetail({ slug }: { slug: string }) {
               transition={{ duration: 0.6 }}
               className="grid md:grid-cols-[auto_1fr] gap-x-8 gap-y-3"
             >
-              <p className="font-mono text-stone-400 text-2xl tabular-nums">{number}</p>
-              <div>
-                <div className="flex flex-wrap gap-1.5 mb-5">
+              <div className="flex items-center justify-between gap-4 md:col-span-2">
+                <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-[#8B4A2A]">
+                  {number}
+                </p>
+                <div className="flex flex-wrap gap-1.5">
                   {lifecycleTags.map((tag) => {
                     const meta = LIFECYCLE_VOCAB[tag];
                     return (
                       <span
                         key={tag}
-                        className={`inline-flex items-center px-2.5 py-1 text-[11px] font-medium uppercase tracking-wider rounded-full ${meta.badgeClass}`}
+                        className={`px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.14em] ${meta.badgeClass}`}
                       >
                         {meta.label}
                       </span>
                     );
                   })}
                 </div>
+              </div>
+              <div className="md:col-span-2">
                 {isAdmin && (
                   <LifecycleEditor
                     workSlug={work.slug}
@@ -144,14 +148,14 @@ export default function WorkDetail({ slug }: { slug: string }) {
                   slot={`${work.slug}-title`}
                   defaultContent={work.title}
                   as="h1"
-                  className="text-4xl md:text-6xl font-serif font-bold text-stone-800 leading-[1.05] mb-4"
+                  className="mt-4 text-5xl font-black leading-[0.92] text-[#1C1917] md:text-7xl"
                 />
                 <EditableText
                   page="works"
                   slot={`${work.slug}-subtitle`}
                   defaultContent={work.subtitle}
                   as="p"
-                  className="text-xl md:text-2xl text-stone-600 italic leading-snug"
+                  className="mt-3 text-xl italic leading-snug text-stone-600 md:text-2xl"
                   multiline
                 />
               </div>
@@ -296,8 +300,11 @@ export default function WorkDetail({ slug }: { slug: string }) {
                   >
                     <p className="text-stone-800 font-medium">
                       {linked ? (
-                        <Link href={`/people/${linked.slug}`}>
-                          <a className="underline-offset-2 hover:text-amber-700 hover:underline">{h.name}</a>
+                        <Link
+                          href={`/people/${linked.slug}`}
+                          className="underline-offset-2 hover:text-amber-700 hover:underline"
+                        >
+                          {h.name}
                         </Link>
                       ) : (
                         h.name
@@ -324,10 +331,11 @@ export default function WorkDetail({ slug }: { slug: string }) {
             )}
 
             <div className="mt-6">
-              <Link href="/people">
-                <a className="inline-flex items-center gap-2 text-sm font-semibold text-stone-600 hover:text-amber-700">
-                  Meet the people of The Harvest <ArrowRight className="h-4 w-4" />
-                </a>
+              <Link
+                href="/people"
+                className="inline-flex items-center gap-2 text-sm font-semibold text-stone-600 hover:text-amber-700"
+              >
+                Meet the people of The Harvest <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
           </div>
@@ -775,7 +783,7 @@ function WorkHero({ work }: { work: import("@/data/works").Work }) {
     );
   }
 
-  const photos = query.data?.media ?? [];
+  const photos = (query.data?.media ?? []).filter((photo) => isImageMediaSrc(photo.src));
   const elHero = photos.find((p) => p.special?.includes("hero")) ?? photos[0];
 
   const fallbackSrc = elHero?.src ?? work.heroImage;
@@ -938,7 +946,7 @@ function WorkPhotographsSection({ slug }: { slug: string }) {
   const { user } = useAuth();
   const isAdmin = user?.role === "admin";
   const query = trpc.gallery.forWork.useQuery({ slug, limit: 24 });
-  const photos = query.data?.media ?? [];
+  const photos = (query.data?.media ?? []).filter((photo) => isImageMediaSrc(photo.src));
 
   // For visitors: hide section entirely when there are no photos.
   // For admins: still render the section so the "Add photo" CTA is reachable.
@@ -982,7 +990,7 @@ function WorkPhotographsSection({ slug }: { slug: string }) {
               <p className="text-stone-600 mb-2">No photos tagged for this work yet.</p>
               <p className="text-stone-500 text-sm">
                 Click <strong>Add a photo to this work</strong> above. In EL admin, find or
-                upload your photo, then add the <code className="font-mono bg-stone-100 px-1.5 py-0.5 rounded">Milk Create Pavilion</code>{" "}
+                upload your photo, then add the <code className="font-mono bg-stone-100 px-1.5 py-0.5 rounded">Milk Crate Pavilion</code>{" "}
                 tag (or whichever work this is). It'll appear here within a few minutes.
               </p>
             </div>
@@ -1024,6 +1032,11 @@ function WorkPhotographsSection({ slug }: { slug: string }) {
       </div>
     </section>
   );
+}
+
+function isImageMediaSrc(src?: string | null) {
+  if (!src) return false;
+  return !/\.(mp4|mov|m4v|webm|avi)$/i.test(src.split("?")[0]);
 }
 
 type JournalBucket = "past" | "present" | "forthcoming";

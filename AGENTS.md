@@ -1,5 +1,21 @@
 # The Harvest — Community Hub Website
 
+## Agent Constitution
+
+Before major writing, strategy, comms, Notion, GHL, or workflow work, read:
+
+1. `SOUL.md` — who the agent is, voice, taste, and output standard.
+2. `USER.md` — working model of Ben, how to serve him, and what friction to avoid.
+3. `AGENTS.md` — operational rules for this repo.
+
+Before Harvest brand, website redesign, public copy, slide deck, social/newsletter, design prompt, or visual system work, also read:
+
+4. `DESIGN.md` — agent-facing Harvest design memory.
+5. `docs/brand/README.md` — human-facing brand operating system.
+6. `docs/brand/harvest-brand-voice.md` — Harvest voice and audience angles.
+
+If these files conflict, operational safety and verified facts win. Voice never overrides accuracy, privacy, security, or user consent.
+
 ## Project Overview
 
 Community hub website for The Harvest, Witta (Sunshine Coast Hinterland, Jinibara Country). TypeScript full-stack app: React SPA frontend + Express/tRPC backend + Supabase/PostgreSQL database.
@@ -87,10 +103,12 @@ drizzle/            # Schema + migrations
 ## Design Direction
 
 Current exploration: Bauhaus-inspired brand identity (see `/bauhaus` route).
-- Three zones: Garden, Events, Art Space (brand top-line). "Kitchen" still exists as a future sublicenced operation but is no longer the top-line public-facing room.
+- Three zones: Garden, Kitchen, Art Space
 - Principle: simplicity and intentionality — "if you do a bit of everything, what the fuck is it?"
 - iPhone unboxing metaphor: clear first impression, depth behind it
 - Co-design ethos: kids build the kids area, artists shape the art space
+- Current brand memory: `DESIGN.md`. Treat the Bauhaus work as disciplined influence and experiment surface, not permission to drift into generic Civic Bauhaus.
+- Launch readiness target: 20 June 2026. Strategy docs still carry a soft-open go/no-go decision, so check operational status before publishing public event promises.
 
 ---
 
@@ -98,31 +116,21 @@ Current exploration: Bauhaus-inspired brand identity (see `/bauhaus` route).
 
 ## ACT Context (auto-synced from `act-global-infrastructure/wiki/decisions/act-core-facts.md`)
 
-> Source upstream of this file: `act-global-infrastructure/wiki/concepts/soul.md`. The two humans and the why behind everything below.
-
-> Last synced: 2026-05-09. **Do not edit this section directly.** Edit the upstream file and run `node scripts/sync-act-context.mjs --apply`. Downstream edits get overwritten.
+> Last synced: 2026-04-24. **Do not edit this section directly** — edit the upstream file and run `node scripts/sync-act-context.mjs --apply`. Downstream edits get overwritten.
 
 ### Entities (as of 2026-04-25)
-- **A Curious Tractor Pty Ltd** (ACN 697 347 676; ABN PENDING). Registered 2026-04-24. Primary trading entity from 1 July 2026. Shareholders: Knight Family Trust 50 + Marchesi Family Trust 50. Directors: Ben Knight + Nicholas Marchesi. Bank: NAB. Accountant: Standard Ledger.
-- **Nicholas Marchesi sole trader** (ABN 21 591 780 066). Currently trading; hard cutover to Pty 30 June 2026.
-- **A Kind Tractor Ltd** (ACN 669 029 341, ABN 73 669 029 341). Charitable CLG, ACNC-registered, **NOT DGR**, dormant.
-- **Harvest entity** + **Farm entity**. Being designed pending Standard Ledger advice.
+- **A Curious Tractor Pty Ltd** (ACN 697 347 676; ABN PENDING) — registered 2026-04-24. Primary trading entity from 1 July 2026. Shareholders: Knight Family Trust 50 + Marchesi Family Trust 50. Directors: Ben Knight + Nicholas Marchesi. Bank: NAB. Accountant: Standard Ledger.
+- **Nicholas Marchesi sole trader** (ABN 21 591 780 066) — currently trading; hard cutover to Pty 30 June 2026.
+- **A Kind Tractor Ltd** (ACN 669 029 341, ABN 73 669 029 341) — charitable CLG, ACNC-registered, **NOT DGR**, dormant.
+- **Harvest entity** + **Farm entity** — being designed pending Standard Ledger advice.
 
 **Do NOT** use "ACT Foundation" or "ACT Ventures" as legal entity names. They are conceptual labels in older docs, not real entities.
 
-### Why this structure
-
-Three trading entities, one charity, one winding-down sole trader. The point is not bureaucracy. Each project earns the right to grow on its own revenue. The Harvest's money funds The Harvest's growth. Farm money funds Farm growth. A Curious Tractor Pty Ltd is the holding muscle that carries the founder relationship and the cross-cutting work.
-
-If we ran a single Pty Ltd with three project codes, the financial story would mash. Founders would have no clean way to see whether each project pays its way. The structure costs more in compliance and saves more in legibility. Legibility is what makes the soul able to read its own body.
-
-For how money flows through these entities into the four lanes (To Us, To Down, To Grow, To Others), see `act-global-infrastructure/wiki/concepts/four-lanes.md`.
-
 ### Cutover (30 June 2026)
-- **Rule 1.** Pre-cutover invoices stay with sole trader (no re-issue, no inter-entity loan). Novation letters say "existing invoices pay as normal; new tranches from 1 July to Pty".
-- **Rule 2.** Honest-delay fallback: if Pty not invoice-ready 1 July, sole trader continues trading until Pty is genuinely live (no retroactive invoicing, no silent mis-attribution).
-- **Rule 3.** Rotary INV-0222 ($82.5K, 380d) is a recovery problem, not a novation one.
-- **Rule 4.** Shareholders Agreement is Week 1-2 (drafted by Standard Ledger's lawyer), not Week 4-5.
+- **Rule 1** — pre-cutover invoices stay with sole trader (no re-issue, no inter-entity loan); novation letters say "existing invoices pay as normal; new tranches from 1 July to Pty"
+- **Rule 2** — honest-delay fallback: if Pty not invoice-ready 1 July, sole trader continues trading until Pty is genuinely live (no retroactive invoicing, no silent mis-attribution)
+- **Rule 3** — Rotary INV-0222 ($82.5K, 380d) is a recovery problem, not a novation one
+- **Rule 4** — Shareholders Agreement is Week 1-2 (drafted by Standard Ledger's lawyer), not Week 4-5
 
 ### Active receivables on sole trader (~$507K total)
 Snow $132K · Centrecorp DRAFT $84.7K · Rotary $82.5K · PICC $113.3K · Regional Arts $33K · Just Reinvest $27.5K · BG Fit $15.4K · Aleisha Keating $11.7K · Homeland $5K · SMART Recovery $2.2K
@@ -132,13 +140,13 @@ Snow $132K · Centrecorp DRAFT $84.7K · Rotary $82.5K · PICC $113.3K · Region
 - "Listen · Curiosity · Action · Art" (never bare "LCAA")
 - Indigenous place names always; colonial in brackets
 - No em-dashes in any ACT-facing writing
-- For ANY public-facing copy, load `act-global-infrastructure/.claude/skills/act-brand-alignment/references/writing-voice.md`
+- For ANY public-facing copy, load `act-global-infrastructure/.Codex/skills/act-brand-alignment/references/writing-voice.md`
 
 ### Cross-repo sources
 - **Entity facts (source-of-truth)**: `act-global-infrastructure/wiki/decisions/act-core-facts.md`
 - **Brand alignment map (READ BEFORE DESIGNING ANYTHING)**: `act-global-infrastructure/wiki/decisions/act-brand-alignment-map.md`
-- **Parent brand identity**: `act-global-infrastructure/.claude/skills/act-brand-alignment/references/brand-core.md`
-- **Parent writing voice (Curtis method, AI-tells blocklist)**: `act-global-infrastructure/.claude/skills/act-brand-alignment/references/writing-voice.md`
+- **Parent brand identity**: `act-global-infrastructure/.Codex/skills/act-brand-alignment/references/brand-core.md`
+- **Parent writing voice (Curtis method, AI-tells blocklist)**: `act-global-infrastructure/.Codex/skills/act-brand-alignment/references/writing-voice.md`
 - **Migration plan**: `act-global-infrastructure/thoughts/shared/plans/act-entity-migration-checklist-2026-06-30.md`
 - **Alignment Loop syntheses (weekly drift signal)**: `act-global-infrastructure/wiki/synthesis/`
 - **CEO daily cockpit**: `act-global-infrastructure/wiki/cockpit/today.md` (refreshed daily 07:00 Brisbane)
