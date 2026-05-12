@@ -888,7 +888,7 @@ function EventCallout() {
                 See the works in progress.
               </span>
               <span className="mt-4 block text-sm leading-relaxed text-stone-700">
-                Five canonical works: garden, pavilion, cedar, shop and sauna. Photos, lifecycle, hands, and what's actually happening this week.
+                Four canonical works: garden, pavilion, cedar and shop. Photos, lifecycle, hands, and what's actually happening this week.
               </span>
             </span>
             <span className="mt-8 inline-flex items-center gap-2 font-semibold">
