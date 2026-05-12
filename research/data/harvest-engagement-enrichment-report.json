@@ -1,0 +1,52 @@
+{
+  "mode": "dry-run",
+  "generatedAt": "2026-05-03T19:05:52.186Z",
+  "recordCount": 3,
+  "counts": {
+    "No match": 3
+  },
+  "results": [
+    {
+      "pageId": "355ebcf9-81cf-8103-b057-fb74ed9534ea",
+      "name": "Susana",
+      "type": "Person",
+      "status": "No match",
+      "confidence": 0,
+      "website": "",
+      "publicEmail": "hello@suepaterson.com",
+      "contactFormUrl": "",
+      "sourceUrls": [],
+      "notes": "Email-domain enrichment: hello@suepaterson.com -> suepaterson.com.\nSuggested organisation/business name: Suepaterson.\nPublic/domain email retained: hello@suepaterson.com.\nCaveat: No reachable website found from email domain\nReview before outreach; email-domain matching is useful but not proof of relationship.",
+      "applied": false,
+      "error": "No reachable website found from email domain"
+    },
+    {
+      "pageId": "355ebcf9-81cf-815d-bc67-c46803d67c61",
+      "name": "Chris Smith",
+      "type": "Person",
+      "status": "No match",
+      "confidence": 0,
+      "website": "",
+      "publicEmail": "chris@meridianfinance.com.au",
+      "contactFormUrl": "",
+      "sourceUrls": [],
+      "notes": "Email-domain enrichment: chris@meridianfinance.com.au -> meridianfinance.com.au.\nSuggested organisation/business name: Meridian Finance.\nPublic/domain email retained: chris@meridianfinance.com.au.\nCaveat: No reachable website found from email domain\nReview before outreach; email-domain matching is useful but not proof of relationship.",
+      "applied": false,
+      "error": "No reachable website found from email domain"
+    },
+    {
+      "pageId": "355ebcf9-81cf-81a5-ae47-c0d498aa6e97",
+      "name": "Pepa",
+      "type": "Person",
+      "status": "No match",
+      "confidence": 0,
+      "website": "",
+      "publicEmail": "pepa@aphenomenalliving.com",
+      "contactFormUrl": "",
+      "sourceUrls": [],
+      "notes": "Email-domain enrichment: pepa@aphenomenalliving.com -> aphenomenalliving.com.\nSuggested organisation/business name: Aphenomenalliving.\nPublic/domain email retained: pepa@aphenomenalliving.com.\nCaveat: No reachable website found from email domain\nReview before outreach; email-domain matching is useful but not proof of relationship.",
+      "applied": false,
+      "error": "No reachable website found from email domain"
+    }
+  ]
+}
