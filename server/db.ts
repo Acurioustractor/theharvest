@@ -578,7 +578,7 @@ export async function upsertContent(
       await db.update(editableContent)
         .set({ content, contentType, editedBy, updatedAt: new Date() })
         .where(eq(editableContent.id, existing[0].id));
-      return { ...existing[0], content, contentType, editedBy, updatedAt: new Date() };
+      return { ...existing[0], content, contentType, editedBy: editedBy ?? null, updatedAt: new Date() };
     } else {
       // Insert
       await db.insert(editableContent).values({

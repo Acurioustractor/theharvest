@@ -87,26 +87,58 @@ export async function submitBusiness(input: Record<string, unknown>) {
   return data;
 }
 
-export async function listPendingEvents() {
-  const response = await callFunction<{ events: unknown[] }>("admin-events");
+export interface HarvestPendingEvent {
+  id: number;
+  title: string;
+  date: string;
+  time: string;
+  location: string;
+  category: string;
+  description: string;
+  contactEmail: string;
+  submittedBy?: string | null;
+  status: "pending" | "approved" | "rejected";
+  createdAt: string;
+}
+
+export interface HarvestPendingBusiness {
+  id: number;
+  name: string;
+  category: string;
+  description: string;
+  address?: string | null;
+  phone?: string | null;
+  email?: string | null;
+  website?: string | null;
+  facebook?: string | null;
+  instagram?: string | null;
+  imageUrl?: string | null;
+  submittedBy?: string | null;
+  submitterEmail: string;
+  status: "pending" | "approved" | "rejected";
+  createdAt: string;
+}
+
+export async function listPendingEvents(): Promise<HarvestPendingEvent[]> {
+  const response = await callFunction<{ events: HarvestPendingEvent[] }>("admin-events");
   return response.events;
 }
 
-export async function updateEventStatus(eventId: number, status: "approved" | "rejected") {
-  const response = await callFunction<{ event: unknown }>("admin-events", {
+export async function updateEventStatus(eventId: number, status: "approved" | "rejected"): Promise<HarvestPendingEvent> {
+  const response = await callFunction<{ event: HarvestPendingEvent }>("admin-events", {
     eventId,
     status,
   });
   return response.event;
 }
 
-export async function listPendingBusinesses() {
-  const response = await callFunction<{ businesses: unknown[] }>("admin-businesses");
+export async function listPendingBusinesses(): Promise<HarvestPendingBusiness[]> {
+  const response = await callFunction<{ businesses: HarvestPendingBusiness[] }>("admin-businesses");
   return response.businesses;
 }
 
-export async function updateBusinessStatus(businessId: number, status: "approved" | "rejected") {
-  const response = await callFunction<{ business: unknown }>("admin-businesses", {
+export async function updateBusinessStatus(businessId: number, status: "approved" | "rejected"): Promise<HarvestPendingBusiness> {
+  const response = await callFunction<{ business: HarvestPendingBusiness }>("admin-businesses", {
     businessId,
     status,
   });

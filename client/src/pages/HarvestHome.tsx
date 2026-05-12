@@ -2,7 +2,6 @@ import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Newspaper, ArrowRight } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
 import { trpc } from "@/lib/trpc";
 import BlogCard, { type ELArticle } from "@/components/BlogCard";
 
@@ -40,10 +39,7 @@ const pillars = [
 ];
 
 export default function HarvestHome() {
-  const { data: recentPosts = [] } = useQuery({
-    queryKey: ["blog", "recent"],
-    queryFn: () => trpc.blog.recent.query({ limit: 3 }),
-  });
+  const { data: recentPosts = [] } = trpc.blog.recent.useQuery({ limit: 3 });
 
   return (
     <div className="min-h-screen bg-stone-50">

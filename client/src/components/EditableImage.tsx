@@ -50,7 +50,7 @@ interface EditableImageProps {
   /** The page this image belongs to (e.g., "visit", "home") */
   page: string;
   /** The slot type (matches Empathy Ledger special tags) */
-  slot: "hero" | "featured" | "card-1" | "card-2" | "card-3" | "card-4" | "card-5" | "card-6";
+  slot: string;
   /** Alt text for the image */
   alt: string;
   /** CSS classes for the container */
