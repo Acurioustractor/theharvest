@@ -1,0 +1,165 @@
+# The Harvest — Community Hub Website
+
+## Agent Constitution
+
+Before major writing, strategy, comms, Notion, GHL, or workflow work, read:
+
+1. `SOUL.md` — who the agent is, voice, taste, and output standard.
+2. `USER.md` — working model of Ben, how to serve him, and what friction to avoid.
+3. `AGENTS.md` — operational rules for this repo.
+
+Before Harvest brand, website redesign, public copy, slide deck, social/newsletter, design prompt, or visual system work, also read:
+
+4. `DESIGN.md` — agent-facing Harvest design memory.
+5. `docs/brand/README.md` — human-facing brand operating system.
+6. `docs/brand/harvest-brand-voice.md` — Harvest voice and audience angles.
+
+If these files conflict, operational safety and verified facts win. Voice never overrides accuracy, privacy, security, or user consent.
+
+## Project Overview
+
+Community hub website for The Harvest, Witta (Sunshine Coast Hinterland, Jinibara Country). TypeScript full-stack app: React SPA frontend + Express/tRPC backend + Supabase/PostgreSQL database.
+
+Co-founders: Ben (builds), Nicholas (vision/design direction).
+
+## Tech Stack
+
+- **Frontend**: React 19, wouter (routing), Tailwind CSS 4, Radix UI, framer-motion, tRPC client
+- **Backend**: Express + tRPC, Drizzle ORM, Supabase (auth + storage + DB)
+- **Build**: Vite 7, esbuild (server), pnpm
+- **Deploy**: Vercel (project: `the-harvest-community-hub`)
+- **Integrations**: Empathy Ledger (content hub), GoHighLevel (CRM/forms), S3 (file storage)
+
+## Commands
+
+| Task | Command |
+|------|---------|
+| Dev server | `npm run dev` (starts on port 3000+, auto-finds available) |
+| Build | `npm run build` (vite + esbuild) |
+| Type check | `npx tsc --noEmit` |
+| Test | `npm run test` |
+| DB migrate | `npm run db:push` (drizzle-kit generate + migrate) |
+| Deploy | `vercel --prod` |
+
+## Build & Verification
+
+Always run `npx tsc --noEmit` after making code changes. Fix TypeScript errors before moving on. Don't stack changes across multiple files without verifying the build between logical milestones.
+
+## Database
+
+- **ORM**: Drizzle. Schema at `drizzle/schema.ts`, config at `drizzle.config.ts`
+- **Migrations**: Use `npm run db:push` (drizzle-kit generate + migrate). NOT raw psql, NOT REST API.
+- **Connection**: `DATABASE_URL` env var (PostgreSQL connection string via Supabase)
+- **Supabase CLI**: Available for edge functions and secrets (`npx supabase`)
+
+## Deployment
+
+- **Platform**: Vercel
+- **Config**: `vercel.json` — SPA rewrites, tRPC API route
+- **Build command** (Vercel): `pnpm exec vite build`
+- **Output**: `dist/public`
+- **Before deploying**: Verify `vercel ls` shows correct project. Check env vars with `vercel env ls`.
+
+## Project Structure
+
+```
+client/
+  src/
+    pages/          # Page components (one per route)
+    components/     # Shared components + ui/ (Radix/shadcn)
+    contexts/       # ThemeContext, SeasonalContext
+    _core/          # Auth hooks, core client utilities
+    lib/            # tRPC client, utils
+server/
+  _core/            # Express setup, tRPC config, Vite middleware
+  routers.ts        # All tRPC routes
+  db.ts             # Database queries
+  empathyLedger.ts  # EL integration
+  gohighlevel.ts    # GHL integration
+  storage.ts        # S3 file storage
+drizzle/            # Schema + migrations
+```
+
+## Routing
+
+- Router in `App.tsx` — wouter `<Switch>` inside `<PublicLayout>`
+- Standalone pages (e.g., `/bauhaus`) bypass PublicLayout via `useLocation()` check in `Router()`
+- Server serves `index.html` for all non-API routes (SPA fallback)
+
+## Before Starting Work
+
+1. Check what services/integrations are already configured — review `.env`, `package.json`, and existing integration files before choosing an approach
+2. Read existing code before modifying it
+3. Prefer editing existing files over creating new ones
+4. Use TypeScript for all new files (never JS)
+
+## Code Standards
+
+- TypeScript strict mode. Install type definitions for browser APIs when needed.
+- Tailwind CSS for styling in existing pages. Inline styles OK for isolated prototype pages (e.g., `/bauhaus`).
+- Radix UI + shadcn pattern for UI components (`client/src/components/ui/`)
+- tRPC for all API communication (no raw fetch to `/api/` except registry feed)
+
+## Design Direction
+
+Current exploration: Bauhaus-inspired brand identity (see `/bauhaus` route).
+- Three zones: Garden, Kitchen, Art Space
+- Principle: simplicity and intentionality — "if you do a bit of everything, what the fuck is it?"
+- iPhone unboxing metaphor: clear first impression, depth behind it
+- Co-design ethos: kids build the kids area, artists shape the art space
+- Current brand memory: `DESIGN.md`. Treat the Bauhaus work as disciplined influence and experiment surface, not permission to drift into generic Civic Bauhaus.
+- Launch readiness target: 20 June 2026. Strategy docs still carry a soft-open go/no-go decision, so check operational status before publishing public event promises.
+
+---
+
+<!-- BEGIN ACT-CONTEXT (auto-generated by sync-act-context.mjs — do not edit) -->
+
+## ACT Context (auto-synced from `act-global-infrastructure/wiki/decisions/act-core-facts.md`)
+
+> Last synced: 2026-04-24. **Do not edit this section directly** — edit the upstream file and run `node scripts/sync-act-context.mjs --apply`. Downstream edits get overwritten.
+
+### Entities (as of 2026-04-25)
+- **A Curious Tractor Pty Ltd** (ACN 697 347 676; ABN PENDING) — registered 2026-04-24. Primary trading entity from 1 July 2026. Shareholders: Knight Family Trust 50 + Marchesi Family Trust 50. Directors: Ben Knight + Nicholas Marchesi. Bank: NAB. Accountant: Standard Ledger.
+- **Nicholas Marchesi sole trader** (ABN 21 591 780 066) — currently trading; hard cutover to Pty 30 June 2026.
+- **A Kind Tractor Ltd** (ACN 669 029 341, ABN 73 669 029 341) — charitable CLG, ACNC-registered, **NOT DGR**, dormant.
+- **Harvest entity** + **Farm entity** — being designed pending Standard Ledger advice.
+
+**Do NOT** use "ACT Foundation" or "ACT Ventures" as legal entity names. They are conceptual labels in older docs, not real entities.
+
+### Cutover (30 June 2026)
+- **Rule 1** — pre-cutover invoices stay with sole trader (no re-issue, no inter-entity loan); novation letters say "existing invoices pay as normal; new tranches from 1 July to Pty"
+- **Rule 2** — honest-delay fallback: if Pty not invoice-ready 1 July, sole trader continues trading until Pty is genuinely live (no retroactive invoicing, no silent mis-attribution)
+- **Rule 3** — Rotary INV-0222 ($82.5K, 380d) is a recovery problem, not a novation one
+- **Rule 4** — Shareholders Agreement is Week 1-2 (drafted by Standard Ledger's lawyer), not Week 4-5
+
+### Active receivables on sole trader (~$507K total)
+Snow $132K · Centrecorp DRAFT $84.7K · Rotary $82.5K · PICC $113.3K · Regional Arts $33K · Just Reinvest $27.5K · BG Fit $15.4K · Aleisha Keating $11.7K · Homeland $5K · SMART Recovery $2.2K
+
+### Naming + voice
+- "Australian Living Map of Alternatives" (never bare "ALMA")
+- "Listen · Curiosity · Action · Art" (never bare "LCAA")
+- Indigenous place names always; colonial in brackets
+- No em-dashes in any ACT-facing writing
+- For ANY public-facing copy, load `act-global-infrastructure/.Codex/skills/act-brand-alignment/references/writing-voice.md`
+
+### Cross-repo sources
+- **Entity facts (source-of-truth)**: `act-global-infrastructure/wiki/decisions/act-core-facts.md`
+- **Brand alignment map (READ BEFORE DESIGNING ANYTHING)**: `act-global-infrastructure/wiki/decisions/act-brand-alignment-map.md`
+- **Parent brand identity**: `act-global-infrastructure/.Codex/skills/act-brand-alignment/references/brand-core.md`
+- **Parent writing voice (Curtis method, AI-tells blocklist)**: `act-global-infrastructure/.Codex/skills/act-brand-alignment/references/writing-voice.md`
+- **Migration plan**: `act-global-infrastructure/thoughts/shared/plans/act-entity-migration-checklist-2026-06-30.md`
+- **Alignment Loop syntheses (weekly drift signal)**: `act-global-infrastructure/wiki/synthesis/`
+- **CEO daily cockpit**: `act-global-infrastructure/wiki/cockpit/today.md` (refreshed daily 07:00 Brisbane)
+- **Project codes (72 codes, all canonical)**: `act-global-infrastructure/config/project-codes.json`
+- **Funder ledger**: `act-global-infrastructure/wiki/narrative/funders.json`
+
+### Visual family (before designing anything in this repo)
+This repo's cluster: see brand alignment map. The map says:
+- **Editorial Warmth** parent: act-regenerative-studio (Fraunces + forest green + warm white)
+- **Editorial Warmth** subfamily: JusticeHub (STAY journal heritage), empathy-ledger-v2 (multi-tenant earth-tone)
+- **Civic Bauhaus**: CivicGraph / grantscope (Satoshi + black + signal red, intentional break)
+- **Unscoped (need decision)**: goods, act-farm, The Harvest Website
+
+**Rule**: read the map before designing. Update the map BEFORE shipping a new design. Never re-decide what's already decided.
+
+<!-- END ACT-CONTEXT -->
