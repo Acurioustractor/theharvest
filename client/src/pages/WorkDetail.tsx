@@ -11,7 +11,9 @@ import { elLinks } from "@/lib/empathyLedger";
 import { optimize } from "@/lib/imageOptimize";
 import { HarvestPhotoPicker } from "@/components/HarvestPhotoPicker";
 import { toast } from "sonner";
-import { SiteFooter } from "./HarvestReviewTest";
+import { SiteFooter, SiteNav } from "./HarvestReviewTest";
+
+const SITE_URL = "https://www.theharvestwitta.com.au";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
@@ -46,13 +48,48 @@ export default function WorkDetail({ slug }: { slug: string }) {
       return;
     }
     document.title = `${work.title} · The Collection · The Harvest`;
-    let meta = document.querySelector('meta[name="description"]') as HTMLMetaElement | null;
-    if (!meta) {
-      meta = document.createElement("meta");
-      meta.name = "description";
-      document.head.appendChild(meta);
-    }
-    meta.content = work.blurb;
+    const url = `${SITE_URL}/works/${work.slug}`;
+    const title = `${work.title} · The Harvest Witta`;
+    const image = work.heroImage.startsWith("http") ? work.heroImage : `${SITE_URL}${work.heroImage}`;
+
+    setMeta("name", "description", work.blurb);
+    setMeta("property", "og:type", "article");
+    setMeta("property", "og:url", url);
+    setMeta("property", "og:title", title);
+    setMeta("property", "og:description", work.blurb);
+    setMeta("property", "og:image", image);
+    setMeta("property", "twitter:card", "summary_large_image");
+    setMeta("property", "twitter:url", url);
+    setMeta("property", "twitter:title", title);
+    setMeta("property", "twitter:description", work.blurb);
+    setMeta("property", "twitter:image", image);
+    setCanonical(url);
+    setJsonLd("work-jsonld", {
+      "@context": "https://schema.org",
+      "@type": "CreativeWork",
+      "@id": `${url}#work`,
+      name: work.title,
+      headline: work.title,
+      description: work.blurb,
+      image,
+      url,
+      isPartOf: {
+        "@type": "Collection",
+        name: "The Harvest Works",
+        url: `${SITE_URL}/works`,
+      },
+      about: ["The Harvest Witta", "Jinibara Country", "Witta", ...work.lifecycleTags],
+      locationCreated: {
+        "@type": "Place",
+        name: "The Harvest",
+        address: {
+          "@type": "PostalAddress",
+          addressLocality: "Witta",
+          addressRegion: "QLD",
+          addressCountry: "AU",
+        },
+      },
+    });
   }, [work]);
 
   if (!work) {
@@ -97,8 +134,9 @@ export default function WorkDetail({ slug }: { slug: string }) {
 
   return (
     <div className="min-h-screen bg-stone-50">
+      <SiteNav />
       {/* Top bar — return to collection */}
-      <div className="container pt-8">
+      <div className="container pt-28">
         <Link
           href="/works"
           className="inline-flex items-center gap-2 text-stone-600 hover:text-stone-900 text-sm font-mono uppercase tracking-wider"
@@ -445,6 +483,37 @@ export default function WorkDetail({ slug }: { slug: string }) {
       <SiteFooter />
     </div>
   );
+}
+
+function setMeta(attribute: "name" | "property", key: string, content: string) {
+  let meta = document.querySelector(`meta[${attribute}="${key}"]`) as HTMLMetaElement | null;
+  if (!meta) {
+    meta = document.createElement("meta");
+    meta.setAttribute(attribute, key);
+    document.head.appendChild(meta);
+  }
+  meta.content = content;
+}
+
+function setCanonical(href: string) {
+  let link = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
+  if (!link) {
+    link = document.createElement("link");
+    link.rel = "canonical";
+    document.head.appendChild(link);
+  }
+  link.href = href;
+}
+
+function setJsonLd(id: string, data: Record<string, unknown>) {
+  let script = document.getElementById(id) as HTMLScriptElement | null;
+  if (!script) {
+    script = document.createElement("script");
+    script.id = id;
+    script.type = "application/ld+json";
+    document.head.appendChild(script);
+  }
+  script.textContent = JSON.stringify(data);
 }
 
 /**

@@ -386,18 +386,18 @@ export const works: Work[] = [
     title: "The Milk Man",
     subtitle: "A milk-crate sentinel at the front of The Harvest",
     lifecycleTags: ["built", "made"],
-    materials: "Milk crates · stacked structure · dairy memory",
+    materials: "Milk crates · stacked figure · front gate marker · dairy memory",
     year: "Standing now",
     heroImage: "/images/site-plan/inspiration/crate-wall.jpeg",
-    heroAlt: "Milk crate structure reference for The Milk Man at The Harvest",
+    heroAlt: "Milk crate structure connected to The Milk Man at The Harvest",
     blurb:
-      "The Milk Man stands at the front of The Harvest, built from the dairy object that once moved through every working day on this ridge.",
+      "The Milk Man stands at the front of The Harvest: a figure made from milk crates, holding the dairy story at the gate before people even read a sign.",
     whatItIs:
-      "A milk-crate figure at the front of the site. Part sign, part marker, part joke with a serious backbone: the dairy industry made the object, and now the object watches the next version of the place arrive.",
+      "A milk-crate figure at the front of the site. Part sign, part marker, part local joke with a serious backbone: the dairy industry made the object, and now the object watches the next version of the place arrive.",
     why:
-      "The Harvest needs recognisable things people can point at, remember, and talk about. The Milk Man does that before anyone reads a paragraph.",
+      "The Harvest needs recognisable things people can point at, remember, and talk about. The Milk Man does that before anyone reads a paragraph. He makes the dairy thread visible without turning it into a museum label.",
     how:
-      "Built from stacked milk crates and kept visible at the front of the site. The next work is naming him properly, photographing him well, and deciding how he carries the dairy story without turning it into decoration.",
+      "Built from stacked milk crates and kept visible at the front of the site. The next work is naming him properly, photographing him well, and deciding how he carries the dairy story with enough humour and enough respect.",
     wittaThreads: [
       {
         year: "1900s",
@@ -410,6 +410,16 @@ export const works: Work[] = [
       { name: "The Harvest team", role: "Build and placement" },
       { name: "Local photographers", role: "Still needed" },
       { name: "Neighbours", role: "Name suggestions and crate leads" },
+    ],
+    storyLinks: [
+      {
+        label: "Send a name idea or photo",
+        href: "/membership#questions",
+      },
+      {
+        label: "See the Milk Crate Pavilion",
+        href: "/works/milk-crate-pavilion",
+      },
     ],
     related: ["milk-crate-pavilion", "the-garden"],
   },
