@@ -1,0 +1,384 @@
+{
+  "exportedAt": "2026-05-13T11:24:01.568Z",
+  "count": 42,
+  "rows": [
+    {
+      "page": "works",
+      "slot": "the-milk-man-spread-right",
+      "mediaAssetId": "8106b84d-2786-4b52-8794-7e925b41957e",
+      "src": "https://yvnuayzslukamizrlhwb.supabase.co/storage/v1/object/public/media/bf17d0a9-2b12-4e4a-982e-09a8b1952ec6/d0a162d2-282e-4653-9d12-aa934c9dfa4e/1778022348826-20260423-1E5A4435.jpg",
+      "altText": "Image: 20260423-1E5A4435.jpg",
+      "title": "Image: 20260423-1E5A4435.jpg",
+      "updatedAt": "2026-05-13T09:59:30.947Z"
+    },
+    {
+      "page": "works",
+      "slot": "the-milk-man-spread-left",
+      "mediaAssetId": "bb4bc22e-6034-44f8-a84b-3030e0e59d81",
+      "src": "https://yvnuayzslukamizrlhwb.supabase.co/storage/v1/object/public/media/bf17d0a9-2b12-4e4a-982e-09a8b1952ec6/d0a162d2-282e-4653-9d12-aa934c9dfa4e/1778022341524-20260423-1E5A4434.jpg",
+      "altText": "Image: 20260423-1E5A4434.jpg",
+      "title": "Image: 20260423-1E5A4434.jpg",
+      "updatedAt": "2026-05-13T09:59:19.194Z"
+    },
+    {
+      "page": "works",
+      "slot": "the-milk-man-feature-2",
+      "mediaAssetId": "52fc550e-ab1e-4f71-9748-f1ecabfccbfd",
+      "src": "https://yvnuayzslukamizrlhwb.supabase.co/storage/v1/object/public/media/bf17d0a9-2b12-4e4a-982e-09a8b1952ec6/d0a162d2-282e-4653-9d12-aa934c9dfa4e/1778022329543-20260423-1E5A4428.jpg",
+      "altText": "Image: 20260423-1E5A4428.jpg",
+      "title": "Image: 20260423-1E5A4428.jpg",
+      "updatedAt": "2026-05-13T09:59:06.009Z"
+    },
+    {
+      "page": "works",
+      "slot": "the-milk-man-hero",
+      "mediaAssetId": "33556076-3356-4f01-b9ca-fedc4eb8906e",
+      "src": "https://yvnuayzslukamizrlhwb.supabase.co/storage/v1/object/public/media/bf17d0a9-2b12-4e4a-982e-09a8b1952ec6/d0a162d2-282e-4653-9d12-aa934c9dfa4e/1778022318768-20260423-1E5A4423.jpg",
+      "altText": "Image: 20260423-1E5A4423.jpg",
+      "title": "Image: 20260423-1E5A4423.jpg",
+      "updatedAt": "2026-05-13T09:58:53.521Z"
+    },
+    {
+      "page": "works",
+      "slot": "the-milk-man-feature-1",
+      "mediaAssetId": "d55ebda7-d05e-4f05-b21e-b9e39b259f56",
+      "src": "https://yvnuayzslukamizrlhwb.supabase.co/storage/v1/object/public/media/bf17d0a9-2b12-4e4a-982e-09a8b1952ec6/d0a162d2-282e-4653-9d12-aa934c9dfa4e/1778022323952-20260423-1E5A4426.jpg",
+      "altText": "Image: 20260423-1E5A4426.jpg",
+      "title": "Image: 20260423-1E5A4426.jpg",
+      "updatedAt": "2026-05-13T09:58:44.492Z"
+    },
+    {
+      "page": "works",
+      "slot": "the-shop-hero",
+      "mediaAssetId": "bbaac8c6-6425-49c3-a3df-e6745b61c88c",
+      "src": "https://yvnuayzslukamizrlhwb.supabase.co/storage/v1/object/public/media/bf17d0a9-2b12-4e4a-982e-09a8b1952ec6/d0a162d2-282e-4653-9d12-aa934c9dfa4e/1775508681203-20260307-1E5A2102.jpg",
+      "altText": "Image: 20260307-1E5A2102.jpg",
+      "title": "Image: 20260307-1E5A2102.jpg",
+      "updatedAt": "2026-05-13T08:47:34.876Z"
+    },
+    {
+      "page": "works",
+      "slot": "kids-area-card",
+      "mediaAssetId": "a554348a-0b42-4fc3-a06a-fe61cbbf5890",
+      "src": "https://yvnuayzslukamizrlhwb.supabase.co/storage/v1/object/public/media/galleries/5fa1593e-7d73-477a-9a34-64d2f3ff86cc/harvest-admin-library/1778658122988-dd4b5607-f6c1-4d50-bbe5-7eb43ff4ec87-Screenshot-2026-05-13-at-4.59.24-pm.png",
+      "altText": "Screenshot 2026 05 13 at 4.59.24 pm",
+      "title": "Screenshot 2026 05 13 at 4.59.24 pm",
+      "updatedAt": "2026-05-13T07:42:16.755Z"
+    },
+    {
+      "page": "new-look-test",
+      "slot": "garden-area-card",
+      "mediaAssetId": "83642657-f729-4542-8075-28ef01d3f82d",
+      "src": "https://yvnuayzslukamizrlhwb.supabase.co/storage/v1/object/public/media/galleries/5fa1593e-7d73-477a-9a34-64d2f3ff86cc/harvest-may-2026/1778103511369-20260506-1E5A4566.jpg",
+      "altText": "Garden progress at The Harvest, image 4566.",
+      "title": "Garden progress 4566",
+      "updatedAt": "2026-05-13T07:04:59.624Z"
+    },
+    {
+      "page": "works",
+      "slot": "the-garden-feature-2",
+      "mediaAssetId": "9d77c6a1-9a64-4deb-b839-3fd3009cb044",
+      "src": "https://yvnuayzslukamizrlhwb.supabase.co/storage/v1/object/public/media/galleries/5fa1593e-7d73-477a-9a34-64d2f3ff86cc/harvest-may-2026/1778103606757-20260506-1E5A4592.jpg",
+      "altText": "Sophie and the garden at The Harvest, image 4592.",
+      "title": "Sophie garden story 4592",
+      "updatedAt": "2026-05-13T06:52:15.515Z"
+    },
+    {
+      "page": "works",
+      "slot": "the-garden-feature-1",
+      "mediaAssetId": "43952535-ce0b-44b9-9330-4eda2a15d157",
+      "src": "https://yvnuayzslukamizrlhwb.supabase.co/storage/v1/object/public/media/galleries/5fa1593e-7d73-477a-9a34-64d2f3ff86cc/harvest-may-2026/1778103503173-20260506-1E5A4565.jpg",
+      "altText": "Garden progress at The Harvest, image 4565.",
+      "title": "Garden progress 4565",
+      "updatedAt": "2026-05-13T06:52:05.525Z"
+    },
+    {
+      "page": "works",
+      "slot": "the-garden-hero",
+      "mediaAssetId": "3d1eadbf-c7ad-44c6-a889-89b800c37537",
+      "src": "https://yvnuayzslukamizrlhwb.supabase.co/storage/v1/object/public/media/galleries/5fa1593e-7d73-477a-9a34-64d2f3ff86cc/harvest-may-2026/1778103734238-20260506-1E5A4674.jpg",
+      "altText": "Sophie and the garden at The Harvest, image 4674.",
+      "title": "Sophie garden story 4674",
+      "updatedAt": "2026-05-13T06:51:57.562Z"
+    },
+    {
+      "page": "works",
+      "slot": "the-garden-spread-right",
+      "mediaAssetId": "ca984a1e-d97c-4c67-9876-7eca50e9c764",
+      "src": "https://yvnuayzslukamizrlhwb.supabase.co/storage/v1/object/public/media/galleries/5fa1593e-7d73-477a-9a34-64d2f3ff86cc/harvest-may-2026/1778103543315-20260506-1E5A4577.jpg",
+      "altText": "Garden progress at The Harvest, image 4577.",
+      "title": "Garden progress 4577",
+      "updatedAt": "2026-05-13T06:33:57.010Z"
+    },
+    {
+      "page": "works",
+      "slot": "the-garden-spread-left",
+      "mediaAssetId": "a7ef2a6d-0838-40e1-872c-21a1820e4e4b",
+      "src": "https://yvnuayzslukamizrlhwb.supabase.co/storage/v1/object/public/media/galleries/5fa1593e-7d73-477a-9a34-64d2f3ff86cc/harvest-may-2026/1778103723774-20260506-1E5A4664.jpg",
+      "altText": "Sophie and the garden at The Harvest, image 4664.",
+      "title": "Sophie garden story 4664",
+      "updatedAt": "2026-05-13T06:33:50.166Z"
+    },
+    {
+      "page": "works",
+      "slot": "milk-crate-pavilion-spread-right",
+      "mediaAssetId": "7faf0f6b-3a68-41bf-9910-a5f87c6a8755",
+      "src": "https://yvnuayzslukamizrlhwb.supabase.co/storage/v1/object/public/media/galleries/5fa1593e-7d73-477a-9a34-64d2f3ff86cc/harvest-may-2026/1778103771262-20260506-1E5A4726.jpg",
+      "altText": "People working on the milk crate pavilion at The Harvest, image 4726.",
+      "title": "People making the pavilion 4726",
+      "updatedAt": "2026-05-13T06:32:38.861Z"
+    },
+    {
+      "page": "works",
+      "slot": "milk-crate-pavilion-spread-left",
+      "mediaAssetId": "1a7af0d1-17ed-4f63-9a90-054e781ea508",
+      "src": "https://yvnuayzslukamizrlhwb.supabase.co/storage/v1/object/public/media/galleries/5fa1593e-7d73-477a-9a34-64d2f3ff86cc/harvest-admin-library/1778313017843-ccace30c-a74d-4929-88a0-7e706183f8c6-DJI_20260508143751_0012_D.jpg",
+      "altText": "Milk crate pavilion at The Harvest: DJI 20260508143751 0012 D.",
+      "title": "DJI 20260508143751 0012 D",
+      "updatedAt": "2026-05-13T06:32:29.419Z"
+    },
+    {
+      "page": "works",
+      "slot": "milk-crate-pavilion-feature-2",
+      "mediaAssetId": "89cb7e17-4bdd-4ae1-8c95-05eb465a5d49",
+      "src": "https://yvnuayzslukamizrlhwb.supabase.co/storage/v1/object/public/media/galleries/5fa1593e-7d73-477a-9a34-64d2f3ff86cc/harvest-admin-library/1778287315711-bcf232bd-1e6c-48bf-8e10-d9a55d0b6055-milk-crates.gif",
+      "altText": "Milk Crate Pavilion at The Harvest: milk crates.",
+      "title": "milk crates",
+      "updatedAt": "2026-05-13T06:02:50.730Z"
+    },
+    {
+      "page": "works",
+      "slot": "the-cedar-feature-2",
+      "mediaAssetId": "f797d6a7-6191-4740-b062-2c90dc7eacd0",
+      "src": "https://yvnuayzslukamizrlhwb.supabase.co/storage/v1/object/public/media/bf17d0a9-2b12-4e4a-982e-09a8b1952ec6/d0a162d2-282e-4653-9d12-aa934c9dfa4e/1778022606682-20260426-1E5A4536.jpg",
+      "altText": "Image: 20260426-1E5A4536.jpg",
+      "title": "Image: 20260426-1E5A4536.jpg",
+      "updatedAt": "2026-05-13T06:01:02.116Z"
+    },
+    {
+      "page": "works",
+      "slot": "the-cedar-feature-1",
+      "mediaAssetId": "c5ef826f-0ecd-44e0-a9a0-17b7be746908",
+      "src": "https://yvnuayzslukamizrlhwb.supabase.co/storage/v1/object/public/media/bf17d0a9-2b12-4e4a-982e-09a8b1952ec6/d0a162d2-282e-4653-9d12-aa934c9dfa4e/1778022697101-DJI_20260426160542_0070_D.JPG",
+      "altText": "Image: DJI_20260426160542_0070_D.JPG",
+      "title": "Image: DJI_20260426160542_0070_D.JPG",
+      "updatedAt": "2026-05-13T06:00:43.469Z"
+    },
+    {
+      "page": "works",
+      "slot": "the-cedar-hero",
+      "mediaAssetId": "ee3dfea0-cdfe-4631-b45c-3db80c504439",
+      "src": "https://yvnuayzslukamizrlhwb.supabase.co/storage/v1/object/public/media/galleries/5fa1593e-7d73-477a-9a34-64d2f3ff86cc/harvest-may-2026/1778103578564-20260506-1E5A4584.jpg",
+      "altText": "Garden progress at The Harvest, image 4584.",
+      "title": "Garden progress 4584",
+      "updatedAt": "2026-05-13T05:57:52.137Z"
+    },
+    {
+      "page": "works",
+      "slot": "the-cedar-card",
+      "mediaAssetId": "ee3dfea0-cdfe-4631-b45c-3db80c504439",
+      "src": "https://yvnuayzslukamizrlhwb.supabase.co/storage/v1/object/public/media/galleries/5fa1593e-7d73-477a-9a34-64d2f3ff86cc/harvest-may-2026/1778103578564-20260506-1E5A4584.jpg",
+      "altText": "Garden progress at The Harvest, image 4584.",
+      "title": "Garden progress 4584",
+      "updatedAt": "2026-05-13T05:57:31.358Z"
+    },
+    {
+      "page": "works",
+      "slot": "the-shop-card",
+      "mediaAssetId": "ded89784-dd7d-4c81-b7f6-f529fb837c79",
+      "src": "https://yvnuayzslukamizrlhwb.supabase.co/storage/v1/object/public/media/galleries/5fa1593e-7d73-477a-9a34-64d2f3ff86cc/harvest-may-2026/1778103468258-20260506-1E5A4557.jpg",
+      "altText": "Garden progress at The Harvest, image 4557.",
+      "title": "Garden progress 4557",
+      "updatedAt": "2026-05-13T05:54:09.900Z"
+    },
+    {
+      "page": "works",
+      "slot": "milk-crate-pavilion-card",
+      "mediaAssetId": "04bb3713-85d1-4b51-8dc4-cff11f4138f7",
+      "src": "https://yvnuayzslukamizrlhwb.supabase.co/storage/v1/object/public/media/galleries/5fa1593e-7d73-477a-9a34-64d2f3ff86cc/harvest-admin-library/1778313019767-1e39d3d8-a5c8-4f7a-8389-cd88681f0a5c-20260508-1E5A4841.jpg",
+      "altText": "Milk crate pavilion at The Harvest: 20260508 1E5A4841.",
+      "title": "20260508 1E5A4841",
+      "updatedAt": "2026-05-13T05:50:44.822Z"
+    },
+    {
+      "page": "works",
+      "slot": "the-garden-card",
+      "mediaAssetId": "83642657-f729-4542-8075-28ef01d3f82d",
+      "src": "https://yvnuayzslukamizrlhwb.supabase.co/storage/v1/object/public/media/galleries/5fa1593e-7d73-477a-9a34-64d2f3ff86cc/harvest-may-2026/1778103511369-20260506-1E5A4566.jpg",
+      "altText": "Garden progress at The Harvest, image 4566.",
+      "title": "Garden progress 4566",
+      "updatedAt": "2026-05-13T05:50:36.486Z"
+    },
+    {
+      "page": "what-is-the-harvest",
+      "slot": "room-gathering",
+      "mediaAssetId": "42a9d6f4-1504-421f-b896-56ae8f51429b",
+      "src": "https://yvnuayzslukamizrlhwb.supabase.co/storage/v1/object/public/media/bf17d0a9-2b12-4e4a-982e-09a8b1952ec6/d0a162d2-282e-4653-9d12-aa934c9dfa4e/1775508688517-20260307-1E5A2117.jpg",
+      "altText": "Image: 20260307-1E5A2117.jpg",
+      "title": "Image: 20260307-1E5A2117.jpg",
+      "updatedAt": "2026-05-13T04:55:26.456Z"
+    },
+    {
+      "page": "what-is-the-harvest",
+      "slot": "room-making",
+      "mediaAssetId": "ff95fdd0-de1f-43ee-a166-dd87c5cfc316",
+      "src": "https://yvnuayzslukamizrlhwb.supabase.co/storage/v1/object/public/media/bf17d0a9-2b12-4e4a-982e-09a8b1952ec6/d0a162d2-282e-4653-9d12-aa934c9dfa4e/1778022678359-DJI_20260426160524_0069_D.JPG",
+      "altText": "Image: DJI_20260426160524_0069_D.JPG",
+      "title": "Image: DJI_20260426160524_0069_D.JPG",
+      "updatedAt": "2026-05-13T04:54:55.002Z"
+    },
+    {
+      "page": "what-is-the-harvest",
+      "slot": "room-garden",
+      "mediaAssetId": "cdd42e32-0448-41f3-bdf2-034f070d28f0",
+      "src": "https://yvnuayzslukamizrlhwb.supabase.co/storage/v1/object/public/media/galleries/5fa1593e-7d73-477a-9a34-64d2f3ff86cc/harvest-may-2026/1778103736685-20260506-1E5A4675.jpg",
+      "altText": "Sophie and the garden at The Harvest, image 4675.",
+      "title": "Sophie garden story 4675",
+      "updatedAt": "2026-05-13T04:54:42.785Z"
+    },
+    {
+      "page": "new-look-test",
+      "slot": "place-second",
+      "mediaAssetId": "b5b9912e-10ac-4da6-82e6-d3fceeec457e",
+      "src": "https://yvnuayzslukamizrlhwb.supabase.co/storage/v1/object/public/media/bf17d0a9-2b12-4e4a-982e-09a8b1952ec6/d0a162d2-282e-4653-9d12-aa934c9dfa4e/1778294113974-DJI_20260508143751_0012_D.jpg",
+      "altText": "Image: DJI_20260508143751_0012_D.jpg",
+      "title": "Image: DJI_20260508143751_0012_D.jpg",
+      "updatedAt": "2026-05-12T10:40:06.899Z"
+    },
+    {
+      "page": "new-look-test",
+      "slot": "the-milk-man-card",
+      "mediaAssetId": "95f88438-1ea0-4b5f-adda-8cbf2eebb28d",
+      "src": "https://yvnuayzslukamizrlhwb.supabase.co/storage/v1/object/public/media/bf17d0a9-2b12-4e4a-982e-09a8b1952ec6/d0a162d2-282e-4653-9d12-aa934c9dfa4e/1778022312586-20260423-1E5A4420.jpg",
+      "altText": "Image: 20260423-1E5A4420.jpg",
+      "title": "Image: 20260423-1E5A4420.jpg",
+      "updatedAt": "2026-05-12T10:28:10.265Z"
+    },
+    {
+      "page": "new-look-test",
+      "slot": "future-kitchen-food-loop-card",
+      "mediaAssetId": "43952535-ce0b-44b9-9330-4eda2a15d157",
+      "src": "https://yvnuayzslukamizrlhwb.supabase.co/storage/v1/object/public/media/galleries/5fa1593e-7d73-477a-9a34-64d2f3ff86cc/harvest-may-2026/1778103503173-20260506-1E5A4565.jpg",
+      "altText": "Garden progress at The Harvest, image 4565.",
+      "title": "Garden progress 4565",
+      "updatedAt": "2026-05-09T11:19:49.075Z"
+    },
+    {
+      "page": "new-look-test",
+      "slot": "thread-timber",
+      "mediaAssetId": "ee3dfea0-cdfe-4631-b45c-3db80c504439",
+      "src": "https://yvnuayzslukamizrlhwb.supabase.co/storage/v1/object/public/media/galleries/5fa1593e-7d73-477a-9a34-64d2f3ff86cc/harvest-may-2026/1778103578564-20260506-1E5A4584.jpg",
+      "altText": "Garden progress at The Harvest, image 4584.",
+      "title": "Garden progress 4584",
+      "updatedAt": "2026-05-09T11:09:34.580Z"
+    },
+    {
+      "page": "new-look-test",
+      "slot": "thread-co-operatives",
+      "mediaAssetId": "ded89784-dd7d-4c81-b7f6-f529fb837c79",
+      "src": "https://yvnuayzslukamizrlhwb.supabase.co/storage/v1/object/public/media/galleries/5fa1593e-7d73-477a-9a34-64d2f3ff86cc/harvest-may-2026/1778103468258-20260506-1E5A4557.jpg",
+      "altText": "Garden progress at The Harvest, image 4557.",
+      "title": "Garden progress 4557",
+      "updatedAt": "2026-05-09T11:06:50.902Z"
+    },
+    {
+      "page": "new-look-test",
+      "slot": "thread-dairy",
+      "mediaAssetId": "04bb3713-85d1-4b51-8dc4-cff11f4138f7",
+      "src": "https://yvnuayzslukamizrlhwb.supabase.co/storage/v1/object/public/media/galleries/5fa1593e-7d73-477a-9a34-64d2f3ff86cc/harvest-admin-library/1778313019767-1e39d3d8-a5c8-4f7a-8389-cd88681f0a5c-20260508-1E5A4841.jpg",
+      "altText": "Milk crate pavilion at The Harvest: 20260508 1E5A4841.",
+      "title": "20260508 1E5A4841",
+      "updatedAt": "2026-05-09T11:05:58.004Z"
+    },
+    {
+      "page": "works",
+      "slot": "milk-crate-pavilion-gallery-4",
+      "mediaAssetId": "bb38c630-46e6-402e-b8eb-6f4cca5b451d",
+      "src": "https://yvnuayzslukamizrlhwb.supabase.co/storage/v1/object/public/media/galleries/5fa1593e-7d73-477a-9a34-64d2f3ff86cc/harvest-may-2026/1778103437808-20260506-1E5A4547.jpg",
+      "altText": "Milk crate delivery for The Harvest pavilion, image 4547.",
+      "title": "Milk crate delivery 4547",
+      "updatedAt": "2026-05-09T09:13:11.325Z"
+    },
+    {
+      "page": "works",
+      "slot": "milk-crate-pavilion-gallery-3",
+      "mediaAssetId": "c944ee53-6d9c-4ad5-9156-8a45cf44a0e0",
+      "src": "https://yvnuayzslukamizrlhwb.supabase.co/storage/v1/object/public/media/galleries/5fa1593e-7d73-477a-9a34-64d2f3ff86cc/harvest-may-2026/1778103744063-20260506-1E5A4697.jpg",
+      "altText": "Close detail from the milk crate pavilion build, image 4697.",
+      "title": "Pavilion details and textures 4697",
+      "updatedAt": "2026-05-09T09:13:03.711Z"
+    },
+    {
+      "page": "works",
+      "slot": "milk-crate-pavilion-gallery-2",
+      "mediaAssetId": "02ba5c5d-dd9a-4ba2-9a7b-59974fe39045",
+      "src": "https://yvnuayzslukamizrlhwb.supabase.co/storage/v1/object/public/media/galleries/5fa1593e-7d73-477a-9a34-64d2f3ff86cc/harvest-may-2026/1778103767203-20260506-1E5A4724.jpg",
+      "altText": "Milk crate pavilion build progress at The Harvest, image 4724.",
+      "title": "Milk crate pavilion build 4724",
+      "updatedAt": "2026-05-09T09:12:53.783Z"
+    },
+    {
+      "page": "works",
+      "slot": "milk-crate-pavilion-gallery-1",
+      "mediaAssetId": "04bb3713-85d1-4b51-8dc4-cff11f4138f7",
+      "src": "https://yvnuayzslukamizrlhwb.supabase.co/storage/v1/object/public/media/galleries/5fa1593e-7d73-477a-9a34-64d2f3ff86cc/harvest-admin-library/1778313019767-1e39d3d8-a5c8-4f7a-8389-cd88681f0a5c-20260508-1E5A4841.jpg",
+      "altText": "Milk crate pavilion at The Harvest: 20260508 1E5A4841.",
+      "title": "20260508 1E5A4841",
+      "updatedAt": "2026-05-09T09:08:24.665Z"
+    },
+    {
+      "page": "test",
+      "slot": "test",
+      "mediaAssetId": "abc123",
+      "src": "http://test.com/img.jpg",
+      "altText": null,
+      "title": null,
+      "updatedAt": "2026-05-09T09:03:44.558Z"
+    },
+    {
+      "page": "new-look-test",
+      "slot": "co-op-shop-card",
+      "mediaAssetId": "ded89784-dd7d-4c81-b7f6-f529fb837c79",
+      "src": "https://yvnuayzslukamizrlhwb.supabase.co/storage/v1/object/public/media/galleries/5fa1593e-7d73-477a-9a34-64d2f3ff86cc/harvest-may-2026/1778103468258-20260506-1E5A4557.jpg",
+      "altText": "Garden progress at The Harvest, image 4557.",
+      "title": "Garden progress 4557",
+      "updatedAt": "2026-05-09T08:35:29.433Z"
+    },
+    {
+      "page": "new-look-test",
+      "slot": "kids-playground-card",
+      "mediaAssetId": "ee2bc8a1-b0bd-4ef8-b55f-4c456f240d10",
+      "src": "https://yvnuayzslukamizrlhwb.supabase.co/storage/v1/object/public/media/galleries/5fa1593e-7d73-477a-9a34-64d2f3ff86cc/harvest-may-2026/1778103457319-20260506-1E5A4554.jpg",
+      "altText": "Garden progress at The Harvest, image 4554.",
+      "title": "Garden progress 4554",
+      "updatedAt": "2026-05-09T08:35:14.986Z"
+    },
+    {
+      "page": "new-look-test",
+      "slot": "timber-walkways-card",
+      "mediaAssetId": "ee3dfea0-cdfe-4631-b45c-3db80c504439",
+      "src": "https://yvnuayzslukamizrlhwb.supabase.co/storage/v1/object/public/media/galleries/5fa1593e-7d73-477a-9a34-64d2f3ff86cc/harvest-may-2026/1778103578564-20260506-1E5A4584.jpg",
+      "altText": "Garden progress at The Harvest, image 4584.",
+      "title": "Garden progress 4584",
+      "updatedAt": "2026-05-09T08:35:03.812Z"
+    },
+    {
+      "page": "new-look-test",
+      "slot": "milk-crate-pavilion-card",
+      "mediaAssetId": "04bb3713-85d1-4b51-8dc4-cff11f4138f7",
+      "src": "https://yvnuayzslukamizrlhwb.supabase.co/storage/v1/object/public/media/galleries/5fa1593e-7d73-477a-9a34-64d2f3ff86cc/harvest-admin-library/1778313019767-1e39d3d8-a5c8-4f7a-8389-cd88681f0a5c-20260508-1E5A4841.jpg",
+      "altText": "Milk crate pavilion at The Harvest: 20260508 1E5A4841.",
+      "title": "20260508 1E5A4841",
+      "updatedAt": "2026-05-09T08:34:32.791Z"
+    },
+    {
+      "page": "works",
+      "slot": "milk-crate-pavilion-feature-1",
+      "mediaAssetId": "0d967136-ab0d-418a-8508-5626b849838e",
+      "src": "https://yvnuayzslukamizrlhwb.supabase.co/storage/v1/object/public/media/bf17d0a9-2b12-4e4a-982e-09a8b1952ec6/d0a162d2-282e-4653-9d12-aa934c9dfa4e/1778022523045-20260426-1E5A4503.jpg",
+      "altText": "Image: 20260426-1E5A4503.jpg",
+      "title": "",
+      "updatedAt": "2026-05-06T01:11:05.953Z"
+    }
+  ]
+}
