@@ -7,7 +7,11 @@ import { tmpdir } from "node:os";
 import { basename, extname, join, relative } from "node:path";
 import { empathyLedgerClient } from "./empathyLedgerClient.js";
 
-dotenv.config({ path: ".env.local", override: false, quiet: true });
+dotenv.config({
+  path: ".env.local",
+  override: process.env.NODE_ENV !== "production",
+  quiet: true,
+});
 
 const HARVEST_GALLERY_ID = "5fa1593e-7d73-477a-9a34-64d2f3ff86cc";
 // Canonical Harvest project. EL v2's public API unions assets via this project_id

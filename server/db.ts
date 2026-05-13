@@ -37,15 +37,155 @@ import { ENV } from "./_core/env.js";
 
 let _db: ReturnType<typeof drizzle> | null = null;
 let _client: ReturnType<typeof postgres> | null = null;
+let _skipPostgresUntil = 0;
+
+const shouldSkipPostgres = () => Date.now() < _skipPostgresUntil;
+
+const markPostgresTemporarilyUnavailable = (error: unknown) => {
+  const message = error instanceof Error ? error.message : String(error);
+  if (message.includes("ECIRCUITBREAKER") || message.includes("authentication failures")) {
+    _skipPostgresUntil = Date.now() + 5 * 60 * 1000;
+  }
+};
+
+type ImageOverrideRestRow = {
+  id: number;
+  page: string;
+  slot: string;
+  media_asset_id: string;
+  src: string;
+  alt_text: string | null;
+  title: string | null;
+  set_by: number | null;
+  created_at: string;
+  updated_at: string;
+};
+
+const toImageOverride = (row: ImageOverrideRestRow): ImageOverride => ({
+  id: row.id,
+  page: row.page,
+  slot: row.slot,
+  mediaAssetId: row.media_asset_id,
+  src: row.src,
+  altText: row.alt_text,
+  title: row.title,
+  setBy: row.set_by,
+  createdAt: new Date(row.created_at),
+  updatedAt: new Date(row.updated_at),
+});
+
+async function fetchImageOverridesFromRest(params?: {
+  page?: string;
+  slot?: string;
+  limit?: number;
+}): Promise<ImageOverride[]> {
+  const supabaseUrl = process.env.SUPABASE_URL ?? process.env.VITE_SUPABASE_URL;
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!supabaseUrl || !serviceKey) return [];
+
+  const url = new URL("/rest/v1/image_overrides", supabaseUrl);
+  url.searchParams.set("select", "*");
+  url.searchParams.set("order", "updated_at.desc");
+  if (params?.page) url.searchParams.set("page", `eq.${params.page}`);
+  if (params?.slot) url.searchParams.set("slot", `eq.${params.slot}`);
+  if (params?.limit) url.searchParams.set("limit", String(params.limit));
+
+  const response = await fetch(url, {
+    headers: {
+      apikey: serviceKey,
+      authorization: `Bearer ${serviceKey}`,
+    },
+  });
+  if (!response.ok) {
+    throw new Error(`Supabase REST image_overrides failed: ${response.status} ${await response.text()}`);
+  }
+  const rows = (await response.json()) as ImageOverrideRestRow[];
+  return rows.map(toImageOverride);
+}
+
+async function setImageOverrideViaRest(
+  input: InsertImageOverride,
+): Promise<ImageOverride | undefined> {
+  const supabaseUrl = process.env.SUPABASE_URL ?? process.env.VITE_SUPABASE_URL;
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!supabaseUrl || !serviceKey) return undefined;
+
+  const existing = await fetchImageOverridesFromRest({
+    page: input.page,
+    slot: input.slot,
+    limit: 1,
+  });
+
+  const payload = {
+    media_asset_id: input.mediaAssetId,
+    src: input.src,
+    alt_text: input.altText ?? null,
+    title: input.title ?? null,
+    set_by: input.setBy ?? null,
+    updated_at: new Date().toISOString(),
+    ...(existing.length === 0
+      ? {
+          page: input.page,
+          slot: input.slot,
+        }
+      : {}),
+  };
+
+  const url = new URL("/rest/v1/image_overrides", supabaseUrl);
+  if (existing.length > 0) {
+    url.searchParams.set("id", `eq.${existing[0].id}`);
+  }
+  url.searchParams.set("select", "*");
+
+  const response = await fetch(url, {
+    method: existing.length > 0 ? "PATCH" : "POST",
+    headers: {
+      apikey: serviceKey,
+      authorization: `Bearer ${serviceKey}`,
+      "content-type": "application/json",
+      prefer: "return=representation",
+    },
+    body: JSON.stringify(payload),
+  });
+  if (!response.ok) {
+    throw new Error(`Supabase REST image_overrides write failed: ${response.status} ${await response.text()}`);
+  }
+  const rows = (await response.json()) as ImageOverrideRestRow[];
+  return rows[0] ? toImageOverride(rows[0]) : undefined;
+}
+
+async function clearImageOverrideViaRest(page: string, slot: string): Promise<boolean> {
+  const supabaseUrl = process.env.SUPABASE_URL ?? process.env.VITE_SUPABASE_URL;
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!supabaseUrl || !serviceKey) return false;
+
+  const url = new URL("/rest/v1/image_overrides", supabaseUrl);
+  url.searchParams.set("page", `eq.${page}`);
+  url.searchParams.set("slot", `eq.${slot}`);
+
+  const response = await fetch(url, {
+    method: "DELETE",
+    headers: {
+      apikey: serviceKey,
+      authorization: `Bearer ${serviceKey}`,
+    },
+  });
+  if (!response.ok) {
+    throw new Error(`Supabase REST image_overrides delete failed: ${response.status} ${await response.text()}`);
+  }
+  return true;
+}
 
 // Lazily create the drizzle instance so local tooling can run without a DB.
 export async function getDb() {
+  if (shouldSkipPostgres()) return null;
   if (!_db && process.env.DATABASE_URL) {
     try {
       _client = postgres(process.env.DATABASE_URL, { prepare: false });
       _db = drizzle(_client);
     } catch (error) {
       console.warn("[Database] Failed to connect:", error);
+      markPostgresTemporarilyUnavailable(error);
       _db = null;
     }
   }
@@ -828,7 +968,10 @@ export async function getImageOverride(
   slot: string,
 ): Promise<ImageOverride | undefined> {
   const db = await getDb();
-  if (!db) return undefined;
+  if (!db) {
+    const rows = await fetchImageOverridesFromRest({ page, slot, limit: 1 });
+    return rows[0];
+  }
   try {
     const rows = await db
       .select()
@@ -838,7 +981,14 @@ export async function getImageOverride(
     return rows[0];
   } catch (error) {
     console.error("[Database] Failed to get image override:", error);
-    return undefined;
+    markPostgresTemporarilyUnavailable(error);
+    try {
+      const rows = await fetchImageOverridesFromRest({ page, slot, limit: 1 });
+      return rows[0];
+    } catch (restError) {
+      console.error("[Database] Failed to get image override via Supabase REST:", restError);
+      return undefined;
+    }
   }
 }
 
@@ -846,7 +996,7 @@ export async function setImageOverride(
   input: InsertImageOverride,
 ): Promise<ImageOverride | undefined> {
   const db = await getDb();
-  if (!db) return undefined;
+  if (!db) return await setImageOverrideViaRest(input);
   try {
     const existing = await db
       .select()
@@ -874,6 +1024,9 @@ export async function setImageOverride(
     return created[0];
   } catch (error) {
     console.error("[Database] Failed to set image override:", error);
+    markPostgresTemporarilyUnavailable(error);
+    const row = await setImageOverrideViaRest(input);
+    if (row) return row;
     throw error;
   }
 }
@@ -883,7 +1036,7 @@ export async function clearImageOverride(
   slot: string,
 ): Promise<boolean> {
   const db = await getDb();
-  if (!db) return false;
+  if (!db) return await clearImageOverrideViaRest(page, slot);
   try {
     await db
       .delete(imageOverrides)
@@ -891,13 +1044,19 @@ export async function clearImageOverride(
     return true;
   } catch (error) {
     console.error("[Database] Failed to clear image override:", error);
-    return false;
+    markPostgresTemporarilyUnavailable(error);
+    try {
+      return await clearImageOverrideViaRest(page, slot);
+    } catch (restError) {
+      console.error("[Database] Failed to clear image override via Supabase REST:", restError);
+      return false;
+    }
   }
 }
 
 export async function listImageOverrides(): Promise<ImageOverride[]> {
   const db = await getDb();
-  if (!db) return [];
+  if (!db) return await fetchImageOverridesFromRest();
   try {
     return await db
       .select()
@@ -905,6 +1064,12 @@ export async function listImageOverrides(): Promise<ImageOverride[]> {
       .orderBy(desc(imageOverrides.updatedAt));
   } catch (error) {
     console.error("[Database] Failed to list image overrides:", error);
-    return [];
+    markPostgresTemporarilyUnavailable(error);
+    try {
+      return await fetchImageOverridesFromRest();
+    } catch (restError) {
+      console.error("[Database] Failed to list image overrides via Supabase REST:", restError);
+      return [];
+    }
   }
 }
