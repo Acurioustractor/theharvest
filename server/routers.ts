@@ -10,6 +10,7 @@ import { getGalleryPhotos, addGalleryPhoto, removeGalleryPhoto } from "./photoWa
 import { empathyLedgerClient } from "./empathyLedgerClient.js";
 import {
   addStorytellerToHarvest,
+  addHarvestWorkTagToMedia,
   claimArticleForStoryteller,
   createHarvestArticle,
   createHarvestStory,
@@ -30,6 +31,7 @@ import {
   tagArticleAsHarvest,
   tagHarvestMediaInEmpathyLedger,
   tagMediaWithStorytellers,
+  removeHarvestWorkTagFromMedia,
   updateHarvestArticle,
   updateHarvestStory,
   updateStorytellerBio,
@@ -1087,7 +1089,7 @@ export const appRouter = router({
         theme: z.string().optional(), // Theme: "eat", "grow", "make", "gather"
         project: z.string().optional(), // Project slug (legacy / project_id filter)
         work: z.string().optional(), // Harvest work slug — filters by harvest-work tag
-        limit: z.number().min(1).max(200).optional(),
+        limit: z.number().min(1).max(500).optional(),
         page: z.number().min(1).optional(),
       }).optional())
       .query(async ({ input }) => {
@@ -1411,6 +1413,36 @@ export const appRouter = router({
           mediaIds: input.mediaIds,
           recipe: input.recipe,
           mode: input.mode,
+        });
+      }),
+
+    addToWork: protectedProcedure
+      .input(z.object({
+        work: z.string().min(1).max(100),
+        mediaIds: z.array(z.string().min(1).max(80)).min(1).max(100),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== "admin") {
+          throw new Error("Unauthorized");
+        }
+        return addHarvestWorkTagToMedia({
+          work: input.work,
+          mediaIds: input.mediaIds,
+        });
+      }),
+
+    removeFromWork: protectedProcedure
+      .input(z.object({
+        work: z.string().min(1).max(100),
+        mediaId: z.string().min(1).max(80),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== "admin") {
+          throw new Error("Unauthorized");
+        }
+        return removeHarvestWorkTagFromMedia({
+          work: input.work,
+          mediaId: input.mediaId,
         });
       }),
 

@@ -157,6 +157,26 @@ const mediaSets: MediaSet[] = [
     categoryTags: ["general-harvest", "during"],
     publicUse: "/new-look-test#work, /works/the-shop, shop updates",
   },
+  {
+    key: "kids-area",
+    title: "Kids area",
+    description: "Co-design, logs, shade, loose parts, children and family use.",
+    work: "kids-area",
+    themes: ["grow", "gather"],
+    category: "during",
+    categoryTags: ["during"],
+    publicUse: "/new-look-test#work, /works/kids-area, kids area updates",
+  },
+  {
+    key: "milk-man",
+    title: "The Milk Man",
+    description: "Milk-crate sentinel, front gate marker, dairy story and naming.",
+    work: "the-milk-man",
+    themes: ["make", "gather"],
+    category: "milestone",
+    categoryTags: ["milestone"],
+    publicUse: "/new-look-test#work, /works/the-milk-man, front gate updates",
+  },
 ];
 
 const publicSlots: PageSlot[] = [
@@ -188,9 +208,9 @@ const publicSlots: PageSlot[] = [
     label: "Kids playground card",
     page: "new-look-test",
     slot: "kids-playground-card",
-    defaultWorkSlug: "the-garden",
+    defaultWorkSlug: "kids-area",
     publicUrl: "/new-look-test#work",
-    note: "Card for the co-designed kids playground.",
+    note: "Card for the co-designed kids area.",
   },
   {
     label: "Shop table card",
@@ -207,6 +227,14 @@ const publicSlots: PageSlot[] = [
     defaultWorkSlug: "the-shop",
     publicUrl: "/new-look-test#work",
     note: "Card for the future kitchen and food loop.",
+  },
+  {
+    label: "Milk Man card",
+    page: "new-look-test",
+    slot: "the-milk-man-card",
+    defaultWorkSlug: "the-milk-man",
+    publicUrl: "/new-look-test#work",
+    note: "Card for the milk-crate sentinel at the front gate.",
   },
   {
     label: "Garden work hero",
@@ -239,6 +267,22 @@ const publicSlots: PageSlot[] = [
     defaultWorkSlug: "the-shop",
     publicUrl: "/works/the-shop",
     note: "Hero image for the shop work page.",
+  },
+  {
+    label: "Kids area work hero",
+    page: "works",
+    slot: "kids-area-hero",
+    defaultWorkSlug: "kids-area",
+    publicUrl: "/works/kids-area",
+    note: "Hero image for the kids area work page.",
+  },
+  {
+    label: "Milk Man work hero",
+    page: "works",
+    slot: "the-milk-man-hero",
+    defaultWorkSlug: "the-milk-man",
+    publicUrl: "/works/the-milk-man",
+    note: "Hero image for the Milk Man work page.",
   },
 ];
 

@@ -2,41 +2,40 @@ import { useEffect, useState } from "react";
 import { Link } from "wouter";
 import { toast } from "sonner";
 import {
-  ArrowLeft,
   ArrowRight,
   Bell,
   Calendar,
-  ExternalLink,
   Mail,
   Sprout,
   Users,
 } from "lucide-react";
-import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { InterestSelector, type Interest } from "@/components/InterestSelector";
 import { EditableText } from "@/components/EditableText";
 import { HarvestImage } from "@/components/HarvestImage";
-import { HarvestMediaGallery } from "@/components/HarvestMediaGallery";
-import { elLinks } from "@/lib/empathyLedger";
 import { trpc } from "@/lib/trpc";
+import { SiteFooter, SiteNav } from "./HarvestReviewTest";
 
-const memberPromises = [
+const lanes = [
   {
-    title: "The Harvest Note",
-    body: "A monthly letter from Ben or Nic. What happened in the garden. What's coming next. One honest question. One small ask. Same shape every time so you know what to expect.",
-    icon: Mail,
+    slug: "grow",
+    title: "Grow.",
+    tagline: "Letters and updates while the garden gets made.",
+    body: "A monthly Harvest Note from Ben or Nic. What changed in the beds. What's coming next. One honest question. One small ask. Same shape every time so you know what to expect.",
   },
   {
-    title: "First call",
-    body: "Members hear about community days, work days, workshops, residencies and meals before they go public. The next community day around the end of June lands here first.",
-    icon: Calendar,
+    slug: "make",
+    title: "Make.",
+    tagline: "Specific calls when hands are needed.",
+    body: "When there is a clear job to do, we will ask. Hands for a path. Someone who knows old timber. A driver for a load of crates. Practical ways to help the place take shape.",
   },
   {
-    title: "Invitations to help",
-    body: "Not 'volunteer opportunities'. Specific calls. Hands needed for a path. Someone who knows old timber. A driver for a load of crates. The work is real and so are the asks.",
-    icon: Sprout,
+    slug: "gather",
+    title: "Gather.",
+    tagline: "First call for community days and meals.",
+    body: "Members hear about the next community day, work days, workshops and shared meals before they go public. The late June 2026 community day lands here first.",
   },
 ];
 
@@ -49,8 +48,6 @@ function splitName(name: string) {
 }
 
 export default function Membership() {
-  const { user } = useAuth();
-  const isAdmin = user?.role === "admin";
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -70,7 +67,7 @@ export default function Membership() {
       document.head.appendChild(meta);
     }
     meta.content =
-      "Join the Harvest member list for regular notes, event invitations, work day calls, and early opportunities.";
+      "Join the Harvest member list for regular notes, community-day invitations, work day calls, and early opportunities.";
   }, []);
 
   const joinMutation = trpc.newsletter.subscribe.useMutation({
@@ -132,6 +129,7 @@ export default function Membership() {
 
   return (
     <main className="min-h-screen bg-[#F5F0E8] text-[#1C1917]">
+      <SiteNav />
       <section className="relative overflow-hidden bg-[#1C1917] text-[#F5F0E8]">
         <HarvestImage
           page="membership"
@@ -145,17 +143,7 @@ export default function Membership() {
         />
         <div className="absolute inset-0 bg-gradient-to-r from-[#1C1917] via-[#1C1917]/82 to-[#1C1917]/40" />
 
-        <div className="relative z-10 mx-auto flex min-h-[78vh] max-w-6xl flex-col justify-between px-5 py-6 md:px-8">
-          <nav className="flex items-center justify-between gap-4 font-mono text-[11px] uppercase tracking-[0.16em] text-white/68">
-            <Link href="/" className="hover:text-white">
-              The Harvest Witta
-            </Link>
-            <Link href="/what-is-the-harvest" className="inline-flex items-center gap-2 hover:text-white">
-              <ArrowLeft className="h-3.5 w-3.5" />
-              What is The Harvest?
-            </Link>
-          </nav>
-
+        <div className="relative z-10 mx-auto flex min-h-[78vh] max-w-6xl flex-col justify-end px-5 pb-6 pt-28 md:px-8">
           <div className="grid gap-10 pb-10 md:grid-cols-[1fr_0.78fr] md:items-end md:pb-14">
             <div>
               <EditableText
@@ -204,49 +192,59 @@ export default function Membership() {
         </div>
       </section>
 
-      {isAdmin && <MembershipAdminLedgerPanel />}
-
       <section className="py-14 md:py-20">
         <div className="mx-auto max-w-6xl px-5 md:px-8">
           <EditableText
             page="membership"
-            slot="benefits-eyebrow"
-            defaultContent="What you get on the list"
+            slot="lanes-eyebrow"
+            defaultContent="What being on the list means"
             as="p"
             className="font-mono text-xs uppercase tracking-[0.2em] text-[#8B4A2A]"
           />
           <EditableText
             page="membership"
-            slot="benefits-title"
-            defaultContent="Three concrete things. Nothing performative."
+            slot="lanes-title"
+            defaultContent="Grow. Make. Gather."
             as="h2"
-            className="mt-3 max-w-3xl text-4xl font-black leading-[0.98] md:text-5xl"
+            className="mt-3 text-5xl font-black tracking-wide text-[#C4922A] md:text-7xl"
+          />
+          <EditableText
+            page="membership"
+            slot="lanes-body"
+            defaultContent="Three lanes you can lean into. Nothing performative."
+            as="p"
+            className="mt-5 max-w-2xl text-lg leading-relaxed text-stone-700"
+            multiline
           />
 
           <div className="mt-10 grid gap-5 md:grid-cols-3">
-            {memberPromises.map((item, index) => {
-              const Icon = item.icon;
-              return (
-                <section key={item.title} className="border border-stone-300 bg-[#FFFDF7] p-6">
-                  <Icon className="h-8 w-8 text-[#8B4A2A]" />
-                  <EditableText
-                    page="membership"
-                    slot={`benefit-${index + 1}-title`}
-                    defaultContent={item.title}
-                    as="h3"
-                    className="mt-5 text-2xl font-black"
-                  />
-                  <EditableText
-                    page="membership"
-                    slot={`benefit-${index + 1}-body`}
-                    defaultContent={item.body}
-                    as="p"
-                    className="mt-3 leading-relaxed text-stone-700"
-                    multiline
-                  />
-                </section>
-              );
-            })}
+            {lanes.map((lane) => (
+              <article key={lane.slug} className="border border-stone-300 bg-[#FFFDF7] p-6">
+                <EditableText
+                  page="membership"
+                  slot={`lane-${lane.slug}-title`}
+                  defaultContent={lane.title}
+                  as="h3"
+                  className="text-3xl font-black"
+                />
+                <EditableText
+                  page="membership"
+                  slot={`lane-${lane.slug}-tagline`}
+                  defaultContent={lane.tagline}
+                  as="p"
+                  className="mt-2 text-sm italic leading-relaxed text-[#8B4A2A]"
+                  multiline
+                />
+                <EditableText
+                  page="membership"
+                  slot={`lane-${lane.slug}-body`}
+                  defaultContent={lane.body}
+                  as="p"
+                  className="mt-4 leading-relaxed text-stone-700"
+                  multiline
+                />
+              </article>
+            ))}
           </div>
         </div>
       </section>
@@ -477,73 +475,7 @@ export default function Membership() {
           </div>
         </div>
       </section>
+      <SiteFooter />
     </main>
-  );
-}
-
-function MembershipAdminLedgerPanel() {
-  return (
-    <section className="border-b border-amber-500/30 bg-amber-50 px-5 py-5 md:px-8">
-      <div className="mx-auto grid max-w-6xl gap-5 lg:grid-cols-[0.74fr_1fr]">
-        <div className="border border-amber-300 bg-white p-5">
-          <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[#8B4A2A]">
-            Admin editing
-          </p>
-          <h2 className="mt-2 text-2xl font-black leading-tight">
-            Membership page copy and media are editable here.
-          </h2>
-          <p className="mt-3 text-sm leading-relaxed text-stone-700">
-            Click any amber <strong>Edit</strong> pill to rewrite copy. Hover the hero image and use
-            <strong> Swap photo</strong> to choose from Empathy Ledger. Form field labels stay fixed
-            so the signup flow remains stable while you edit the public story.
-          </p>
-          <div className="mt-5 flex flex-wrap gap-2">
-            <AdminLedgerLink href="/admin/media-library" label="Harvest media library" />
-            <AdminLedgerLink href={elLinks.photoManager()} label="EL photo manager" external />
-            <AdminLedgerLink href={elLinks.galleries()} label="EL galleries" external />
-            <AdminLedgerLink href={elLinks.bulkEdit()} label="EL bulk edit" external />
-          </div>
-        </div>
-
-        <HarvestMediaGallery
-          title="Membership media"
-          eyebrow="Empathy Ledger widget"
-          description="A quick view of EL assets tagged for gathering/community use. Use this as the source pool while you choose hero or support images."
-          theme="gather"
-          limit={4}
-          tagHint="theme:gather + Harvest gallery"
-          className="min-h-full"
-        />
-      </div>
-    </section>
-  );
-}
-
-function AdminLedgerLink({
-  href,
-  label,
-  external = false,
-}: {
-  href: string;
-  label: string;
-  external?: boolean;
-}) {
-  const className =
-    "inline-flex min-h-10 items-center justify-center gap-2 border border-stone-900/16 bg-[#1C1917] px-3 py-2 text-xs font-semibold text-[#F5F0E8] transition hover:bg-[#3D3832]";
-
-  if (external) {
-    return (
-      <a href={href} target="_blank" rel="noopener noreferrer" className={className}>
-        {label}
-        <ExternalLink className="h-3.5 w-3.5" />
-      </a>
-    );
-  }
-
-  return (
-    <Link href={href} className={className}>
-      {label}
-      <ArrowRight className="h-3.5 w-3.5" />
-    </Link>
   );
 }

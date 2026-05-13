@@ -4,6 +4,9 @@ import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { works, LIFECYCLE_VOCAB, sortLifecycleTags } from "@/data/works";
 import { EditableText } from "@/components/EditableText";
+import { HarvestImage } from "@/components/HarvestImage";
+import { useAuth } from "@/_core/hooks/useAuth";
+import { SiteFooter, SiteNav } from "./HarvestReviewTest";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
@@ -14,6 +17,9 @@ const fadeInUp = {
 
 
 export default function Works() {
+  const { user } = useAuth();
+  const isAdmin = user?.role === "admin";
+
   useEffect(() => {
     document.title = "The Collection · The Harvest";
     const desc = "The works of The Harvest — a living collection on Jinibara Country, Witta. Each piece carries a thread back to the history of the place.";
@@ -28,8 +34,9 @@ export default function Works() {
 
   return (
     <div className="min-h-screen bg-stone-50">
+      <SiteNav />
       {/* Hero */}
-      <section className="relative py-24 md:py-32 bg-stone-100">
+      <section className="relative pb-24 pt-36 md:pb-32 md:pt-44 bg-stone-100">
         <div className="container">
           <motion.div
             initial={{ opacity: 0, y: 40 }}
@@ -77,15 +84,16 @@ export default function Works() {
                   className="group"
                 >
                   {/* Image plate — clickable */}
-                  <Link
-                    href={`/works/${work.slug}`}
-                    className="block relative aspect-[4/3] overflow-hidden bg-stone-200 rounded-sm shadow-sm group-hover:shadow-md transition-shadow"
-                  >
-                    <img
+                  <div className="relative aspect-[4/3] overflow-hidden bg-stone-200 rounded-sm shadow-sm group-hover:shadow-md transition-shadow">
+                    <HarvestImage
+                      page="works"
+                      slot={`${work.slug}-card`}
                       src={work.heroImage}
                       alt={work.heroAlt}
-                      loading="lazy"
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      defaultWorkSlug={work.slug}
+                      size="card"
+                      className="absolute inset-0 h-full w-full"
+                      imgClassName="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                     />
                     <div className="absolute top-4 left-4 flex flex-wrap gap-1.5">
                       {lifecycleTags.map((tag) => {
@@ -100,7 +108,14 @@ export default function Works() {
                         );
                       })}
                     </div>
-                  </Link>
+                    {!isAdmin && (
+                      <Link
+                        href={`/works/${work.slug}`}
+                        className="absolute inset-0"
+                        aria-label={`See ${work.title}`}
+                      />
+                    )}
+                  </div>
 
                   {/* Museum label — text outside the Link so EditableText pencils don't navigate */}
                   <div className="mt-6 grid grid-cols-[auto_1fr] gap-x-6">
@@ -184,6 +199,7 @@ export default function Works() {
           </motion.div>
         </div>
       </section>
+      <SiteFooter />
     </div>
   );
 }

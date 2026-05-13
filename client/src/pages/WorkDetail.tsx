@@ -9,6 +9,9 @@ import { EditableText } from "@/components/EditableText";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { elLinks } from "@/lib/empathyLedger";
 import { optimize } from "@/lib/imageOptimize";
+import { HarvestPhotoPicker } from "@/components/HarvestPhotoPicker";
+import { toast } from "sonner";
+import { SiteFooter } from "./HarvestReviewTest";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
@@ -204,7 +207,7 @@ export default function WorkDetail({ slug }: { slug: string }) {
       <Section label="What it is" body={work.whatItIs} slot={`${work.slug}-whatItIs`} />
 
       {/* Inline feature image — slot 1 (after "What it is") */}
-      <InlineFeatureImage work={work} slotKey="feature-1" caption="What it looks like up close." />
+      <InlineFeatureImage work={work} slotKey="feature-1" />
 
       {/* Why */}
       <Section label="Why" body={work.why} slot={`${work.slug}-why`} tone="dark" />
@@ -215,55 +218,54 @@ export default function WorkDetail({ slug }: { slug: string }) {
       {/* Inline feature image — slot 2 (after "How") */}
       <InlineFeatureImage work={work} slotKey="feature-2" caption="In the making." />
 
-      {/* Witta thread */}
+      {/* Work story — free text, so each work can hold a note, poem, source story, or context */}
       <section className="py-20 md:py-28 bg-stone-100">
         <div className="container">
           <div className="max-w-4xl mx-auto">
             <motion.div {...fadeInUp} className="mb-12">
               <p className="font-mono text-amber-700 text-sm mb-3 uppercase tracking-[0.2em]">
-                The Witta Thread
+                Story
               </p>
               <h2 className="text-3xl md:text-4xl font-serif font-bold text-stone-800">
-                Why it ties back to this place.
+                A note on this work.
               </h2>
-              <p className="mt-4 text-stone-600 leading-relaxed text-lg">
-                Every work in the collection is anchored to specific moments in
-                Witta's long story. Here are the threads this one pulls on.
-              </p>
             </motion.div>
 
-            <div className="space-y-8">
-              {work.wittaThreads.map((t, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, x: -16 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: i * 0.08 }}
-                  className="grid md:grid-cols-[140px_1fr] gap-x-8 gap-y-3 border-l-2 border-amber-500/40 pl-6"
-                >
-                  <p className="font-mono text-stone-800 font-semibold tracking-wider">
-                    {t.year}
-                  </p>
-                  <div>
-                    <p className="text-stone-700 leading-relaxed mb-2">
-                      <span className="text-stone-500">{t.moment}</span>
-                    </p>
-                    <p className="text-stone-800 leading-relaxed">{t.thread}</p>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-
-            <div className="mt-10">
-              <Link
-                href="/witta"
-                className="inline-flex items-center gap-2 text-amber-700 hover:text-amber-800 underline underline-offset-4 decoration-amber-500 decoration-2"
-              >
-                Read the full Witta history
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-            </div>
+            <EditableText
+              page="works"
+              slot={`${work.slug}-story`}
+              defaultContent={work.blurb}
+              as="p"
+              className="max-w-3xl whitespace-pre-line text-xl leading-relaxed text-stone-700 md:text-2xl"
+              multiline
+            />
+            {work.storyLinks && work.storyLinks.length > 0 && (
+              <div className="mt-8 flex flex-col items-start gap-3">
+                {work.storyLinks.map((link) => (
+                  link.href.startsWith("/") ? (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      className="inline-flex items-center gap-2 text-amber-700 hover:text-amber-800 underline underline-offset-4 decoration-amber-500 decoration-2"
+                    >
+                      {link.label}
+                      <ArrowRight className="h-4 w-4" />
+                    </Link>
+                  ) : (
+                    <a
+                      key={link.href}
+                      href={link.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-amber-700 hover:text-amber-800 underline underline-offset-4 decoration-amber-500 decoration-2"
+                    >
+                      {link.label}
+                      <ExternalLink className="h-4 w-4" />
+                    </a>
+                  )
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </section>
@@ -298,8 +300,18 @@ export default function WorkDetail({ slug }: { slug: string }) {
                     transition={{ duration: 0.4, delay: i * 0.05 }}
                     className="grid sm:grid-cols-[1fr_2fr] gap-2 py-4"
                   >
-                    <p className="text-stone-800 font-medium">
-                      {linked ? (
+                    <p className="flex items-center gap-2 text-stone-800 font-medium">
+                      {h.href && !isAdmin ? (
+                        <a
+                          href={h.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 underline-offset-2 hover:text-amber-700 hover:underline"
+                        >
+                          {h.name}
+                          <ExternalLink className="h-3.5 w-3.5" />
+                        </a>
+                      ) : linked && !isAdmin ? (
                         <Link
                           href={`/people/${linked.slug}`}
                           className="underline-offset-2 hover:text-amber-700 hover:underline"
@@ -307,37 +319,55 @@ export default function WorkDetail({ slug }: { slug: string }) {
                           {h.name}
                         </Link>
                       ) : (
-                        h.name
+                        <EditableText
+                          page="works"
+                          slot={`${work.slug}-hand-${i + 1}-name`}
+                          defaultContent={h.name}
+                          as="span"
+                          className="text-stone-800 font-medium"
+                        />
+                      )}
+                      {h.href && isAdmin && (
+                        <a
+                          href={h.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-stone-300 text-stone-500 hover:border-amber-500 hover:text-amber-700"
+                          title={`Open ${h.name}`}
+                        >
+                          <ExternalLink className="h-3.5 w-3.5" />
+                        </a>
                       )}
                     </p>
-                    <p className="text-stone-600">{h.role}</p>
+                    <EditableText
+                      page="works"
+                      slot={`${work.slug}-hand-${i + 1}-role`}
+                      defaultContent={h.role}
+                      as="p"
+                      className="text-stone-600"
+                    />
                   </motion.li>
                 );
               })}
             </ul>
 
-            {work.link && (
-              <div className="mt-8">
-                <a
-                  href={work.link.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-amber-700 hover:text-amber-800 underline underline-offset-4 decoration-amber-500 decoration-2"
-                >
-                  {work.link.label}
-                  <ExternalLink className="h-4 w-4" />
-                </a>
+            {(work.link || work.links?.length) && (
+              <div className="mt-8 flex flex-col items-start gap-3">
+                {[...(work.link ? [work.link] : []), ...(work.links ?? [])].map((link) => (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 text-amber-700 hover:text-amber-800 underline underline-offset-4 decoration-amber-500 decoration-2"
+                  >
+                    {link.label}
+                    <ExternalLink className="h-4 w-4" />
+                  </a>
+                ))}
               </div>
             )}
 
-            <div className="mt-6">
-              <Link
-                href="/people"
-                className="inline-flex items-center gap-2 text-sm font-semibold text-stone-600 hover:text-amber-700"
-              >
-                Meet the people of The Harvest <ArrowRight className="h-4 w-4" />
-              </Link>
-            </div>
           </div>
         </div>
       </section>
@@ -364,12 +394,15 @@ export default function WorkDetail({ slug }: { slug: string }) {
                       className="block group"
                     >
                       <div className="aspect-[4/3] overflow-hidden bg-stone-200 rounded-sm">
-                        <img
-                          src={optimize(rel.heroImage, "card")}
+                        <HarvestImage
+                          page="works"
+                          slot={`${rel.slug}-card`}
+                          defaultWorkSlug={rel.slug}
+                          src={rel.heroImage}
                           alt={rel.heroAlt}
-                          loading="lazy"
-                          decoding="async"
-                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          size="card"
+                          className="h-full w-full"
+                          imgClassName="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                         />
                       </div>
                       <h3 className="mt-3 font-serif text-xl text-stone-800 group-hover:text-amber-700 transition-colors">
@@ -409,6 +442,7 @@ export default function WorkDetail({ slug }: { slug: string }) {
           </div>
         </div>
       </section>
+      <SiteFooter />
     </div>
   );
 }
@@ -945,7 +979,23 @@ function InlineSpreadImages({ work }: { work: import("@/data/works").Work }) {
 function WorkPhotographsSection({ slug }: { slug: string }) {
   const { user } = useAuth();
   const isAdmin = user?.role === "admin";
+  const [pickerOpen, setPickerOpen] = useState(false);
   const query = trpc.gallery.forWork.useQuery({ slug, limit: 24 });
+  const utils = trpc.useUtils();
+  const addToWorkMutation = trpc.mediaLibrary.addToWork.useMutation({
+    onSuccess: () => {
+      utils.gallery.forWork.invalidate({ slug, limit: 24 });
+      toast.success("Photo added to this work.");
+    },
+    onError: (error) => toast.error("Could not add photo", { description: error.message }),
+  });
+  const removeFromWorkMutation = trpc.mediaLibrary.removeFromWork.useMutation({
+    onSuccess: () => {
+      utils.gallery.forWork.invalidate({ slug, limit: 24 });
+      toast.success("Photo removed from this work.");
+    },
+    onError: (error) => toast.error("Could not remove photo", { description: error.message }),
+  });
   const photos = (query.data?.media ?? []).filter((photo) => isImageMediaSrc(photo.src));
 
   // For visitors: hide section entirely when there are no photos.
@@ -972,16 +1022,15 @@ function WorkPhotographsSection({ slug }: { slug: string }) {
               </p>
             </div>
             {isAdmin && (
-              <a
-                href={elLinks.photoManager()}
-                target="_blank"
-                rel="noopener noreferrer"
+              <button
+                type="button"
+                onClick={() => setPickerOpen(true)}
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-stone-800 text-amber-300 text-sm font-medium hover:bg-stone-900 transition-colors whitespace-nowrap"
-                title="Open EL photo manager in a new tab. Upload a new photo or pick an existing one, then tag it with this work."
+                title="Pick an existing Empathy Ledger photo and link it to this work."
               >
-                <ExternalLink className="h-4 w-4" />
-                Add a photo to this work
-              </a>
+                <Camera className="h-4 w-4" />
+                Add linked photo
+              </button>
             )}
           </motion.div>
 
@@ -1006,7 +1055,7 @@ function WorkPhotographsSection({ slug }: { slug: string }) {
                 transition={{ duration: 0.4, delay: (i % 9) * 0.04 }}
                 className="break-inside-avoid mb-4"
               >
-                <div className="overflow-hidden rounded-sm shadow-sm bg-stone-200 animate-pulse [&:has(img.loaded)]:animate-none">
+                <div className="group/photo relative overflow-hidden rounded-sm shadow-sm bg-stone-200 animate-pulse [&:has(img.loaded)]:animate-none">
                   <img
                     src={optimize(photo.src, "thumb")}
                     alt={photo.altText ?? photo.title ?? slug}
@@ -1015,19 +1064,34 @@ function WorkPhotographsSection({ slug }: { slug: string }) {
                     onLoad={(e) => e.currentTarget.classList.add("loaded")}
                     className="w-full h-auto block hover:scale-[1.02] transition-transform duration-500"
                   />
+                  {isAdmin && (
+                    <button
+                      type="button"
+                      onClick={() => removeFromWorkMutation.mutate({ work: slug, mediaId: photo.id })}
+                      disabled={removeFromWorkMutation.isPending}
+                      className="absolute right-3 top-3 rounded-full bg-white/92 px-3 py-1.5 text-xs font-semibold text-stone-800 opacity-0 shadow-md transition hover:bg-white hover:text-red-700 disabled:opacity-60 group-hover/photo:opacity-100"
+                    >
+                      Remove from this work
+                    </button>
+                  )}
                 </div>
-                {(photo.title || photo.description) && (
-                  <figcaption className="mt-2 text-stone-500 text-xs leading-snug">
-                    {photo.title && (
-                      <span className="text-stone-700">{photo.title}</span>
-                    )}
-                    {photo.title && photo.description && " — "}
-                    {photo.description}
-                  </figcaption>
-                )}
               </motion.figure>
             ))}
           </div>
+          {isAdmin && (
+            <HarvestPhotoPicker
+              open={pickerOpen}
+              onOpenChange={setPickerOpen}
+              defaultWorkSlug={slug}
+              onPick={async (photo) => {
+                await addToWorkMutation.mutateAsync({
+                  work: slug,
+                  mediaIds: [photo.mediaAssetId],
+                });
+                setPickerOpen(false);
+              }}
+            />
+          )}
         </div>
       </div>
     </section>

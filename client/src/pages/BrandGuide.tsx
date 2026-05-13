@@ -8,6 +8,8 @@ import { useMediaQuery } from "@/hooks/useMediaQuery";
    ───────────────────────────────────── */
 
 const chapters = [
+  { id: "logo", label: "The Mark" },
+  { id: "stance", label: "Stance" },
   { id: "threes", label: "The Threes" },
   { id: "rooms", label: "The Rooms" },
   { id: "principles", label: "Principles" },
@@ -24,56 +26,38 @@ const chapters = [
 
 const threes = [
   {
-    label: "Art. Food. Community.",
-    type: "Tagline",
+    label: "Grow. Feed. Make.",
+    type: "Tagline (verbs)",
     items: [
-      { word: "Art", desc: "Making, expressing, creating meaning", color: colors.crane, colorName: "Crane" },
-      { word: "Food", desc: "Growing, cooking, sharing a table", color: colors.goldenHour, colorName: "Golden Hour" },
-      { word: "Community", desc: "Gathering, belonging, building together", color: colors.workshirt, colorName: "Workshirt" },
+      { word: "Grow", desc: "What happens in the Garden. Food, seedlings, slow work, kids in the soil.", color: colors.canopy, colorName: "Canopy" },
+      { word: "Feed", desc: "What happens in the Kitchen. Shared tables, simple food, milk bar thinking, local producers.", color: colors.goldenHour, colorName: "Golden Hour" },
+      { word: "Make", desc: "What happens in the Art Space. Hands, materials, residencies, the practice of making with care.", color: colors.crane, colorName: "Crane" },
     ],
   },
   {
-    label: "Art Space. Kitchen. Garden.",
+    label: "Garden. Kitchen. Art Space.",
     type: "The Rooms",
     items: [
-      { word: "Art Space", desc: "Gallery, studio, maker workshop", color: colors.crane, colorName: "Crane" },
-      { word: "Kitchen", desc: "Commercial kitchen, shared meals, food projects", color: colors.goldenHour, colorName: "Golden Hour" },
-      { word: "Garden", desc: "Growing food, gathering outdoors, kids area", color: colors.canopy, colorName: "Canopy" },
-    ],
-  },
-  {
-    label: "Make. Feed. Grow.",
-    type: "Verbs",
-    items: [
-      { word: "Make", desc: "What you do in the Art Space", color: colors.crane, colorName: "Crane" },
-      { word: "Feed", desc: "What you do in the Kitchen", color: colors.goldenHour, colorName: "Golden Hour" },
-      { word: "Grow", desc: "What you do in the Garden", color: colors.canopy, colorName: "Canopy" },
-    ],
-  },
-  {
-    label: "Listen. Make. Share.",
-    type: "Event (Gather page)",
-    items: [
-      { word: "Listen", desc: "Stories from the ridge, local history, the land", color: colors.canopy, colorName: "Canopy" },
-      { word: "Make", desc: "Milk crate pavilion, hands-on, collaborative", color: colors.crane, colorName: "Crane" },
-      { word: "Share", desc: "Oysters, Flight Bar, neighbours on the lawn", color: colors.goldenHour, colorName: "Golden Hour" },
+      { word: "Garden", desc: "Beds, paths, kids playground, food, slow work outdoors. The first version of the place.", color: colors.canopy, colorName: "Canopy" },
+      { word: "Kitchen", desc: "Shared tables, simple food, milk bar thinking, pop-ups and local producers. The feed room.", color: colors.goldenHour, colorName: "Golden Hour" },
+      { word: "Art Space", desc: "Gallery, studio, workshop. Where things get made by hand.", color: colors.crane, colorName: "Crane" },
     ],
   },
 ];
 
 const rooms = [
   {
-    name: "The Art Space",
-    color: colors.crane,
-    verb: "Make",
-    tagline: "Art",
-    what: "Gallery wall. Maker workshop. Studio residencies. Exhibition space.",
-    who: "Artists, makers, kids, schools, anyone who wants to try something",
-    spirit: "The space is always becoming. Nothing is permanent, like a gallery.",
+    name: "The Garden",
+    color: colors.canopy,
+    verb: "Grow",
+    tagline: "Grow",
+    what: "Food garden. Beds, paths, kids playground, fire pit, outdoor gathering. The first version of the place.",
+    who: "Families, homeschoolers, gardeners, neighbours, kids with ideas.",
+    spirit: "We don't build for people. We build with them. Kids build the kids area.",
     questions: [
-      "Is this a gallery? A studio? A workshop? All three?",
-      "How do residencies work, open to public or private?",
-      "What's the first exhibition?",
+      "Communal beds or individual plots?",
+      "How does the kids playground get co-designed?",
+      "What feeds the future kitchen as it grows in?",
     ],
   },
   {
@@ -81,28 +65,28 @@ const rooms = [
     color: colors.goldenHour,
     textColor: colors.shed,
     verb: "Feed",
-    tagline: "Food",
-    what: "Commercial kitchen. Shared meals. Food preservation. Cooking classes.",
-    who: "Home cooks, food entrepreneurs, neighbours, families",
-    spirit: "Food is how we sustain each other. The table is where community happens.",
+    tagline: "Feed",
+    what: "Shared tables. Simple food. Milk bar thinking. Pop-ups and local producers.",
+    who: "Neighbours, families, makers, locals, anyone who wants a place to eat and talk.",
+    spirit: "The table is where the place becomes useful.",
     questions: [
-      "Commercial kitchen for rent, or community-run?",
-      "Regular meal nights? Weekly? Monthly?",
-      "Food entrepreneur incubator angle?",
+      "What does the first menu need to be?",
+      "How do pop-ups fit with the room as it changes?",
+      "What can the kitchen hold before it tries to do too much?",
     ],
   },
   {
-    name: "The Garden",
-    color: colors.canopy,
-    verb: "Grow",
-    tagline: "Community",
-    what: "Food garden. Kids area. Outdoor gathering space. Fire pit.",
-    who: "Families, homeschoolers, gardeners, neighbours",
-    spirit: "We don't build for people. We build with them. Kids build the kids area.",
+    name: "The Art Space",
+    color: colors.crane,
+    verb: "Make",
+    tagline: "Make",
+    what: "Gallery wall. Maker workshop. Studio residencies. Exhibition space.",
+    who: "Artists, makers, kids, schools, anyone who wants to try something.",
+    spirit: "The space is always becoming. Nothing is permanent, like a gallery.",
     questions: [
-      "Communal garden or individual plots?",
-      "How does the kids area get co-designed?",
-      "Fire pit, permanent or seasonal?",
+      "Is this a gallery, a studio, a workshop? All three over time?",
+      "How do residencies work? Open to public or private?",
+      "What's the first exhibition? Who hangs it?",
     ],
   },
 ];
@@ -268,7 +252,7 @@ export default function BrandGuide() {
 
   const isMobile = useMediaQuery("(max-width: 768px)");
   const [lightbox, setLightbox] = useState<{ src: string; label: string } | null>(null);
-  const [activeChapter, setActiveChapter] = useState("threes");
+  const [activeChapter, setActiveChapter] = useState("logo");
   const navRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -326,7 +310,7 @@ export default function BrandGuide() {
         >
           <style>{`@keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-8px)} 75%{transform:translateX(8px)} }`}</style>
           <div style={{ fontFamily: fonts.display, fontWeight: 900, fontSize: 14, letterSpacing: "0.2em", opacity: 0.4, marginBottom: 24 }}>
-            THE HARVEST — BRAND GUIDE
+            THE HARVEST. BRAND GUIDE
           </div>
           <input
             type="password"
@@ -429,11 +413,398 @@ export default function BrandGuide() {
         </div>
       </nav>
 
+      {/* ─── THE MARK ─── */}
+      <section id="logo" style={{ padding: isMobile ? "60px 24px" : "80px 40px" }}>
+        <h2 style={sectionHeadingStyle}>THE MARK</h2>
+        <p style={sectionDescStyle}>
+          One wordmark. Three approved variants. Use it like it costs something to be wrong.
+        </p>
+
+        {/* Hero. wordmark big on cream */}
+        <div style={{
+          margin: "48px auto 0",
+          maxWidth: 900,
+          border: `1px solid rgba(26,26,26,0.1)`,
+          padding: isMobile ? "40px 24px" : "80px 60px",
+          backgroundColor: colors.milk,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: 24,
+        }}>
+          <img
+            src="/images/logo-v1-dark-clean.png"
+            alt="The Harvest"
+            style={{ maxWidth: "100%", width: 520, height: "auto" }}
+          />
+          <p style={{
+            fontFamily: fonts.body,
+            fontSize: 12,
+            letterSpacing: "0.16em",
+            textTransform: "uppercase",
+            opacity: 0.45,
+            margin: 0,
+          }}>
+            The Harvest wordmark · V1 · locked Feb 2026
+          </p>
+        </div>
+
+        {/* Three variants */}
+        <div style={{ marginTop: 64, maxWidth: 1000, marginLeft: "auto", marginRight: "auto" }}>
+          <span style={{ ...smallLabelStyle, color: colors.shed, opacity: 0.5, marginBottom: 20, display: "block" }}>
+            THREE VARIANTS · ONE WORDMARK
+          </span>
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)",
+            gap: 12,
+          }}>
+            {/* Dark on cream */}
+            <div style={{
+              backgroundColor: colors.milk,
+              border: `1px solid rgba(26,26,26,0.1)`,
+              padding: 28,
+              display: "flex",
+              flexDirection: "column",
+              gap: 16,
+            }}>
+              <div style={{ height: 120, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <img
+                  src="/images/logo-v1-dark-clean.png"
+                  alt=""
+                  style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }}
+                />
+              </div>
+              <div>
+                <span style={{ fontFamily: fonts.display, fontWeight: 900, fontSize: 12, letterSpacing: "0.14em", color: colors.shed }}>
+                  DARK
+                </span>
+                <p style={{ fontFamily: fonts.body, fontSize: 13, lineHeight: 1.5, opacity: 0.6, margin: "8px 0 0" }}>
+                  For light backgrounds. Cream, soft tints, paper. The default.
+                </p>
+              </div>
+            </div>
+
+            {/* White on dark, via CSS invert */}
+            <div style={{
+              backgroundColor: colors.shed,
+              padding: 28,
+              display: "flex",
+              flexDirection: "column",
+              gap: 16,
+            }}>
+              <div style={{ height: 120, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <img
+                  src="/images/logo-v1-dark-clean.png"
+                  alt=""
+                  style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain", filter: "brightness(0) invert(1)" }}
+                />
+              </div>
+              <div>
+                <span style={{ fontFamily: fonts.display, fontWeight: 900, fontSize: 12, letterSpacing: "0.14em", color: colors.goldenHour }}>
+                  WHITE
+                </span>
+                <p style={{ fontFamily: fonts.body, fontSize: 13, lineHeight: 1.5, color: colors.milk, opacity: 0.65, margin: "8px 0 0" }}>
+                  For dark backgrounds. Hero, footer, photo overlays. Invert via CSS, do not ship a separate white file.
+                </p>
+              </div>
+            </div>
+
+            {/* Colour on cream */}
+            <div style={{
+              backgroundColor: colors.milk,
+              border: `1px solid rgba(26,26,26,0.1)`,
+              padding: 28,
+              display: "flex",
+              flexDirection: "column",
+              gap: 16,
+            }}>
+              <div style={{ height: 120, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <img
+                  src="/images/logo-v1-colour-clean.png"
+                  alt=""
+                  style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }}
+                />
+              </div>
+              <div>
+                <span style={{ fontFamily: fonts.display, fontWeight: 900, fontSize: 12, letterSpacing: "0.14em", color: colors.canopy }}>
+                  COLOUR
+                </span>
+                <p style={{ fontFamily: fonts.body, fontSize: 13, lineHeight: 1.5, opacity: 0.6, margin: "8px 0 0" }}>
+                  For light backgrounds and brand moments. Use sparingly: covers, signs, hero pieces.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Usage rules */}
+        <div style={{ marginTop: 64, maxWidth: 800, marginLeft: "auto", marginRight: "auto" }}>
+          <span style={{ ...smallLabelStyle, color: colors.shed, opacity: 0.5, marginBottom: 20, display: "block" }}>
+            USAGE RULES
+          </span>
+          <div style={{ display: "grid", gap: 0 }}>
+            {[
+              { label: "Clear space", body: "Keep one cap-height of THE HARVEST clear around every edge. The roots are part of the mark. Never crop them. Never sit text inside them." },
+              { label: "Minimum size", body: "Don't go below 96px wide on screen, or 32mm wide in print. Below that, the roots stop reading and the mark turns to mush." },
+              { label: "Backgrounds", body: "Cream (#F5F0E8) or shed black (#1C1917). Avoid mid-tone greys, busy photos, and any other palette colour (Crane, Canopy, Golden Hour, etc.) as a background. they all fight the mark." },
+              { label: "On photography", body: "Only on heavily darkened or simplified imagery. If the background has texture, drop a 60–72% shed-black scrim under the mark first." },
+              { label: "Alongside text", body: "If a lockup needs a tagline, place 'Garden. Kitchen. Art Space.' or 'Witta · Jinibara Country' to the right of the wordmark at one cap-height distance, never under the roots." },
+            ].map((rule) => (
+              <div key={rule.label} style={{
+                display: "grid",
+                gridTemplateColumns: isMobile ? "1fr" : "180px 1fr",
+                gap: isMobile ? 6 : 24,
+                padding: "16px 0",
+                borderBottom: `1px solid rgba(26,26,26,0.08)`,
+              }}>
+                <span style={{
+                  fontFamily: fonts.display,
+                  fontWeight: 900,
+                  fontSize: 11,
+                  letterSpacing: "0.16em",
+                  color: colors.shed,
+                  opacity: 0.6,
+                  textTransform: "uppercase",
+                }}>
+                  {rule.label}
+                </span>
+                <p style={{ fontFamily: fonts.body, fontSize: 15, lineHeight: 1.6, margin: 0 }}>
+                  {rule.body}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* What never to do */}
+        <div style={{ marginTop: 64, maxWidth: 800, marginLeft: "auto", marginRight: "auto" }}>
+          <span style={{ ...smallLabelStyle, color: colors.shed, opacity: 0.5, marginBottom: 20, display: "block" }}>
+            WHAT NEVER TO DO
+          </span>
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: isMobile ? "1fr" : "repeat(2, 1fr)",
+            gap: 12,
+          }}>
+            {[
+              "Don't redraw, retype, or substitute another font. The wordmark is custom letterforms.",
+              "Don't recolour the dark variant. Use as-is or invert to white for dark backgrounds.",
+              "Don't stretch, squish, rotate or skew the wordmark.",
+              "Don't crop the roots. They are the mark.",
+              "Don't add drop shadow, outer glow, outline or other effects.",
+              "Don't combine with another wordmark, sub-brand or tagline inside the bounding box.",
+              "Don't place on a busy photo without a scrim.",
+              "Don't use the old three-circle mono mark (logo-mono-v1.png). It is retired.",
+            ].map((rule, i) => (
+              <div key={i} style={{
+                padding: "16px 20px",
+                border: "1px solid rgba(214,44,44,0.2)",
+                backgroundColor: "rgba(214,44,44,0.04)",
+              }}>
+                <span style={{ fontFamily: fonts.display, fontWeight: 700, fontSize: 11, letterSpacing: "0.14em", color: colors.crane, display: "block", marginBottom: 8 }}>
+                  ✗ DON&apos;T
+                </span>
+                <p style={{ fontFamily: fonts.body, fontSize: 13, lineHeight: 1.5, margin: 0 }}>
+                  {rule}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Source files */}
+        <div style={{
+          marginTop: 48,
+          maxWidth: 800,
+          marginLeft: "auto",
+          marginRight: "auto",
+          padding: isMobile ? "24px 20px" : "28px 32px",
+          border: `2px solid ${colors.goldenHour}`,
+        }}>
+          <span style={{ fontFamily: fonts.display, fontWeight: 900, fontSize: 12, letterSpacing: "0.16em", color: colors.goldenHour }}>
+            SOURCE FILES
+          </span>
+          <div style={{ marginTop: 16, display: "grid", gap: 10, fontFamily: fonts.body, fontSize: 14, lineHeight: 1.6 }}>
+            <div><strong>Dark, transparent:</strong> <code style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace", fontSize: 13 }}>/images/logo-v1-dark-clean.png</code></div>
+            <div><strong>White (via CSS):</strong> <code style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace", fontSize: 13 }}>filter: brightness(0) invert(1)</code> applied to the dark file</div>
+            <div><strong>Colour:</strong> <code style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace", fontSize: 13 }}>/images/logo-v1-colour-clean.png</code></div>
+            <div style={{ marginTop: 12, opacity: 0.65 }}>
+              For the H-mark lifecycle and lettering rationale, see <Link href="/logo-story" style={{ color: colors.shed, textDecoration: "underline" }}>/logo-story</Link>.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── STANCE ─── */}
+      <section id="stance" style={{
+        backgroundColor: colors.shed,
+        color: colors.milk,
+        padding: isMobile ? "60px 24px" : "80px 40px",
+      }}>
+        <h2 style={{ ...sectionHeadingStyle, color: colors.milk }}>STANCE</h2>
+        <p style={{ ...sectionDescStyle, color: colors.milk, opacity: 0.6 }}>
+          The mark sits above. The stance sits underneath. What we want a person to think, feel and do when they meet The Harvest.
+        </p>
+
+        {/* THINK / FEEL / DO */}
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)",
+          gap: 16,
+          maxWidth: 1100,
+          margin: "48px auto 0",
+        }}>
+          {[
+            {
+              word: "THINK",
+              color: colors.canopy,
+              sub: "The mental model we want them to form.",
+              points: [
+                "This is a place, not a brand. Soil, sheds, weather, a history older than us. On Jinibara Country, in Witta in the Sunshine Coast Hinterland.",
+                "It's being made slowly, in public, by the people who live here. Not by a developer. Not by a chain.",
+                "You're not a customer. You're a neighbour, a maker, or someone curious. Any of those is enough.",
+                "Garden first. Kitchen and art space are the longer build. We say what's actually happening this round.",
+              ],
+            },
+            {
+              word: "FEEL",
+              color: colors.goldenHour,
+              sub: "The emotional posture they leave with.",
+              points: [
+                "Welcomed, not sold to.",
+                "Calm. The site does not urge.",
+                "Curious. There's more here than one visit shows.",
+                "Capable. Like they could turn up and be useful.",
+                "Trusting. Things and people are named. Nothing hides behind marketing.",
+              ],
+            },
+            {
+              word: "DO",
+              color: colors.crane,
+              sub: "The behaviour we're inviting.",
+              points: [
+                "Join the member list. The front gate.",
+                "Bring hands on a work day. Specific asks, never vague ‘volunteer opportunities’.",
+                "Turn up on a community day. With kids, neighbours, food.",
+                "Send a question if they're not ready to join.",
+                "Stay around long enough to become part of the place's story.",
+              ],
+            },
+          ].map((col) => (
+            <div key={col.word} style={{
+              border: `1px solid rgba(245,240,232,0.14)`,
+              borderTop: `4px solid ${col.color}`,
+              padding: 28,
+              backgroundColor: "rgba(245,240,232,0.04)",
+            }}>
+              <span style={{
+                fontFamily: fonts.display,
+                fontWeight: 900,
+                fontSize: 18,
+                letterSpacing: "0.18em",
+                color: col.color,
+              }}>
+                {col.word}
+              </span>
+              <p style={{
+                fontFamily: fonts.body,
+                fontSize: 13,
+                fontStyle: "italic",
+                opacity: 0.55,
+                color: colors.milk,
+                margin: "10px 0 20px",
+                lineHeight: 1.5,
+              }}>
+                {col.sub}
+              </p>
+              <ul style={{
+                listStyle: "none",
+                padding: 0,
+                margin: 0,
+                display: "grid",
+                gap: 0,
+              }}>
+                {col.points.map((point, i) => (
+                  <li key={i} style={{
+                    fontFamily: fonts.body,
+                    fontSize: 14,
+                    lineHeight: 1.55,
+                    color: colors.milk,
+                    opacity: 0.82,
+                    paddingTop: 14,
+                    paddingBottom: 14,
+                    borderTop: i === 0 ? "none" : `1px solid rgba(245,240,232,0.08)`,
+                  }}>
+                    {point}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+
+        {/* What this is not */}
+        <div style={{
+          maxWidth: 1100,
+          margin: "48px auto 0",
+          padding: isMobile ? "32px 24px" : "40px 48px",
+          border: `2px solid ${colors.goldenHour}`,
+        }}>
+          <span style={{
+            fontFamily: fonts.display,
+            fontWeight: 900,
+            fontSize: 14,
+            letterSpacing: "0.18em",
+            color: colors.goldenHour,
+          }}>
+            AND THIS IS NOT
+          </span>
+          <p style={{
+            fontFamily: fonts.body,
+            fontSize: 15,
+            lineHeight: 1.6,
+            opacity: 0.7,
+            color: colors.milk,
+            margin: "12px 0 24px",
+            maxWidth: 700,
+          }}>
+            Just as important as what we are. If the work starts drifting into any of these, pull it back.
+          </p>
+          <ul style={{
+            listStyle: "none",
+            padding: 0,
+            margin: 0,
+            display: "grid",
+            gridTemplateColumns: isMobile ? "1fr" : "repeat(2, 1fr)",
+            gap: 14,
+          }}>
+            {[
+              "Not a commercial entity looking to profit off community.",
+              "Not flashy. Not claiming to be perfect.",
+              "Not promising polished days and nights.",
+              "Not doing all the work. The community makes the place.",
+            ].map((line, i) => (
+              <li key={i} style={{
+                fontFamily: fonts.body,
+                fontSize: 14,
+                lineHeight: 1.55,
+                padding: "14px 18px",
+                border: `1px solid rgba(245,240,232,0.16)`,
+                color: colors.milk,
+              }}>
+                {line}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
       {/* ─── THE THREES ─── */}
       <section id="threes" style={{ padding: isMobile ? "60px 24px" : "80px 40px" }}>
         <h2 style={sectionHeadingStyle}>THE THREES</h2>
         <p style={sectionDescStyle}>
-          Four ways we've been saying "three things". Which one is the front door?
+          One trio, two ways of saying it. Verbs and rooms map one to one. Use the verbs in copy, the rooms when you point at the place.
         </p>
 
         <div style={{
@@ -506,7 +877,7 @@ export default function BrandGuide() {
           }}>
             <thead>
               <tr>
-                {["Tagline", "Room", "Verb", "Color (Place)", "Event"].map((h) => (
+                {["Verb", "Room", "Colour (place)"].map((h) => (
                   <th key={h} style={{
                     textAlign: "left",
                     fontFamily: fonts.display,
@@ -524,14 +895,13 @@ export default function BrandGuide() {
             </thead>
             <tbody>
               {[
-                { tagline: "Art", room: "Art Space", verb: "Make", color: colors.crane, colorName: "Crane", event: "Make" },
-                { tagline: "Food", room: "Kitchen", verb: "Feed", color: colors.goldenHour, colorName: "Golden Hour", event: "Share" },
-                { tagline: "Community", room: "Garden", verb: "Grow", color: colors.canopy, colorName: "Canopy", event: "Listen" },
+                { verb: "Grow", room: "The Garden", color: colors.canopy, colorName: "Canopy" },
+                { verb: "Make", room: "The Art Space", color: colors.crane, colorName: "Crane" },
+                { verb: "Gather", room: "Community days", color: colors.goldenHour, colorName: "Golden Hour" },
               ].map((row) => (
-                <tr key={row.tagline}>
-                  <td style={tableCellStyle}>{row.tagline}</td>
-                  <td style={tableCellStyle}>{row.room}</td>
+                <tr key={row.verb}>
                   <td style={tableCellStyle}>{row.verb}</td>
+                  <td style={tableCellStyle}>{row.room}</td>
                   <td style={tableCellStyle}>
                     <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                       <div style={{
@@ -544,11 +914,20 @@ export default function BrandGuide() {
                       <span style={{ fontSize: 12, opacity: 0.6 }}>{row.colorName}</span>
                     </div>
                   </td>
-                  <td style={tableCellStyle}>{row.event}</td>
                 </tr>
               ))}
             </tbody>
           </table>
+          <p style={{
+            fontFamily: fonts.body,
+            fontSize: 13,
+            lineHeight: 1.6,
+            opacity: 0.55,
+            marginTop: 20,
+            marginBottom: 0,
+          }}>
+            <strong>And the Kitchen?</strong> Not a top zone. The café and shop will be run by sublicenced operators. The kitchen is where food <em>from</em> the Garden gets served. A downstream role, delivering healthy, locally grown produce to community and visitors. Don't headline it.
+          </p>
         </div>
       </section>
 
@@ -1216,7 +1595,7 @@ export default function BrandGuide() {
 
           {/* Word List */}
           <div style={{ marginBottom: 48 }}>
-            <span style={{ ...smallLabelStyle, marginBottom: 16 }}>WORD LIST — SAY THIS, NOT THAT</span>
+            <span style={{ ...smallLabelStyle, marginBottom: 16 }}>WORD LIST. SAY THIS, NOT THAT</span>
             <div style={{
               display: "grid",
               gridTemplateColumns: isMobile ? "1fr 1fr" : "1fr 1fr",
@@ -1242,6 +1621,9 @@ export default function BrandGuide() {
                 ["we're figuring it out", "we're strategically positioned"],
                 ["kids, dogs, everyone", "all demographics"],
                 ["Saturday morning", "upcoming activation"],
+                ["work day", "working bee"],
+                ["a question", "an enquiry"],
+                ["join the member list", "subscribe to our newsletter"],
               ].map(([yes, no], i) => (
                 <div key={i} style={{ display: "contents" }}>
                   <div style={{ padding: "10px 16px", borderBottom: "1px solid rgba(245,240,232,0.06)", fontFamily: fonts.body, fontSize: 14, color: colors.milk }}>
@@ -1257,7 +1639,7 @@ export default function BrandGuide() {
 
           {/* Channel Examples */}
           <div>
-            <span style={{ ...smallLabelStyle, marginBottom: 16 }}>BY CHANNEL — SAME MESSAGE, DIFFERENT FORMAT</span>
+            <span style={{ ...smallLabelStyle, marginBottom: 16 }}>BY CHANNEL. SAME MESSAGE, DIFFERENT FORMAT</span>
             {[
               {
                 channel: "SOCIAL CAPTION",
@@ -1269,13 +1651,13 @@ export default function BrandGuide() {
                 channel: "NEWSLETTER SUBJECT",
                 color: colors.goldenHour,
                 good: "Something's growing in Witta",
-                bad: "The Harvest Community Hub — March Newsletter & Upcoming Events",
+                bad: "The Harvest Community Hub. March Newsletter & Upcoming Events",
               },
               {
                 channel: "EVENT SIGNAGE",
                 color: colors.calendula,
                 good: "FOOD THIS WAY →\nOysters. Pizza. BYO.",
-                bad: "Welcome to The Harvest Community Hub First Gathering Event — Food Service Area Located Ahead",
+                bad: "Welcome to The Harvest Community Hub First Gathering Event. Food Service Area Located Ahead",
               },
               {
                 channel: "INSTAGRAM STORY",
@@ -1334,8 +1716,46 @@ export default function BrandGuide() {
               NEVER USE THESE WORDS
             </span>
             <p style={{ fontFamily: fonts.body, fontSize: 14, lineHeight: 2, color: colors.milk, opacity: 0.5, margin: "12px 0 0" }}>
-              synergy — leverage — stakeholder — activation — holistic — scalable — innovative — curated — bespoke — journey — ecosystem — empower — uplift — vibrant — world-class — cutting-edge — best practice — thought leader — paradigm — reimagine
+              synergy · leverage · stakeholder · activation · holistic · scalable · innovative · curated · bespoke · journey · ecosystem · empower · uplift · vibrant · tapestry · testament · underscore · pivotal · crucial · world-class · cutting-edge · best practice · thought leader · paradigm · reimagine
             </p>
+            <p style={{ fontFamily: fonts.body, fontSize: 12, lineHeight: 1.6, color: colors.milk, opacity: 0.4, margin: "12px 0 0", fontStyle: "italic" }}>
+              The bottom row of that list is the AI-tells set. If you find them in a draft, it was written by a machine, not by you.
+            </p>
+          </div>
+
+          {/* Punctuation rule */}
+          <div style={{
+            marginTop: 32,
+            padding: "24px 28px",
+            border: `2px solid ${colors.goldenHour}`,
+          }}>
+            <span style={{ fontFamily: fonts.display, fontWeight: 900, fontSize: 12, letterSpacing: "0.16em", color: colors.goldenHour }}>
+              PUNCTUATION
+            </span>
+            <ul style={{
+              listStyle: "none",
+              padding: 0,
+              margin: "16px 0 0",
+              display: "grid",
+              gap: 10,
+              fontFamily: fonts.body,
+              fontSize: 14,
+              lineHeight: 1.6,
+              color: colors.milk,
+            }}>
+              <li style={{ opacity: 0.82 }}>
+                <strong style={{ color: colors.goldenHour }}>No em-dashes.</strong> Ever. Use periods or semicolons. A middle dot (·) is fine for inline lists.
+              </li>
+              <li style={{ opacity: 0.82 }}>
+                <strong style={{ color: colors.goldenHour }}>One exclamation mark per page maximum,</strong> if ever.
+              </li>
+              <li style={{ opacity: 0.82 }}>
+                <strong style={{ color: colors.goldenHour }}>Curly quotes</strong> ‘like this’ and “like this”, not straight quotes.
+              </li>
+              <li style={{ opacity: 0.82 }}>
+                <strong style={{ color: colors.goldenHour }}>Short sentences. Full stops.</strong> Let silence do the work.
+              </li>
+            </ul>
           </div>
         </div>
       </section>
@@ -1380,7 +1800,7 @@ export default function BrandGuide() {
               },
               {
                 title: "SUBJECTS",
-                rule: "People doing things — hands in soil, fire cooking, painting, building. Not posed. Not looking at camera. Action over portrait.",
+                rule: "People doing things. hands in soil, fire cooking, painting, building. Not posed. Not looking at camera. Action over portrait.",
                 color: colors.crane,
               },
               {
@@ -1420,7 +1840,7 @@ export default function BrandGuide() {
           </div>
 
           {/* Reference Pairs */}
-          <span style={{ ...smallLabelStyle, color: colors.shed, opacity: 0.4, marginBottom: 16 }}>REFERENCE — ON-BRAND PHOTOGRAPHY</span>
+          <span style={{ ...smallLabelStyle, color: colors.shed, opacity: 0.4, marginBottom: 16 }}>REFERENCE. ON-BRAND PHOTOGRAPHY</span>
           <div style={{
             display: "grid",
             gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)",
@@ -1428,12 +1848,12 @@ export default function BrandGuide() {
             marginTop: 16,
           }}>
             {[
-              { src: "/images/compendium/barry/IMG_5764.jpg", label: "Documentary — person in place", rule: "Real person, natural light, environmental" },
-              { src: "/images/compendium/barry/IMG_5745.jpg", label: "Heritage — honest portrait", rule: "Unposed, mid-conversation, warm tone" },
-              { src: "/images/site-plan/inspiration/pen-sketch-portrait.jpeg", label: "Making — hands at work", rule: "Process over product, close crop on action" },
-              { src: "/images/harvest-eat.jpg", label: "Food — shared table", rule: "Overhead or angle, real food, real hands" },
-              { src: "/images/site-plan/inspiration/crate-wall.jpeg", label: "Materials — texture detail", rule: "Tight on material, shows character and wear" },
-              { src: "/images/compendium/canvas-drawing.jpg", label: "Art — work in progress", rule: "Unfinished is better than polished" },
+              { src: "/images/compendium/barry/IMG_5764.jpg", label: "Documentary · person in place", rule: "Real person, natural light, environmental" },
+              { src: "/images/compendium/barry/IMG_5745.jpg", label: "Heritage · honest portrait", rule: "Unposed, mid-conversation, warm tone" },
+              { src: "/images/site-plan/inspiration/pen-sketch-portrait.jpeg", label: "Making · hands at work", rule: "Process over product, close crop on action" },
+              { src: "/images/harvest-eat.jpg", label: "Food · shared table", rule: "Overhead or angle, real food, real hands" },
+              { src: "/images/site-plan/inspiration/crate-wall.jpeg", label: "Materials · texture detail", rule: "Tight on material, shows character and wear" },
+              { src: "/images/compendium/canvas-drawing.jpg", label: "Art · work in progress", rule: "Unfinished is better than polished" },
             ].map((ref) => (
               <div key={ref.src} style={{ cursor: "pointer" }} onClick={() => setLightbox({ src: ref.src, label: ref.label })}>
                 <img src={ref.src} alt={ref.label} loading="lazy" style={{
@@ -1508,19 +1928,20 @@ export default function BrandGuide() {
         <div style={{ maxWidth: 800, margin: "40px auto 0" }}>
           {[
             {
-              category: "COLOR",
+              category: "COLOUR",
               color: colors.goldenHour,
               doList: [
-                "Use zone colors for their zone only (red = Art Space, yellow = Kitchen, green = Garden)",
-                "Black backgrounds with cream text for digital",
-                "Cream backgrounds with black text for print / light contexts",
-                "One accent color per composition — don't rainbow",
+                "Use zone colours for their zone only. Canopy (green) is the Garden. Golden Hour (yellow) is the Kitchen. Crane (red) is the Art Space.",
+                "Shed black backgrounds with milk cream text for digital.",
+                "Milk cream backgrounds with shed text for print and light contexts.",
+                "One accent colour per composition. Don't rainbow.",
               ],
               dontList: [
-                "Mix zone colors randomly (green heading on a kitchen post)",
-                "Use gradients or color transitions",
-                "Use color as decoration — every color means something",
-                "White backgrounds (use cream #F4F4F2, not #FFFFFF)",
+                "Mix zone colours randomly (red heading on a garden post).",
+                "Use Golden Hour as a Kitchen colour. The Kitchen is not a top zone any more.",
+                "Use gradients or colour transitions.",
+                "Use colour as decoration. Every colour means something.",
+                "White backgrounds. Use cream (#F5F0E8), not #FFFFFF.",
               ],
             },
             {
@@ -1535,7 +1956,7 @@ export default function BrandGuide() {
               dontList: [
                 "Use more than 2 fonts in any composition",
                 "Set body text in Montserrat (it's for display only)",
-                "Use thin or light weights — minimum 400 for body, 700 for display",
+                "Use thin or light weights. minimum 400 for body, 700 for display",
                 "Center-align body paragraphs (left-align or justify)",
               ],
             },
@@ -1543,16 +1964,32 @@ export default function BrandGuide() {
               category: "PHOTOGRAPHY",
               color: colors.canopy,
               doList: [
-                "Natural light, warm tones, real people doing real things",
-                "Show the place — hinterland, timber, soil, garden",
-                "Texture close-ups — hands, materials, food, tools",
-                "Unposed, mid-action, environmental portraits",
+                "Natural light, warm tones, real people doing real things.",
+                "Show the place. Hinterland, timber, soil, garden.",
+                "Texture close-ups. Hands, materials, food, tools.",
+                "Unposed, mid-action, environmental portraits.",
               ],
               dontList: [
-                "Stock photography, ever",
-                "Staged group photos or corporate headshots",
-                "Heavy editing, filters, or HDR processing",
-                "Drone shots that look like real estate marketing",
+                "Stock photography, ever.",
+                "Staged group photos or corporate headshots.",
+                "Heavy editing, filters, or HDR processing.",
+                "Drone shots that look like real estate marketing.",
+              ],
+            },
+            {
+              category: "ILLUSTRATION",
+              color: colors.rammedEarth,
+              doList: [
+                "Graphite pencil on warm cream toned paper. Soft shading, hatching, atmospheric perspective.",
+                "Faithful to the real place. Real proportions. Real architectural detail.",
+                "When generating with Gemini, lead the prompt with: ‘Realistic graphite pencil drawing on warm cream toned paper.’",
+                "One illustration per composition. Don't decorate around it.",
+              ],
+              dontList: [
+                "Ink line drawings. Not the Harvest style.",
+                "Flat vector cartoons, icon sets, or sticker sheets.",
+                "Watercolour, gouache, or any painterly fills.",
+                "Adding colour or filters to graphite illustrations after the fact.",
               ],
             },
             {
@@ -1560,22 +1997,22 @@ export default function BrandGuide() {
               color: colors.calendula,
               doList: [
                 "Short sentences. Full stops. Let silence do the work.",
-                "Name real things — Saturday, oysters, Barry, Witta",
-                "Use 'we' and 'you' — first/second person",
+                "Name real things. Saturday, oysters, Barry, Witta",
+                "Use 'we' and 'you'. first/second person",
                 "Read it aloud. If you wouldn't say it, rewrite it.",
               ],
               dontList: [
                 "Marketing jargon (activation, leverage, synergy, stakeholder)",
-                "Long paragraphs — if it's more than 3 sentences, break it up",
+                "Long paragraphs. if it's more than 3 sentences, break it up",
                 "Exclamation marks (one per page maximum, if ever)",
-                "Hashtag stuffing — max 3 per post, and only if relevant",
+                "Hashtag stuffing. max 3 per post, and only if relevant",
               ],
             },
             {
               category: "LAYOUT",
               color: colors.crane,
               doList: [
-                "Lots of whitespace — let things breathe",
+                "Lots of whitespace. let things breathe",
                 "Strong grid with one focal point per composition",
                 "Left-aligned text with generous leading (1.7+)",
                 "Bauhaus-inspired: bold geometry, clean blocks of color",
@@ -1591,10 +2028,10 @@ export default function BrandGuide() {
               category: "TONE",
               color: colors.lillyPilly,
               doList: [
-                "Warm, direct, honest — like a conversation",
+                "Warm, direct, honest. like a conversation",
                 "Acknowledge uncertainty: \"we're figuring it out together\"",
                 "Specific over vague: \"Saturday in the garden\" not \"upcoming event\"",
-                "Let the place speak — heritage, soil, timber, community",
+                "Let the place speak. heritage, soil, timber, community",
               ],
               dontList: [
                 "Corporate polish or PR-speak",
@@ -1864,23 +2301,17 @@ function SocialTemplates({ isMobile, onImageClick }: {
     { src: "/images/social/08-countdown-7days.png", label: "Countdown - 7 Days", use: "One week out. Urgency post. Boost this one.", caption: "7 days.\n\nSaturday 7 March. 11am - 4pm. Witta.\nOysters. Music. Neighbours. Free.\n\nSave your spot → theharvestwitta.com.au/gather" },
     { src: "/images/social/09-locals-day.png", label: "Locals Day", use: "Witta locals only. Share in local groups and next-door apps.", caption: "The day before.\n\nLocals Day. Friday 6 March, afternoon.\nMeet the neighbours, build with milk crates, share your vision for this space. Just locals.\n\nSign up → theharvestwitta.com.au/gather" },
     { src: "/images/social/10-save-your-spot.png", label: "Save Your Spot", use: "Final CTA. Post day before + use as paid boost.", caption: "Come see the place for yourself.\n\nSaturday 7 March. 11am - 4pm. Witta.\nOysters from Moreton Bay. Drinks by Flight Bar. Neighbours on the lawn. Free.\n\nSave your spot → theharvestwitta.com.au/gather" },
-    { src: "/images/social/11-facebook-cover.png", label: "Facebook Cover (16:9)", use: "Facebook page cover image or event cover. 16:9 landscape format.", caption: "The Harvest — Art. Food. Community.\n9 Gumland Drive, Witta. Sunshine Coast Hinterland.\ntheharvestwitta.com.au" },
+    { src: "/images/social/11-facebook-cover.png", label: "Facebook Cover (16:9)", use: "Facebook page cover image or event cover. 16:9 landscape format.", caption: "The Harvest. Art. Food. Community.\n9 Gumland Drive, Witta. Sunshine Coast Hinterland.\ntheharvestwitta.com.au" },
     { src: "/images/social/12-story-invite.png", label: "Story: Invite (9:16)", use: "Instagram/Facebook story. Swipe-up or link sticker to /gather.", caption: "Saturday 7 March. 11am - 4pm.\nArt. Food. Community.\nOysters. Flight Bar. Neighbours on the lawn.\n\nSave your spot → theharvestwitta.com.au/gather" },
     { src: "/images/social/13-story-shaun.png", label: "Story: Shaun Fisher (9:16)", use: "Instagram/Facebook story. Food provenance angle. Pair with oyster-lease video.", caption: "From sea country to the hinterland.\nShaun Fisher grows oysters on Moreton Bay. He's bringing his harvest to share.\n\nSaturday 7 March → theharvestwitta.com.au/gather" },
     { src: "/images/social/14-countdown-3days.png", label: "Countdown - 3 Days", use: "Three days out. Pair with 7-day countdown. Story + feed.", caption: "3 days.\n\nSaturday 7 March. Witta.\nArt. Food. Community. Free.\n\nSave your spot → theharvestwitta.com.au/gather" },
   ];
 
-  // Zone identity tiles — rendered as HTML compositions
+  // Zone identity tiles. rendered as HTML compositions
   const zoneTiles = [
-    { verb: "MAKE", zone: "The Art Space", tagline: "Gallery. Studio. Workshop.", color: colors.crane, img: "/images/harvest-make.jpg" },
-    { verb: "FEED", zone: "The Kitchen", tagline: "Cook. Share. Gather around the table.", color: colors.goldenHour, img: "/images/harvest-eat.jpg" },
-    { verb: "GROW", zone: "The Garden", tagline: "Plant. Harvest. Open 24/7.", color: colors.canopy, img: "/images/harvest-grow.jpg" },
-    { verb: "FIRE", zone: "Timber & Fire", tagline: "Cook on flame. Reclaimed timber. DIY.", color: colors.calendula, img: "/images/site-plan/inspiration/curved-pavilion.jpeg" },
-    { verb: "BUILD", zone: "The Pavilion", tagline: "1,000 milk crates. Built by community.", color: colors.workshirt, img: "/images/site-plan/inspiration/crate-wall.jpeg" },
-    { verb: "PLAY", zone: "Kids Area", tagline: "Co-designed by children.", color: colors.lillyPilly, img: "/images/site-plan/inspiration/log-climbing-frame.jpeg" },
-    { verb: "SEE", zone: "The Gallery", tagline: "Art meets food. Residency launches.", color: colors.crane, img: "/images/compendium/MASTER FLOOR PLAN_5.jpeg" },
-    { verb: "CREATE", zone: "Outdoor Art", tagline: "Make in the open air.", color: colors.hardwood, img: "/images/site-plan/inspiration/pen-sketch-portrait.jpeg" },
-    { verb: "GATHER", zone: "Community", tagline: "Music. Food. Dogs. Neighbours.", color: colors.workshirt, img: "/images/harvest-gather.jpg" },
+    { verb: "GROW", zone: "The Garden", tagline: "Beds. Paths. Seedlings. Hands in the soil.", color: colors.canopy, img: "/images/harvest-grow.jpg" },
+    { verb: "MAKE", zone: "The Art Space", tagline: "Gallery. Studio. Workshop. Hands on a build.", color: colors.crane, img: "/images/harvest-make.jpg" },
+    { verb: "GATHER", zone: "Community days", tagline: "Community days. Work days. Music on the lawn.", color: colors.goldenHour, img: "/images/harvest-gather.jpg" },
   ];
 
   const principleTiles = [
@@ -1899,11 +2330,9 @@ function SocialTemplates({ isMobile, onImageClick }: {
   ];
 
   const ctaTiles = [
-    { cta: "COME COOK\nWITH FIRE", sub: "Pizza. Flame. Reclaimed timber.", color: colors.calendula, img: "/images/site-plan/inspiration/curved-pavilion.jpeg" },
-    { cta: "COME PLANT\nWITH US", sub: "Community garden. Open to all.", color: colors.canopy, img: "/images/site-plan/inspiration/accessible-garden.jpeg" },
-    { cta: "COME BUILD\nWITH US", sub: "1,000 milk crates. One pavilion.", color: colors.workshirt, img: "/images/site-plan/inspiration/crate-wall.jpeg" },
-    { cta: "COME MAKE\nWITH US", sub: "Art. Clay. Print. Whatever you want.", color: colors.crane, img: "/images/harvest-make.jpg" },
-    { cta: "COME GATHER\nWITH US", sub: "Food. Music. Kids. Dogs. Everyone.", color: colors.goldenHour, img: "/images/harvest-gather.jpg" },
+    { cta: "COME GROW\nWITH US", sub: "Hands in the soil. Beds, paths, seedlings.", color: colors.canopy, img: "/images/site-plan/inspiration/accessible-garden.jpeg" },
+    { cta: "COME MAKE\nWITH US", sub: "Build days, art days, residencies. The work.", color: colors.crane, img: "/images/harvest-make.jpg" },
+    { cta: "COME GATHER\nWITH US", sub: "Community days. Food, music, kids, dogs.", color: colors.goldenHour, img: "/images/harvest-gather.jpg" },
   ];
 
   const heritageTiles = [
@@ -1914,8 +2343,8 @@ function SocialTemplates({ isMobile, onImageClick }: {
   ];
 
   const videoAssets = [
-    { src: "/images/compendium/hero-aerial.mp4", poster: "/images/compendium/hero-aerial.jpg", label: "Aerial flyover — site overview", use: "Cover video, reel intro, story background" },
-    { src: "/images/compendium/oyster-lease.mp4", poster: "/images/compendium/oyster-lease-poster.jpg", label: "Oyster lease — food provenance", use: "Food story reel, farm-to-table content" },
+    { src: "/images/compendium/hero-aerial.mp4", poster: "/images/compendium/hero-aerial.jpg", label: "Aerial flyover · site overview", use: "Cover video, reel intro, story background" },
+    { src: "/images/compendium/oyster-lease.mp4", poster: "/images/compendium/oyster-lease-poster.jpg", label: "Oyster lease · food provenance", use: "Food story reel, farm-to-table content" },
   ];
 
   const tileStyle: CSSProperties = {
@@ -2073,7 +2502,7 @@ function SocialTemplates({ isMobile, onImageClick }: {
                         opacity: 0.3,
                         fontStyle: "italic",
                       }}>
-                        No caption needed — use image as-is.
+                        No caption needed. use image as-is.
                       </div>
                     )}
                   </div>
@@ -2107,7 +2536,7 @@ function SocialTemplates({ isMobile, onImageClick }: {
             gap: 16,
           }}>
             {zoneTiles.map((tile) => (
-              <div key={tile.verb} style={{ ...tileStyle, aspectRatio: "1/1", cursor: "pointer" }} onClick={() => onImageClick(tile.img, `${tile.verb} — ${tile.zone}`)}>
+              <div key={tile.verb} style={{ ...tileStyle, aspectRatio: "1/1", cursor: "pointer" }} onClick={() => onImageClick(tile.img, `${tile.verb}. ${tile.zone}`)}>
                 <img src={tile.img} alt={tile.zone} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
                 <div style={{
                   position: "absolute",
@@ -2183,7 +2612,7 @@ function SocialTemplates({ isMobile, onImageClick }: {
             <span style={{ fontFamily: fonts.display, fontWeight: 700, fontSize: 10, letterSpacing: "0.12em", color: colors.goldenHour }}>BEST AS A CAROUSEL</span>
             <p style={{ fontFamily: fonts.body, fontSize: 13, color: colors.milk, opacity: 0.5, margin: "6px 0 0", lineHeight: 1.6 }}>
               Post all three as one carousel. Caption: "Three rules we build by."<br/>
-              Or use individually when the principle is relevant — e.g. "Nothing is permanent" alongside a gallery changeover.
+              Or use individually when the principle is relevant. e.g. "Nothing is permanent" alongside a gallery changeover.
             </p>
           </div>
           <div style={{
@@ -2305,7 +2734,7 @@ function SocialTemplates({ isMobile, onImageClick }: {
                     color: card.color,
                     marginTop: 8,
                   }}>
-                    — {card.attribution.toUpperCase()}
+                    {card.attribution.toUpperCase()}
                   </div>
                 </div>
               </div>
@@ -2498,7 +2927,7 @@ function SocialTemplates({ isMobile, onImageClick }: {
           }}>
             <span style={{ fontFamily: fonts.display, fontWeight: 700, fontSize: 10, letterSpacing: "0.12em", color: colors.goldenHour }}>USAGE</span>
             <p style={{ fontFamily: fonts.body, fontSize: 13, color: colors.milk, opacity: 0.5, margin: "6px 0 0", lineHeight: 1.6 }}>
-              Aerial: loop as Instagram Reel with text overlay + music. No voiceover needed — let the place speak.<br/>
+              Aerial: loop as Instagram Reel with text overlay + music. No voiceover needed. let the place speak.<br/>
               Oyster lease: food story content. Pair with Shaun Fisher post for the gathering.
             </p>
           </div>

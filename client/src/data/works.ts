@@ -83,6 +83,7 @@ export type WittaThread = {
 export type WorkHand = {
   name: string;
   role: string;
+  href?: string;
 };
 
 export type Work = {
@@ -120,6 +121,10 @@ export type Work = {
   hands: WorkHand[];
   /** Optional external link (e.g. fellowship page) */
   link?: { label: string; href: string };
+  /** Optional extra external links */
+  links?: { label: string; href: string }[];
+  /** Optional article/story links related to this work */
+  storyLinks?: { label: string; href: string }[];
   /** Optional related works for cross-linking */
   related?: string[];
 };
@@ -131,7 +136,7 @@ export const works: Work[] = [
     title: "The Garden",
     subtitle: "The volcano made the soil. The community works the rows.",
     lifecycleTags: ["planted", "growing"],
-    materials: "Krasnozem basalt soil · seasonal beds · community-managed",
+    materials: "Red volcanic soil · seasonal beds · local hands",
     year: "Established 2025, planted ongoing",
     heroImage: "/images/compendium/sophie-garden.jpg",
     heroAlt: "Sophie working in the garden at The Harvest",
@@ -165,8 +170,14 @@ export const works: Work[] = [
     ],
     hands: [
       { name: "Wednesday Maintenance Crew", role: "Weekly stewards" },
-      { name: "Sophie", role: "Garden volunteer" },
+      { name: "Sophie", role: "Garden volunteer", href: "https://sophiesseedlings.com/" },
       { name: "Susie & Joey", role: "Community Stewards (from July 2026)" },
+    ],
+    storyLinks: [
+      {
+        label: "Read the full Sophie garden story",
+        href: "/blog/from-clearing-to-care-sophie-harvest-garden",
+      },
     ],
     related: ["milk-crate-pavilion", "the-shop"],
   },
@@ -174,7 +185,7 @@ export const works: Work[] = [
     number: "Work 02",
     slug: "milk-crate-pavilion",
     title: "Milk Crate Pavilion",
-    subtitle: "Milk crate, milk create. The same syllables, both true.",
+    subtitle: "A gathering structure made from the dairy industry’s everyday object.",
     lifecycleTags: ["building"],
     materials: "Reclaimed milk crates, scaffold, salvaged timber, community hands",
     year: "Built March 2026",
@@ -218,50 +229,56 @@ export const works: Work[] = [
       label: "Radical Scoops fellowship",
       href: "https://regionalarts.com.au/resources/radical-scoops",
     },
+    links: [
+      {
+        label: "Hatch Electrical",
+        href: "https://www.hatchelectrical.com.au/",
+      },
+    ],
     related: ["the-cedar", "the-garden"],
   },
   {
     number: "Work 03",
     slug: "the-cedar",
-    title: "The Cedar",
-    subtitle: "Working with the wood the range almost lost",
+    title: "The Garden Paths",
+    subtitle: "St Mary's timber, returning to Witta as walkways",
     lifecycleTags: ["building", "making"],
-    materials: "Red cedar and hoop pine from local properties · second- and third-growth",
+    materials: "Reclaimed St Mary's Cathedral timber · garden paths · local source trail",
     year: "Sourced 2026",
-    heroImage: "/images/compendium/barry/IMG_5699.jpg",
-    heroAlt: "Barry in his shed at Witta, the primary source of cedar for The Harvest",
+    heroImage: "/images/compendium/barry/IMG_5745.jpg",
+    heroAlt: "Reclaimed timber connected to the garden paths at The Harvest",
     blurb:
-      "Cedar came back. Not the giants. Those went to London and never came home. But what's grown back belongs to the people who stayed. We're working with timber from a Witta resident's land.",
+      "The garden paths are being made from timber reclaimed from St Mary's Cathedral in Sydney. The source trail leads back to trees cut from the Witta region, returning as walkways through the garden.",
     whatItIs:
-      "An ongoing collection of timber pieces being built into The Harvest. Bench seats, a bar, gallery rails, the kitchen pass. Mostly red cedar and hoop pine, sourced locally rather than imported. Each piece is documented: where it came from, who milled it, where it sits.",
+      "A set of garden walkways made from reclaimed St Mary's Cathedral timber. The paths carry people through the beds while carrying the timber story back into the landscape it came from.",
     why:
-      "The range was stripped of cedar inside two generations. By 1906 it was commercially extinct. The wood we now use carries that history. It is what came back after the rush. Choosing local timber over plantation hardwood is a small act of repair, and an act of recognition.",
+      "The timber story belongs in the ground, not only on a wall. Paths are how people first read a garden: where to enter, where to slow down, where to notice what is growing.",
     how:
-      "Sourced from Barry Rodgerig's property and other Witta residents who have nursed second-growth stands for decades. Milled by local sawyers. Used unfinished where possible. The grain stays visible. Where a knot or split tells a story, we keep it.",
+      "Reclaimed from St Mary's Cathedral in Sydney and being prepared for use as garden walkways at The Harvest. The story is being traced back to the Witta region, with the timber used visibly so the grain, marks, and source remain part of the work.",
     wittaThreads: [
       {
         year: "1860",
         moment: "Bunya pine reserve rescinded. Timber-getters flood in. The 'red gold' rush begins.",
         thread:
-          "What was extracted is what we are now restoring, slowly, plank by plank.",
+          "The paths carry the timber story back into the garden, plank by plank.",
       },
       {
         year: "1886",
         moment: "Two giant cedar logs shipped to the Indian and Colonial Exhibition in London. No buyer, too large for any mill in the world.",
         thread:
-          "Half of one of those logs is reportedly still in a London museum. The wood we use today is from the descendants the loggers missed.",
+          "Some Witta timber travelled far from the range. This work follows one return journey.",
       },
       {
         year: "1906",
         moment: "Red cedar faces commercial extinction. One-third of Queensland's hoop and bunya pine already gone.",
         thread:
-          "Every cedar plank in The Harvest is a quiet refusal of that ending.",
+          "The paths keep the timber visible as material, memory, and daily use.",
       },
     ],
     hands: [
-      { name: "Barry Rodgerig", role: "27-year nurseryman, primary timber source" },
-      { name: "Local sawyers", role: "Milling and dressing" },
-      { name: "Nicholas Marchesi", role: "Material lead, gallery rail design" },
+      { name: "Nicholas Marchesi", role: "Material lead" },
+      { name: "Ben Knight", role: "Source trail and documentation" },
+      { name: "Local timber hands", role: "Preparation and installation" },
     ],
     related: ["milk-crate-pavilion", "the-garden"],
   },
@@ -272,7 +289,7 @@ export const works: Work[] = [
     subtitle: "Reclaiming the village shop that Witta hasn't had in a generation",
     lifecycleTags: ["concept", "planned"],
     materials: "Local makers · shared shelf test · low overhead · honesty more than ornament",
-    year: "Proposed 2027",
+    year: "Proposed June 2026",
     heroImage: "/images/local-produce.jpg",
     heroAlt: "Local produce gathered for The Harvest shop test",
     blurb:
@@ -308,7 +325,93 @@ export const works: Work[] = [
       { name: "Sub-operator (TBC)", role: "Day-to-day retail" },
       { name: "Harvest Pty Ltd", role: "Sub-licence holder" },
     ],
+    storyLinks: [
+      {
+        label: "Express interest in providing shop produce",
+        href: "/membership",
+      },
+      {
+        label: "Express interest in stocking something you make",
+        href: "/membership",
+      },
+      {
+        label: "Ask about helping shape The Shop",
+        href: "/membership",
+      },
+    ],
     related: ["the-garden", "milk-crate-pavilion"],
+  },
+  {
+    number: "Work 05",
+    slug: "kids-area",
+    title: "Kids Area",
+    subtitle: "A play area shaped with the kids who will use it",
+    lifecycleTags: ["consulting", "planned"],
+    materials: "Logs · shade · loose parts · local kids' ideas",
+    year: "In design 2026",
+    heroImage: "/images/site-plan/inspiration/log-climbing-frame.jpeg",
+    heroAlt: "Log climbing frame reference for the kids area at The Harvest",
+    blurb:
+      "The kids area is being shaped with local kids, not handed down as a finished playground. They help decide what belongs there, what it should feel like, and what makes them want to come back.",
+    whatItIs:
+      "A small outdoor play area inside the garden rhythm of The Harvest. Logs, shade, loose parts, climbable edges, and room for children to make their own rules without turning the whole place into a plastic playground.",
+    why:
+      "If families are part of The Harvest, kids need a place that is theirs. Co-design keeps the area practical, safer, stranger, and more loved than a bought object dropped on site.",
+    how:
+      "The first version starts with listening, sketches, and small build tests. Kids bring ideas. Adults bring care, tools, safe joins, shade, and the ability to make the good ideas stand up.",
+    wittaThreads: [
+      {
+        year: "Today",
+        moment: "Families, working bees, and open days bring children through the gate.",
+        thread:
+          "The kids area makes room for children as contributors to the place, not just people waiting while adults talk.",
+      },
+      {
+        year: "Former nursery",
+        moment: "The old nursery site was already a place where local families came for seeds, plants, and practical garden knowledge.",
+        thread:
+          "The play area keeps that everyday family use alive in the next version of the site.",
+      },
+    ],
+    hands: [
+      { name: "Local kids", role: "Ideas and co-design" },
+      { name: "Parents and builders", role: "Care, safety, materials" },
+      { name: "The Harvest team", role: "Design and build coordination" },
+    ],
+    related: ["the-garden", "milk-crate-pavilion"],
+  },
+  {
+    number: "Work 06",
+    slug: "the-milk-man",
+    title: "The Milk Man",
+    subtitle: "A milk-crate sentinel at the front of The Harvest",
+    lifecycleTags: ["built", "made"],
+    materials: "Milk crates · stacked structure · dairy memory",
+    year: "Standing now",
+    heroImage: "/images/site-plan/inspiration/crate-wall.jpeg",
+    heroAlt: "Milk crate structure reference for The Milk Man at The Harvest",
+    blurb:
+      "The Milk Man stands at the front of The Harvest, built from the dairy object that once moved through every working day on this ridge.",
+    whatItIs:
+      "A milk-crate figure at the front of the site. Part sign, part marker, part joke with a serious backbone: the dairy industry made the object, and now the object watches the next version of the place arrive.",
+    why:
+      "The Harvest needs recognisable things people can point at, remember, and talk about. The Milk Man does that before anyone reads a paragraph.",
+    how:
+      "Built from stacked milk crates and kept visible at the front of the site. The next work is naming him properly, photographing him well, and deciding how he carries the dairy story without turning it into decoration.",
+    wittaThreads: [
+      {
+        year: "1900s",
+        moment: "Dairy and co-operative infrastructure shaped work, movement, and daily life across the hinterland.",
+        thread:
+          "The crate was a working object before it became a sculpture. The Milk Man keeps that plain material memory standing at the gate.",
+      },
+    ],
+    hands: [
+      { name: "The Harvest team", role: "Build and placement" },
+      { name: "Local photographers", role: "Still needed" },
+      { name: "Neighbours", role: "Name suggestions and crate leads" },
+    ],
+    related: ["milk-crate-pavilion", "the-garden"],
   },
 ];
 

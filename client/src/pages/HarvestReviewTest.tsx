@@ -1,15 +1,13 @@
-import { useEffect, useState, type ReactNode } from "react";
-import { Link } from "wouter";
+import { useEffect, useState, type KeyboardEvent, type MouseEvent, type ReactNode } from "react";
+import { Link, useLocation } from "wouter";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
   BookOpen,
   Calendar,
-  Check,
   ClipboardList,
   Hammer,
   Map,
-  MapPin,
   Menu,
   Milk,
   Music,
@@ -21,12 +19,6 @@ import {
 } from "lucide-react";
 import { HarvestImage } from "@/components/HarvestImage";
 
-type ReviewColumn = {
-  label: string;
-  title: string;
-  points: string[];
-};
-
 type Thread = {
   title: string;
   room: string;
@@ -37,6 +29,10 @@ type Thread = {
   ideas: string[];
   icon: typeof Hammer;
   color: string;
+  action: {
+    label: string;
+    href: string;
+  };
 };
 
 type WorkUpdate = {
@@ -57,74 +53,10 @@ type IdeaGroup = {
   ideas: string[];
 };
 
-type EventDetail = {
-  label: string;
-  value: string;
-  detail: string;
-  icon: typeof Calendar;
-};
-
-const eventDetails: EventDetail[] = [
-  {
-    label: "when",
-    value: "Late June 2026",
-    detail: "A community day around the end of June. Date being confirmed.",
-    icon: Calendar,
-  },
-  {
-    label: "shape",
-    value: "Garden walk + long table",
-    detail: "Soft program. Music, food, garden walks and the works in progress.",
-    icon: Music,
-  },
-  {
-    label: "place",
-    value: "Witta · Jinibara Country",
-    detail: "The Harvest. Address shared with people on the member list.",
-    icon: MapPin,
-  },
-  {
-    label: "first to hear",
-    value: "Member list",
-    detail: "Date, time and RSVP details go to members first. Free to join.",
-    icon: Users,
-  },
-];
-
-const reviewColumns: ReviewColumn[] = [
-  {
-    label: "full idea",
-    title: "a garden, events and art space, staged honestly",
-    points: [
-      "Garden grows, events gather, art space makes. That is still the whole idea.",
-      "This round is the garden: beds, paths, seedlings, shade and pavilion until July.",
-      "Events and art are the longer build. Not ready yet, but taking shape.",
-    ],
-  },
-  {
-    label: "the next community day",
-    title: "a working open day around the end of June",
-    points: [
-      "Late June 2026, on the garden site at Witta. Date being confirmed.",
-      "A community celebration and working open day. Not a polished venue reveal.",
-      "Join the member list to get the date, time and RSVP details first.",
-    ],
-  },
-  {
-    label: "longer term",
-    title: "a living collection place for Witta",
-    points: [
-      "Dairy shows up through the milk crate pavilion and the district's food history.",
-      "Timber shows up through the walkways, Barry's shed and Witta sawmill memory.",
-      "Co-op interest shows up through a produce shelf and a shop people can help shape.",
-    ],
-  },
-];
-
 const threads: Thread[] = [
   {
     title: "timber",
-    room: "paths and art space",
+    room: "paths and art spaces",
     image: "/images/compendium/barry/IMG_5745.jpg",
     alt: "Barry beside old machinery at The Harvest",
     note: "Tracing the St Mary's and Witta timber source trail.",
@@ -132,6 +64,10 @@ const threads: Thread[] = [
     ideas: [],
     icon: Hammer,
     color: "#8B4A2A",
+    action: {
+      label: "Become a member",
+      href: "/membership",
+    },
   },
   {
     title: "dairy",
@@ -139,10 +75,14 @@ const threads: Thread[] = [
     image: "/images/witta/history/teutoburg-cheese-making-1899.png",
     alt: "Historical cheese making at Teutoburg, Blackall Range, circa 1899",
     note: "Historical image: Teutoburg, Blackall Range, circa 1899.",
-    body: "The milk crate is a working object. Stacked, carried, borrowed, returned. The first pavilion turns it into shade, seating and a roof for events and gathering.",
+    body: "The milk crate is a working object. Stacked, carried, borrowed, returned. The first pavilion turns it into structure, seating and a frame for community days and gathering.",
     ideas: [],
     icon: Milk,
     color: "#C4922A",
+    action: {
+      label: "Contact us",
+      href: "/membership",
+    },
   },
   {
     title: "co-operatives",
@@ -154,6 +94,10 @@ const threads: Thread[] = [
     ideas: [],
     icon: Table2,
     color: "#3B5563",
+    action: {
+      label: "Express interest in providing shop produce",
+      href: "/works/the-shop",
+    },
   },
 ];
 
@@ -162,67 +106,67 @@ const workUpdates: WorkUpdate[] = [
     slot: "garden-area",
     workSlug: "the-garden",
     status: "in progress",
-    title: "garden area until July",
+    title: "The Garden",
     room: "garden",
     image: "/images/compendium/sophie-garden.jpg",
     alt: "Sophie working in the garden at The Harvest",
-    body: "Beds, paths, play, pavilion and weekly hands in the soil. The public work until July.",
-    ask: "Gloves, seedlings, mulch, or two spare hours.",
+    body: "Beds, seedlings, mulch, compost, paths and weekly hands in the soil. The garden carries the public work until July.",
+    ask: "Seedlings, mulch, gloves, or two spare hours.",
   },
   {
     slot: "milk-crate-pavilion",
     workSlug: "milk-crate-pavilion",
     status: "building",
-    title: "milk crate pavilion",
+    title: "Milk Crate Pavilion",
     room: "garden pavilion",
-    image: "/images/sketches/milk-crate-pavilion-01.jpg",
-    alt: "Concept sketch for the milk crate pavilion",
-    body: "A pavilion made from milk crates. Roof and frame for events, music, shared meals and gathering.",
-    ask: "Milk crates, scaffold leads, or a practical fix.",
+    image: "/images/social/04-radical-scoops.png",
+    alt: "The Milk Crate Pavilion under construction at The Harvest",
+    body: "A pavilion frame made from milk crates, scaffold and salvaged timber. Built for community days, music, meals and gathering.",
+    ask: "Practical fixes, shade, seating, planting and hands.",
   },
   {
     slot: "timber-walkways",
     workSlug: "the-cedar",
-    status: "story",
-    title: "St Mary's timber walkways",
+    status: "making",
+    title: "The Garden Paths",
     room: "garden paths",
-    image: "/images/compendium/barry/IMG_5699.jpg",
-    alt: "Barry working in the shed",
-    body: "Walkways from St Mary's Cathedral timber. Tracing whether that timber began in the Witta region before travelling south.",
+    image: "/images/compendium/barry/IMG_5745.jpg",
+    alt: "Reclaimed timber connected to the garden paths at The Harvest",
+    body: "Walkways from St Mary's Cathedral timber, returning to Witta as garden paths. The source trail is still being followed.",
     ask: "Sawmill leads, timber hands, or a local memory.",
   },
   {
     slot: "kids-playground",
-    workSlug: "the-garden",
+    workSlug: "kids-area",
     status: "co-design",
-    title: "kids playground",
+    title: "Kids Area",
     room: "garden",
     image: "/images/site-plan/inspiration/log-climbing-frame.jpeg",
-    alt: "Log climbing frame reference for the kids playground",
-    body: "Shaped with local kids. They help decide what belongs there and what it should feel like.",
-    ask: "Kids' ideas, logs, or someone who builds with care.",
+    alt: "Log climbing frame reference for the kids area",
+    body: "A play area shaped with local kids. They help decide what belongs there, what it should feel like, and what makes them want to come back.",
+    ask: "Kids' ideas, logs, shade, or someone who builds with care.",
   },
   {
     slot: "co-op-shop",
     workSlug: "the-shop",
     status: "shop test",
-    title: "co-op shop",
+    title: "The Shop",
     room: "whole site",
     image: "/images/local-produce.jpg",
     alt: "Local produce gathered for a Harvest food story",
-    body: "A place for growers, makers and neighbours to put real things on the first shelf.",
+    body: "A small shared shelf test for growers, makers and neighbours. Real things, plain systems, low overhead.",
     ask: "Growers, makers, prices, and the plain systems.",
   },
   {
     slot: "the-milk-man",
-    workSlug: "milk-crate-pavilion",
+    workSlug: "the-milk-man",
     status: "standing now",
     title: "The Milk Man",
     room: "front gate",
-    image: "/images/harvest-eat.jpg",
+    image: "/images/site-plan/inspiration/crate-wall.jpeg",
     alt: "The Milk Man, the milk-crate sentinel at the front of The Harvest",
-    body: "The statue at the front of The Harvest, built entirely from milk crates. A sentinel made from the dairy industry that once powered this ridge.",
-    ask: "Help us name him properly, photograph him in every light, or lend a crate.",
+    body: "A milk-crate sentinel at the front of The Harvest. Part sign, part marker, part joke with a serious dairy backbone.",
+    ask: "Help name him properly, or photograph him in every light.",
   },
 ];
 
@@ -303,7 +247,18 @@ const pageNavLinks = [
   { label: "What is The Harvest?", href: "/what-is-the-harvest" },
   { label: "Member list", href: "/membership" },
   { label: "Works", href: "/works" },
-  { label: "Coming soon", href: "#review" },
+  { label: "Shop", href: "/works/the-shop" },
+];
+
+const footerLinks = [
+  { label: "Home", href: "/" },
+  { label: "What is The Harvest?", href: "/what-is-the-harvest" },
+  { label: "Works", href: "/works" },
+  { label: "Shop", href: "/works/the-shop" },
+  { label: "Member list", href: "/membership" },
+  { label: "Contact us", href: "/membership#questions" },
+  { label: "Witta history", href: "/witta" },
+  { label: "Journal", href: "/blog" },
 ];
 
 const fadeInUp = {
@@ -315,7 +270,7 @@ const fadeInUp = {
 
 export default function HarvestReviewTest() {
   useEffect(() => {
-    document.title = "The Harvest Witta - garden, events and art space";
+    document.title = "The Harvest Witta · Grow. Make. Gather.";
     let meta = document.querySelector('meta[name="description"]') as HTMLMetaElement | null;
     if (!meta) {
       meta = document.createElement("meta");
@@ -323,7 +278,7 @@ export default function HarvestReviewTest() {
       document.head.appendChild(meta);
     }
     meta.content =
-      "Start with What is The Harvest, become a free Harvest member, or see the works. A community day around the end of June 2026 in Witta on Jinibara Country. Details coming soon.";
+      "The Harvest is a garden, kitchen and art space taking shape in Witta on Jinibara Country. Built in public with real photos, real work, and practical asks.";
   }, []);
 
   return (
@@ -332,16 +287,16 @@ export default function HarvestReviewTest() {
       <Hero />
       <WhatThisIs />
       <PlacePhotoTwo />
-      <Review />
       <Threads />
       <WorkNotes />
       <EventCallout />
       <Closing />
+      <SiteFooter />
     </main>
   );
 }
 
-function SiteNav() {
+export function SiteNav() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const closeMenu = () => setMenuOpen(false);
@@ -351,29 +306,19 @@ function SiteNav() {
       <div className="mx-auto flex min-h-[76px] max-w-7xl items-center justify-between gap-5 px-5 md:px-8">
         <Link
           href="/"
-          className="flex min-w-0 items-center gap-4"
+          className="flex min-w-0 items-center"
           onClick={closeMenu}
           aria-label="The Harvest home"
         >
-          <span className="flex h-12 w-12 shrink-0 overflow-hidden border border-stone-900/10 bg-[#F5F0E8]">
-            <img
-              src="/images/logo-mono-v1.png"
-              alt=""
-              className="h-full w-full object-cover object-[50%_33%]"
-            />
-          </span>
-          <span className="grid min-w-0">
-            <span className="truncate text-[22px] font-black leading-none tracking-normal text-[#1C1917]">
-              The Harvest Witta
-            </span>
-            <span className="mt-1 truncate text-xs font-semibold tracking-normal text-stone-600">
-              Garden first · Events, art + community next
-            </span>
-          </span>
+          <img
+            src="/images/logo-v1-dark-clean.png"
+            alt="The Harvest"
+            className="h-14 w-auto shrink-0 md:h-16"
+          />
         </Link>
 
         <nav
-          className="hidden items-center gap-1 rounded-full border border-stone-900/10 bg-white/46 p-1 lg:flex"
+          className="hidden items-center gap-7 lg:flex"
           aria-label="Page sections"
         >
           {pageNavLinks.map((link) => (
@@ -381,7 +326,7 @@ function SiteNav() {
               <a
                 key={link.href}
                 href={link.href}
-                className="rounded-full px-4 py-2 text-sm font-semibold text-stone-700 transition hover:bg-[#1C1917] hover:text-[#F5F0E8]"
+                className="text-sm font-semibold text-stone-700 transition hover:text-[#1C1917]"
               >
                 {link.label}
               </a>
@@ -389,7 +334,7 @@ function SiteNav() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="rounded-full px-4 py-2 text-sm font-semibold text-stone-700 transition hover:bg-[#1C1917] hover:text-[#F5F0E8]"
+                className="text-sm font-semibold text-stone-700 transition hover:text-[#1C1917]"
               >
                 {link.label}
               </Link>
@@ -398,18 +343,17 @@ function SiteNav() {
         </nav>
 
         <div className="hidden items-center gap-3 lg:flex">
+          <a
+            href="/membership#questions"
+            className="inline-flex min-h-11 items-center justify-center rounded-full border border-stone-900/14 px-5 py-2 text-sm font-bold text-[#1C1917] transition hover:border-[#1C1917] hover:bg-white/54"
+          >
+            Contact us
+          </a>
           <Link
             href="/membership"
-            className="inline-flex min-h-11 items-center justify-center border border-stone-900/14 px-5 py-2 text-sm font-semibold text-[#1C1917] transition hover:border-[#1C1917] hover:bg-white/54"
+            className="inline-flex min-h-11 items-center justify-center rounded-full bg-[#C4922A] px-6 py-2 text-sm font-bold text-[#1C1917] transition hover:bg-[#DEAD4A]"
           >
             Become a member
-          </Link>
-          <Link
-            href="/membership"
-            className="inline-flex min-h-11 items-center justify-center gap-2 bg-[#C4922A] px-5 py-2 text-sm font-bold text-[#1C1917] transition hover:bg-[#DEAD4A]"
-          >
-            Join member list
-            <Calendar className="h-4 w-4" />
           </Link>
         </div>
 
@@ -448,27 +392,64 @@ function SiteNav() {
                 </Link>
               )
             ))}
-            <div className="grid gap-2 pt-2 sm:grid-cols-2">
+            <div className="pt-2">
+              <a
+                href="/membership#questions"
+                onClick={closeMenu}
+                className="mb-2 flex min-h-12 items-center justify-center rounded-full border border-stone-900/14 bg-white/46 px-4 font-bold text-[#1C1917]"
+              >
+                Contact us
+              </a>
               <Link
                 href="/membership"
                 onClick={closeMenu}
-                className="inline-flex min-h-12 items-center justify-center border border-stone-900/14 px-4 font-semibold text-[#1C1917]"
+                className="flex min-h-12 items-center justify-center rounded-full bg-[#C4922A] px-4 font-bold text-[#1C1917]"
               >
-                Member list
-              </Link>
-              <Link
-                href="/membership"
-                onClick={closeMenu}
-                className="inline-flex min-h-12 items-center justify-center gap-2 bg-[#C4922A] px-4 font-semibold text-[#1C1917]"
-              >
-                Join member list
-                <Calendar className="h-4 w-4" />
+                Become a member
               </Link>
             </div>
           </nav>
         </div>
       )}
     </header>
+  );
+}
+
+export function SiteFooter() {
+  return (
+    <footer className="border-t border-stone-900/10 bg-[#F5F0E8] text-[#1C1917]">
+      <div className="mx-auto grid max-w-7xl gap-8 px-5 py-10 md:grid-cols-[1fr_1.4fr] md:px-8 md:py-12">
+        <div>
+          <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#8B4A2A]">
+            The Harvest Witta
+          </p>
+          <p className="mt-3 max-w-sm text-sm leading-relaxed text-stone-600">
+            Grow. Make. Gather. A garden and creative gathering place taking shape on Jinibara Country.
+          </p>
+        </div>
+        <nav className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4" aria-label="Footer">
+          {footerLinks.map((link) => (
+            link.href.includes("#") ? (
+              <a
+                key={link.href}
+                href={link.href}
+                className="text-sm font-semibold text-stone-700 underline-offset-4 hover:text-[#1C1917] hover:underline"
+              >
+                {link.label}
+              </a>
+            ) : (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="text-sm font-semibold text-stone-700 underline-offset-4 hover:text-[#1C1917] hover:underline"
+              >
+                {link.label}
+              </Link>
+            )
+          ))}
+        </nav>
+      </div>
+    </footer>
   );
 }
 
@@ -482,25 +463,26 @@ function Hero() {
       />
       <div className="absolute inset-0 bg-[#1C1917]/68" />
 
-      <div className="relative z-10 mx-auto grid min-h-[94vh] max-w-7xl items-end gap-10 px-5 pb-12 pt-28 md:grid-cols-[1fr_0.72fr] md:px-8 md:pb-16">
+      <div className="relative z-10 mx-auto flex min-h-[94vh] max-w-5xl flex-col justify-end px-5 pb-16 pt-28 md:px-8 md:pb-24">
         <motion.div
           initial={{ opacity: 0, y: 28 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.72 }}
-          className="max-w-4xl"
         >
           <p className="font-mono text-xs uppercase tracking-[0.24em] text-[#C4922A]">
-            Witta · Jinibara Country · Community day late June 2026
+            Witta · Jinibara Country · Garden opening end of June
           </p>
-          <h1 className="mt-5 max-w-4xl text-5xl font-black leading-[0.92] tracking-normal md:text-7xl lg:text-8xl">
-            The Harvest is taking shape.
+          <h1 className="mt-6 text-6xl font-black leading-[0.92] tracking-normal md:text-8xl lg:text-[8.5rem]">
+            The Harvest
           </h1>
-          <p className="mt-7 max-w-2xl text-xl leading-relaxed text-white/82">
-            A garden, events and art space in Witta. Built in public, in the old
-            nursery, with hands from the hinterland. Garden-first this round.
-            Events and art are the longer build.
+          <p className="mt-6 text-2xl font-semibold tracking-wide text-[#C4922A] md:text-3xl">
+            Grow. Make. Gather.
           </p>
-          <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+          <p className="mt-8 max-w-3xl text-xl leading-relaxed text-white/85 md:text-2xl">
+            A community garden and creative gathering place taking shape in Witta.
+          </p>
+
+          <div className="mt-12 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
             <Link
               href="/what-is-the-harvest"
               className="inline-flex min-h-12 items-center justify-center gap-2 bg-[#C4922A] px-6 py-3 font-semibold text-[#1C1917] transition hover:bg-[#DEAD4A]"
@@ -515,36 +497,7 @@ function Hero() {
               Become a member
               <Users className="h-4 w-4" />
             </Link>
-            <Link
-              href="/works"
-              className="inline-flex min-h-12 items-center justify-center gap-2 border border-white/34 px-6 py-3 font-semibold text-white transition hover:border-white hover:bg-white/10"
-            >
-              See The Works
-              <ArrowRight className="h-4 w-4" />
-            </Link>
           </div>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.72, delay: 0.12 }}
-          id="rooms"
-          className="scroll-mt-28 grid gap-3"
-        >
-          {[
-            ["Now", "Garden area", "seedlings, beds, soil and shade"],
-            ["Building", "Paths + pavilion", "timber walkways and the giant milk crate roof"],
-            ["Next", "Play + shop", "kids playground and co-op produce shelf"],
-          ].map(([tag, title, body]) => (
-            <div key={title} className="border border-white/18 bg-white/8 p-5 backdrop-blur">
-              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#C4922A]">
-                {tag}
-              </p>
-              <h2 className="mt-2 text-2xl font-black">{title}</h2>
-              <p className="mt-2 text-sm leading-relaxed text-white/72">{body}</p>
-            </div>
-          ))}
         </motion.div>
       </div>
     </section>
@@ -556,29 +509,30 @@ function WhatThisIs() {
     <section className="bg-[#F5F0E8] px-5 py-14 md:px-8 md:py-20">
       <div className="mx-auto max-w-7xl">
         <div className="grid gap-10 md:grid-cols-[1fr_1.2fr] md:gap-20">
-          <div>
-            <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#8B4A2A]">
-              what this is
-            </p>
-            <h2 className="mt-5 text-3xl font-black leading-tight md:text-4xl">
-              A garden, events and art space being built in public.
-            </h2>
-          </div>
+          <div />
           <div className="space-y-5 text-lg leading-relaxed text-stone-700">
             <p>
-              The Harvest is in an old Witta nursery on Jinibara Country. It is being
-              made from what is already here: soil that came out of a volcano, sheds
-              full of timber and tools, a milk crate roof built by 80 people in
-              March, kids with ideas, and the families who never left.
+              The Harvest is taking shape on Jinibara Country, on land with a long
+              Indigenous history before any industry arrived. The more recent story
+              of this ridge runs through dairy, timber, co-operatives, and the hands
+              that worked them.
             </p>
             <p>
-              The first version is the garden. Beds, paths, a kids playground, a
-              shop test for local makers. Over time, the hope is that it becomes a
-              living collection for Witta where timber, dairy and co-operative
-              memory turn into paths, meals, objects and shared use.
+              The site was known as Green Harvest, a nursery remembered by local
+              gardeners and seed buyers. The works being made here now carry that
+              growing history forward: a garden in the spirit of the farms and
+              orchards that once held this ground, a milk crate pavilion that nods to
+              the dairy industry, paths that hold the timber story, and a shop that
+              begins with the co-op spirit still in the room.
             </p>
             <p>
-              Ben and Nic started it. The community is making it.
+              Art sits at the centre. Not as decoration. As how a place understands
+              itself. The works represent this moment in Witta history.
+            </p>
+            <p>
+              The hope is that this becomes a place where the Witta community and
+              visitors come to grow, make, and gather. To celebrate together what
+              has been made.
             </p>
             <Link
               href="/what-is-the-harvest"
@@ -619,73 +573,6 @@ function PlacePhotoTwo() {
       className="h-[50vh] w-full"
       imgClassName="h-full w-full object-cover"
     />
-  );
-}
-
-function Review() {
-  return (
-    <section id="review" className="scroll-mt-24 bg-[#F5F0E8] pb-16 pt-10 md:pb-24 md:pt-14">
-      <div className="mx-auto max-w-7xl px-5 md:px-8">
-        <motion.div {...fadeInUp} className="mb-10 grid gap-6 md:grid-cols-[0.82fr_1fr] md:items-end">
-          <div>
-            <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#8B4A2A]">
-              Coming soon · community day
-            </p>
-            <h2 className="mt-3 max-w-2xl text-4xl font-black leading-[0.96] md:text-6xl">
-              Come through the gate and see what is being made.
-            </h2>
-          </div>
-          <p className="max-w-2xl text-lg leading-relaxed text-stone-700 md:justify-self-end">
-            We're working toward a community open day around the end of June. Walk the garden, see the works in progress, and get a clear picture of what is being built next. Date and time being confirmed. Members hear first.
-          </p>
-        </motion.div>
-
-        <div className="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {eventDetails.map((detail) => {
-            const Icon = detail.icon;
-            return (
-              <motion.article
-                key={detail.label}
-                {...fadeInUp}
-                className="border border-stone-300/80 bg-[#FFFDF7] p-5"
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#8B4A2A]">
-                    {detail.label}
-                  </p>
-                  <Icon className="h-5 w-5 text-[#4A6741]" />
-                </div>
-                <h3 className="mt-3 text-2xl font-black leading-tight">{detail.value}</h3>
-                <p className="mt-3 text-sm leading-relaxed text-stone-600">{detail.detail}</p>
-              </motion.article>
-            );
-          })}
-        </div>
-
-        <div className="grid gap-5 lg:grid-cols-3">
-          {reviewColumns.map((column) => (
-            <motion.article
-              key={column.title}
-              {...fadeInUp}
-              className="border border-stone-300/80 bg-[#FFFDF7] p-6"
-            >
-              <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[#8B4A2A]">
-                {column.label}
-              </p>
-              <h3 className="mt-3 text-2xl font-black leading-tight">{column.title}</h3>
-              <ul className="mt-5 space-y-4 text-sm leading-relaxed text-stone-700">
-                {column.points.map((point) => (
-                  <li key={point} className="grid grid-cols-[auto_1fr] gap-3">
-                    <Check className="mt-0.5 h-4 w-4 text-[#4A6741]" />
-                    <span>{point}</span>
-                  </li>
-                ))}
-              </ul>
-            </motion.article>
-          ))}
-        </div>
-      </div>
-    </section>
   );
 }
 
@@ -737,6 +624,13 @@ function Threads() {
                   </div>
                   <h3 className="mt-5 text-3xl font-black">{thread.title}</h3>
                   <p className="mt-3 flex-1 leading-relaxed text-white/74">{thread.body}</p>
+                  <Link
+                    href={thread.action.href}
+                    className="mt-6 inline-flex items-center gap-2 border border-white/18 px-4 py-3 text-sm font-bold text-[#F5F0E8] transition hover:border-[#C4922A] hover:bg-white/10"
+                  >
+                    {thread.action.label}
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
                 </div>
               </motion.article>
             );
@@ -748,6 +642,12 @@ function Threads() {
 }
 
 function WorkNotes() {
+  const [, navigate] = useLocation();
+
+  const openWork = (item: WorkUpdate) => {
+    if (item.workSlug) navigate(`/works/${item.workSlug}`);
+  };
+
   return (
     <section id="work" className="scroll-mt-24 bg-[#F5F0E8] py-16 md:py-24">
       <div className="mx-auto max-w-7xl px-5 md:px-8">
@@ -757,12 +657,21 @@ function WorkNotes() {
               works in progress
             </p>
             <h2 className="mt-3 max-w-2xl text-4xl font-black leading-[0.96] md:text-6xl">
-              See the works, photos and updates as they move.
+              See the works as they move.
             </h2>
           </div>
-          <p className="max-w-2xl text-lg leading-relaxed text-stone-700 md:justify-self-end">
-            The garden carries the public work until July. What is being made, what changed, and what help is useful.
-          </p>
+          <div className="max-w-2xl md:justify-self-end">
+            <p className="text-lg leading-relaxed text-stone-700">
+              The garden is the public focus until July: beds, paths, pavilion, kids area, shop test and the Milk Man at the gate.
+            </p>
+            <Link
+              href="/works"
+              className="mt-5 inline-flex items-center gap-2 bg-[#1C1917] px-5 py-3 text-sm font-bold text-[#F5F0E8] transition hover:bg-[#3D3832]"
+            >
+              See all works
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
         </motion.div>
 
         <div className="grid gap-5 md:grid-cols-2">
@@ -770,7 +679,18 @@ function WorkNotes() {
             <motion.article
               key={item.title}
               {...fadeInUp}
-              className="grid overflow-hidden border border-stone-300/80 bg-[#FFFDF7] md:grid-cols-[0.78fr_1fr]"
+              role={item.workSlug ? "link" : undefined}
+              tabIndex={item.workSlug ? 0 : undefined}
+              onClick={(event: MouseEvent<HTMLElement>) => {
+                if (!isInteractiveTarget(event.target)) openWork(item);
+              }}
+              onKeyDown={(event: KeyboardEvent<HTMLElement>) => {
+                if ((event.key === "Enter" || event.key === " ") && !isInteractiveTarget(event.target)) {
+                  event.preventDefault();
+                  openWork(item);
+                }
+              }}
+              className="grid cursor-pointer overflow-hidden border border-stone-300/80 bg-[#FFFDF7] transition hover:-translate-y-0.5 hover:border-[#C4922A] hover:shadow-lg md:grid-cols-[0.78fr_1fr]"
             >
               <HarvestImage
                 page="new-look-test"
@@ -790,9 +710,17 @@ function WorkNotes() {
                   <h3 className="mt-4 text-3xl font-black leading-tight">{item.title}</h3>
                   <p className="mt-4 leading-relaxed text-stone-700">{item.body}</p>
                 </div>
-                <p className="mt-6 border-t border-stone-200 pt-4 text-sm font-semibold leading-relaxed text-[#4A6741]">
-                  {item.ask}
-                </p>
+                <div className="mt-6 border-t border-stone-200 pt-4">
+                  <p className="text-sm font-semibold leading-relaxed text-[#4A6741]">
+                    {item.ask}
+                  </p>
+                  {item.workSlug && (
+                    <span className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-[#8B4A2A]">
+                      See this work
+                      <ArrowRight className="h-4 w-4" />
+                    </span>
+                  )}
+                </div>
               </div>
             </motion.article>
           ))}
@@ -800,6 +728,10 @@ function WorkNotes() {
       </div>
     </section>
   );
+}
+
+function isInteractiveTarget(target: EventTarget | null) {
+  return target instanceof HTMLElement && Boolean(target.closest("a,button,input,textarea,select,[role='button']"));
 }
 
 function IdeaWall() {
@@ -859,19 +791,8 @@ function EventCallout() {
             Join the member list for the longer build, and the next community day.
           </h2>
           <p className="mt-6 max-w-xl text-lg leading-relaxed text-white/76">
-            Membership is the free list for weekly updates, invites, first-access opportunities and questions. When the community day around the end of June lands, members hear the details first.
+            Membership is the free list for weekly updates, community-day invites, first-access opportunities and questions. When the community day around the end of June lands, members hear the details first.
           </p>
-          <div className="mt-8 grid gap-3 text-sm leading-relaxed text-white/70">
-            <p className="border-l-2 border-[#C4922A] pl-4">
-              Next community day: late June 2026. Date being confirmed.
-            </p>
-            <p className="border-l-2 border-[#C4922A] pl-4">
-              Place: The Harvest, Witta, on Jinibara Country.
-            </p>
-            <p className="border-l-2 border-[#C4922A] pl-4">
-              Status: not open for casual drop-ins yet. Join the list or send a question first.
-            </p>
-          </div>
         </motion.div>
 
         <motion.div {...fadeInUp} className="grid gap-4 md:grid-cols-2">
@@ -888,7 +809,7 @@ function EventCallout() {
                 See the works in progress.
               </span>
               <span className="mt-4 block text-sm leading-relaxed text-stone-700">
-                Four canonical works: garden, pavilion, cedar and shop. Photos, lifecycle, hands, and what's actually happening this week.
+                Garden, pavilion, paths, kids area, shop and Milk Man. Photos, lifecycle, hands and what is happening now.
               </span>
             </span>
             <span className="mt-8 inline-flex items-center gap-2 font-semibold">
@@ -910,7 +831,7 @@ function EventCallout() {
                 Become a free Harvest member.
               </span>
               <span className="mt-4 block text-sm leading-relaxed text-white/72">
-                Get the weekly member update, event invites, first-access opportunities and a simple way to ask questions.
+                Get the weekly member update, community-day invites, first-access opportunities and a simple way to ask questions.
               </span>
             </span>
             <span className="mt-8 inline-flex items-center gap-2 font-semibold">
@@ -936,13 +857,13 @@ function Closing() {
       <div className="relative mx-auto max-w-7xl px-5 md:px-8">
         <motion.div {...fadeInUp} className="max-w-3xl">
           <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#C4922A]">
-            keep going
+            Coming soon · community day
           </p>
           <h2 className="mt-3 text-4xl font-black leading-[0.96] md:text-6xl">
-            Follow the works as they become real.
+            Come through the gate and see what is being made.
           </h2>
           <p className="mt-6 max-w-2xl text-lg leading-relaxed text-white/78">
-            Each work in this collection gathers photos, updates, hands and one practical way to help. Over time, that becomes part of a living Witta collection. There's no rush.
+            We're working toward a community open day around the end of June. Walk the garden, see the works in progress, and get a clear picture of what is being built next. Date and time being confirmed.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Link

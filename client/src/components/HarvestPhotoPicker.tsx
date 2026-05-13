@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Loader2, Search, Check } from "lucide-react";
+import { useRef, useState } from "react";
+import { Loader2, Search, Check, Upload } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -10,12 +10,15 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { trpc } from "@/lib/trpc";
+import { toast } from "sonner";
 
 const WORKS = [
   { slug: "milk-crate-pavilion", label: "Milk Crate Pavilion" },
-  { slug: "the-cedar", label: "The Cedar" },
+  { slug: "the-cedar", label: "The Garden Paths" },
   { slug: "the-garden", label: "The Garden" },
+  { slug: "kids-area", label: "Kids Area" },
   { slug: "the-shop", label: "The Shop" },
+  { slug: "the-milk-man", label: "The Milk Man" },
 ] as const;
 
 const THEMES = [
@@ -47,11 +50,19 @@ export function HarvestPhotoPicker({
   const [work, setWork] = useState<string | undefined>(defaultWorkSlug);
   const [theme, setTheme] = useState<string | undefined>(undefined);
   const [search, setSearch] = useState("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const utils = trpc.useUtils();
 
   const query = trpc.gallery.fromEL.useQuery(
-    { work, theme, limit: 100 },
+    { work, theme, limit: 500 },
     { enabled: open },
   );
+  const uploadMutation = trpc.mediaLibrary.uploadToEL.useMutation({
+    onSuccess: () => {
+      utils.gallery.fromEL.invalidate();
+    },
+    onError: (error) => toast.error("Could not upload photo", { description: error.message }),
+  });
   const photos = query.data?.media ?? [];
 
   const filtered = search.trim()
@@ -61,6 +72,49 @@ export function HarvestPhotoPicker({
           .some((s) => s!.toLowerCase().includes(search.toLowerCase())),
       )
     : photos;
+
+  const uploadWork = work ?? defaultWorkSlug;
+
+  async function handleUpload(file: File) {
+    if (!uploadWork) {
+      toast.error("Choose a work first", {
+        description: "Pick the work this photo belongs to before uploading.",
+      });
+      return;
+    }
+
+    const base64Data = await fileToBase64(file);
+    const title = file.name.replace(/\.[^.]+$/, "").replace(/[-_]+/g, " ").trim() || "Harvest photo";
+    const response = await uploadMutation.mutateAsync({
+      recipe: {
+        work: uploadWork,
+        themes: [theme ?? "gather"],
+        categories: ["general"],
+        title,
+      },
+      files: [{
+        fileName: file.name,
+        contentType: file.type || "image/jpeg",
+        base64Data,
+      }],
+    });
+
+    const uploaded = response.uploaded[0];
+    if (!uploaded) {
+      const failed = response.failed[0]?.error;
+      toast.error("Upload did not complete", { description: failed });
+      return;
+    }
+
+    onPick({
+      mediaAssetId: uploaded.id,
+      src: uploaded.src,
+      altText: title,
+      title,
+    });
+    onOpenChange(false);
+    toast.success("Photo uploaded and linked.");
+  }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -73,6 +127,34 @@ export function HarvestPhotoPicker({
             Filter by work or theme. Click a photo to use it here.
             Photos come from Empathy Ledger and are cached for 5 minutes.
           </DialogDescription>
+          <div className="mt-4">
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(event) => {
+                const file = event.currentTarget.files?.[0];
+                event.currentTarget.value = "";
+                if (file) void handleUpload(file);
+              }}
+            />
+            <Button
+              type="button"
+              variant="outline"
+              disabled={uploadMutation.isPending || !uploadWork}
+              onClick={() => fileInputRef.current?.click()}
+              className="inline-flex items-center gap-2"
+              title={uploadWork ? "Upload a local image to Empathy Ledger and tag it to this work" : "Choose a work before uploading"}
+            >
+              {uploadMutation.isPending ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Upload className="h-4 w-4" />
+              )}
+              Upload from computer
+            </Button>
+          </div>
         </DialogHeader>
 
         {/* Filters */}
@@ -185,6 +267,18 @@ export function HarvestPhotoPicker({
       </DialogContent>
     </Dialog>
   );
+}
+
+function fileToBase64(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const value = String(reader.result ?? "");
+      resolve(value.includes(",") ? value.split(",")[1] : value);
+    };
+    reader.onerror = () => reject(reader.error);
+    reader.readAsDataURL(file);
+  });
 }
 
 function FilterChip({

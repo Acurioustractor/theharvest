@@ -483,6 +483,71 @@ export async function tagHarvestMediaInEmpathyLedger(input: {
   return { updated: input.mediaIds.length };
 }
 
+export async function addHarvestWorkTagToMedia(input: {
+  mediaIds: string[];
+  work: string;
+}): Promise<{ updated: number }> {
+  if (input.mediaIds.length === 0) return { updated: 0 };
+  const { supabase, gallery } = await createElAdminContext();
+  const tagId = await getOrCreateTag(supabase, normalizeTagSlug(input.work), "harvest-work");
+
+  const { data: rows, error: rowsError } = await supabase
+    .from("media_assets")
+    .select("id, project_id")
+    .in("id", input.mediaIds);
+  if (rowsError) throw rowsError;
+
+  const mismatched = (rows ?? []).filter((row: any) => row.project_id !== HARVEST_PROJECT_ID);
+  if (mismatched.length > 0) {
+    throw new Error(`${mismatched.length} media asset(s) not on Harvest project — refusing to tag.`);
+  }
+
+  const tagRows = input.mediaIds.map((mediaId) => ({
+    media_asset_id: mediaId,
+    tag_id: tagId,
+    source: "manual",
+    added_by: gallery.created_by,
+    confidence: 1,
+    verified: true,
+  }));
+
+  const { error } = await supabase
+    .from("media_tags")
+    .upsert(tagRows, {
+      onConflict: "media_asset_id,tag_id",
+      ignoreDuplicates: true,
+    });
+  if (error) throw error;
+
+  return { updated: input.mediaIds.length };
+}
+
+export async function removeHarvestWorkTagFromMedia(input: {
+  mediaId: string;
+  work: string;
+}): Promise<{ removed: boolean }> {
+  const { supabase } = await createElAdminContext();
+  const workSlug = normalizeTagSlug(input.work);
+
+  const { data: tag, error: tagError } = await supabase
+    .from("tags")
+    .select("id")
+    .eq("slug", workSlug)
+    .eq("category", "harvest-work")
+    .maybeSingle();
+  if (tagError) throw tagError;
+  if (!tag?.id) return { removed: false };
+
+  const { error } = await supabase
+    .from("media_tags")
+    .delete()
+    .eq("media_asset_id", input.mediaId)
+    .eq("tag_id", tag.id);
+  if (error) throw error;
+
+  return { removed: true };
+}
+
 function contentTypeForMotionFile(fileName: string) {
   const ext = extname(fileName).toLowerCase();
   if (ext === ".mp4") return "video/mp4";
