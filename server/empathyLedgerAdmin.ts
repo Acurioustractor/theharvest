@@ -1531,19 +1531,23 @@ export async function listPublicHarvestStorytellers(): Promise<PublicHarvestStor
   }));
   const ids = rows.map((r) => r.storytellers!.id);
 
-  // Transcript counts come straight from the storyteller API response.
+  // Transcript counts and EL-provided slugs come straight from the storyteller API.
   const transcriptCountByTeller = new Map<string, number>();
+  const apiSlugByTeller = new Map<string, string>();
   for (const t of tellersRes.storytellers) {
     if (typeof t.transcriptCount === "number") transcriptCountByTeller.set(t.id, t.transcriptCount);
+    if (t.slug) apiSlugByTeller.set(t.id, t.slug);
   }
   void ids;
 
   return rows.map((r): PublicHarvestStoryteller => {
     const s = r.storytellers!;
     const counts = articleCounts.get(s.id) ?? { total: 0, published: 0 };
+    // Prefer EL's canonical slug if present, otherwise derive locally (back-compat).
+    const slug = apiSlugByTeller.get(s.id) ?? slugifyDisplayName(s.display_name!);
     return {
       id: s.id,
-      slug: slugifyDisplayName(s.display_name!),
+      slug,
       displayName: s.display_name!,
       bio: s.bio,
       avatarUrl: s.public_avatar_url,
@@ -1625,25 +1629,22 @@ async function listLocalCompendiumPhotos(firstName: string): Promise<PublicStory
 export async function getPublicHarvestStorytellerBySlug(
   slug: string,
 ): Promise<PublicHarvestStorytellerDetail | null> {
-  // Refactored 2026-05-13: was hitting EL's Supabase via service-role keys
-  // (broken in prod). Now uses EL public content-hub API.
+  // Uses EL public content-hub API. As of 2026-05-13 EL added:
+  //   - slug field on storyteller responses
+  //   - public /storytellers/:slug (O(1) lookup instead of list-and-find)
+  //   - ?storyteller=<uuid|slug> filter on /media (restores EL photo gallery)
   //
-  // Coverage today vs old Supabase-direct path:
-  //   articles        - same (filters by storyteller.id from articles API)
-  //   articles fallback (slug name-match) - DROPPED (EL doesn't expose unattributed
-  //                                          articles via public API; the fallback
-  //                                          was a hack for unclaimed legacy posts)
-  //   stories         - EMPTY until EL exposes `?project=the-harvest` filter on stories
-  //   transcripts     - EMPTY (no public transcripts endpoint)
-  //   localPhotos     - local compendium folder (filesystem) still works
-  //   EL photos       - DROPPED until EL exposes `?storyteller=<id>` filter on /media
-  //                     (current /media endpoint returns same 394 items regardless)
-  const all = await listPublicHarvestStorytellers();
-  const match = all.find((s) => s.slug === slug);
-  if (!match) return null;
+  // Coverage today:
+  //   articles    - filtered client-side from harvest articles list by storyteller.id
+  //   stories     - EMPTY until EL exposes /stories/:slug (currently 404)
+  //   transcripts - EMPTY (no public transcripts endpoint)
+  //   localPhotos - local /images/compendium/<firstName>/ folder + EL-tagged media
+  //                  merged with local taking precedence on filename collision.
+  const single = await empathyLedgerClient.fetchStoryteller(slug);
+  if (!single) return null;
 
-  const firstName = match.displayName.toLowerCase().split(/\s+/).filter(Boolean)[0] ?? "";
-
+  // Build the PublicHarvestStoryteller shell. Article counts come from the
+  // articles list; transcriptCount from the storyteller payload.
   type ArticleWithStoryteller = {
     id: string;
     title: string | null;
@@ -1655,31 +1656,64 @@ export async function getPublicHarvestStorytellerBySlug(
     primaryProject?: string | null;
     storyteller?: { id?: string } | null;
   };
-
   const articlesRes = await empathyLedgerClient.fetchArticles({
     project: "the-harvest",
     limit: 200,
   });
-  const articles: PublicStorytellerArticle[] = (
-    articlesRes.articles as unknown as ArticleWithStoryteller[]
-  )
-    .filter((a) => a.storyteller?.id === match.id)
-    .map((a) => ({
-      id: a.id,
-      title: a.title ?? "(untitled)",
-      slug: a.slug,
-      excerpt: a.excerpt,
-      publishedAt: a.publishedAt,
-      themes: Array.isArray(a.themes) ? a.themes : [],
-      featuredImageId: null, // public API returns URL not id; not used downstream
-      primaryProject: a.primaryProject ?? null,
-    }));
+  const ownArticles = (articlesRes.articles as unknown as ArticleWithStoryteller[]).filter(
+    (a) => a.storyteller?.id === single.id,
+  );
+
+  const base: PublicHarvestStoryteller = {
+    id: single.id,
+    slug: single.slug ?? slugifyDisplayName(single.displayName),
+    displayName: single.displayName,
+    bio: single.bio,
+    avatarUrl: single.avatarUrl,
+    location: single.location ?? null,
+    projectRole: null,
+    articleCount: ownArticles.length,
+    publishedArticleCount: ownArticles.length,
+    publishedStoryCount: 0,
+    transcriptCount: typeof single.transcriptCount === "number" ? single.transcriptCount : 0,
+  };
+
+  const articles: PublicStorytellerArticle[] = ownArticles.map((a) => ({
+    id: a.id,
+    title: a.title ?? "(untitled)",
+    slug: a.slug,
+    excerpt: a.excerpt,
+    publishedAt: a.publishedAt,
+    themes: Array.isArray(a.themes) ? a.themes : [],
+    featuredImageId: null,
+    primaryProject: a.primaryProject ?? null,
+  }));
 
   const stories: PublicStorytellerStory[] = [];
   const transcripts: PublicStorytellerTranscript[] = [];
-  const localPhotos = await listLocalCompendiumPhotos(firstName);
 
-  return { ...match, articles, stories, transcripts, localPhotos };
+  // Photos: merge local-curated compendium folder + EL-tagged media.
+  const firstName = single.displayName.toLowerCase().split(/\s+/).filter(Boolean)[0] ?? "";
+  const localPhotos = await listLocalCompendiumPhotos(firstName);
+  const elMedia = await empathyLedgerClient.fetchMediaForStoryteller(single.id, {
+    project: "the-harvest",
+    limit: 60,
+  });
+  const elPhotos: PublicStorytellerPhoto[] = elMedia.map((m) => ({
+    src: m.src,
+    alt: m.altText ?? m.title ?? `${single.displayName} at The Harvest`,
+  }));
+  // Dedupe by filename: local-curated wins over EL when both reference the same file.
+  const localFiles = new Set(localPhotos.map((p) => p.src.split("/").pop() ?? ""));
+  const mergedPhotos: PublicStorytellerPhoto[] = [
+    ...localPhotos,
+    ...elPhotos.filter((p) => {
+      const file = p.src.split("/").pop() ?? "";
+      return !localFiles.has(file);
+    }),
+  ];
+
+  return { ...base, articles, stories, transcripts, localPhotos: mergedPhotos };
 }
 
 // ---------------------------------------------------------------------------
