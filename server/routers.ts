@@ -80,6 +80,16 @@ export const NEWSLETTER_INTEREST_OPTIONS = [
 
 type NewsletterInterest = (typeof NEWSLETTER_INTEREST_OPTIONS)[number];
 
+const SHOP_INTEREST_OFFER_TYPES = [
+  "produce",
+  "made-goods",
+  "food",
+  "consignment",
+  "help-shape",
+] as const;
+
+type ShopInterestOfferType = (typeof SHOP_INTEREST_OFFER_TYPES)[number];
+
 const NEWSLETTER_INTEREST_TAGS: Record<NewsletterInterest, string> = {
   events: "interest-events",
   workshops: "interest-workshops",
@@ -91,6 +101,14 @@ const NEWSLETTER_INTEREST_TAGS: Record<NewsletterInterest, string> = {
   volunteering: "interest-volunteer",
   membership: "interest-membership",
   sustainability: "interest-sustainability",
+};
+
+const SHOP_INTEREST_TAGS: Record<ShopInterestOfferType, string> = {
+  produce: "shop-produce",
+  "made-goods": "shop-maker",
+  food: "shop-food",
+  consignment: "shop-consignment",
+  "help-shape": "shop-follow-up",
 };
 
 function splitPersonName(name: string) {
@@ -689,6 +707,72 @@ export const appRouter = router({
             const workflowResult = await triggerGHLWorkflow(workflowId, result.contactId);
             if (!workflowResult.success) {
               console.error("GHL workflow trigger failed (member question):", workflowResult.error);
+            }
+          }
+        }
+
+        return { success: true };
+      }),
+  }),
+
+  shopInterest: router({
+    submit: publicProcedure
+      .input(z.object({
+        name: z.string().trim().min(1).max(120),
+        email: z.string().email(),
+        phone: z.string().trim().max(60).optional(),
+        offerType: z.enum(SHOP_INTEREST_OFFER_TYPES),
+        description: z.string().trim().min(1).max(2000),
+        location: z.string().trim().min(1).max(180),
+        readiness: z.string().trim().min(1).max(180),
+      }))
+      .mutation(async ({ input }) => {
+        const { firstName, lastName } = splitPersonName(input.name);
+        const offerTag = SHOP_INTEREST_TAGS[input.offerType];
+        const result = await upsertGHLContact({
+          email: input.email,
+          firstName,
+          lastName,
+          phone: input.phone || undefined,
+          source: "Website - Harvest Shop Interest",
+          tags: [
+            "harvest-shop-interest",
+            "harvest-website",
+            "shop-follow-up",
+            offerTag,
+          ],
+        });
+
+        if (!result.success) {
+          throw new Error(result.error || "Failed to save shop interest");
+        }
+
+        if (result.contactId) {
+          const noteResult = await addGHLContactNote(
+            result.contactId,
+            [
+              "**Harvest Shop Expression of Interest**",
+              "",
+              `**Offer type:** ${input.offerType}`,
+              `**Location:** ${input.location}`,
+              `**Readiness:** ${input.readiness}`,
+              "",
+              "**What they can provide / help with:**",
+              input.description,
+              "",
+              "**Source:** /works/the-shop",
+            ].join("\n"),
+          );
+
+          if (!noteResult.success) {
+            throw new Error(noteResult.error || "Failed to save shop interest note");
+          }
+
+          const workflowId = process.env.GHL_SHOP_INTEREST_WORKFLOW_ID || process.env.GHL_CONTACT_FORM_WORKFLOW_ID;
+          if (workflowId) {
+            const workflowResult = await triggerGHLWorkflow(workflowId, result.contactId);
+            if (!workflowResult.success) {
+              console.error("GHL workflow trigger failed (shop interest):", workflowResult.error);
             }
           }
         }

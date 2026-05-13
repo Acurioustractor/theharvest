@@ -328,15 +328,15 @@ export const works: Work[] = [
     storyLinks: [
       {
         label: "Express interest in providing shop produce",
-        href: "/membership",
+        href: "/works/the-shop#shop-interest",
       },
       {
         label: "Express interest in stocking something you make",
-        href: "/membership",
+        href: "/works/the-shop#shop-interest",
       },
       {
         label: "Ask about helping shape The Shop",
-        href: "/membership",
+        href: "/works/the-shop#shop-interest",
       },
     ],
     related: ["the-garden", "milk-crate-pavilion"],
