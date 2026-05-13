@@ -64,6 +64,7 @@ export interface ELStory {
 
 export interface ELStoryteller {
   id: string;
+  slug?: string | null;
   displayName: string;
   bio: string | null;
   avatarUrl: string | null;
@@ -99,6 +100,8 @@ export interface ELMediaAsset {
   themes: string[]; // Themes: "eat", "grow", "make", "gather", etc.
   special?: string[]; // Special tags: "hero", "featured"
   works?: string[]; // Harvest work slugs: "milk-crate-pavilion", "the-cedar", etc.
+  // Storytellers this media is attributed to. EL adds this from media_assets.metadata.harvestStorytellers.
+  taggedStorytellers?: Array<{ id: string; slug?: string | null; displayName: string; avatarUrl: string | null }>;
   projectId: string | null;
   sortOrder: number;
   isPublished: boolean;
@@ -259,6 +262,40 @@ class EmpathyLedgerClient {
     } catch (error) {
       console.error("[EmpathyLedger] Failed to fetch storytellers:", error);
       return { storytellers: [], pagination: { page: 1, limit: 20, total: 0, hasMore: false } };
+    }
+  }
+
+  /**
+   * Fetch a single storyteller by slug or UUID.
+   * Returns null on 404 / network failure.
+   */
+  async fetchStoryteller(identifier: string): Promise<ELStoryteller | null> {
+    try {
+      return await this.fetch<ELStoryteller>(`/api/v1/content-hub/storytellers/${encodeURIComponent(identifier)}`);
+    } catch (error) {
+      console.error(`[EmpathyLedger] Failed to fetch storyteller ${identifier}:`, error);
+      return null;
+    }
+  }
+
+  /**
+   * Fetch media attributed to a single storyteller.
+   * Backed by the public /media?storyteller=<uuid|slug> filter.
+   */
+  async fetchMediaForStoryteller(identifier: string, options: { project?: string; limit?: number } = {}): Promise<ELMediaAsset[]> {
+    const params = new URLSearchParams();
+    params.append("storyteller", identifier);
+    if (options.project) params.append("project", options.project);
+    params.append("limit", String(options.limit ?? 60));
+
+    try {
+      const res = await this.fetch<{ media?: ELMediaAsset[]; items?: ELMediaAsset[] }>(
+        `/api/v1/content-hub/media?${params.toString()}`,
+      );
+      return res.media ?? res.items ?? [];
+    } catch (error) {
+      console.error(`[EmpathyLedger] Failed to fetch media for storyteller ${identifier}:`, error);
+      return [];
     }
   }
 
