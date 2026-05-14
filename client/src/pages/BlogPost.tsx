@@ -117,7 +117,7 @@ export default function BlogPost({ slug }: { slug: string }) {
           <Button asChild>
             <Link href="/blog">
               <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Journal
+              Back to Blog
             </Link>
           </Button>
         </div>
@@ -164,7 +164,7 @@ export default function BlogPost({ slug }: { slug: string }) {
             {/* Breadcrumb */}
             <nav className="flex items-center gap-2 text-sm text-stone-500 mb-8">
               <Link href="/blog" className="hover:text-amber-600 transition-colors">
-                Journal
+                Blog
               </Link>
               <ChevronRight className="h-4 w-4" />
               <Link
@@ -399,13 +399,13 @@ export default function BlogPost({ slug }: { slug: string }) {
         </section>
       )}
 
-      {/* Back to Journal */}
+      {/* Back to Blog */}
       <section className="py-8 border-t border-stone-200">
         <div className="container max-w-3xl">
           <Button variant="ghost" asChild>
             <Link href="/blog">
               <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Journal
+              Back to Blog
             </Link>
           </Button>
         </div>

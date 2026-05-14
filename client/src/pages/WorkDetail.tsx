@@ -6,6 +6,7 @@ import { worksBySlug, works, LIFECYCLE_VOCAB, sortLifecycleTags, type LifecycleT
 import { trpc } from "@/lib/trpc";
 import { HarvestImage } from "@/components/HarvestImage";
 import { EditableText } from "@/components/EditableText";
+import { ShopInterestSection } from "@/components/ShopInterestSection";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { elLinks } from "@/lib/empathyLedger";
 import { optimize } from "@/lib/imageOptimize";
@@ -91,6 +92,20 @@ export default function WorkDetail({ slug }: { slug: string }) {
       },
     });
   }, [work]);
+
+  useEffect(() => {
+    const scrollToHash = () => {
+      const id = window.location.hash.replace("#", "");
+      if (!id) return;
+      window.requestAnimationFrame(() => {
+        document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    };
+
+    scrollToHash();
+    window.addEventListener("hashchange", scrollToHash);
+    return () => window.removeEventListener("hashchange", scrollToHash);
+  }, [slug]);
 
   if (!work) {
     return (
@@ -279,10 +294,19 @@ export default function WorkDetail({ slug }: { slug: string }) {
             />
             {work.storyLinks && work.storyLinks.length > 0 && (
               <div className="mt-8 flex flex-col items-start gap-3">
-                {work.storyLinks.map((link) => (
-                  link.href.startsWith("/") ? (
+                {work.storyLinks.map((link, linkIndex) => (
+                  link.href.includes("#") ? (
+                    <a
+                      key={`${link.href}-${linkIndex}`}
+                      href={link.href}
+                      className="inline-flex items-center gap-2 text-amber-700 hover:text-amber-800 underline underline-offset-4 decoration-amber-500 decoration-2"
+                    >
+                      {link.label}
+                      <ArrowRight className="h-4 w-4" />
+                    </a>
+                  ) : link.href.startsWith("/") ? (
                     <Link
-                      key={link.href}
+                      key={`${link.href}-${linkIndex}`}
                       href={link.href}
                       className="inline-flex items-center gap-2 text-amber-700 hover:text-amber-800 underline underline-offset-4 decoration-amber-500 decoration-2"
                     >
@@ -291,7 +315,7 @@ export default function WorkDetail({ slug }: { slug: string }) {
                     </Link>
                   ) : (
                     <a
-                      key={link.href}
+                      key={`${link.href}-${linkIndex}`}
                       href={link.href}
                       target="_blank"
                       rel="noopener noreferrer"
@@ -340,7 +364,7 @@ export default function WorkDetail({ slug }: { slug: string }) {
                     transition={{ duration: 0.4, delay: i * 0.05 }}
                     className="grid sm:grid-cols-[1fr_2fr] gap-2 py-4"
                   >
-                    <p className="flex items-center gap-2 text-stone-800 font-medium">
+                    <div className="flex items-center gap-2 text-stone-800 font-medium">
                       {h.href && !isAdmin ? (
                         <a
                           href={h.href}
@@ -378,7 +402,7 @@ export default function WorkDetail({ slug }: { slug: string }) {
                           <ExternalLink className="h-3.5 w-3.5" />
                         </a>
                       )}
-                    </p>
+                    </div>
                     <EditableText
                       page="works"
                       slot={`${work.slug}-hand-${i + 1}-role`}
@@ -412,7 +436,7 @@ export default function WorkDetail({ slug }: { slug: string }) {
         </div>
       </section>
 
-      {/* Journal — full article library for this work, with Past/Now/Coming filter */}
+      {/* Blog — full article library for this work, with Past/Now/Coming filter */}
       <WorkJournalSection slug={work.slug} workTitle={work.title} />
 
       {/* Related works */}
@@ -484,197 +508,6 @@ export default function WorkDetail({ slug }: { slug: string }) {
       </section>
       <SiteFooter />
     </div>
-  );
-}
-
-const shopOfferOptions = [
-  { value: "produce", label: "Produce from the garden, farm, or kitchen" },
-  { value: "made-goods", label: "Something made by hand" },
-  { value: "food", label: "Food, preserves, ferments, baking, or drinks" },
-  { value: "consignment", label: "Shared shelf or consignment idea" },
-  { value: "help-shape", label: "I want to help shape the shop" },
-] as const;
-
-function ShopInterestSection() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [offerType, setOfferType] = useState<(typeof shopOfferOptions)[number]["value"]>("produce");
-  const [description, setDescription] = useState("");
-  const [location, setLocation] = useState("");
-  const [readiness, setReadiness] = useState("");
-
-  const mutation = trpc.shopInterest.submit.useMutation({
-    onSuccess: () => {
-      toast.success("Shop interest saved.");
-      setName("");
-      setEmail("");
-      setPhone("");
-      setOfferType("produce");
-      setDescription("");
-      setLocation("");
-      setReadiness("");
-    },
-    onError: (error) => {
-      toast.error("Could not save shop interest", {
-        description: error.message || "Please try again.",
-      });
-    },
-  });
-
-  const submit = (event: React.FormEvent) => {
-    event.preventDefault();
-    mutation.mutate({
-      name: name.trim(),
-      email: email.trim(),
-      phone: phone.trim() || undefined,
-      offerType,
-      description: description.trim(),
-      location: location.trim(),
-      readiness: readiness.trim(),
-    });
-  };
-
-  return (
-    <section id="shop-interest" className="border-y border-stone-200 bg-[#FFFDF7] py-20 md:py-28">
-      <div className="container">
-        <div className="mx-auto grid max-w-5xl gap-10 md:grid-cols-[0.85fr_1fr] md:items-start">
-          <div>
-            <p className="font-mono text-sm uppercase tracking-[0.2em] text-[#8B4A2A]">
-              Shop interest
-            </p>
-            <h2 className="mt-3 text-4xl font-black leading-[0.98] text-[#1C1917] md:text-5xl">
-              Put something real on the first shelf.
-            </h2>
-            <p className="mt-6 text-lg leading-relaxed text-stone-700">
-              The Shop starts small: produce, made goods, food, useful objects,
-              and people who want to help test the shape before it becomes too
-              polished.
-            </p>
-            <p className="mt-4 text-sm leading-relaxed text-stone-500">
-              This goes straight into the Harvest CRM with shop tags, so it can
-              be followed up without creating another spreadsheet.
-            </p>
-          </div>
-
-          <form onSubmit={submit} className="border border-stone-300 bg-[#F5F0E8] p-5 md:p-7">
-            <div className="grid gap-4">
-              <div className="grid gap-4 sm:grid-cols-2">
-                <label className="block">
-                  <span className="mb-2 block font-mono text-[11px] uppercase tracking-[0.16em] text-stone-500">
-                    Name
-                  </span>
-                  <input
-                    value={name}
-                    onChange={(event) => setName(event.target.value)}
-                    required
-                    maxLength={120}
-                    className="h-12 w-full rounded-none border border-stone-300 bg-white px-3 text-stone-900"
-                    placeholder="Your name"
-                  />
-                </label>
-                <label className="block">
-                  <span className="mb-2 block font-mono text-[11px] uppercase tracking-[0.16em] text-stone-500">
-                    Email
-                  </span>
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(event) => setEmail(event.target.value)}
-                    required
-                    className="h-12 w-full rounded-none border border-stone-300 bg-white px-3 text-stone-900"
-                    placeholder="you@example.com"
-                  />
-                </label>
-              </div>
-
-              <div className="grid gap-4 sm:grid-cols-2">
-                <label className="block">
-                  <span className="mb-2 block font-mono text-[11px] uppercase tracking-[0.16em] text-stone-500">
-                    Phone, optional
-                  </span>
-                  <input
-                    type="tel"
-                    value={phone}
-                    onChange={(event) => setPhone(event.target.value)}
-                    maxLength={60}
-                    className="h-12 w-full rounded-none border border-stone-300 bg-white px-3 text-stone-900"
-                    placeholder="For a call or text back"
-                  />
-                </label>
-                <label className="block">
-                  <span className="mb-2 block font-mono text-[11px] uppercase tracking-[0.16em] text-stone-500">
-                    Location
-                  </span>
-                  <input
-                    value={location}
-                    onChange={(event) => setLocation(event.target.value)}
-                    required
-                    maxLength={180}
-                    className="h-12 w-full rounded-none border border-stone-300 bg-white px-3 text-stone-900"
-                    placeholder="Witta, Maleny, Montville..."
-                  />
-                </label>
-              </div>
-
-              <label className="block">
-                <span className="mb-2 block font-mono text-[11px] uppercase tracking-[0.16em] text-stone-500">
-                  What fits best?
-                </span>
-                <select
-                  value={offerType}
-                  onChange={(event) => setOfferType(event.target.value as typeof offerType)}
-                  className="h-12 w-full rounded-none border border-stone-300 bg-white px-3 text-stone-900"
-                >
-                  {shopOfferOptions.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-              </label>
-
-              <label className="block">
-                <span className="mb-2 block font-mono text-[11px] uppercase tracking-[0.16em] text-stone-500">
-                  What could go on the shelf?
-                </span>
-                <textarea
-                  value={description}
-                  onChange={(event) => setDescription(event.target.value)}
-                  required
-                  maxLength={2000}
-                  className="min-h-32 w-full rounded-none border border-stone-300 bg-white px-3 py-3 text-stone-900"
-                  placeholder="Tell us what you grow, make, cook, stock, or want to help test."
-                />
-              </label>
-
-              <label className="block">
-                <span className="mb-2 block font-mono text-[11px] uppercase tracking-[0.16em] text-stone-500">
-                  Timing
-                </span>
-                <input
-                  value={readiness}
-                  onChange={(event) => setReadiness(event.target.value)}
-                  required
-                  maxLength={180}
-                  className="h-12 w-full rounded-none border border-stone-300 bg-white px-3 text-stone-900"
-                  placeholder="Ready now, June, later in winter..."
-                />
-              </label>
-
-              <button
-                type="submit"
-                disabled={mutation.isPending}
-                className="mt-2 inline-flex h-12 items-center justify-center gap-2 bg-[#C4922A] px-5 font-semibold text-stone-950 transition hover:bg-[#E0AD43] disabled:opacity-60"
-              >
-                {mutation.isPending ? "Saving..." : "Express shop interest"}
-                <ArrowRight className="h-4 w-4" />
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </section>
   );
 }
 
@@ -1437,7 +1270,7 @@ function WorkJournalSection({ slug, workTitle }: { slug: string; workTitle: stri
         <div className="max-w-5xl mx-auto">
           <motion.div {...fadeInUp} className="mb-10 max-w-2xl">
             <p className="font-mono text-amber-700 text-sm mb-3 uppercase tracking-[0.2em]">
-              Journal · {articles.length}
+              Blog · {articles.length}
             </p>
             <h2 className="text-3xl md:text-4xl font-serif font-bold text-stone-800">
               The narrative of {workTitle}.

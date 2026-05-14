@@ -16,7 +16,7 @@ const WORKS = [
   { slug: "milk-crate-pavilion", label: "Milk Crate Pavilion" },
   { slug: "the-cedar", label: "The Garden Paths" },
   { slug: "the-garden", label: "The Garden" },
-  { slug: "kids-area", label: "Kids Area" },
+  { slug: "kids-area", label: "Kids' Area" },
   { slug: "the-shop", label: "The Shop" },
   { slug: "the-milk-man", label: "The Milk Man" },
 ] as const;

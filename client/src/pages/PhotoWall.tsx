@@ -175,7 +175,7 @@ export default function PhotoWall() {
           transition={{ duration: 0.7 }}
         >
           <img
-            src="/images/logo-v1-dark-clean.png"
+            src="/images/the-harvest-witta-logo.png"
             alt="The Harvest"
             onClick={handleLogoTap}
             style={{

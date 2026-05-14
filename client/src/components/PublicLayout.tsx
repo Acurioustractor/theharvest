@@ -20,7 +20,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { getLoginUrl } from "@/const";
 import { cn } from "@/lib/utils";
-import { subscribeNewsletter } from "@/lib/api";
+import { trpc } from "@/lib/trpc";
 
 interface PublicLayoutProps {
   children: React.ReactNode;
@@ -42,7 +42,7 @@ const navGroups = {
       { label: "Our Story", href: "/story", icon: BookOpen, description: "The space, the plan, the progress" },
       { label: "Witta", href: "/witta", icon: Compass, description: "The story of this place" },
       { label: "Local Enterprises", href: "/enterprises", icon: Store, description: "Our community partners" },
-      { label: "Journal", href: "/blog", icon: BookOpen, description: "News, recipes & reflections" },
+      { label: "Blog", href: "/blog", icon: BookOpen, description: "News, recipes & reflections" },
     ],
   },
 };
@@ -71,9 +71,9 @@ const footerGroups = {
     links: [
       { label: "Witta", href: "/witta" },
       { label: "Local Enterprises", href: "/enterprises" },
-      { label: "Membership", href: "/membership" },
+      { label: "Become a member", href: "/membership" },
       { label: "Stories", href: "/stories" },
-      { label: "Journal", href: "/blog" },
+      { label: "Blog", href: "/blog" },
     ],
   },
   connect: {
@@ -92,13 +92,16 @@ function FooterNewsletter() {
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
 
+  const newsletterMutation = trpc.newsletter.subscribe.useMutation();
+
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     if (!name.trim() || !email.trim()) return;
     setStatus("loading");
+    setErrorMsg("");
     try {
       const [firstName, ...rest] = name.trim().split(/\s+/);
-      const result = await subscribeNewsletter({
+      await newsletterMutation.mutateAsync({
         email: email.trim(),
         phone: phone.trim() || undefined,
         firstName,
@@ -107,15 +110,10 @@ function FooterNewsletter() {
         interests: ["membership", "community"],
         member: true,
       });
-      if (result.success) {
-        setStatus("success");
-        setName("");
-        setEmail("");
-        setPhone("");
-      } else {
-        setErrorMsg(result.error || "Something went wrong.");
-        setStatus("error");
-      }
+      setStatus("success");
+      setName("");
+      setEmail("");
+      setPhone("");
     } catch {
       setErrorMsg("Could not connect. Please try again.");
       setStatus("error");

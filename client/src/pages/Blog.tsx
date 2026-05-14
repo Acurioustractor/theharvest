@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Mail, Newspaper, Search } from "lucide-react";
 import { Link } from "wouter";
+import { SiteFooter, SiteNav } from "./HarvestReviewTest";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 20 },
@@ -57,6 +58,7 @@ export default function Blog() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-stone-50 to-white">
+      <SiteNav />
       {/* Hero Section */}
       <section className="pt-32 pb-16 bg-gradient-to-b from-amber-50 to-stone-50">
         <div className="container">
@@ -71,17 +73,18 @@ export default function Blog() {
               Stories from The Harvest
             </span>
             <h1 className="text-4xl md:text-5xl font-serif font-bold text-stone-800 mb-6">
-              The Harvest Journal
+              The Harvest Blog
             </h1>
             <p className="text-lg text-stone-600 leading-relaxed">
               Start with What is The Harvest, then follow the people, work, and
               notes coming out of the garden, kitchen, and art space.
             </p>
             <div className="mt-6">
-              <Link href="/what-is-the-harvest">
-                <a className="inline-flex items-center gap-2 text-sm font-semibold text-amber-700 hover:text-amber-800">
-                  Read What is The Harvest? <ArrowRight className="h-4 w-4" />
-                </a>
+              <Link
+                href="/what-is-the-harvest"
+                className="inline-flex items-center gap-2 text-sm font-semibold text-amber-700 hover:text-amber-800"
+              >
+                Learn about The Harvest <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
           </motion.div>
@@ -89,7 +92,7 @@ export default function Blog() {
       </section>
 
       {/* Search and Filters */}
-      <section className="py-8 border-b border-stone-200 bg-white sticky top-16 z-30">
+      <section className="py-8 border-b border-stone-200 bg-white sticky top-[76px] z-30">
         <div className="container space-y-4">
           <div className="flex flex-col lg:flex-row gap-6 items-start lg:items-center justify-between">
             <BlogCategories selected={theme} onChange={setTheme} />
@@ -148,7 +151,7 @@ export default function Blog() {
                 <div className="grid md:grid-cols-2">
                   <div className="relative h-64 overflow-hidden md:h-auto">
                     <img
-                      src="/images/compendium/hero-aerial.jpg"
+                      src="/images/optimized/hero-aerial-1400.webp"
                       alt="Aerial view of The Harvest site in Witta"
                       className="h-full w-full object-cover opacity-80 transition-transform duration-500 group-hover:scale-105"
                     />
@@ -173,10 +176,11 @@ export default function Blog() {
             </Link>
             <div className="mb-6 flex items-center gap-3 text-stone-500">
               <Mail className="h-4 w-4 text-amber-600" />
-              <Link href="/membership">
-                <a className="text-sm font-semibold text-amber-700 underline-offset-2 hover:underline">
-                  Become a member for letters, invites, and early opportunities.
-                </a>
+              <Link
+                href="/membership"
+                className="text-sm font-semibold text-amber-700 underline-offset-2 hover:underline"
+              >
+                Become a member for letters, invites, and early opportunities.
               </Link>
             </div>
             <Link href="/people/barry-rodgerig">
@@ -184,7 +188,7 @@ export default function Blog() {
                 <div className="grid md:grid-cols-2">
                   <div className="relative h-64 md:h-auto overflow-hidden">
                     <img
-                      src="/images/compendium/barry/IMG_5764.jpg"
+                      src="/images/optimized/barry-5764-1000.webp"
                       alt="Barry at golden hour"
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
@@ -290,6 +294,7 @@ export default function Blog() {
         </div>
       </section>
 
+      <SiteFooter />
     </div>
   );
 }

@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
-import BauhausFooter from "@/components/BauhausFooter";
 import FadeIn from "@/components/FadeIn";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { rootStyle, colors, fonts, detailLabelStyle, detailTextStyle, formLabelStyle, formInputStyle } from "@/styles/brand";
+import { SiteFooter, SiteNav } from "./HarvestReviewTest";
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
@@ -22,7 +22,7 @@ export default function Contact() {
   const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
-    document.title = "Get In Touch - The Harvest";
+    document.title = "Contact The Harvest";
     const meta = (name: string, content: string) => {
       let el = document.querySelector(`meta[property="${name}"]`) as HTMLMetaElement | null;
       if (!el) {
@@ -32,7 +32,7 @@ export default function Contact() {
       }
       el.content = content;
     };
-    meta("og:title", "Get In Touch - The Harvest");
+    meta("og:title", "Contact The Harvest");
     meta("og:description", "Questions, ideas, or just want to say hello.");
   }, []);
 
@@ -69,6 +69,7 @@ export default function Contact() {
 
   return (
     <div style={rootStyle}>
+      <SiteNav />
 
       {/* ─── HERO ─── */}
       <section style={{
@@ -342,7 +343,7 @@ export default function Contact() {
               <h3 style={detailLabelStyle}>VISITS</h3>
               <p style={detailTextStyle}>Not open for casual drop-ins yet.</p>
               <p style={{ ...detailTextStyle, opacity: 0.5, fontSize: 14, marginTop: 8 }}>
-                Come through on Saturday 20 June by RSVP, or send a message to arrange a visit.
+                Join the member list for community-day details, or send a message to arrange a visit.
               </p>
             </div>
           </FadeIn>
@@ -390,7 +391,7 @@ export default function Contact() {
       </section>
 
       {/* ─── FOOTER ─── */}
-      <BauhausFooter isMobile={isMobile} />
+      <SiteFooter />
     </div>
   );
 }

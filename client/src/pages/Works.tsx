@@ -6,7 +6,7 @@ import { works, LIFECYCLE_VOCAB, sortLifecycleTags } from "@/data/works";
 import { EditableText } from "@/components/EditableText";
 import { HarvestImage } from "@/components/HarvestImage";
 import { useAuth } from "@/_core/hooks/useAuth";
-import { SiteFooter, SiteNav } from "./HarvestReviewTest";
+import { harvestButtonClasses, SiteFooter, SiteNav } from "./HarvestReviewTest";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
@@ -48,7 +48,7 @@ export default function Works() {
               The Collection · {works.length} works
             </p>
             <h1 className="text-5xl md:text-7xl font-serif font-bold text-stone-800 mb-8 leading-[0.95]">
-              Everything here<br />is a piece.
+              Everything here <br />is a piece.
             </h1>
             <p className="text-xl text-stone-600 leading-relaxed max-w-2xl mx-auto">
               The Harvest is a slow, living collection. Some works are built.
@@ -184,16 +184,10 @@ export default function Works() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 href="/witta"
-                className="inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full bg-amber-500 text-stone-900 font-semibold hover:bg-amber-400 transition-colors"
+                className={harvestButtonClasses.primary}
               >
                 Add to Witta history
                 <ArrowRight className="h-4 w-4" />
-              </Link>
-              <Link
-                href="/"
-                className="inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full border border-stone-500 text-stone-200 hover:bg-stone-700 transition-colors"
-              >
-                Back to The Harvest
               </Link>
             </div>
           </motion.div>

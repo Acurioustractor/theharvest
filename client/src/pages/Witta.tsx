@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
+import { harvestButtonClasses, SiteFooter, SiteNav } from "./HarvestReviewTest";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
@@ -99,8 +100,9 @@ const timeline = [
 export default function Witta() {
   return (
     <div className="min-h-screen bg-stone-50">
+      <SiteNav />
       {/* Hero */}
-      <section className="relative py-24 bg-stone-100">
+      <section className="relative pb-24 pt-36 bg-stone-100">
         <div className="container">
           <motion.div
             initial={{ opacity: 0, y: 40 }}
@@ -251,7 +253,7 @@ export default function Witta() {
               <div className="grid grid-cols-3 gap-4 my-8">
                 <div>
                   <img
-                    src="/images/witta/history/teutoburg-pit-sawyers-1899.png"
+                    src="/images/witta/history/optimized/teutoburg-pit-sawyers-1899-1000.webp"
                     alt="Pit sawing and cutting timber at C.M. Nothling's Farm, Blackall Range, c. 1899"
                     className="w-full rounded-lg shadow-md"
                   />
@@ -378,7 +380,7 @@ export default function Witta() {
               <div className="grid grid-cols-2 gap-4 my-8">
                 <div>
                   <img
-                    src="/images/witta/history/teutoburg-farm-couple-corn-1899.png"
+                    src="/images/witta/history/optimized/teutoburg-farm-couple-corn-1899-1000.webp"
                     alt="Couple with 13-feet-high corn at Manitzky's Farm, Teutoburg, c. 1899"
                     className="w-full rounded-lg shadow-md"
                   />
@@ -389,7 +391,7 @@ export default function Witta() {
                 </div>
                 <div>
                   <img
-                    src="/images/witta/history/teutoburg-cheese-making-1899.png"
+                    src="/images/witta/history/optimized/teutoburg-cheese-making-1899-1000.webp"
                     alt="Woman with a stack of cheeses at Mrs Bergann's Farm, Teutoburg, c. 1899"
                     className="w-full rounded-lg shadow-md"
                   />
@@ -402,7 +404,7 @@ export default function Witta() {
               <div className="grid grid-cols-3 gap-4 my-8">
                 <div>
                   <img
-                    src="/images/witta/history/teutoburg-man-hoe-1899.png"
+                    src="/images/witta/history/optimized/teutoburg-man-hoe-1899-1000.webp"
                     alt="Man with hoe, corn and sweet potatoes at Manitzky's Farm, Teutoburg, c. 1899"
                     className="w-full rounded-lg shadow-md"
                   />
@@ -413,7 +415,7 @@ export default function Witta() {
                 </div>
                 <div>
                   <img
-                    src="/images/witta/history/teutoburg-children-grapevines-1899.png"
+                    src="/images/witta/history/optimized/teutoburg-children-grapevines-1899-1000.webp"
                     alt="Three children with grape vines and corn at Manitzky's Farm, Teutoburg, c. 1899"
                     className="w-full rounded-lg shadow-md"
                   />
@@ -424,7 +426,7 @@ export default function Witta() {
                 </div>
                 <div>
                   <img
-                    src="/images/witta/history/teutoburg-nothling-cottage-1899.png"
+                    src="/images/witta/history/optimized/teutoburg-nothling-cottage-1899-1000.webp"
                     alt="C.M. Nothling's vineyard and shingle roof cottage at Teutoburg, c. 1899"
                     className="w-full rounded-lg shadow-md"
                   />
@@ -700,10 +702,10 @@ export default function Witta() {
               { src: "/images/site-plan/layers/00-aerial-photo.jpeg", caption: "Drone photograph, 2024", tag: "The Site" },
               // Historical Archive
               { src: "/images/witta/history/witta-towards-conondale-1931.png", caption: "Looking from Witta towards Conondale, c. 1931", tag: "Historical" },
-              { src: "/images/witta/history/teutoburg-farm-couple-corn-1899.png", caption: "Manitzky's Farm, Teutoburg, c. 1899", tag: "Historical" },
-              { src: "/images/witta/history/teutoburg-cheese-making-1899.png", caption: "Cheese-making at Bergann's Farm, c. 1899", tag: "Historical" },
-              { src: "/images/witta/history/teutoburg-nothling-cottage-1899.png", caption: "Nothling's cottage and vineyard, c. 1899", tag: "Historical" },
-              { src: "/images/witta/history/teutoburg-pit-sawyers-1899.png", caption: "Pit sawing at Nothling's Farm, c. 1899", tag: "Historical" },
+              { src: "/images/witta/history/optimized/teutoburg-farm-couple-corn-1899-1000.webp", caption: "Manitzky's Farm, Teutoburg, c. 1899", tag: "Historical" },
+              { src: "/images/witta/history/optimized/teutoburg-cheese-making-1899-1000.webp", caption: "Cheese-making at Bergann's Farm, c. 1899", tag: "Historical" },
+              { src: "/images/witta/history/optimized/teutoburg-nothling-cottage-1899-1000.webp", caption: "Nothling's cottage and vineyard, c. 1899", tag: "Historical" },
+              { src: "/images/witta/history/optimized/teutoburg-pit-sawyers-1899-1000.webp", caption: "Pit sawing at Nothling's Farm, c. 1899", tag: "Historical" },
               { src: "/images/witta/history/bullock-team-eudlo-1930.jpg", caption: "Bullock team, Eudlo district, c. 1930", tag: "Historical" },
               { src: "/images/witta/history/maleny-sawmill-exterior.jpg", caption: "Maleny Sawmill, Blackall Range", tag: "Historical" },
               { src: "/images/witta/history/mapleton-tramway-timber-hauling.jpg", caption: "Mapleton Tramway hauling timber", tag: "Historical" },
@@ -753,29 +755,16 @@ export default function Witta() {
               The best way to understand this place is to be here. Walk the land,
               meet the people, and feel why this corner of the hinterland is so special.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button
-                size="lg"
-                className="bg-amber-500 hover:bg-amber-600 text-black font-semibold"
-                asChild
-              >
-                <Link href="/visit">
-                  Plan Your Visit
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="border-amber-300 text-amber-700 hover:bg-amber-50"
-                asChild
-              >
-                <Link href="/stories">Read Our Stories</Link>
-              </Button>
+            <div className="flex justify-center">
+              <Link href="/contact" className={harvestButtonClasses.primary}>
+                Contact The Harvest
+                <ArrowRight className="h-5 w-5" />
+              </Link>
             </div>
           </motion.div>
         </div>
       </section>
+      <SiteFooter />
     </div>
   );
 }

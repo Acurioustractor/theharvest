@@ -137,8 +137,8 @@ export const works: Work[] = [
     subtitle: "The volcano made the soil. The community works the rows.",
     lifecycleTags: ["planted", "growing"],
     materials: "Red volcanic soil · seasonal beds · local hands",
-    year: "Established 2025, planted ongoing",
-    heroImage: "/images/compendium/sophie-garden.jpg",
+    year: "Established 2025, planting ongoing",
+    heroImage: "/images/optimized/sophie-garden-1000.webp",
     heroAlt: "Sophie working in the garden at The Harvest",
     blurb:
       "The reason anything grows here is Jurassic. Volcanic red soil, two metres of rain a year, mist from the coast that gets pushed up the range. The garden is half landscape, half practice.",
@@ -187,10 +187,10 @@ export const works: Work[] = [
     title: "Milk Crate Pavilion",
     subtitle: "A gathering structure made from the dairy industry’s everyday object.",
     lifecycleTags: ["building"],
-    materials: "Reclaimed milk crates, scaffold, salvaged timber, community hands",
+    materials: "Reclaimed milk crates · scaffold · salvaged timber · community hands",
     year: "Built March 2026",
-    heroImage: "/images/social/04-radical-scoops.png",
-    heroAlt: "The Milk Crate Pavilion under construction at The Harvest, March 2026",
+    heroImage: "/images/optimized/gathering-recap-crowd-1200.webp",
+    heroAlt: "People gathered at The Harvest during the milk crate pavilion build",
     heroCredit: "Radical Scoops fellowship · Regional Arts Australia",
     blurb:
       "Eighty people built it together in a single weekend. Milk crates from the dairy industry, scaffold poles, found timber. The first piece of architecture on the site is also the most communal.",
@@ -245,7 +245,7 @@ export const works: Work[] = [
     lifecycleTags: ["building", "making"],
     materials: "Reclaimed St Mary's Cathedral timber · garden paths · local source trail",
     year: "Sourced 2026",
-    heroImage: "/images/compendium/barry/IMG_5745.jpg",
+    heroImage: "/images/optimized/barry-5745-1000.webp",
     heroAlt: "Reclaimed timber connected to the garden paths at The Harvest",
     blurb:
       "The garden paths are being made from timber reclaimed from St Mary's Cathedral in Sydney. The source trail leads back to trees cut from the Witta region, returning as walkways through the garden.",
@@ -290,7 +290,7 @@ export const works: Work[] = [
     lifecycleTags: ["concept", "planned"],
     materials: "Local makers · shared shelf test · low overhead · honesty more than ornament",
     year: "Proposed June 2026",
-    heroImage: "/images/local-produce.jpg",
+    heroImage: "/images/optimized/local-produce-760.webp",
     heroAlt: "Local produce gathered for The Harvest shop test",
     blurb:
       "Witta has roughly 1,300 residents and no shops, no pub. The Shop is a small, slow attempt to put one back with a shared shelf and the makers who already live here.",
@@ -327,15 +327,15 @@ export const works: Work[] = [
     ],
     storyLinks: [
       {
-        label: "Express interest in providing shop produce",
+        label: "Offer produce for the first shelf",
         href: "/works/the-shop#shop-interest",
       },
       {
-        label: "Express interest in stocking something you make",
+        label: "Stock something you make",
         href: "/works/the-shop#shop-interest",
       },
       {
-        label: "Ask about helping shape The Shop",
+        label: "Help shape The Shop",
         href: "/works/the-shop#shop-interest",
       },
     ],
@@ -344,13 +344,13 @@ export const works: Work[] = [
   {
     number: "Work 05",
     slug: "kids-area",
-    title: "Kids Area",
+    title: "Kids' Area",
     subtitle: "A play area shaped with the kids who will use it",
     lifecycleTags: ["consulting", "planned"],
     materials: "Logs · shade · loose parts · local kids' ideas",
     year: "In design 2026",
-    heroImage: "/images/site-plan/inspiration/log-climbing-frame.jpeg",
-    heroAlt: "Log climbing frame reference for the kids area at The Harvest",
+    heroImage: "/images/optimized/team-garden-selfie-1000.webp",
+    heroAlt: "Harvest garden crew gathered at the old nursery site",
     blurb:
       "The kids area is being shaped with local kids, not handed down as a finished playground. They help decide what belongs there, what it should feel like, and what makes them want to come back.",
     whatItIs:
@@ -384,16 +384,16 @@ export const works: Work[] = [
     number: "Work 06",
     slug: "the-milk-man",
     title: "The Milk Man",
-    subtitle: "A milk-crate sentinel at the front of The Harvest",
+    subtitle: "A milk crate sentinel at the front of The Harvest",
     lifecycleTags: ["built", "made"],
     materials: "Milk crates · stacked figure · front gate marker · dairy memory",
     year: "Standing now",
-    heroImage: "/images/site-plan/inspiration/crate-wall.jpeg",
-    heroAlt: "Milk crate structure connected to The Milk Man at The Harvest",
+    heroImage: "/images/optimized/member-welcome-crates-1200.webp",
+    heroAlt: "Milk crates stacked at The Harvest",
     blurb:
       "The Milk Man stands at the front of The Harvest: a figure made from milk crates, holding the dairy story at the gate before people even read a sign.",
     whatItIs:
-      "A milk-crate figure at the front of the site. Part sign, part marker, part local joke with a serious backbone: the dairy industry made the object, and now the object watches the next version of the place arrive.",
+      "A milk crate figure at the front of the site. Part sign, part marker, part local joke with a serious backbone: the dairy industry made the object, and now the object watches the next version of the place arrive.",
     why:
       "The Harvest needs recognisable things people can point at, remember, and talk about. The Milk Man does that before anyone reads a paragraph. He makes the dairy thread visible without turning it into a museum label.",
     how:

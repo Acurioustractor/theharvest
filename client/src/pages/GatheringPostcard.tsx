@@ -121,7 +121,7 @@ export default function GatheringPostcard() {
           }}>
             {/* Logo — centred, bigger */}
             <img
-              src="/images/logo-v1-dark-clean.png"
+              src="/images/the-harvest-witta-logo.png"
               alt="The Harvest"
               style={{
                 height: 40,

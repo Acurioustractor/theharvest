@@ -6,21 +6,23 @@ Core public pages:
 - Home: https://www.theharvestwitta.com.au/
 - What is The Harvest: https://www.theharvestwitta.com.au/what-is-the-harvest
 - Works collection: https://www.theharvestwitta.com.au/works
-- Member list and contact form: https://www.theharvestwitta.com.au/membership
+- Membership: https://www.theharvestwitta.com.au/membership
+- Contact: https://www.theharvestwitta.com.au/contact
+- Privacy: https://www.theharvestwitta.com.au/privacy
 - Contact form: https://www.theharvestwitta.com.au/membership#questions
 - Witta history: https://www.theharvestwitta.com.au/witta
-- Journal: https://www.theharvestwitta.com.au/blog
+- Blog: https://www.theharvestwitta.com.au/blog
 
 Current works:
 - The Garden: https://www.theharvestwitta.com.au/works/the-garden
 - Milk Crate Pavilion: https://www.theharvestwitta.com.au/works/milk-crate-pavilion
 - The Garden Paths: https://www.theharvestwitta.com.au/works/the-cedar
 - The Shop: https://www.theharvestwitta.com.au/works/the-shop
-- Kids Area: https://www.theharvestwitta.com.au/works/kids-area
+- Kids' Area: https://www.theharvestwitta.com.au/works/kids-area
 - The Milk Man: https://www.theharvestwitta.com.au/works/the-milk-man
 
 Short description:
-The Harvest is a place to grow, make and gather. The first public focus is the garden, with works in progress including the Milk Crate Pavilion, reclaimed timber garden paths, the Kids Area, The Shop, and The Milk Man.
+The Harvest is a place to grow, make and gather. The first public focus is the garden, with works in progress including the Milk Crate Pavilion, reclaimed timber garden paths, the Kids' Area, The Shop, and The Milk Man.
 
 Contact:
 Use the membership and question form at https://www.theharvestwitta.com.au/membership#questions.

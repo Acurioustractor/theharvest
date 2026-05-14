@@ -8,28 +8,28 @@ import {
   Users,
 } from "lucide-react";
 import { HarvestImage } from "@/components/HarvestImage";
-import { SiteFooter, SiteNav } from "./HarvestReviewTest";
+import { harvestButtonClasses, SiteFooter, SiteNav } from "./HarvestReviewTest";
 
 const rooms = [
   {
     name: "Garden",
     verb: "Grow",
     body: "Beds, paths, nursery life, soil, work days, and kids with dirt on their hands.",
-    image: "/images/compendium/sophie-garden.jpg",
+    image: "/images/optimized/sophie-garden-1000.webp",
     icon: Sprout,
   },
   {
-    name: "Making",
+    name: "Art Space",
     verb: "Make",
     body: "A shed, a workbench, timber, tools, repair, workshops, residencies, and walls that can change.",
-    image: "/images/compendium/barry/IMG_5745.jpg",
+    image: "/images/optimized/barry-5745-1000.webp",
     icon: Hammer,
   },
   {
-    name: "Gathering",
+    name: "Kitchen and table",
     verb: "Gather",
     body: "The Milk Crate Pavilion, the long table, work days, open days, music, markets, and the room where neighbours actually meet.",
-    image: "/images/harvest-eat.jpg",
+    image: "/images/optimized/community-gathering-1000.webp",
     icon: Users,
   },
 ];
@@ -56,7 +56,7 @@ export default function HarvestJourneyPost() {
           <HarvestImage
             page="what-is-the-harvest"
             slot="hero-aerial"
-            src="/images/compendium/hero-aerial.jpg"
+            src="/images/optimized/hero-aerial-1400.webp"
             alt="Aerial view of The Harvest site in Witta"
             size="hero"
             priority
@@ -75,21 +75,6 @@ export default function HarvestJourneyPost() {
               <p className="mt-7 max-w-2xl text-xl leading-relaxed text-white/84 md:text-2xl">
                 The Harvest is a community garden and creative gathering place in Witta on Jinibara Country, for locals and visitors to grow, make, and gather.
               </p>
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <Link
-                  href="/membership"
-                  className="inline-flex min-h-12 items-center justify-center gap-2 bg-[#C4922A] px-6 py-3 font-semibold text-stone-950 transition hover:bg-[#E0AD43]"
-                >
-                  Become a member
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-                <Link
-                  href="/works"
-                  className="inline-flex min-h-12 items-center justify-center border border-white/34 px-6 py-3 font-semibold text-white transition hover:border-white hover:bg-white/10"
-                >
-                  See The Works
-                </Link>
-              </div>
             </div>
           </div>
         </header>
@@ -115,6 +100,9 @@ export default function HarvestJourneyPost() {
                 place where gardeners from around the region came for plants, seeds,
                 advice, and growing knowledge.
               </p>
+              <h3 className="pt-2 text-3xl font-black leading-tight text-[#8B4A2A] md:text-4xl">
+                Grow. Make. Gather.
+              </h3>
               <p>
                 <strong>Grow is the garden.</strong> Paths, beds, seedlings, working
                 bees, compost, kids, and food in the ground. It is the part of the
@@ -133,7 +121,8 @@ export default function HarvestJourneyPost() {
               </p>
               <p>
                 The first story thread is timber, dairy, and co-operatives. Timber in
-                the shed. Milk crates in the pavilion. A table before the structure.
+                the shed. Milk crates in the pavilion. Shared tools, open books, and
+                a table people can sit at before any formal co-op structure is claimed.
               </p>
               <p>
                 We're working toward the first public day around the end of June. A community
@@ -218,16 +207,9 @@ export default function HarvestJourneyPost() {
               </p>
               <Link
                 href="/membership"
-                className="mt-7 inline-flex min-h-12 items-center justify-center gap-2 bg-[#C4922A] px-6 py-3 font-semibold text-stone-950 transition hover:bg-[#E0AD43]"
+                className={`mt-7 ${harvestButtonClasses.primary}`}
               >
                 Become a member
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-              <Link
-                href="/works"
-                className="mt-3 inline-flex min-h-12 items-center justify-center gap-2 border border-white/22 px-6 py-3 font-semibold text-white transition hover:border-white hover:bg-white/10"
-              >
-                See the works
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
