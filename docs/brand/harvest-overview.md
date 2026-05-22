@@ -77,27 +77,32 @@ The current works to keep clear:
 - Co-op Type Shop: a local produce shop and shared table for nearby growers, makers, cooks, gardeners, and neighbours. Do not imply a formal cooperative exists until governance is real.
 - Garden to Cafe Food Loop: the hope that the garden slowly grows into the food story for the future cafe and restaurant space inside. Do not overpromise self-sufficiency.
 
-## 20 June 2026 community day
+## 20 June 2026 soft opening
+
+Frame locked 2026-05-22 via [harvest-launch-alignment-2026-05-22.md](../strategy/harvest-launch-alignment-2026-05-22.md). Path A.
 
 Working details:
 
 - Date: Saturday 20 June 2026.
-- Time: 10am to 3pm.
+- Time: 3pm to 7pm.
 - Place: 9 Gumland Drive, Witta, on Jinibara Country.
-- Shape: a community celebration and working open day, not a finished venue reveal.
-- Experience: garden walks, milk crate pavilion, timber walkways, kids playground planning, co-op shop table, local food, music, and practical asks.
+- Audience: member list only. About 40 seats.
+- Shape: a soft opening, not a launch. Proof night for the operating system.
+- Experience: garden walk, simple food under the pavilion (pizza if oven + licence land, otherwise tea and snacks), a short circle about what's next, soft close. No bar, no register, no open mic at this scale.
 
-Use the day to show dairy, timber, and co-operative memory through things people can touch:
+Use the night to show dairy, timber, and co-operative memory through what people can touch on site:
 
-- dairy through milk crates, the pavilion, milk bar thinking, and local food history
-- timber through walkways, reclaimed material, tools, Barry's shed, and Witta sawmill memory
-- co-operative interest through local produce, shared tools, open books, a shop table, and practical participation
+- dairy through milk crates and the pavilion
+- timber through the cedar work and reclaimed material
+- co-operative interest through the room being open at all
 
-The practical ask should stay simple:
+Bigger public day lands later in the year, once the operating rhythm is real. Until then, the practical ask stays small:
 
 ```text
-Bring hands, materials, stories, food, tools, or time.
+Member list signup. Reply to the email invite with seat count and dietary need.
 ```
+
+Source-of-truth Notion page: [Harvest Launch Alignment - Countdown to 20 June 2026](https://www.notion.so/acurioustractor/Harvest-Launch-Alignment-Countdown-to-20-June-2026-363ebcf981cf81b19deef477e76983e0).
 
 ## How the website should explain it
 
@@ -133,12 +138,37 @@ capture -> source note -> room -> work/story -> page -> GHL publishes -> Notion 
 
 AI can help crop, arrange, caption, and plan. It should not invent Harvest scenes, people, interiors, or history.
 
-## Current working surfaces
+## Phase lock
 
-- Website test page: `/new-look-test`
-- Launch redesign prototype: `/launch-redesign`
-- Works collection: `/works`
-- Witta history: `/witta`
+Only use these pages for the current phase:
+
+- `/what-is-the-harvest`
+- `/works`
+- `/works/the-garden`
+- `/works/milk-crate-pavilion`
+- `/works/the-cedar`
+- `/works/the-shop`
+- `/works/kids-area`
+- `/works/the-milk-man`
+- `/membership`
+- `/membership#shop-interest`
+- `/witta`
+- `/blog`
+- `/blog/from-clearing-to-care-sophie-harvest-garden`
+- `/people`
+- `/people/barry-rodgerig`
+- `/contact`
+- `/photo-wall`
+- `/garden-launch`
+
+`/garden-launch` is email-led for now. It can explain the day, but it must not collect public RSVPs until Ben explicitly reopens that form. The current RSVP path is: member list -> GHL email -> people reply -> manual headcount.
+
+Keep the root shell separate for now. Do not expand `/` in this phase unless asked.
+
+Treat everything else in `App.tsx` as frozen or internal for now, especially story/compendium/gather/visit/whats-on/venue-hire/enterprises/site-plan/zone-workshop/social-planner/about/get-involved/journey/launch-redesign/review-test/admin routes.
+
+Keep these context files in view:
+
 - Pencil planning board: `untitled.pen`, frame `Harvest connected photo-story planning board`
 - Brand memory: `DESIGN.md`
 - Asset rules: `docs/brand/real-photo-and-history-assets.md`

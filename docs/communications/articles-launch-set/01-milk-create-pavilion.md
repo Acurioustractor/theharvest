@@ -87,7 +87,7 @@ The pavilion has already hosted:
 - A Wednesday Maintenance Crew lunch
 - An informal artists' meeting for the upcoming Creative Australia residencies
 
-It will host the **Garden Launch and Community Day on Saturday 20 June 2026**. If you didn't help build it, this is the day to come and sit under it.
+It will host the **first soft opening on Saturday 20 June 2026, member list only**. A small group, simple food, and a short circle about what comes next. The bigger public day lands later in the year. If you didn't help build the pavilion, the member list is how you get under it.
 
 ### Why this is the first piece in the collection
 
@@ -95,9 +95,9 @@ The Harvest is being made as a slow museum. Each part is a piece. The garden is 
 
 The pavilion is the piece we needed to make first because it makes everything else possible. A community can't co-design a place it can't gather in. So we built the gathering first, and now we get to keep building everything else underneath it.
 
-If you want to come and see what gathering it sits over, come on the 20th.
+If you want to come and see what gathering it sits over, join the member list. The first invite goes there.
 
-[Save your spot at the long table → /garden-launch](https://theharvestwitta.com.au/garden-launch)
+[Join the member list for the invite -> /membership](https://theharvestwitta.com.au/membership)
 
 ---
 

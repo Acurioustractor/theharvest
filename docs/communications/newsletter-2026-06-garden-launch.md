@@ -1,9 +1,12 @@
-# Newsletter — Garden Launch + Community Day
+# Newsletter — Soft Opening, 20 June 2026
 
-**Send window:** ~10 days out (Wed 10 June 2026), reminder 48 hrs out (Thu 18 June)
-**GHL tag to filter audience:** Witta locals + EOI list + prior gathering attendees
-**RSVP destination:** https://theharvestwitta.com.au/garden-launch
+> **Updated 2026-05-22 to Path A frame.** This is the invite-only soft opening version. The earlier "Garden Launch + Community Day" public-frame draft was retired by [harvest-launch-alignment-2026-05-22.md](../strategy/harvest-launch-alignment-2026-05-22.md). Companion cadence: [launch-countdown-comms-cadence.md](launch-countdown-comms-cadence.md).
+
+**Send window:** Wed 27 May 2026, late morning Brisbane (W-3 invite per the cadence)
+**GHL audience filter:** `harvest-member` only. Do NOT widen to `harvest-newsletter` for this send.
+**RSVP path:** reply to the email. No public form. Manual headcount.
 **Reply-to:** hello@theharvestwitta.com.au
+**Tag added on reply (manual):** `witta-soft-opening-2026-06-20`
 
 > Voice rules applied: no em-dashes; concrete over abstract; Witta / Jinibara Country named; Curtis method (specific, plain). No "We're excited to" / "We're thrilled" / "embark on a journey" tells.
 
@@ -11,38 +14,37 @@
 
 ## Plain-text version
 
-**Subject:** A long table, a new pavilion, and the garden finally open. Saturday 20 June.
-**Preheader:** 10am to 3pm at The Harvest, Witta. Free. RSVP for the food.
+**Subject:** First open day at The Harvest. Saturday 20 June. Member list only.
+**Preheader:** A small group. Pizza if the oven is ready. Tea if not. Reply for a seat.
 
 Hello,
 
-A quick note before the day fills up.
+We are opening the gate at The Harvest for the first time.
 
-On Saturday 20 June, from 10am to 3pm, we are opening The Harvest properly for the first time. Garden Launch and Community Day. Free. Out at 9 Gumland Drive, Witta. On Jinibara Country.
+Saturday 20 June 2026. 3pm to 7pm. Member list only. About 40 seats. Free. Out at 9 Gumland Drive, Witta. On Jinibara Country.
 
-The garden's beds are in. The Milk Create Pavilion that eighty of you helped build in March is up and shading. The kitchen will be feeding. The kids will have a corner of their own. The long table will stretch as far as it needs to.
+This is a soft opening. Not a launch. We want to know if we can open the gate, feed people something simple, hold a clear room, and close it cleanly. The bigger public day comes later in the year.
 
-Soft schedule, no hurry.
+The shape:
 
-- Welcome to Country and a walk through the new garden beds
-- Lunch under the pavilion, wood-fired, hinterland-grown
-- Kids co-design their own corner of the site
-- Open mic in the afternoon. Five minutes each. What's missing in Witta? What's next? What do you want to see grow here?
+- 3pm: gate opens. Walk the garden with us.
+- 4 to 6pm: simple food under the Milk Create Pavilion. Pizza if the oven and licence are ready, tea and something simple if not. We will write again on Thursday 18 June with what is confirmed.
+- 5pm: a short circle. One question. What do you want to see at The Harvest in the next year? We listen and write it down.
+- 7pm: soft close. The kettle stays on for whoever is still around.
 
-Come for an hour or stay all afternoon. Bring kids. Bring a friend. Bring an empty seat for someone you would like to meet.
+Come for an hour or stay all afternoon. Bring kids if you have them, the chalk and paper will be on the kids' corner table. Bring a friend if you would like, but only one or two, this one is small.
 
-We need a rough headcount so the food story works. RSVP here:
+We need a rough headcount.
 
-https://theharvestwitta.com.au/garden-launch
+Reply to this email with your name and how many seats you need. If you have a strong dietary need, tell us now and we will plan around it. If you have a question about parking or arrival, ask in the same reply.
 
-A reminder will land on the Thursday before with parking and the short program.
+A practical note will land in your inbox on Thursday 18 June with everything settled.
 
-See you on the 20th.
+See you on the 20th,
+Ben + Nic
+The Harvest, Witta. Jinibara Country.
 
-Ben and Nic
-The Harvest, Witta
-
-PS. If you cannot make it but want to follow what comes next, the works we are building are at theharvestwitta.com.au/works. The first dispatch from the pavilion build will land in your inbox in the coming weeks.
+PS. If you cannot make it but want to follow what comes next, the works we are building are at theharvestwitta.com.au/works. The first dispatch from the pavilion build went up on /blog this week.
 
 ---
 
@@ -51,39 +53,39 @@ PS. If you cannot make it but want to follow what comes next, the works we are b
 ```html
 <p>Hello,</p>
 
-<p>A quick note before the day fills up.</p>
+<p>We are opening the gate at The Harvest for the first time.</p>
 
-<p>On <strong>Saturday 20 June, 10am to 3pm</strong>, we are opening The Harvest properly for the first time. <strong>Garden Launch and Community Day.</strong> Free. Out at 9 Gumland Drive, Witta. On Jinibara Country.</p>
+<p><strong>Saturday 20 June 2026. 3pm to 7pm.</strong> Member list only. About 40 seats. Free. Out at 9 Gumland Drive, Witta. On Jinibara Country.</p>
 
-<p>The garden's beds are in. The Milk Create Pavilion that eighty of you helped build in March is up and shading. The kitchen will be feeding. The kids will have a corner of their own. The long table will stretch as far as it needs to.</p>
+<p>This is a soft opening. Not a launch. We want to know if we can open the gate, feed people something simple, hold a clear room, and close it cleanly. The bigger public day comes later in the year.</p>
 
-<p><strong>Soft schedule, no hurry.</strong></p>
+<p><strong>The shape:</strong></p>
 <ul>
-  <li>Welcome to Country and a walk through the new garden beds</li>
-  <li>Lunch under the pavilion, wood-fired, hinterland-grown</li>
-  <li>Kids co-design their own corner of the site</li>
-  <li>Open mic in the afternoon. Five minutes each. What's missing in Witta? What's next?</li>
+  <li><strong>3pm:</strong> gate opens. Walk the garden with us.</li>
+  <li><strong>4 to 6pm:</strong> simple food under the Milk Create Pavilion. Pizza if the oven and licence are ready, tea and something simple if not. We will write again Thursday 18 June with what is confirmed.</li>
+  <li><strong>5pm:</strong> a short circle. One question. What do you want to see at The Harvest in the next year?</li>
+  <li><strong>7pm:</strong> soft close. The kettle stays on for whoever is still around.</li>
 </ul>
 
-<p>Come for an hour or stay all afternoon. Bring kids. Bring a friend. Bring an empty seat for someone you would like to meet.</p>
+<p>Come for an hour or stay all afternoon. Bring kids if you have them, the chalk and paper will be on the kids' corner table. Bring a friend if you would like, but only one or two, this one is small.</p>
 
-<p>We need a rough headcount so the food story works.</p>
+<p>We need a rough headcount.</p>
 
 <p style="text-align: center; margin: 32px 0;">
-  <a href="https://theharvestwitta.com.au/garden-launch"
+  <a href="mailto:hello@theharvestwitta.com.au?subject=Soft%20Opening%20seats"
      style="display: inline-block; background: #C4922A; color: #1C1917;
             font-weight: 600; padding: 14px 32px; border-radius: 999px;
             text-decoration: none; font-family: 'Montserrat', sans-serif;
             letter-spacing: 0.05em;">
-    Save your spot
+    Reply with seat count
   </a>
 </p>
 
-<p>A reminder will land on the Thursday before with parking and the short program.</p>
+<p>A practical note will land in your inbox on Thursday 18 June with everything settled.</p>
 
 <p>See you on the 20th,<br>
-<strong>Ben and Nic</strong><br>
-<em>The Harvest, Witta</em></p>
+<strong>Ben + Nic</strong><br>
+<em>The Harvest, Witta. Jinibara Country.</em></p>
 
 <hr style="border: none; border-top: 1px solid #E7E5E4; margin: 40px 0;">
 
@@ -92,48 +94,110 @@ PS. If you cannot make it but want to follow what comes next, the works we are b
   are building are at
   <a href="https://theharvestwitta.com.au/works" style="color: #B45309;">
     theharvestwitta.com.au/works</a>.
-  The first dispatch from the pavilion build will land in your inbox in the
-  coming weeks.
+  The first dispatch from the pavilion build went up on
+  <a href="https://theharvestwitta.com.au/blog" style="color: #B45309;">/blog</a>
+  this week.
 </p>
 ```
 
 ---
 
-## Reminder note (Thu 18 June, ~48 hrs out)
+## Nudge note (Fri 5 June, only if reply count is thin)
 
-**Subject:** Saturday at The Harvest. A few practical notes.
-**Preheader:** Parking, what to bring, soft program.
+**Subject:** Quick nudge — soft opening reply if you'd like a seat
+**Preheader:** Saturday 20 June, member list only. Reply for a seat.
 
 Hello,
 
-Two days from now. Saturday 20 June, 10am to 3pm. The Harvest, 9 Gumland Drive, Witta.
+If you missed the note last week, the soft opening at The Harvest is on Saturday 20 June, 3pm to 7pm. Member list only. About 40 seats. Free.
+
+If you want a seat, reply to this email with your name and how many people.
+
+If you are already on the list, no action needed. We will write again on Thursday 18 June with the practical note.
+
+Ben + Nic
+The Harvest, Witta.
+
+---
+
+## Practical note (Thu 18 June, ~48 hrs out)
+
+**Subject:** Saturday at The Harvest. A few practical notes.
+**Preheader:** Parking, arrival, what to bring, the shape of the day.
+**Audience:** `harvest-member` filtered by `witta-soft-opening-2026-06-20` (those who replied).
+
+Hello,
+
+Two days from now. Saturday 20 June, 3pm to 7pm. The Harvest, 9 Gumland Drive, Witta.
 
 A few practical notes:
 
-- **Parking:** along Gumland Drive. Lots of room. We'll have small signs.
-- **What to bring:** yourself. Maybe a hat. The pavilion shades but not all of the site.
-- **Food:** wood-fired lunch, on us. If you have a strong dietary need, reply to this email and we'll plan around it.
+- **Parking:** along Gumland Drive. We will have small signs from the gate.
+- **Arrival:** gate opens 3pm. No need to be there at three on the dot. Come when you can.
+- **Food:** [pizza, on us, three types — confirmed Wed 17 June] OR [tea, water, and simple snacks — the oven was not quite ready, we will do pizza on a later opening]. If you told us about a dietary need, we have planned around it.
 - **Weather:** rain or shine. The pavilion is the pavilion.
-- **Kids:** very welcome. The co-design corner runs roughly 11am to 1pm. Markers, chalk, butcher's paper.
+- **Kids:** very welcome. Chalk and paper are on the kids' corner table. Not a programmed activity, just a place for them to sit.
+- **The short circle:** 5pm, thirty minutes. One question. Listen and write it down.
 
-Soft program:
-
-- 10am — Welcome to Country, garden walk
-- 11am — Pavilion is open. Kids' corner running.
-- 12.30pm — Long table lunch
-- 2pm — Open mic. What's missing in Witta?
-- 3pm — Soft close. Stay if you want, the kettle stays on.
-
-If you've changed your mind on RSVP either way, no problem. Just hit reply so the kitchen knows.
+If you have changed your mind on a seat either way, hit reply so the kitchen knows.
 
 See you Saturday,
-**Ben and Nic**
+**Ben + Nic**
+The Harvest, Witta.
+
+---
+
+## Thank-you + photos (Wed 24 June, post-event)
+
+**Subject:** Thank you for the first night
+**Preheader:** A few photos, a few notes, and what's next.
+**Audience:** All `harvest-member` (including no-shows, to keep the list warm).
+**Tag added to replies:** `harvest-gathering-photos`
+
+Hello,
+
+Saturday was the first night we opened the gate at The Harvest.
+
+[One short paragraph, written morning-after, specific not abstract. Number of people. One human moment. One thing the room said. One thing that was not perfect and what we will change.]
+
+A few photos:
+
+[3-5 photos, permission cleared]
+
+What is next:
+
+[One sentence about the next opening, or "we are going to sit with what we learned for two weeks before announcing the next one."]
+
+If you came and want to leave one word about the night, hit reply. If you did not make it and want to come to the next one, hit reply too.
+
+Ben + Nic
+The Harvest, Witta. Jinibara Country.
 
 ---
 
 ## Notes for sending
 
-- **Audience filter (GHL):** tag = `harvest-website` AND interest contains "harvest" OR previous gathering attendee. Check tag combinations before send.
-- **Workflow:** if `GHL_GATHERING_RSVP_WORKFLOW_ID` is set, the RSVP page already triggers it on submission. The workflow can hold a follow-up email; doesn't need to live in this newsletter.
-- **A/B subject:** if you want to test, swap the second variant with: *"Saturday 20 June. The pavilion is up. The garden is open."*
-- **After-event:** plan a "thank you + photos" send within 5 days (use `harvest-gathering-photos` tag for the photo set).
+- **Audience filter (GHL):** `harvest-member` for invite, nudge, and thank-you. Add `witta-soft-opening-2026-06-20` filter for the Thursday practical note.
+- **Workflow:** do NOT use `GHL_GATHERING_RSVP_WORKFLOW_ID` — the public RSVP form is dormant. Replies to the email are the headcount source.
+- **A/B subject:** if you want to test, swap with: *"Saturday 20 June. The first time we open the gate."*
+- **Reply handling:** for each reply, add GHL contact note "Soft-opening RSVP: [n] seats, [dietary], [questions]" and tag `witta-soft-opening-2026-06-20`. This makes the Thursday practical-note audience filterable.
+
+## Quick reference
+
+| Touchpoint | When | Audience | Voice check |
+|---|---|---|---|
+| Invite | Wed 27 May | `harvest-member` | Soft, specific, member-list-only made explicit |
+| Nudge (optional) | Fri 5 June | `harvest-member` who hasn't replied | Light, no pressure |
+| Practical note | Thu 18 June | `harvest-member` + `witta-soft-opening-2026-06-20` | Bullet-led, what they need to know |
+| Thank-you | Wed 24 June | `harvest-member` (all) | Morning-after, specific, honest about what was imperfect |
+
+## Voice + style check (before scheduling each send)
+
+- [ ] No em-dashes
+- [ ] No AI vocab (vibrant, tapestry, testament, underscore, pivotal, crucial)
+- [ ] No "we're excited to", "we're thrilled", "embark on a journey"
+- [ ] No "working bees" (use "work days" or "Wednesday crew")
+- [ ] No fabricated counts, dates, or material origins
+- [ ] Jinibara Country named explicitly
+- [ ] Witta named explicitly
+- [ ] Reply-to address: hello@theharvestwitta.com.au

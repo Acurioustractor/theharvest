@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
 import {
@@ -6,30 +6,21 @@ import {
   Calendar,
   Clock,
   MapPin,
-  Mail,
-  Phone,
   Users,
-  CheckCircle2,
   Sparkles,
-  Mic,
-  Music,
+  Flame,
   Sprout,
-  Hammer,
+  CheckCircle2,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { trpc } from "@/lib/trpc";
-import { toast } from "sonner";
 
 const EVENT = {
   date: "Saturday 20 June 2026",
-  time: "10am – 3pm",
+  time: "3pm – 7pm",
   address: "9 Gumland Drive, Witta QLD 4552",
   shortAddress: "Witta · Sunshine Coast Hinterland",
   acknowledgement: "Jinibara Country",
+  audience: "Member list only",
 };
 
 const fadeInUp = {
@@ -43,46 +34,31 @@ const programItems = [
   {
     icon: Sprout,
     title: "The Garden Walk",
-    body: "We'll walk the new beds together — what's in, what's coming, who's tending which row.",
+    body: "We'll walk the new beds together. What's in, what's coming, who's tending which row.",
   },
   {
-    icon: Hammer,
-    title: "Milk Create Pavilion open",
-    body: "First public day under the pavilion, built by 80 of you in March. Same crates, new shade.",
-  },
-  {
-    icon: Music,
-    title: "Long table lunch",
-    body: "Wood-fired, hinterland-grown, chef-led. Free. BYO seat or bring an empty one for a neighbour.",
-  },
-  {
-    icon: Mic,
-    title: "Kids' co-design",
-    body: "The children plan their own corner of The Harvest. Markers, chalk, whatever floats up.",
+    icon: Flame,
+    title: "Pizza or tea, depending on what landed",
+    body: "If the oven and the food licence are both ready, three pizza types. If not, tea, water, and something simple. No surprise. No bar. No register.",
   },
   {
     icon: Users,
-    title: "Open mic — what's missing in Witta?",
-    body: "A few minutes each, anyone who wants to speak. We listen and we write it down.",
+    title: "A short circle: what's next?",
+    body: "Late afternoon, we sit together for thirty minutes. One question: what do you want to see at The Harvest in the next year? We listen and write it down.",
   },
 ];
 
 export default function GardenLaunch() {
   useEffect(() => {
-    document.title = "Garden Launch + Community Day · 20 June 2026 · The Harvest";
+    document.title = "First open day · 20 June 2026 · The Harvest";
     let meta = document.querySelector('meta[name="description"]') as HTMLMetaElement | null;
     if (!meta) {
       meta = document.createElement("meta");
       meta.name = "description";
       document.head.appendChild(meta);
     }
-    meta.content = "Saturday 20 June 2026, 10am–3pm. Garden Launch and Community Day at The Harvest, Witta. Free. RSVP for a seat at the long table.";
+    meta.content = "Saturday 20 June 2026, 3pm-7pm. The first soft opening at The Harvest, Witta. Member list only for this one. Join the member list for the invite.";
   }, []);
-
-  const countQuery = trpc.eoi.count.useQuery(undefined, {
-    refetchOnWindowFocus: false,
-  });
-  const count = countQuery.data?.count ?? 0;
 
   return (
     <div className="min-h-screen bg-stone-50">
@@ -106,24 +82,24 @@ export default function GardenLaunch() {
             className="max-w-3xl mx-auto text-center"
           >
             <p className="font-mono text-amber-300 text-sm mb-4 uppercase tracking-[0.25em]">
-              Coming up · {EVENT.date}
+              {EVENT.date} · {EVENT.audience}
             </p>
             <h1 className="text-5xl md:text-7xl font-serif font-bold leading-[0.95] mb-6">
-              Garden Launch<br />
-              <span className="text-amber-400">+ Community Day</span>
+              First open day<br />
+              <span className="text-amber-400">at The Harvest</span>
             </h1>
             <p className="text-xl md:text-2xl text-stone-200 italic font-serif leading-snug max-w-2xl mx-auto mb-10">
-              The first full day under the pavilion. The garden, finally open.
-              The neighbours, finally in the same room.
+              A soft opening. A small group. Pizza if the oven is ready, tea if not.
+              The bigger public day comes later in the year.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-              <a
-                href="#rsvp"
+              <Link
+                href="/membership#join"
                 className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full bg-amber-500 text-stone-900 font-semibold hover:bg-amber-400 transition-colors"
               >
-                Save your spot
+                Get the email invite
                 <ArrowRight className="h-4 w-4" />
-              </a>
+              </Link>
               <a
                 href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(EVENT.address)}`}
                 target="_blank"
@@ -134,12 +110,6 @@ export default function GardenLaunch() {
                 Get directions
               </a>
             </div>
-            {count > 0 && (
-              <p className="text-stone-300 text-sm">
-                <span className="text-amber-400 font-semibold">{count}</span>{" "}
-                {count === 1 ? "neighbour has" : "neighbours have"} RSVP'd so far.
-              </p>
-            )}
           </motion.div>
         </div>
       </section>
@@ -151,7 +121,7 @@ export default function GardenLaunch() {
             <Fact icon={Calendar} label="Date" value={EVENT.date} />
             <Fact icon={Clock} label="Time" value={EVENT.time} />
             <Fact icon={MapPin} label="Place" value={EVENT.shortAddress} />
-            <Fact icon={Sparkles} label="Cost" value="Free" />
+            <Fact icon={Sparkles} label="Audience" value={EVENT.audience} />
           </div>
           <p className="text-center text-stone-500 italic text-sm mt-8">
             We acknowledge the Jinibara people as the Traditional Custodians of
@@ -169,24 +139,71 @@ export default function GardenLaunch() {
                 What it is
               </p>
               <h2 className="text-3xl md:text-5xl font-serif font-bold text-stone-800 mb-6 leading-tight">
-                A small village, on its own ground, for a day.
+                A soft opening. Not a launch.
               </h2>
               <div className="space-y-5 text-lg text-stone-700 leading-relaxed">
                 <p>
-                  This is the first proper open day at The Harvest. The garden's
-                  beds are in. The Milk Create Pavilion is up. The kitchen will
-                  be feeding, the kids will be drawing, and the long table will
-                  stretch as far as it needs to.
+                  This is the first time we open the gate at The Harvest. Member
+                  list only. About 40 of you. On Jinibara Country at Witta, under
+                  the Milk Create Pavilion that 80 of you helped build in March.
                 </p>
                 <p>
-                  It's a launch, but really it's an invitation. We've spent two
-                  years listening. This day is the first answer — and the first
-                  question for the next year of the work.
+                  It is a proof night, not a launch. We want to know if we can
+                  open the gate, feed people something simple, hold a clear room,
+                  and close it cleanly. If the answer is yes, the next opening
+                  becomes easier. If the answer is "almost", we learn what to fix.
+                </p>
+                <p>
+                  The bigger public day comes later in the year, once the operating
+                  rhythm is real.
                 </p>
                 <p className="font-serif italic text-stone-600">
-                  Come for an hour or stay all afternoon. Bring kids, bring a friend,
-                  bring an empty seat for someone you'd like to meet.
+                  Come for an hour or stay until soft close. The kettle stays on.
                 </p>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* What we know so far */}
+      <section className="py-16 md:py-20 bg-stone-50 border-t border-stone-200">
+        <div className="container">
+          <div className="max-w-3xl mx-auto">
+            <motion.div {...fadeInUp}>
+              <p className="font-mono text-amber-700 text-sm mb-4 uppercase tracking-[0.2em]">
+                What we know
+              </p>
+              <h2 className="text-2xl md:text-3xl font-serif font-bold text-stone-800 mb-8 leading-tight">
+                Some things are confirmed. Some are still settling.
+              </h2>
+              <div className="grid md:grid-cols-2 gap-8">
+                <div>
+                  <p className="font-mono text-xs uppercase tracking-[0.16em] text-emerald-700 mb-3">
+                    Confirmed
+                  </p>
+                  <ul className="space-y-2 text-stone-700">
+                    <li className="flex gap-2"><CheckCircle2 className="h-4 w-4 mt-1 flex-none text-emerald-700" /> Saturday 20 June 2026, 3pm to 7pm</li>
+                    <li className="flex gap-2"><CheckCircle2 className="h-4 w-4 mt-1 flex-none text-emerald-700" /> 9 Gumland Drive, Witta. Jinibara Country.</li>
+                    <li className="flex gap-2"><CheckCircle2 className="h-4 w-4 mt-1 flex-none text-emerald-700" /> Member list only. About 40 seats.</li>
+                    <li className="flex gap-2"><CheckCircle2 className="h-4 w-4 mt-1 flex-none text-emerald-700" /> Free. No register, no bar.</li>
+                    <li className="flex gap-2"><CheckCircle2 className="h-4 w-4 mt-1 flex-none text-emerald-700" /> Shape: walk, simple food, short circle, soft close.</li>
+                  </ul>
+                </div>
+                <div>
+                  <p className="font-mono text-xs uppercase tracking-[0.16em] text-amber-700 mb-3">
+                    Still settling — we'll update by 7 June
+                  </p>
+                  <ul className="space-y-2 text-stone-700">
+                    <li>Whether pizza or tea is the food story, depending on oven + council</li>
+                    <li>Whether the garden walk is guided or free-walk</li>
+                    <li>Whether the short circle runs 4pm or 5pm</li>
+                  </ul>
+                  <p className="mt-5 text-sm italic text-stone-500">
+                    If you're on the member list, the practical note for the day
+                    lands Thursday 18 June with everything settled.
+                  </p>
+                </div>
               </div>
             </motion.div>
           </div>
@@ -199,11 +216,15 @@ export default function GardenLaunch() {
           <div className="max-w-5xl mx-auto">
             <motion.div {...fadeInUp} className="mb-12 max-w-2xl">
               <p className="font-mono text-amber-700 text-sm mb-3 uppercase tracking-[0.2em]">
-                What to expect
+                The shape of the day
               </p>
               <h2 className="text-3xl md:text-4xl font-serif font-bold text-stone-800">
-                Soft schedule. Real food. No hurry.
+                Three things. Nothing more.
               </h2>
+              <p className="mt-4 text-stone-600 leading-relaxed">
+                If kids come along, there will be paper and chalk on the kids'
+                corner table. Not a programmed activity, just a place for them to sit.
+              </p>
             </motion.div>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {programItems.map((item, i) => {
@@ -235,8 +256,8 @@ export default function GardenLaunch() {
         </div>
       </section>
 
-      {/* RSVP */}
-      <RsvpSection eventLabel={EVENT.date} />
+      {/* Email-led invite */}
+      <EmailInviteSection eventLabel={EVENT.date} />
 
       {/* Connect */}
       <section className="py-16 md:py-20 bg-stone-50 border-t border-stone-200">
@@ -303,147 +324,74 @@ function Fact({ icon: Icon, label, value }: { icon: typeof Calendar; label: stri
   );
 }
 
-function RsvpSection({ eventLabel }: { eventLabel: string }) {
-  const submit = trpc.eoi.submit.useMutation();
-  const utils = trpc.useUtils();
-
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [excitement, setExcitement] = useState("");
-  const [submitted, setSubmitted] = useState(false);
-
-  const canSubmit =
-    name.trim().length > 0 &&
-    (email.trim().length > 0 || phone.trim().length > 0) &&
-    !submit.isPending;
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!canSubmit) return;
-    try {
-      await submit.mutateAsync({
-        name: name.trim(),
-        email: email.trim() || null,
-        phone: phone.trim() || null,
-        excitement: excitement.trim() || undefined,
-        source: "Garden Launch page",
-      });
-      setSubmitted(true);
-      utils.eoi.count.invalidate();
-      toast.success("Saved your spot. See you on the 20th.");
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : "Something went wrong";
-      toast.error("Couldn't save just now", { description: msg });
-    }
-  };
-
+function EmailInviteSection({ eventLabel }: { eventLabel: string }) {
   return (
-    <section id="rsvp" className="py-20 md:py-28 bg-stone-800 text-white scroll-mt-16">
+    <section id="invite" className="py-20 md:py-28 bg-stone-800 text-white scroll-mt-16">
       <div className="container">
         <div className="max-w-2xl mx-auto">
           <motion.div {...fadeInUp} className="text-center mb-10">
             <p className="font-mono text-amber-400 text-sm mb-3 uppercase tracking-[0.2em]">
-              RSVP — {eventLabel}
+              Member list only · {eventLabel}
             </p>
             <h2 className="text-3xl md:text-5xl font-serif font-bold mb-4 leading-tight">
-              Save your spot at the long table.
+              The invite goes through the member list.
             </h2>
             <p className="text-stone-300 leading-relaxed">
-              Free. Just so we know how much food to bring. Your name (and an
-              email or phone) is enough.
+              No public RSVP form for this one. Put your name on the Harvest
+              member list, then reply with seat count when the note lands.
             </p>
           </motion.div>
 
           <Card className="border-0 shadow-xl bg-stone-50 text-stone-800">
             <CardContent className="p-6 md:p-8">
-              {submitted ? (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  className="text-center py-8"
-                >
-                  <CheckCircle2 className="h-12 w-12 text-amber-500 mx-auto mb-4" />
-                  <h3 className="text-2xl font-serif font-bold mb-2">
-                    You're in.
-                  </h3>
-                  <p className="text-stone-600 max-w-md mx-auto">
-                    We'll send a quick note in the week before with parking + the
-                    short program. See you on the 20th.
+              <div className="space-y-5">
+                <div>
+                  <p className="font-mono text-xs uppercase tracking-[0.18em] text-amber-700">
+                    Current path
                   </p>
-                </motion.div>
-              ) : (
-                <form onSubmit={handleSubmit} className="space-y-5">
-                  <div className="space-y-2">
-                    <Label htmlFor="rsvp-name">Your name *</Label>
-                    <Input
-                      id="rsvp-name"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      placeholder="First and last is great"
-                      required
-                      maxLength={255}
-                    />
-                  </div>
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="rsvp-email">Email</Label>
-                      <div className="relative">
-                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-stone-400" />
-                        <Input
-                          id="rsvp-email"
-                          type="email"
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                          placeholder="you@example.com"
-                          className="pl-9"
-                        />
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="rsvp-phone">Phone</Label>
-                      <div className="relative">
-                        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-stone-400" />
-                        <Input
-                          id="rsvp-phone"
-                          type="tel"
-                          value={phone}
-                          onChange={(e) => setPhone(e.target.value)}
-                          placeholder="04…"
-                          className="pl-9"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <p className="text-stone-500 text-xs -mt-3">
-                    Email or phone — we just need one way to send the reminder.
+                  <p className="mt-3 text-lg leading-relaxed text-stone-700">
+                    No website form is collecting RSVPs yet. We are keeping this
+                    human while the food, parking, and shape of the day settle.
                   </p>
+                </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="rsvp-excitement">
-                      What are you most curious about? (optional)
-                    </Label>
-                    <Textarea
-                      id="rsvp-excitement"
-                      value={excitement}
-                      onChange={(e) => setExcitement(e.target.value)}
-                      rows={3}
-                      placeholder="The garden, the pavilion, the food, the kids' bit, just being here…"
-                      maxLength={1000}
-                    />
+                <div className="grid gap-3 sm:grid-cols-3">
+                  <div className="border border-stone-200 bg-white p-4">
+                    <p className="font-serif text-xl font-bold">1. Join</p>
+                    <p className="mt-2 text-sm leading-relaxed text-stone-600">
+                      Put your name on the Harvest member list.
+                    </p>
                   </div>
+                  <div className="border border-stone-200 bg-white p-4">
+                    <p className="font-serif text-xl font-bold">2. Read</p>
+                    <p className="mt-2 text-sm leading-relaxed text-stone-600">
+                      Watch for the member email when the invite is ready.
+                    </p>
+                  </div>
+                  <div className="border border-stone-200 bg-white p-4">
+                    <p className="font-serif text-xl font-bold">3. Reply</p>
+                    <p className="mt-2 text-sm leading-relaxed text-stone-600">
+                      Reply to the email and we will count the seat by hand.
+                    </p>
+                  </div>
+                </div>
 
-                  <Button
-                    type="submit"
-                    disabled={!canSubmit}
-                    className="w-full bg-amber-500 hover:bg-amber-400 text-stone-900 font-semibold"
-                    size="lg"
+                <div className="flex flex-col gap-3 sm:flex-row">
+                  <Link
+                    href="/membership#join"
+                    className="inline-flex min-h-12 flex-1 items-center justify-center gap-2 bg-amber-500 px-5 py-3 font-semibold text-stone-900 transition hover:bg-amber-400"
                   >
-                    {submit.isPending ? "Saving…" : "Save my spot"}
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                </form>
-              )}
+                    Join the member list
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                  <Link
+                    href="/membership#questions"
+                    className="inline-flex min-h-12 flex-1 items-center justify-center gap-2 border border-stone-300 px-5 py-3 font-semibold text-stone-800 transition hover:bg-white"
+                  >
+                    Ask a question
+                  </Link>
+                </div>
+              </div>
             </CardContent>
           </Card>
         </div>

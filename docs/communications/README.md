@@ -8,6 +8,12 @@ For this week's actions:
 
 - [[THIS-WEEK|This Week]]
 
+For the 20 June 2026 launch alignment + comms cadence (added 2026-05-22):
+
+- [[../strategy/harvest-launch-alignment-2026-05-22|Harvest Launch Alignment — 20 June 2026]] (decision-forcing)
+- [[launch-countdown-comms-cadence|Launch Countdown Comms Cadence]] (week-by-week)
+- [[find-others-playbook|Find Others Playbook]] (post-launch local channels)
+
 For brand voice, launch deck, and website design memory:
 
 - [[../brand/README|Harvest Brand Operating System]]
@@ -63,6 +69,8 @@ Obsidian thinks. GHL publishes. Notion records. WhatsApp feeds ideas.
 - [[notion-to-facebook-instagram|GHL And Notion Publishing Flow]]
 - [[social-sharing-playbook|Social Sharing Playbook]]
 - [[newsletter-writing-system|Newsletter Writing System]]
+- [[ghl-contact-intake-and-cleanup|GHL Contact Intake And Cleanup]]
+- [[welcome-email-and-ghl-workflow|Membership And Contact Email Setup]]
 
 ### Making
 
