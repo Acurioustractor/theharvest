@@ -3,20 +3,22 @@ import { Link } from "wouter";
 import { toast } from "sonner";
 import {
   ArrowRight,
-  Bell,
-  Calendar,
-  Mail,
+  CheckCircle2,
   Sprout,
-  Users,
+  X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { InterestSelector, type Interest } from "@/components/InterestSelector";
+import { ShopInterestSection } from "@/components/ShopInterestSection";
 import { EditableText } from "@/components/EditableText";
 import { HarvestImage } from "@/components/HarvestImage";
+import { HarvestPhotoPicker, type PickedPhoto } from "@/components/HarvestPhotoPicker";
+import { useAuth } from "@/_core/hooks/useAuth";
+import { optimize } from "@/lib/imageOptimize";
 import { trpc } from "@/lib/trpc";
-import { SiteFooter, SiteNav } from "./HarvestReviewTest";
+import { harvestButtonClasses, SiteFooter, SiteNav } from "./HarvestReviewTest";
 
 const lanes = [
   {
@@ -47,15 +49,27 @@ function splitName(name: string) {
   };
 }
 
+type HeardAbout = "friend-or-neighbour" | "social-media" | "in-witta" | "other" | "";
+
+const HEARD_ABOUT_OPTIONS: { value: Exclude<HeardAbout, "">; label: string }[] = [
+  { value: "friend-or-neighbour", label: "A friend or neighbour told me" },
+  { value: "social-media", label: "Social media (Facebook or Instagram)" },
+  { value: "in-witta", label: "In Witta — sign, poster, or saw the place" },
+  { value: "other", label: "Something else" },
+];
+
 export default function Membership() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [interests, setInterests] = useState<Interest[]>(["events", "community", "membership"]);
+  const [comments, setComments] = useState("");
+  const [heardAbout, setHeardAbout] = useState<HeardAbout>("");
   const [questionName, setQuestionName] = useState("");
   const [questionEmail, setQuestionEmail] = useState("");
   const [questionPhone, setQuestionPhone] = useState("");
   const [question, setQuestion] = useState("");
+  const [showMemberWelcome, setShowMemberWelcome] = useState(false);
 
   useEffect(() => {
     document.title = "Become a Harvest member";
@@ -68,15 +82,42 @@ export default function Membership() {
     }
     meta.content =
       "Join the Harvest member list for regular notes, community-day invitations, work day calls, and early opportunities.";
+
+    if (import.meta.env.DEV) {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("member-welcome-preview") === "1") {
+        setShowMemberWelcome(true);
+      }
+    }
   }, []);
+
+  useEffect(() => {
+    if (!showMemberWelcome) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setShowMemberWelcome(false);
+      }
+    };
+
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [showMemberWelcome]);
 
   const joinMutation = trpc.newsletter.subscribe.useMutation({
     onSuccess: () => {
-      toast.success("You are on the Harvest member list.");
+      setShowMemberWelcome(true);
       setName("");
       setEmail("");
       setPhone("");
       setInterests(["events", "community", "membership"]);
+      setComments("");
+      setHeardAbout("");
     },
     onError: (error) => {
       toast.error("Could not add you to the list", {
@@ -110,9 +151,11 @@ export default function Membership() {
       phone: phone.trim() || undefined,
       firstName,
       lastName,
-      source: "Harvest member list",
+      source: "Harvest | Member Signup",
       interests: taggedInterests,
       member: true,
+      notes: comments.trim() || undefined,
+      heardAbout: heardAbout || undefined,
     });
   }
 
@@ -123,18 +166,22 @@ export default function Membership() {
       email: questionEmail.trim(),
       phone: questionPhone.trim() || null,
       question: question.trim(),
-      source: "Membership page question form",
+      source: "Harvest | Member Question",
     });
   }
 
   return (
     <main className="min-h-screen bg-[#F5F0E8] text-[#1C1917]">
+      <MemberWelcomeOverlay
+        open={showMemberWelcome}
+        onClose={() => setShowMemberWelcome(false)}
+      />
       <SiteNav />
       <section className="relative overflow-hidden bg-[#1C1917] text-[#F5F0E8]">
         <HarvestImage
           page="membership"
           slot="hero-image"
-          src="/images/compendium/seed-house-front.jpg"
+          src="/images/optimized/seed-house-front-1600.webp"
           alt="The front of The Harvest building in Witta"
           size="hero"
           priority
@@ -149,7 +196,7 @@ export default function Membership() {
               <EditableText
                 page="membership"
                 slot="hero-eyebrow"
-                defaultContent="Member list now open"
+                defaultContent="Become a member"
                 as="p"
                 className="mb-5 font-mono text-xs uppercase tracking-[0.24em] text-[#C4922A]"
               />
@@ -163,7 +210,7 @@ export default function Membership() {
               <EditableText
                 page="membership"
                 slot="hero-body"
-                defaultContent="For now, membership means this: your name is on the Harvest list. You get the letters, invitations, first calls, and early opportunities while the place is being made."
+                defaultContent="For now, membership means this: your name is on the Harvest list. You get the letters, invitations, first calls, and early opportunities while the place is being made. Use the comments box for ideas, and we’ll invite public profiles later by email."
                 as="p"
                 className="mt-7 max-w-2xl text-xl leading-relaxed text-white/80 md:text-2xl"
                 multiline
@@ -182,7 +229,7 @@ export default function Membership() {
               <EditableText
                 page="membership"
                 slot="hero-note-body"
-                defaultContent="This is the front gate list for people who want to stay close, turn up, and help shape the first version."
+                defaultContent="This is the front gate list for people who want to stay close, turn up, and help shape the first version. If you have produce or made goods, use the shop form below."
                 as="p"
                 className="mt-3 leading-relaxed text-white/66"
                 multiline
@@ -269,17 +316,9 @@ export default function Membership() {
             <EditableText
               page="membership"
               slot="join-body"
-              defaultContent="Free. Just your name, an email, and the things you're curious about. We'll send the welcome note straight after."
+              defaultContent="Free. Just your name, an email, a few interests, and any comments or ideas. We'll send the welcome note straight after."
               as="p"
               className="mt-6 max-w-xl text-lg leading-relaxed text-stone-700"
-              multiline
-            />
-            <EditableText
-              page="membership"
-              slot="join-legal-note"
-              defaultContent="No paid membership is being sold here. No formal co-op membership is being claimed here. This is the public Harvest member list. The deeper structures come later, with care, after we've earned them."
-              as="p"
-              className="mt-5 max-w-xl text-sm leading-relaxed text-stone-500"
               multiline
             />
           </div>
@@ -326,6 +365,39 @@ export default function Membership() {
 
               <InterestSelector selected={interests} onChange={setInterests} />
 
+              <div>
+                <label htmlFor="membership-heard-about" className="mb-2 block font-mono text-[11px] uppercase tracking-[0.16em] text-stone-500">
+                  How did you hear about The Harvest? Optional
+                </label>
+                <select
+                  id="membership-heard-about"
+                  value={heardAbout}
+                  onChange={(event) => setHeardAbout(event.target.value as HeardAbout)}
+                  className="h-12 w-full rounded-none border border-stone-300 bg-white px-3 text-stone-900 focus:border-[#C4922A] focus:outline-none"
+                >
+                  <option value="">Skip</option>
+                  {HEARD_ABOUT_OPTIONS.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label htmlFor="membership-comments" className="mb-2 block font-mono text-[11px] uppercase tracking-[0.16em] text-stone-500">
+                  Comments or ideas, optional
+                </label>
+                <Textarea
+                  id="membership-comments"
+                  value={comments}
+                  onChange={(event) => setComments(event.target.value)}
+                  placeholder="What should we know? What would help? What would you like to see?"
+                  className="min-h-28 rounded-none border-stone-300 bg-white"
+                  maxLength={2000}
+                />
+              </div>
+
               <Button
                 type="submit"
                 disabled={joinMutation.isPending}
@@ -338,6 +410,12 @@ export default function Membership() {
           </form>
         </div>
       </section>
+
+      <ShopInterestSection
+        eyebrow="Different lane"
+        title="Got produce or made goods for the shelf?"
+        body="Use the shop form below for produce, food, made goods, consignment, or help shaping the shelf."
+      />
 
       <section id="questions" className="bg-[#F5F0E8] py-14 md:py-20">
         <div className="mx-auto grid max-w-6xl gap-10 px-5 md:grid-cols-[0.8fr_1fr] md:px-8">
@@ -452,7 +530,7 @@ export default function Membership() {
             <EditableText
               page="membership"
               slot="footer-title"
-              defaultContent="Read What is The Harvest, or open the collection."
+              defaultContent="Start with: What is The Harvest."
               as="h2"
               className="mt-3 max-w-2xl text-4xl font-black leading-[0.98]"
             />
@@ -460,16 +538,9 @@ export default function Membership() {
           <div className="flex flex-col gap-3 sm:flex-row">
             <Link
               href="/what-is-the-harvest"
-              className="inline-flex min-h-12 items-center justify-center gap-2 border border-white/22 px-6 py-3 font-semibold text-white transition hover:border-white hover:bg-white/10"
+              className={harvestButtonClasses.onDark}
             >
-              What is The Harvest?
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-            <Link
-              href="/works"
-              className="inline-flex min-h-12 items-center justify-center gap-2 bg-[#C4922A] px-6 py-3 font-semibold text-[#1C1917] transition hover:bg-[#E0AD43]"
-            >
-              See the works
+              Learn about The Harvest
               <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
@@ -477,5 +548,232 @@ export default function Membership() {
       </section>
       <SiteFooter />
     </main>
+  );
+}
+
+function MemberWelcomeOverlay({
+  open,
+  onClose,
+}: {
+  open: boolean;
+  onClose: () => void;
+}) {
+  if (!open) return null;
+
+  return (
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="member-welcome-title"
+      className="fixed inset-0 z-[100] overflow-y-auto bg-[#1C1917] text-[#F5F0E8]"
+    >
+      <style>
+        {`
+          @keyframes harvest-welcome-rise {
+            from { opacity: 0; transform: translateY(18px) scale(0.985); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+          }
+          @keyframes harvest-welcome-scan {
+            from { transform: translateX(-30%); opacity: 0.08; }
+            50% { opacity: 0.22; }
+            to { transform: translateX(30%); opacity: 0.08; }
+          }
+        `}
+      </style>
+
+      <div className="relative min-h-screen overflow-hidden">
+        <MemberWelcomeImage />
+        <div className="pointer-events-none absolute inset-0 z-[1] bg-[radial-gradient(circle_at_24%_18%,rgba(196,146,42,0.32),transparent_30%),linear-gradient(115deg,rgba(28,25,23,0.96)_0%,rgba(28,25,23,0.78)_42%,rgba(28,25,23,0.46)_100%)]" />
+        <div
+          className="pointer-events-none absolute left-[-12%] top-[18%] z-[2] h-40 w-[130%] rotate-[-8deg] border-y border-[#C4922A]/40 bg-[#C4922A]/10"
+          style={{ animation: "harvest-welcome-scan 5.5s ease-in-out infinite alternate" }}
+        />
+        <div className="pointer-events-none absolute bottom-8 left-8 z-[3] hidden font-mono text-[10px] uppercase tracking-[0.28em] text-[#C4922A]/70 md:block">
+          Crates / front gate / member list
+        </div>
+
+        <button
+          type="button"
+          onClick={onClose}
+          className="absolute right-5 top-5 z-20 inline-flex h-12 w-12 items-center justify-center border border-white/20 bg-black/20 text-white backdrop-blur-sm transition hover:bg-white hover:text-[#1C1917]"
+          aria-label="Close member welcome"
+        >
+          <X className="h-5 w-5" />
+        </button>
+
+        <div className="relative z-10 mx-auto grid min-h-screen max-w-6xl content-center gap-10 px-5 py-24 md:grid-cols-[0.95fr_0.72fr] md:px-8">
+          <section
+            className="max-w-3xl"
+            style={{ animation: "harvest-welcome-rise 520ms ease-out both" }}
+          >
+            <div className="mb-7 inline-flex items-center gap-3 border border-[#C4922A]/40 bg-[#C4922A]/10 px-4 py-2 font-mono text-xs uppercase tracking-[0.2em] text-[#E0AD43]">
+              <CheckCircle2 className="h-4 w-4" />
+              Member list confirmed
+            </div>
+
+            <p className="font-mono text-xs uppercase tracking-[0.28em] text-white/54">
+              Front gate note
+            </p>
+            <h2
+              id="member-welcome-title"
+              className="mt-5 max-w-4xl text-5xl font-black leading-[0.84] tracking-[-0.04em] text-white md:text-8xl"
+            >
+              Your name is in the room.
+            </h2>
+            <p className="mt-7 max-w-2xl text-xl leading-relaxed text-white/76 md:text-2xl">
+              You are on the Harvest member list. The next note comes from a real
+              person, not a funnel. First calls, work days, meals, strange useful
+              ideas, and the art of making this place together.
+            </p>
+
+            <div className="mt-10 flex flex-col gap-3 sm:flex-row">
+              <Link
+                href="/works"
+                onClick={onClose}
+                className="inline-flex min-h-12 items-center justify-center gap-2 bg-[#C4922A] px-6 py-3 font-semibold text-[#1C1917] transition hover:bg-[#E0AD43]"
+              >
+                See the works
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+              <button
+                type="button"
+                onClick={onClose}
+                className="inline-flex min-h-12 items-center justify-center border border-white/24 px-6 py-3 font-semibold text-white transition hover:bg-white hover:text-[#1C1917]"
+              >
+                Back to the page
+              </button>
+            </div>
+          </section>
+
+          <aside
+            className="border border-white/16 bg-[#F5F0E8]/10 p-5 backdrop-blur-md md:p-7"
+            style={{ animation: "harvest-welcome-rise 640ms ease-out 90ms both" }}
+          >
+            <p className="font-mono text-xs uppercase tracking-[0.22em] text-[#C4922A]">
+              What happens next
+            </p>
+            <div className="mt-6 space-y-5">
+              {[
+                ["1", "The welcome note lands in your inbox."],
+                ["2", "The first invite comes through the member list."],
+                ["3", "Reply when you have a question, an idea, or a thing to bring."],
+              ].map(([number, text]) => (
+                <div key={number} className="grid grid-cols-[2.25rem_1fr] gap-4">
+                  <div className="flex h-9 w-9 items-center justify-center border border-[#C4922A]/50 font-mono text-sm text-[#E0AD43]">
+                    {number}
+                  </div>
+                  <p className="pt-1 text-base leading-relaxed text-white/78">
+                    {text}
+                  </p>
+                </div>
+              ))}
+            </div>
+            <div className="mt-8 border-t border-white/12 pt-6">
+              <p className="text-lg font-semibold text-white">
+                Keep one thing close:
+              </p>
+              <p className="mt-2 leading-relaxed text-white/66">
+                The Harvest is not finished. That is why the list matters.
+              </p>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function MemberWelcomeImage() {
+  const { user } = useAuth();
+  const isAdmin = user?.role === "admin";
+  const page = "membership";
+  const slot = "member-welcome-image";
+  const defaultAlt = "Milk crates against the sky at The Harvest";
+  const overrideQuery = trpc.imageOverrides.get.useQuery({ page, slot });
+  const utils = trpc.useUtils();
+  const [pickerOpen, setPickerOpen] = useState(false);
+
+  const setMutation = trpc.imageOverrides.set.useMutation({
+    onSuccess: () => {
+      utils.imageOverrides.get.invalidate({ page, slot });
+      toast.success("Welcome image swapped.");
+    },
+    onError: (error) => {
+      toast.error("Could not save welcome image", {
+        description: error.message,
+      });
+    },
+  });
+
+  const clearMutation = trpc.imageOverrides.clear.useMutation({
+    onSuccess: () => {
+      utils.imageOverrides.get.invalidate({ page, slot });
+      toast.success("Welcome image reverted.");
+    },
+    onError: (error) => {
+      toast.error("Could not revert welcome image", {
+        description: error.message,
+      });
+    },
+  });
+
+  const override = overrideQuery.data;
+  const src = optimize(override?.src ?? "/images/optimized/member-welcome-crates-1200.webp", "hero");
+  const alt = override?.altText ?? defaultAlt;
+
+  async function handlePick(photo: PickedPhoto) {
+    await setMutation.mutateAsync({
+      page,
+      slot,
+      mediaAssetId: photo.mediaAssetId,
+      src: photo.src,
+      altText: photo.altText ?? defaultAlt,
+      title: photo.title ?? undefined,
+    });
+  }
+
+  return (
+    <>
+      <img
+        src={src}
+        alt={alt}
+        className="absolute inset-0 z-0 h-full w-full object-cover opacity-45"
+        loading="eager"
+        decoding="sync"
+        fetchPriority="high"
+      />
+
+      {isAdmin && (
+        <>
+          <div className="absolute left-5 top-5 z-30 flex flex-wrap gap-2 pr-20">
+            <button
+              type="button"
+              onClick={() => setPickerOpen(true)}
+              disabled={setMutation.isPending}
+              className="inline-flex min-h-10 items-center justify-center border border-[#C4922A]/60 bg-[#1C1917]/72 px-4 py-2 font-mono text-[11px] uppercase tracking-[0.16em] text-[#F5F0E8] backdrop-blur-sm transition hover:bg-[#C4922A] hover:text-[#1C1917] disabled:opacity-50"
+            >
+              {setMutation.isPending ? "Saving..." : "Choose welcome image"}
+            </button>
+            {override && (
+              <button
+                type="button"
+                onClick={() => clearMutation.mutate({ page, slot })}
+                disabled={clearMutation.isPending}
+                className="inline-flex min-h-10 items-center justify-center border border-white/20 bg-black/25 px-3 py-2 font-mono text-[11px] uppercase tracking-[0.16em] text-white/82 backdrop-blur-sm transition hover:bg-white hover:text-[#1C1917] disabled:opacity-50"
+              >
+                {clearMutation.isPending ? "Reverting..." : "Revert"}
+              </button>
+            )}
+          </div>
+
+          <HarvestPhotoPicker
+            open={pickerOpen}
+            onOpenChange={setPickerOpen}
+            onPick={handlePick}
+            defaultWorkSlug="milk-crate-pavilion"
+          />
+        </>
+      )}
+    </>
   );
 }

@@ -1,11 +1,11 @@
 import { systemRouter } from "./_core/systemRouter.js";
 import { publicProcedure, protectedProcedure, router } from "./_core/trpc.js";
-import { createEvent, getApprovedEvents, getPendingEvents, updateEventStatus, createBusiness, getApprovedBusinesses, getPendingBusinesses, updateBusinessStatus, getBusinessByUserId, getBusinessById, claimBusiness, updateBusinessProfile, getUnclaimedApprovedBusinesses, getProgressImages, createProgressImage, updateProgressImage, deleteProgressImage, promoteUserToAdmin, getAllUsers, getContent, getContentForPage, upsertContent, getAnnotationsForPoint, createAnnotation, deleteAnnotation, createPulseResponse, getPulseResults, createEventFeedbackEntry, getEventFeedbackByEventId, getAllEventFeedback, createWittaContribution, getApprovedWittaContributions, getPendingWittaContributions, updateWittaContributionStatus, getImageOverride, setImageOverride, clearImageOverride, listImageOverrides } from "./db.js";
+import { createEvent, getApprovedEvents, getPendingEvents, updateEventStatus, createBusiness, getApprovedBusinesses, getPendingBusinesses, updateBusinessStatus, getBusinessByUserId, getBusinessById, claimBusiness, updateBusinessProfile, getUnclaimedApprovedBusinesses, createMemberWallEntry, getPublicMemberWallEntries, getProgressImages, createProgressImage, updateProgressImage, deleteProgressImage, promoteUserToAdmin, getAllUsers, getContent, getContentForPage, upsertContent, getAnnotationsForPoint, createAnnotation, deleteAnnotation, createPulseResponse, getPulseResults, createEventFeedbackEntry, getEventFeedbackByEventId, getAllEventFeedback, createWittaContribution, getApprovedWittaContributions, getPendingWittaContributions, updateWittaContributionStatus, getImageOverride, setImageOverride, clearImageOverride, listImageOverrides } from "./db.js";
 import { storagePut } from "./storage.js";
 import { getDb } from "./db.js";
 import { pulseResponses } from "../drizzle/schema.js";
 import { eq } from "drizzle-orm";
-import { upsertGHLContact, addGHLContactNote, addGHLContactTag, getGHLContact, triggerGHLWorkflow, getGHLContactCountByTag, getGHLSocialAccounts, createGHLSocialPost, getGHLSocialPosts, searchGHLContactsByTag, batchTriggerWorkflow, createGHLEmailTemplate } from "./gohighlevel.js";
+import { upsertGHLContact, upsertGHLHarvestInboxOpportunity, addGHLContactNote, addGHLContactTag, getGHLContact, triggerGHLWorkflow, getGHLContactCountByTag, getGHLSocialAccounts, createGHLSocialPost, getGHLSocialPosts, searchGHLContactsByTag, batchTriggerWorkflow, createGHLEmailTemplate } from "./gohighlevel.js";
 import { getGalleryPhotos, addGalleryPhoto, removeGalleryPhoto } from "./photoWallGallery.js";
 import { empathyLedgerClient } from "./empathyLedgerClient.js";
 import {
@@ -90,6 +90,24 @@ const SHOP_INTEREST_OFFER_TYPES = [
 
 type ShopInterestOfferType = (typeof SHOP_INTEREST_OFFER_TYPES)[number];
 
+// "How did you hear about The Harvest?" — added 2026-05-22 to track which
+// channels drive signups. See find-others-playbook.md §How to track.
+export const REFERRAL_SOURCE_OPTIONS = [
+  "friend-or-neighbour",
+  "social-media",
+  "in-witta",
+  "other",
+] as const;
+
+type ReferralSource = (typeof REFERRAL_SOURCE_OPTIONS)[number];
+
+const REFERRAL_SOURCE_TAGS: Record<ReferralSource, string> = {
+  "friend-or-neighbour": "source-referral",
+  "social-media": "source-social",
+  "in-witta": "source-local-witta",
+  other: "source-other",
+};
+
 const NEWSLETTER_INTEREST_TAGS: Record<NewsletterInterest, string> = {
   events: "interest-events",
   workshops: "interest-workshops",
@@ -117,6 +135,18 @@ function splitPersonName(name: string) {
     firstName: parts[0],
     lastName: parts.slice(1).join(" ") || undefined,
   };
+}
+
+function formatHarvestInboxOpportunityName(name: string, flow: string) {
+  return `${name.trim()} - ${flow}`;
+}
+
+function slugifyTagPart(value: string) {
+  return value
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
 }
 
 export function buildNewsletterTags(input: {
@@ -225,14 +255,19 @@ export const appRouter = router({
             email: input.contactEmail,
             firstName,
             lastName,
-            source: "Website - Event Submission",
-            tags: ["event-submission", "harvest-website"],
+            source: "Harvest | Event",
+            tags: ["event-submission", "harvest-website", "harvest-inbox"],
           });
 
           if (result.contactId) {
             await addGHLContactNote(result.contactId,
               `**Event Submission**\n\n**Title:** ${input.title}\n**Date:** ${input.date}\n**Time:** ${input.time}\n**Location:** ${input.location}\n**Category:** ${input.category}\n**Description:** ${input.description}`
             );
+            await upsertGHLHarvestInboxOpportunity({
+              contactId: result.contactId,
+              name: formatHarvestInboxOpportunityName(input.submittedBy, "Event submission"),
+              source: "Harvest | Event",
+            });
 
             const workflowId = process.env.GHL_EVENT_SUBMIT_WORKFLOW_ID;
             if (workflowId) {
@@ -307,14 +342,19 @@ export const appRouter = router({
             firstName,
             lastName,
             phone: input.phone,
-            source: "Website - Business Registration",
-            tags: ["business-registration", "harvest-website"],
+            source: "Harvest | Business",
+            tags: ["business-registration", "harvest-website", "harvest-inbox"],
           });
 
           if (result.contactId) {
             await addGHLContactNote(result.contactId,
               `**Business Registration**\n\n**Business Name:** ${input.name}\n**Category:** ${input.category}\n**Description:** ${input.description}\n**Address:** ${input.address || "Not provided"}\n**Website:** ${input.website || "Not provided"}`
             );
+            await upsertGHLHarvestInboxOpportunity({
+              contactId: result.contactId,
+              name: formatHarvestInboxOpportunityName(input.submittedBy, "Business registration"),
+              source: "Harvest | Business",
+            });
 
             const workflowId = process.env.GHL_BUSINESS_REG_WORKFLOW_ID;
             if (workflowId) {
@@ -426,11 +466,12 @@ export const appRouter = router({
           firstName,
           lastName,
           phone: input.phone || undefined,
-          source: `RSVP - Witta Gathering ${CURRENT_GATHERING_DATE}`,
+          source: `Harvest | RSVP ${CURRENT_GATHERING_DATE}`,
           tags: [
             CURRENT_GATHERING_TAG,
             "harvest-event-attendee",
             "harvest-website",
+            "harvest-inbox",
             ...CURRENT_GATHERING_SWITCHBOARD_TAGS,
           ],
         });
@@ -442,6 +483,12 @@ export const appRouter = router({
         }
 
         if (result.contactId) {
+          await upsertGHLHarvestInboxOpportunity({
+            contactId: result.contactId,
+            name: formatHarvestInboxOpportunityName(input.name, `RSVP ${CURRENT_GATHERING_DATE}`),
+            source: `Harvest | RSVP ${CURRENT_GATHERING_DATE}`,
+          });
+
           const workflowId = process.env.GHL_GATHERING_RSVP_WORKFLOW_ID || process.env.GHL_EOI_WORKFLOW_ID;
           if (workflowId) {
             triggerGHLWorkflow(workflowId, result.contactId).catch(err =>
@@ -480,14 +527,19 @@ export const appRouter = router({
           firstName,
           lastName,
           phone: input.phone,
-          source: "Website - Workshop Booking",
-          tags: ["workshop-booking", "harvest-website"],
+          source: "Harvest | Workshop",
+          tags: ["workshop-booking", "harvest-website", "harvest-inbox"],
         });
 
         if (result.contactId) {
           await addGHLContactNote(result.contactId,
             `**Workshop Booking**\n\n**Workshop:** ${input.workshopTitle}\n**Date:** ${input.workshopDate}\n**Attendees:** ${input.attendees}\n**Dietary:** ${input.dietaryRequirements || "None"}\n**Special Requests:** ${input.specialRequests || "None"}`
           );
+          await upsertGHLHarvestInboxOpportunity({
+            contactId: result.contactId,
+            name: formatHarvestInboxOpportunityName(input.name, "Workshop booking"),
+            source: "Harvest | Workshop",
+          });
 
           const workflowId = process.env.GHL_WORKSHOP_WORKFLOW_ID;
           if (workflowId) {
@@ -519,7 +571,7 @@ export const appRouter = router({
           email: input.email,
           firstName,
           lastName,
-          source: "Website - Visitor Quiz",
+          source: "Harvest | Quiz",
           tags: [...input.ghlTags, "quiz-completed", "harvest-website"],
         });
 
@@ -589,12 +641,19 @@ export const appRouter = router({
         source: z.string().max(100).optional(),
         interests: z.array(z.enum(NEWSLETTER_INTEREST_OPTIONS)).optional(),
         member: z.boolean().optional(),
+        notes: z.string().trim().max(2000).optional(),
+        heardAbout: z.enum(REFERRAL_SOURCE_OPTIONS).optional(),
       }))
       .mutation(async ({ input }) => {
         const interests = input.interests || [];
+        const extraTags = input.notes ? ["member-comments", "harvest-inbox"] : [];
+        if (input.heardAbout) {
+          extraTags.push(REFERRAL_SOURCE_TAGS[input.heardAbout]);
+        }
         const allTags = buildNewsletterTags({
           interests,
           member: input.member,
+          extraTags,
         });
 
         const result = await upsertGHLContact({
@@ -602,7 +661,7 @@ export const appRouter = router({
           firstName: input.firstName,
           lastName: input.lastName,
           phone: input.phone || undefined,
-          source: input.source || "The Harvest Website Newsletter",
+          source: input.source || "Harvest | Newsletter",
           tags: allTags,
         });
 
@@ -612,6 +671,20 @@ export const appRouter = router({
 
         if (result.contactId) {
           const isMember = Boolean(input.member || interests.includes("membership"));
+          if (input.notes) {
+            await addGHLContactNote(
+              result.contactId,
+              `**Harvest member note**\n\n${input.notes}`,
+            );
+            await upsertGHLHarvestInboxOpportunity({
+              contactId: result.contactId,
+              name: formatHarvestInboxOpportunityName(
+                [input.firstName, input.lastName].filter(Boolean).join(" "),
+                "Member comment",
+              ),
+              source: input.source || "Harvest | Member Signup",
+            });
+          }
           const workflowId = isMember
             ? process.env.GHL_MEMBER_WELCOME_WORKFLOW_ID || process.env.GHL_NEWSLETTER_WORKFLOW_ID
             : process.env.GHL_NEWSLETTER_WORKFLOW_ID;
@@ -665,6 +738,79 @@ export const appRouter = router({
   }),
 
   members: router({
+    wall: router({
+      submit: publicProcedure
+        .input(z.object({
+          name: z.string().trim().min(1).max(120),
+          email: z.string().email(),
+          phone: z.string().trim().max(60).optional(),
+          business: z.string().trim().max(255).optional(),
+          location: z.string().trim().max(180).optional(),
+          likesToDo: z.string().trim().max(2000).optional(),
+          needs: z.string().trim().max(2000).optional(),
+          connect: z.string().trim().max(2000).optional(),
+        }))
+        .mutation(async ({ input }) => {
+          const [firstName, ...rest] = input.name.trim().split(/\s+/);
+
+          const created = await createMemberWallEntry({
+            name: input.name.trim(),
+            email: input.email,
+            phone: input.phone || undefined,
+            business: input.business || undefined,
+            location: input.location || undefined,
+            likesToDo: input.likesToDo || undefined,
+            needs: input.needs || undefined,
+            connect: input.connect || undefined,
+            isPublic: true,
+          });
+
+          if (!created) {
+            throw new Error("Could not save the members wall profile");
+          }
+
+          try {
+            const result = await upsertGHLContact({
+              email: input.email,
+              firstName,
+              lastName: rest.join(" ") || undefined,
+              phone: input.phone || undefined,
+              source: "Harvest | Member Wall",
+              tags: [
+                "harvest-member",
+                "interest-membership",
+                "interest-community",
+                "member-wall",
+                "harvest-website",
+              ],
+            });
+
+            if (result.contactId) {
+              await addGHLContactNote(
+                result.contactId,
+                [
+                  "**Members wall profile**",
+                  "",
+                  `**Business / what they do:** ${input.business || "Not specified"}`,
+                  `**Location:** ${input.location || "Not specified"}`,
+                  `**What they like to do:** ${input.likesToDo || "Not specified"}`,
+                  `**What they need:** ${input.needs || "Not specified"}`,
+                  `**How they would like to connect:** ${input.connect || "Not specified"}`,
+                ].join("\n"),
+              );
+            }
+          } catch (error) {
+            console.error("GHL sync failed (members wall):", error);
+          }
+
+          return { success: true };
+        }),
+
+      list: publicProcedure.query(async () => {
+        return await getPublicMemberWallEntries();
+      }),
+    }),
+
     question: publicProcedure
       .input(z.object({
         name: z.string().min(1).max(120),
@@ -680,11 +826,11 @@ export const appRouter = router({
           firstName,
           lastName: rest.join(" ") || undefined,
           phone: input.phone || undefined,
-          source: input.source || "Harvest member question",
+          source: input.source || "Harvest | Member Question",
           tags: buildNewsletterTags({
             member: true,
             interests: ["membership"],
-            extraTags: ["member-question"],
+            extraTags: ["member-question", "harvest-inbox"],
           }),
         });
 
@@ -701,6 +847,12 @@ export const appRouter = router({
           if (!noteResult.success) {
             throw new Error(noteResult.error || "Failed to save question");
           }
+
+          await upsertGHLHarvestInboxOpportunity({
+            contactId: result.contactId,
+            name: formatHarvestInboxOpportunityName(input.name, "Member question"),
+            source: input.source || "Harvest | Member Question",
+          });
 
           const workflowId = process.env.GHL_MEMBER_QUESTION_WORKFLOW_ID || process.env.GHL_CONTACT_FORM_WORKFLOW_ID;
           if (workflowId) {
@@ -722,9 +874,9 @@ export const appRouter = router({
         email: z.string().email(),
         phone: z.string().trim().max(60).optional(),
         offerType: z.enum(SHOP_INTEREST_OFFER_TYPES),
-        description: z.string().trim().min(1).max(2000),
-        location: z.string().trim().min(1).max(180),
-        readiness: z.string().trim().min(1).max(180),
+        description: z.string().trim().min(20, "Tell us a bit more about what you can offer.").max(2000),
+        location: z.string().trim().min(3, "Tell us roughly where you are based.").max(180),
+        readiness: z.string().trim().min(3, "Tell us when you might be ready.").max(180),
       }))
       .mutation(async ({ input }) => {
         const { firstName, lastName } = splitPersonName(input.name);
@@ -734,7 +886,7 @@ export const appRouter = router({
           firstName,
           lastName,
           phone: input.phone || undefined,
-          source: "Website - Harvest Shop Interest",
+          source: "Harvest | Shop",
           tags: [
             "harvest-shop-interest",
             "harvest-website",
@@ -768,6 +920,12 @@ export const appRouter = router({
             throw new Error(noteResult.error || "Failed to save shop interest note");
           }
 
+          await upsertGHLHarvestInboxOpportunity({
+            contactId: result.contactId,
+            name: formatHarvestInboxOpportunityName(input.name, "Shop interest"),
+            source: "Harvest | Shop",
+          });
+
           const workflowId = process.env.GHL_SHOP_INTEREST_WORKFLOW_ID || process.env.GHL_CONTACT_FORM_WORKFLOW_ID;
           if (workflowId) {
             const workflowResult = await triggerGHLWorkflow(workflowId, result.contactId);
@@ -794,8 +952,8 @@ export const appRouter = router({
           email: input.email,
           firstName: input.firstName,
           phone: input.phone,
-          source: "Photo Wall — Witta Gathering",
-          tags: ["photo-wall", "harvest-website", "harvest-gathering-photos"],
+          source: "Harvest | Photo Wall",
+          tags: ["photo-wall", "harvest-website", "harvest-gathering-photos", ...(input.response ? ["harvest-inbox"] : [])],
         });
 
         if (!result.success) {
@@ -807,6 +965,11 @@ export const appRouter = router({
             result.contactId,
             `**Photo Wall — What would you love to see grow here?**\n\n${input.response}`
           ).catch(err => console.error("Photo wall note failed:", err));
+          upsertGHLHarvestInboxOpportunity({
+            contactId: result.contactId,
+            name: formatHarvestInboxOpportunityName(input.firstName, "Photo wall response"),
+            source: "Harvest | Photo Wall",
+          }).catch(err => console.error("GHL opportunity upsert failed (photo wall):", err));
         }
 
         // Trigger notification workflow if configured
@@ -1358,12 +1521,12 @@ export const appRouter = router({
 
         // Only sync to GHL when we have both email and a real name.
         if (cleanEmail && cleanName) {
-          const interestTags = (input.wouldUse || []).map(u => `interest-${u}`);
+          const interestTags = (input.wouldUse || []).map(u => `interest-${slugifyTagPart(u)}`);
           const pulseResult = await upsertGHLContact({
             email: cleanEmail,
             firstName: cleanName.split(" ")[0],
             lastName: cleanName.split(" ").slice(1).join(" ") || undefined,
-            source: "Community Pulse Survey",
+            source: "Harvest | Pulse",
             tags: ["pulse-respondent", "harvest-website", ...interestTags],
           });
 
