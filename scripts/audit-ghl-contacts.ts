@@ -35,6 +35,7 @@ const HARVEST_TAGS = [
   "harvest-event-attendee",
   "harvest-shop-interest",
   "witta-gathering-2026-06-20",
+  "witta-soft-opening-2026-06-20",
   "newsletter",
   "photo-wall",
   "harvest-gathering-photos",
