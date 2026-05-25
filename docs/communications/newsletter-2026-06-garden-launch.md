@@ -104,7 +104,7 @@ PS. If you cannot make it but want to follow what comes next, the works we are b
 
 ## Nudge note (Fri 5 June, only if reply count is thin)
 
-**Subject:** Quick nudge — soft opening reply if you'd like a seat
+**Subject:** Quick nudge: soft opening reply if you'd like a seat
 **Preheader:** Saturday 20 June, member list only. Reply for a seat.
 
 Hello,
@@ -134,7 +134,7 @@ A few practical notes:
 
 - **Parking:** along Gumland Drive. We will have small signs from the gate.
 - **Arrival:** gate opens 3pm. No need to be there at three on the dot. Come when you can.
-- **Food:** [pizza, on us, three types — confirmed Wed 17 June] OR [tea, water, and simple snacks — the oven was not quite ready, we will do pizza on a later opening]. If you told us about a dietary need, we have planned around it.
+- **Food:** [pizza, on us, three types, confirmed Wed 17 June] OR [tea, water, and simple snacks, the oven was not quite ready, we will do pizza on a later opening]. If you told us about a dietary need, we have planned around it.
 - **Weather:** rain or shine. The pavilion is the pavilion.
 - **Kids:** very welcome. Chalk and paper are on the kids' corner table. Not a programmed activity, just a place for them to sit.
 - **The short circle:** 5pm, thirty minutes. One question. Listen and write it down.
