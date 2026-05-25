@@ -50,6 +50,7 @@ const HARVEST_TAGS = new Set([
   "harvest-event-attendee",
   "harvest-shop-interest",
   "witta-gathering-2026-06-20",
+  "witta-soft-opening-2026-06-20",
   "photo-wall",
   "harvest-gathering-photos",
   "member-question",
