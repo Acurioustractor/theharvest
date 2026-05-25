@@ -29,6 +29,7 @@
     "prepare:newsletter-members:ghl": "tsx scripts/prepare-ghl-newsletter-to-member.ts",
     "backfill:inbox:ghl": "tsx scripts/backfill-ghl-harvest-inbox.ts",
     "count:rsvps:ghl": "tsx scripts/count-soft-opening-rsvps.ts",
+    "verify:forms:ghl": "tsx scripts/verify-form-tests.ts",
     "refresh:contacts:ghl": "tsx scripts/audit-ghl-contacts.ts --apply-tags",
     "prepare:contacts:ghl": "tsx scripts/audit-ghl-contacts.ts --apply-tags --apply-name-backfill --apply-review-tags",
     "refresh:this-week": "tsx scripts/refresh-this-week-ghl-status.ts",
