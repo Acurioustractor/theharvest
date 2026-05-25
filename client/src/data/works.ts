@@ -241,20 +241,20 @@ export const works: Work[] = [
     number: "Work 03",
     slug: "the-cedar",
     title: "The Garden Paths",
-    subtitle: "St Mary's timber, returning to Witta as walkways",
+    subtitle: "Reclaimed St Mary's timber, becoming walkways at Witta",
     lifecycleTags: ["building", "making"],
-    materials: "Reclaimed St Mary's Cathedral timber · garden paths · local source trail",
+    materials: "Reclaimed St Mary's Cathedral timber · garden paths · source trail being traced",
     year: "Sourced 2026",
     heroImage: "/images/optimized/barry-5745-1000.webp",
     heroAlt: "Reclaimed timber connected to the garden paths at The Harvest",
     blurb:
-      "The garden paths are being made from timber reclaimed from St Mary's Cathedral in Sydney. The source trail leads back to trees cut from the Witta region, returning as walkways through the garden.",
+      "The garden paths are being made from timber reclaimed from St Mary's Cathedral in Sydney. The source trail is still being checked. For now, the timber carries the larger ridge story: cut, moved, used, and now returned to daily work.",
     whatItIs:
       "A set of garden walkways made from reclaimed St Mary's Cathedral timber. The paths carry people through the beds while carrying the timber story back into the landscape it came from.",
     why:
       "The timber story belongs in the ground, not only on a wall. Paths are how people first read a garden: where to enter, where to slow down, where to notice what is growing.",
     how:
-      "Reclaimed from St Mary's Cathedral in Sydney and being prepared for use as garden walkways at The Harvest. The story is being traced back to the Witta region, with the timber used visibly so the grain, marks, and source remain part of the work.",
+      "Reclaimed from St Mary's Cathedral in Sydney and being prepared for use as garden walkways at The Harvest. The source trail is still being checked; for now the timber speaks as material first. Used visibly so the grain, marks, and provenance remain part of the work.",
     wittaThreads: [
       {
         year: "1860",
@@ -295,11 +295,11 @@ export const works: Work[] = [
     blurb:
       "Witta has roughly 1,300 residents and no shops, no pub. The Shop is a small, slow attempt to put one back with a shared shelf and the makers who already live here.",
     whatItIs:
-      "A small retail space at The Harvest stocking what Witta and the surrounding hinterland produces. Preserves, ferments, ceramics, prints, oils, herbs, baked goods, gifts from the residencies. Run as a consignment and shared-shelf test rather than a buy-low-sell-high shop. Sublicenced under the lease, at arm's length from Harvest Pty's programming.",
+      "A small retail space at The Harvest stocking what Witta and the surrounding hinterland produces. Preserves, ferments, ceramics, prints, oils, herbs, baked goods, gifts from the residencies. Run as a small shared-shelf test rather than a buy-low-sell-high shop, kept at arm's length from the rest of the Harvest operating setup.",
     why:
       "The strategic plan calls for sub-licenced retail. The deeper reason is that Witta's last shop closed inside living memory and the gap is felt every week. A village without a shop has to drive for everything. A shop with the right shape, not Coles, not boutique, gives makers a shelf and gives neighbours a reason to walk past.",
     how:
-      "Sub-licenced under the lease, capital-light by design. Co-design with local makers and the Wednesday Maintenance Crew. Honest signage: who made it, where it came from, what they got paid. Open progressively as products and operators are ready, not all at once.",
+      "Capital-light by design. Co-design with local makers and the Wednesday Maintenance Crew. Honest signage: who made it, where it came from, what they got paid. Open progressively as products and operators are ready, not all at once.",
     wittaThreads: [
       {
         year: "Today",
@@ -323,7 +323,7 @@ export const works: Work[] = [
     hands: [
       { name: "Local makers (Witta + hinterland)", role: "Stockists, co-designers" },
       { name: "Sub-operator (TBC)", role: "Day-to-day retail" },
-      { name: "Harvest Pty Ltd", role: "Sub-licence holder" },
+      { name: "The Harvest team", role: "Operating setup" },
     ],
     storyLinks: [
       {
