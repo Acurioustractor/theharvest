@@ -10,6 +10,9 @@ import {
   businesses,
   InsertBusiness,
   Business,
+  memberWallEntries,
+  InsertMemberWallEntry,
+  MemberWallEntry,
   progressImages,
   InsertProgressImage,
   ProgressImage,
@@ -459,7 +462,7 @@ export async function updateBusinessStatus(businessId: number, status: "approved
 
 
 // Business profile management for owners
-export async function getBusinessByUserId(userId: number): Promise<Business | undefined> {
+export async function getBusinessByUserId(userOpenId: string): Promise<Business | undefined> {
   const db = await getDb();
   if (!db) {
     console.warn("[Database] Cannot get business: database not available");
@@ -468,7 +471,7 @@ export async function getBusinessByUserId(userId: number): Promise<Business | un
 
   try {
     const result = await db.select().from(businesses)
-      .where(eq(businesses.userId, userId))
+      .where(eq(businesses.userOpenId, userOpenId))
       .limit(1);
     return result[0];
   } catch (error) {
@@ -495,7 +498,7 @@ export async function getBusinessById(businessId: number): Promise<Business | un
   }
 }
 
-export async function claimBusiness(businessId: number, userId: number): Promise<boolean> {
+export async function claimBusiness(businessId: number, userOpenId: string): Promise<boolean> {
   const db = await getDb();
   if (!db) {
     console.warn("[Database] Cannot claim business: database not available");
@@ -505,13 +508,13 @@ export async function claimBusiness(businessId: number, userId: number): Promise
   try {
     // Check if business exists and is approved and not already claimed
     const business = await getBusinessById(businessId);
-    if (!business || business.status !== "approved" || business.userId) {
+    if (!business || business.status !== "approved" || business.userOpenId) {
       return false;
     }
     
     await db
       .update(businesses)
-      .set({ userId, updatedAt: new Date() })
+      .set({ userOpenId, updatedAt: new Date() })
       .where(eq(businesses.id, businessId));
     return true;
   } catch (error) {
@@ -522,8 +525,8 @@ export async function claimBusiness(businessId: number, userId: number): Promise
 
 export async function updateBusinessProfile(
   businessId: number, 
-  userId: number, 
-  updates: Partial<Omit<InsertBusiness, 'id' | 'userId' | 'status' | 'createdAt' | 'updatedAt'>>
+  userOpenId: string, 
+  updates: Partial<Omit<InsertBusiness, 'id' | 'userOpenId' | 'status' | 'createdAt' | 'updatedAt'>>
 ): Promise<Business | undefined> {
   const db = await getDb();
   if (!db) {
@@ -534,7 +537,7 @@ export async function updateBusinessProfile(
   try {
     // Verify ownership
     const business = await getBusinessById(businessId);
-    if (!business || business.userId !== userId) {
+    if (!business || business.userOpenId !== userOpenId) {
       throw new Error("Unauthorized: You don't own this business");
     }
 
@@ -560,11 +563,70 @@ export async function getUnclaimedApprovedBusinesses(): Promise<Business[]> {
     const { isNull } = await import("drizzle-orm");
     const { and } = await import("drizzle-orm");
     const result = await db.select().from(businesses)
-      .where(and(eq(businesses.status, "approved"), isNull(businesses.userId)))
+      .where(and(eq(businesses.status, "approved"), isNull(businesses.userOpenId)))
       .orderBy(businesses.name);
     return result;
   } catch (error) {
     console.error("[Database] Failed to get unclaimed businesses:", error);
+    return [];
+  }
+}
+
+export type PublicMemberWallEntry = {
+  id: number;
+  name: string;
+  business: string | null;
+  location: string | null;
+  likesToDo: string | null;
+  needs: string | null;
+  connect: string | null;
+  createdAt: Date;
+};
+
+export async function createMemberWallEntry(
+  entry: InsertMemberWallEntry,
+): Promise<MemberWallEntry | undefined> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot create member wall entry: database not available");
+    return undefined;
+  }
+
+  try {
+    const result = await db.insert(memberWallEntries).values(entry).returning();
+    return result[0];
+  } catch (error) {
+    console.error("[Database] Failed to create member wall entry:", error);
+    throw error;
+  }
+}
+
+export async function getPublicMemberWallEntries(): Promise<PublicMemberWallEntry[]> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot get member wall entries: database not available");
+    return [];
+  }
+
+  try {
+    const rows = await db
+      .select({
+        id: memberWallEntries.id,
+        name: memberWallEntries.name,
+        business: memberWallEntries.business,
+        location: memberWallEntries.location,
+        likesToDo: memberWallEntries.likesToDo,
+        needs: memberWallEntries.needs,
+        connect: memberWallEntries.connect,
+        createdAt: memberWallEntries.createdAt,
+      })
+      .from(memberWallEntries)
+      .where(eq(memberWallEntries.isPublic, true))
+      .orderBy(desc(memberWallEntries.createdAt))
+      .limit(24);
+    return rows;
+  } catch (error) {
+    console.error("[Database] Failed to get member wall entries:", error);
     return [];
   }
 }

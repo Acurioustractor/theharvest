@@ -1,5 +1,7 @@
 const GHL_API_BASE = "https://services.leadconnectorhq.com";
 const GHL_API_VERSION = "2021-07-28";
+const DEFAULT_HARVEST_INBOX_PIPELINE_ID = "ggQw10DuH0XRji6keimS";
+const DEFAULT_HARVEST_INBOX_NEW_STAGE_ID = "2eded979-7439-407d-89b6-762499b56658";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -11,6 +13,37 @@ function jsonResponse(body: Record<string, unknown>, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
     headers: { ...corsHeaders, "Content-Type": "application/json" },
+  });
+}
+
+async function upsertHarvestInboxOpportunity(input: {
+  apiKey: string;
+  locationId: string;
+  contactId: string;
+  name: string;
+  source: string;
+}) {
+  const pipelineId = Deno.env.get("GHL_HARVEST_INBOX_PIPELINE_ID") || DEFAULT_HARVEST_INBOX_PIPELINE_ID;
+  const pipelineStageId = Deno.env.get("GHL_HARVEST_INBOX_NEW_STAGE_ID") || DEFAULT_HARVEST_INBOX_NEW_STAGE_ID;
+
+  await fetch(`${GHL_API_BASE}/opportunities/upsert`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": `Bearer ${input.apiKey}`,
+      "Version": GHL_API_VERSION,
+    },
+    body: JSON.stringify({
+      pipelineId,
+      locationId: input.locationId,
+      contactId: input.contactId,
+      name: input.name,
+      status: "open",
+      pipelineStageId,
+      monetaryValue: 0,
+      source: input.source,
+    }),
   });
 }
 
@@ -47,6 +80,7 @@ Deno.serve(async req => {
   const tags = [
     "contact-form",
     "harvest-website",
+    "harvest-inbox",
     ...(subscribe ? ["newsletter", "harvest-newsletter"] : []),
   ];
 
@@ -64,7 +98,7 @@ Deno.serve(async req => {
       firstName,
       lastName,
       locationId,
-      source: "Website Contact Form",
+      source: "Harvest | Contact",
     }),
   });
 
@@ -111,13 +145,28 @@ Deno.serve(async req => {
         body: `**Website Contact Form**\n\n**Subject:** ${subject || "No subject"}\n\n**Message:**\n${message}`,
       }),
     });
+
+    try {
+      await upsertHarvestInboxOpportunity({
+        apiKey,
+        locationId,
+        contactId,
+        name: `${String(name).trim()} - Contact form`,
+        source: "Harvest | Contact",
+      });
+    } catch (error) {
+      console.error("GHL contact opportunity upsert failed:", error);
+    }
   }
 
-  // Trigger GHL workflow for contact form auto-reply
+  // Trigger GHL workflow for contact form auto-reply. The message should still
+  // be saved if GHL workflow enrolment has a temporary issue.
+  let workflowTriggered = false;
+  let workflowError: string | undefined;
   const workflowId = Deno.env.get("GHL_CONTACT_FORM_WORKFLOW_ID");
   if (workflowId && contactId) {
     try {
-      await fetch(`${GHL_API_BASE}/workflows/${workflowId}/subscribe`, {
+      const workflowResponse = await fetch(`${GHL_API_BASE}/contacts/${contactId}/workflow/${workflowId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -125,12 +174,28 @@ Deno.serve(async req => {
           "Authorization": `Bearer ${apiKey}`,
           "Version": GHL_API_VERSION,
         },
-        body: JSON.stringify({ contactId }),
       });
-    } catch {
-      // Workflow failure shouldn't block the response
+
+      if (workflowResponse.ok) {
+        workflowTriggered = true;
+      } else {
+        const errorText = await workflowResponse.text();
+        workflowError = `Workflow trigger failed with status ${workflowResponse.status}`;
+        console.error("GHL contact workflow trigger failed:", workflowResponse.status, errorText);
+      }
+    } catch (error) {
+      workflowError = error instanceof Error ? error.message : "Workflow trigger failed";
+      console.error("GHL contact workflow trigger failed:", error);
     }
+  } else if (!workflowId) {
+    workflowError = "GHL_CONTACT_FORM_WORKFLOW_ID is not configured";
+    console.error(workflowError);
   }
 
-  return jsonResponse({ success: true, contactId });
+  return jsonResponse({
+    success: true,
+    contactId,
+    workflowTriggered,
+    ...(workflowError ? { workflowError } : {}),
+  });
 });

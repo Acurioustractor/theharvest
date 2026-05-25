@@ -38,10 +38,11 @@ export default function Person({ slug }: { slug: string }) {
         <div className="container mx-auto max-w-3xl text-center">
           <h1 className="text-3xl font-serif font-bold text-stone-800">No one here by that name.</h1>
           <p className="mt-4 text-stone-600">This storyteller might not be on The Harvest project (yet).</p>
-          <Link href="/people">
-            <a className="mt-6 inline-flex items-center gap-2 text-amber-700 hover:text-amber-800">
-              <ArrowLeft className="h-4 w-4" /> Back to all people
-            </a>
+          <Link
+            href="/people"
+            className="mt-6 inline-flex items-center gap-2 text-amber-700 hover:text-amber-800"
+          >
+            <ArrowLeft className="h-4 w-4" /> Back to all people
           </Link>
         </div>
       </div>
@@ -63,19 +64,21 @@ export default function Person({ slug }: { slug: string }) {
   return (
     <div className="min-h-screen bg-gradient-to-b from-stone-50 to-white">
       <nav className="absolute top-0 left-0 right-0 z-10 px-6 py-4">
-        <Link href="/">
-          <a className="inline-flex items-center gap-2 text-sm font-mono uppercase tracking-wider text-stone-700 hover:text-amber-700">
-            ← The Harvest
-          </a>
+        <Link
+          href="/"
+          className="inline-flex items-center gap-2 text-sm font-mono uppercase tracking-wider text-stone-700 hover:text-amber-700"
+        >
+          ← The Harvest
         </Link>
       </nav>
 
       <section className="pt-32 pb-12 bg-gradient-to-b from-amber-50 to-stone-50">
         <div className="container">
-          <Link href="/people">
-            <a className="mb-6 inline-flex items-center gap-2 text-sm text-stone-600 hover:text-amber-700">
-              <ArrowLeft className="h-4 w-4" /> All people
-            </a>
+          <Link
+            href="/people"
+            className="mb-6 inline-flex items-center gap-2 text-sm text-stone-600 hover:text-amber-700"
+          >
+            <ArrowLeft className="h-4 w-4" /> All people
           </Link>
 
           <motion.div {...fadeInUp} className="max-w-3xl">
@@ -153,32 +156,34 @@ export default function Person({ slug }: { slug: string }) {
             </h2>
             <div className="grid gap-4">
               {s.articles.map((a) => (
-                <Link key={a.id} href={a.slug ? `/blog/${a.slug}` : "#"}>
-                  <a className="group block rounded-lg border border-stone-200 bg-white p-5 transition hover:border-amber-300 hover:shadow-md">
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="min-w-0">
-                        <h3 className="text-lg font-serif font-bold text-stone-800 group-hover:text-amber-700">
-                          {a.title}
-                        </h3>
-                        {a.publishedAt && (
-                          <p className="mt-1 text-xs text-stone-500">{formatDate(a.publishedAt)}</p>
-                        )}
-                        {a.excerpt && (
-                          <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-stone-600">{a.excerpt}</p>
-                        )}
-                        {a.themes.length > 0 && (
-                          <div className="mt-3 flex flex-wrap gap-1.5">
-                            {a.themes.slice(0, 4).map((t) => (
-                              <span key={t} className="inline-flex items-center rounded-full bg-stone-100 px-2 py-0.5 text-[10px] font-medium text-stone-700">
-                                {t}
-                              </span>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                      <ArrowRight className="h-4 w-4 flex-shrink-0 text-stone-400 transition group-hover:translate-x-1 group-hover:text-amber-600" />
+                <Link
+                  key={a.id}
+                  href={a.slug ? `/blog/${a.slug}` : "#"}
+                  className="group block rounded-lg border border-stone-200 bg-white p-5 transition hover:border-amber-300 hover:shadow-md"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <h3 className="text-lg font-serif font-bold text-stone-800 group-hover:text-amber-700">
+                        {a.title}
+                      </h3>
+                      {a.publishedAt && (
+                        <p className="mt-1 text-xs text-stone-500">{formatDate(a.publishedAt)}</p>
+                      )}
+                      {a.excerpt && (
+                        <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-stone-600">{a.excerpt}</p>
+                      )}
+                      {a.themes.length > 0 && (
+                        <div className="mt-3 flex flex-wrap gap-1.5">
+                          {a.themes.slice(0, 4).map((t) => (
+                            <span key={t} className="inline-flex items-center rounded-full bg-stone-100 px-2 py-0.5 text-[10px] font-medium text-stone-700">
+                              {t}
+                            </span>
+                          ))}
+                        </div>
+                      )}
                     </div>
-                  </a>
+                    <ArrowRight className="h-4 w-4 flex-shrink-0 text-stone-400 transition group-hover:translate-x-1 group-hover:text-amber-600" />
+                  </div>
                 </Link>
               ))}
             </div>
@@ -194,27 +199,29 @@ export default function Person({ slug }: { slug: string }) {
             </h2>
             <div className="grid gap-4">
               {s.stories.map((st) => (
-                <Link key={st.id} href={`/stories/${st.id}`}>
-                  <a className="group block rounded-lg border border-stone-200 bg-stone-50 p-5 transition hover:border-amber-300 hover:shadow-md">
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="min-w-0">
-                        <h3 className="text-lg font-serif font-bold text-stone-800 group-hover:text-amber-700">{st.title}</h3>
-                        {st.summary && (
-                          <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-stone-600">{st.summary}</p>
-                        )}
-                        {st.themes && st.themes.length > 0 && (
-                          <div className="mt-3 flex flex-wrap gap-1.5">
-                            {st.themes.slice(0, 4).map((t) => (
-                              <span key={t} className="inline-flex items-center rounded-full bg-stone-100 px-2 py-0.5 text-[10px] font-medium text-stone-700">
-                                {t}
-                              </span>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                      <ArrowRight className="h-4 w-4 flex-shrink-0 text-stone-400 transition group-hover:translate-x-1 group-hover:text-amber-600" />
+                <Link
+                  key={st.id}
+                  href={`/stories/${st.id}`}
+                  className="group block rounded-lg border border-stone-200 bg-stone-50 p-5 transition hover:border-amber-300 hover:shadow-md"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <h3 className="text-lg font-serif font-bold text-stone-800 group-hover:text-amber-700">{st.title}</h3>
+                      {st.summary && (
+                        <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-stone-600">{st.summary}</p>
+                      )}
+                      {st.themes && st.themes.length > 0 && (
+                        <div className="mt-3 flex flex-wrap gap-1.5">
+                          {st.themes.slice(0, 4).map((t) => (
+                            <span key={t} className="inline-flex items-center rounded-full bg-stone-100 px-2 py-0.5 text-[10px] font-medium text-stone-700">
+                              {t}
+                            </span>
+                          ))}
+                        </div>
+                      )}
                     </div>
-                  </a>
+                    <ArrowRight className="h-4 w-4 flex-shrink-0 text-stone-400 transition group-hover:translate-x-1 group-hover:text-amber-600" />
+                  </div>
                 </Link>
               ))}
             </div>
@@ -263,21 +270,23 @@ export default function Person({ slug }: { slug: string }) {
                   return hn === fullLower || (firstName.length >= 3 && hn.split(/\s+/).includes(firstName));
                 })?.role;
                 return (
-                  <Link key={w.slug} href={`/works/${w.slug}`}>
-                    <a className="group block rounded-lg border border-stone-200 bg-stone-50 p-5 transition hover:border-amber-300 hover:shadow-md">
-                      <h3 className="font-serif font-bold text-stone-800 group-hover:text-amber-700">{w.title}</h3>
-                      {w.subtitle && (
-                        <p className="mt-1 text-sm text-stone-500">{w.subtitle}</p>
-                      )}
-                      {role && (
-                        <p className="mt-3 text-xs text-stone-600">
-                          <span className="font-semibold text-stone-700">{firstName.charAt(0).toUpperCase() + firstName.slice(1)}'s role:</span> {role}
-                        </p>
-                      )}
-                      <p className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-amber-700">
-                        See the work <ArrowRight className="h-3 w-3" />
+                  <Link
+                    key={w.slug}
+                    href={`/works/${w.slug}`}
+                    className="group block rounded-lg border border-stone-200 bg-stone-50 p-5 transition hover:border-amber-300 hover:shadow-md"
+                  >
+                    <h3 className="font-serif font-bold text-stone-800 group-hover:text-amber-700">{w.title}</h3>
+                    {w.subtitle && (
+                      <p className="mt-1 text-sm text-stone-500">{w.subtitle}</p>
+                    )}
+                    {role && (
+                      <p className="mt-3 text-xs text-stone-600">
+                        <span className="font-semibold text-stone-700">{firstName.charAt(0).toUpperCase() + firstName.slice(1)}'s role:</span> {role}
                       </p>
-                    </a>
+                    )}
+                    <p className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-amber-700">
+                      See the work <ArrowRight className="h-3 w-3" />
+                    </p>
                   </Link>
                 );
               })}
@@ -297,10 +306,11 @@ export default function Person({ slug }: { slug: string }) {
 
       <section className="py-12 bg-white border-t border-stone-200">
         <div className="container mx-auto max-w-3xl text-center">
-          <Link href="/people">
-            <a className="inline-flex items-center gap-2 text-amber-700 hover:text-amber-800">
-              <ArrowLeft className="h-4 w-4" /> Back to all people
-            </a>
+          <Link
+            href="/people"
+            className="inline-flex items-center gap-2 text-amber-700 hover:text-amber-800"
+          >
+            <ArrowLeft className="h-4 w-4" /> Back to all people
           </Link>
         </div>
       </section>

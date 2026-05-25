@@ -352,7 +352,7 @@ export default function BauhausZone({ zoneId }: { zoneId: string }) {
           <GeometricLogo size={28} />
           <span style={{ fontFamily: "var(--bh-display)", fontWeight: 900, fontSize: 16, letterSpacing: "0.12em", color: "var(--bh-black)" }}>THE HARVEST</span>
         </Link>
-        <Link href="/bauhaus#site-map" style={{ fontFamily: "var(--bh-display)", fontWeight: 700, fontSize: 13, letterSpacing: "0.08em", color: "var(--bh-black)", textDecoration: "none" }}>
+        <Link href="/bauhaus" style={{ fontFamily: "var(--bh-display)", fontWeight: 700, fontSize: 13, letterSpacing: "0.08em", color: "var(--bh-black)", textDecoration: "none" }}>
           BACK TO SITE MAP
         </Link>
       </nav>
@@ -468,7 +468,7 @@ export default function BauhausZone({ zoneId }: { zoneId: string }) {
             <GeometricLogo size={20} />
             <span style={{ fontFamily: "var(--bh-display)", fontWeight: 900, fontSize: 13, letterSpacing: "0.12em", color: "var(--bh-cream)" }}>THE HARVEST</span>
           </Link>
-          <Link href="/bauhaus#site-map" style={{ fontFamily: "var(--bh-display)", fontWeight: 700, fontSize: 12, letterSpacing: "0.1em", color: "var(--bh-cream)", textDecoration: "none", opacity: 0.6 }}>
+          <Link href="/bauhaus" style={{ fontFamily: "var(--bh-display)", fontWeight: 700, fontSize: 12, letterSpacing: "0.1em", color: "var(--bh-cream)", textDecoration: "none", opacity: 0.6 }}>
             SITE MAP
           </Link>
         </div>

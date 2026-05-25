@@ -59,11 +59,13 @@ export default function WorkDetail({ slug }: { slug: string }) {
     setMeta("property", "og:title", title);
     setMeta("property", "og:description", work.blurb);
     setMeta("property", "og:image", image);
+    setMeta("property", "og:image:alt", work.heroAlt);
     setMeta("property", "twitter:card", "summary_large_image");
     setMeta("property", "twitter:url", url);
     setMeta("property", "twitter:title", title);
     setMeta("property", "twitter:description", work.blurb);
     setMeta("property", "twitter:image", image);
+    setMeta("property", "twitter:image:alt", work.heroAlt);
     setCanonical(url);
     setJsonLd("work-jsonld", {
       "@context": "https://schema.org",

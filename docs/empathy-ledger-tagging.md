@@ -55,7 +55,7 @@ Default is `general-harvest`.
 |---|---|---|
 | `/` (home) | media with `tag=home` or `special=hero` | Hero rotates featured images |
 | `/works/<slug>` | media with `project_id=<slug>` | Pure project filter |
-| `/journey` | media with `tag=journey`, sorted by date | Timeline |
+| `/story` | media with `tag=journey`, sorted by date | Timeline |
 | `/explore` | media by `theme=...` filter chips | User chooses pillar |
 | `/blog/<slug>` | article body + `featured_image_url` | Article-level, not gallery |
 

@@ -1,144 +1,288 @@
-# Welcome email + GHL workflow setup
+# Membership and contact email setup
 
-Runbook for wiring the Harvest member welcome workflow in GHL. Pairs with the website's `/membership` form and the footer "Member list now open" signup.
+Runbook for the active Harvest GHL email flows.
 
-Last updated: 2026-05-13.
+Last updated: 2026-05-14.
 
-## What the website sends
+## Current decision
 
-The newsletter-subscribe edge function (`supabase/functions/newsletter-subscribe/index.ts`) upserts contacts to GHL via `POST /contacts/upsert` with these fields:
+Use GHL for the emails.
 
-- `firstName`, `lastName` (split from a single `name` field)
-- `email`, `phone` (optional)
-- `tags` (computed from interests + member flag, see below)
-- `source` (tracks which form the signup came from)
+Use the website only for the current intake surfaces:
 
-## Sources by form
+- `/membership` member signup
+- `/membership` question form
+- Footer member signup
+- `/contact` general message
 
-| Source value | Posted from |
-| --- | --- |
-| `Harvest member list` | `/membership` signup (Membership.tsx) |
-| `Membership page question form` | `/membership` question box (separate form, same page) |
-| `footer-member-list` | Footer newsletter form in `PublicLayout` |
+Do not use the Garden Launch RSVP form yet. The Garden Launch invite and headcount will come through member emails first.
 
-## Tags applied
+## How the website starts workflows
 
-Every signup gets:
-- `newsletter`
-- `harvest-newsletter`
-- `harvest-website`
+The website already enrols contacts into specific GHL workflows by workflow ID.
 
-Plus interest tags (one per selected interest):
-- `interest-events`, `interest-workshops`, `interest-markets`, `interest-venue`, `interest-garden`, `interest-food`, `interest-community`, `interest-volunteer`, `interest-membership`, `interest-sustainability`
+That means the safer setup is:
 
-If `member: true` is sent (Membership form, footer form) OR interests includes `membership`:
-- `harvest-member`
-- `interest-membership`
-
-## GHL workflow setup
-
-### Workflow 1: Member welcome
-
-**Trigger:** Contact tag added: `harvest-member`
-
-**Wait:** 0 minutes (send immediately)
-
-**Action:** Send email "Welcome to the Harvest member list" (template below)
-
-**Why a separate workflow:** newsletter-only signups should NOT get the member welcome. The `harvest-member` tag is the discriminator.
-
-### Workflow 2: Newsletter welcome (no membership)
-
-**Trigger:** Contact tag added: `newsletter`
-
-**Condition:** Contact does NOT have tag `harvest-member`
-
-**Wait:** 0 minutes
-
-**Action:** Send email "Welcome to the Harvest newsletter" (lighter version, no member-list promises)
-
-### Workflow 3: Monthly Harvest Note (members)
-
-**Trigger:** Monthly schedule (1st of month, 8am Brisbane)
-
-**Condition:** Contact has tag `harvest-member`
-
-**Action:** Send latest "Harvest Note" template (manually drafted each month)
-
-This is the "one monthly letter from Ben or Nic" promise on `/membership`. Don't automate the content - draft it each month and queue the workflow to send.
-
-## Email template: Member welcome
-
-Subject: **Your name is on the list**
-
+```text
+website form -> GHL contact upsert -> GHL tags and note -> subscribe contact to workflow by ID
 ```
+
+Do not also create a broad "tag added" trigger for the same workflow unless you add clear exclusions. Otherwise one signup can get two emails.
+
+Important edge case: the member question form currently adds `harvest-member` as a tag. If the member welcome workflow is triggered only by "tag added: harvest-member", people asking a question can receive the member welcome too. Prefer the workflow ID method below.
+
+## Active workflow IDs
+
+Set these in local `.env` and Vercel when the matching workflow exists in GHL:
+
+| Env var | Used by | Job |
+|---|---|---|
+| `GHL_MEMBER_WELCOME_WORKFLOW_ID` | `/membership` signup + footer member signup | Sends the member welcome email |
+| `GHL_MEMBER_QUESTION_WORKFLOW_ID` | `/membership` question form | Sends question receipt and/or internal task |
+| `GHL_CONTACT_FORM_WORKFLOW_ID` | `/contact` and fallback paths | Sends contact receipt and/or internal task |
+| `GHL_SHOP_INTEREST_WORKFLOW_ID` | `/membership#shop-interest` and `/works/the-shop` | Sends shop-specific receipt and follow-up task |
+| `GHL_NEWSLETTER_WORKFLOW_ID` | newsletter-only fallback | Sends lighter newsletter welcome |
+
+Leave `GHL_GATHERING_RSVP_WORKFLOW_ID` unset for this phase unless the public RSVP form is deliberately reopened.
+
+## Website source map
+
+| Surface | Endpoint | Source value | Main tags |
+|---|---|---|---|
+| `/membership` member signup | `newsletter.subscribe` | `Harvest | Member Signup` | `harvest-member`, `harvest-newsletter`, `newsletter`, `interest-membership`, selected interest tags, `harvest-website` |
+| Footer member signup | `newsletter.subscribe` | `Harvest | Footer Member Signup` | `harvest-member`, `harvest-newsletter`, `newsletter`, `interest-membership`, `interest-community`, `harvest-website` |
+| `/membership` question form | `members.question` | `Harvest | Member Question` | `member-question`, `harvest-member`, `harvest-newsletter`, `interest-membership`, `harvest-website` |
+| `/contact` general message | `contact-form` edge function | `Harvest | Contact` | `contact-form`, `harvest-website`, optional `newsletter`, optional `harvest-newsletter` |
+
+## GHL build order
+
+1. Create the email templates in GHL first.
+2. Create one workflow per job.
+3. Keep each workflow small: one receipt email, one internal notification/task if needed.
+4. Publish the workflow.
+5. Copy the workflow ID into the matching env var.
+6. Submit one test form locally.
+7. Confirm contact tags, note, and email delivery.
+8. Delete or tag the test contact after checking.
+
+## Workflow 1: member welcome
+
+**Workflow ID env var:** `GHL_MEMBER_WELCOME_WORKFLOW_ID`
+
+**Started by:** website API subscription after `newsletter.subscribe`.
+
+**Audience:** contacts joining through `/membership` or the footer member form.
+
+**Actions:**
+
+1. Send email: `Welcome to the Harvest member list`
+2. Optional internal notification to Ben/Nic: new member joined
+
+**Do not add:** a broad tag trigger on `harvest-member` unless you exclude `member-question`.
+
+### Email: member welcome
+
+Subject: `Your name is on the list`
+
+Preview: `A monthly note, first calls, and practical asks from The Harvest.`
+
+```text
 Hi {{first_name}},
 
-You're on the Harvest member list. Thanks for that.
+You're on the Harvest member list.
 
-Here's what to expect:
+For now, that means three things.
 
-1. The Harvest Note. A monthly letter from Ben or Nic. What happened in
-   the garden, what's coming, one honest question, one small ask.
-2. First call on community days, work days, workshops and meals before
-   they go public. The next community day around the end of June lands
-   here first.
-3. Specific invitations to help. Hands needed for a path. Someone who
-   knows old timber. A driver for a load of crates. Real asks, not
-   "volunteer opportunities".
+1. The Harvest Note. A monthly letter from Ben or Nic. What changed in the garden, what is coming, one honest question, one small ask.
 
-The legal structure (co-op, formal membership) comes later. This list is
-the front gate while the place is being made.
+2. First call on community days, work days, workshops and meals before they go public.
 
-If you have a question or want to introduce yourself, just reply to this
-email. It comes to us directly.
+3. Specific invitations to help. Hands for a path. Someone who knows old timber. A driver for a load of crates. Real asks, not vague volunteering.
+
+The legal structure comes later. This list is the front gate while the place is being made.
+
+If you have a question or want to introduce yourself, reply to this email. It comes to us directly.
 
 Ben + Nic
 The Harvest, Witta. Jinibara Country.
 ```
 
-**Voice rules** (per project memory):
-- No em-dashes. Use hyphens with spaces, or a period.
-- No "vibrant", "tapestry", "testament", "underscore", "pivotal", "crucial".
-- Plain, direct, first-person from Ben and Nic.
+## Workflow 2: member question receipt
 
-## Email template: Newsletter welcome (no membership)
+**Workflow ID env var:** `GHL_MEMBER_QUESTION_WORKFLOW_ID`
 
-Subject: **Thanks for following along**
+**Started by:** website API subscription after `members.question`.
 
-```
+**Audience:** people who ask a question from `/membership`.
+
+**Actions:**
+
+1. Send email: `We got your Harvest question`
+2. Create task or internal notification for Ben/Nic to reply
+
+### Email: member question receipt
+
+Subject: `We got your Harvest question`
+
+Preview: `Ben or Nic will reply from the Harvest inbox.`
+
+```text
 Hi {{first_name}},
 
-You'll get the Harvest newsletter when there's something worth sending.
-That usually means one of:
+We got your question.
 
-- The garden has done something notable.
-- A community day or event is coming up.
-- A new work has started or finished.
-- We have a question worth asking the network.
+Ben or Nic will read it and reply from the Harvest inbox.
 
-If you want more than that (early invites, first calls, the monthly
-Harvest Note) the member list is here:
+If you forgot something, just reply to this email and add it there.
 
-  https://www.theharvestwitta.com.au/membership
+The Harvest, Witta
+Jinibara Country
+```
 
-Otherwise we'll see you when something good happens.
+## Workflow 3: contact form receipt
+
+**Workflow ID env var:** `GHL_CONTACT_FORM_WORKFLOW_ID`
+
+**Started by:** Supabase `contact-form` edge function after the contact is upserted and the form note is added.
+
+**Audience:** people who send a general message from `/contact`.
+
+**Actions:**
+
+1. Send email: `We got your message`
+2. Create task or internal notification for Ben/Nic to reply
+
+### Email: contact receipt
+
+Subject: `We got your message`
+
+Preview: `Thanks for writing to The Harvest.`
+
+```text
+Hi {{first_name}},
+
+We got your message.
+
+If it needs a reply, Ben or Nic will come back to you from this inbox.
+
+If you were asking about membership, the member list is here:
+https://www.theharvestwitta.com.au/membership
+
+If you were asking about produce, made goods, or the shop shelf, use the shop form on the membership page.
+
+The Harvest, Witta
+Jinibara Country
+```
+
+## Workflow 4: shop interest receipt
+
+**Workflow ID env var:** `GHL_SHOP_INTEREST_WORKFLOW_ID`
+
+**Started by:** website API subscription after `shopInterest.submit`.
+
+**Audience:** people offering produce, made goods, food, consignment ideas, or help shaping the shop shelf.
+
+**Actions:**
+
+1. Send email: `We got your shop note`
+2. Create task or internal notification for Ben/Nic to review the offer
+
+**Setup note:** duplicate `Contact Form to Universal Inquiry`, rename it `Harvest - Shop Interest Receipt`, replace the customer email with the copy below, publish it, then set `GHL_SHOP_INTEREST_WORKFLOW_ID` locally and in deployment. Until this is set, the shop form falls back to `GHL_CONTACT_FORM_WORKFLOW_ID`.
+
+### Email: shop interest receipt
+
+Subject: `We got your shop note`
+
+Preview: `Thanks for putting something on the Harvest shelf.`
+
+```text
+Hi {{contact.first_name}},
+
+We got your shop note.
+
+Thanks for putting something forward for the Harvest shelf.
+
+Ben or Nic will read it and come back from this inbox if it fits the next round of conversations.
+
+For now, we are looking for produce, food, made goods, consignment ideas, and people who want to help shape the first version of the shop.
+
+The Harvest, Witta
+Jinibara Country
+```
+
+## Workflow 5: newsletter-only welcome
+
+**Workflow ID env var:** `GHL_NEWSLETTER_WORKFLOW_ID`
+
+Use this only for newsletter-only contacts that are not joining as members.
+
+Subject: `Thanks for following along`
+
+```text
+Hi {{first_name}},
+
+You'll get a Harvest note when there is something worth sending.
+
+That usually means the garden has moved, a gathering is coming, a work has started, or we have a question worth asking the network.
+
+If you want the closer list, join here:
+https://www.theharvestwitta.com.au/membership
 
 Ben + Nic
 The Harvest, Witta. Jinibara Country.
 ```
 
-## Verification checklist (after workflows are saved in GHL)
+## Garden Launch for this phase
 
-- [ ] Submit a test contact via `/membership` form (use a real-but-disposable email)
-- [ ] Confirm GHL contact appears with tags: `newsletter`, `harvest-newsletter`, `harvest-website`, `harvest-member`, `interest-membership`
-- [ ] Confirm Workflow 1 fires and the member welcome email lands
-- [ ] Submit a second test via the footer newsletter (no interests)
-- [ ] Confirm Workflow 1 fires (footer also sends `member: true`)
-- [ ] Delete the test contacts via GHL UI after verifying
+The Garden Launch RSVP form is not active on the website.
+
+Current path:
+
+```text
+member list -> GHL member email -> people reply -> Ben/Nic count seats manually
+```
+
+When the invite is ready, send a manual GHL campaign to `harvest-member`.
+
+Use this CTA:
+
+```text
+Reply to this email with your name and how many seats you need.
+```
+
+Do not point the campaign to `/garden-launch` as an RSVP form unless the public form is deliberately reopened.
+
+## Verification checklist
+
+- [x] Confirm `GHL_MEMBER_WELCOME_WORKFLOW_ID` is set locally.
+- [x] Confirm `GHL_MEMBER_QUESTION_WORKFLOW_ID` is set locally.
+- [x] Confirm `GHL_CONTACT_FORM_WORKFLOW_ID` is set locally and in Supabase edge function secrets.
+- [x] Confirm `GHL_SHOP_INTEREST_WORKFLOW_ID` is set locally.
+- [x] Submit one test through `/membership`.
+- [x] Confirm GHL contact has `harvest-member`, `harvest-newsletter`, `newsletter`, `interest-membership`, and `harvest-website`.
+- [x] Submit one test through `/membership` question form.
+- [x] Confirm GHL contact has `member-question` and the question appears as a note.
+- [x] Submit one test through `/contact`.
+- [x] Confirm GHL contact has `contact-form` and the message appears as a note.
+- [x] Confirm `/contact` returns `workflowTriggered: true`.
+- [ ] Open `/garden-launch` and confirm there is no RSVP form.
+
+## Verification log
+
+2026-05-14:
+
+- Member welcome workflow ID is `19cc358a-05f6-4d99-8e6b-91b31c63e8c4`.
+- Member question workflow ID is `62aa2b50-c4f3-4564-84c3-3aa81c0c36f8`. Test contact had `member-question`, membership tags, and a saved question note.
+- Contact form workflow ID is `f0c1f3db-8809-4283-ba91-907626ac0bb7`. Supabase secret was added, `contact-form` was redeployed, and the test returned `workflowTriggered: true`.
+- Contact workflow now includes a customer receipt email action: `Contact form receipt`.
+- Shop interest uses the contact workflow fallback for this phase. Test contact had `harvest-shop-interest`, `shop-produce`, `shop-follow-up`, and workflow-added `engagement:lead`.
+- Shop interest workflow ID is `ff4ff43e-0174-415d-828e-3610f5386de5`. The workflow is published in GHL as `Harvest - Shop Interest Receipt`.
+- Dedicated shop form test used `benjamin+harvest-shop-dedicated-ff4ff43@act.place`. GHL contact had `harvest-shop-interest`, `shop-produce`, `shop-follow-up`, and a saved shop EOI note.
+- Fixed legacy edge-function workflow enrolment from `POST /workflows/:id/subscribe` to `POST /contacts/:contactId/workflow/:workflowId`.
+- Newsletter-only fallback is not used by the current public footer or membership page. Both submit as `member: true`.
 
 ## Known gaps
 
-- **No double opt-in.** A signup is treated as confirmed consent. If you want a confirmation step, add it as a third workflow that sends a confirmation link before adding the contact to the member list.
-- **No unsubscribe handling in the welcome workflow.** GHL's email footer covers this automatically; nothing on our end to wire.
-- **No mid-stream tag changes.** If someone unticks "membership" via a re-signup, the `harvest-member` tag stays. GHL doesn't auto-remove tags on tag removal triggers unless wired explicitly.
+- No double opt-in yet. A signup is treated as consent to receive Harvest emails.
+- Member question contacts currently receive `harvest-member`. Keep workflow triggers workflow-ID based to avoid accidental member welcome sends.
+- The old `newsletter-subscribe` edge function still exists. Keep it as legacy unless a current page uses it again.

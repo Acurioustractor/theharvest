@@ -1,8 +1,27 @@
 import { createClient } from "@supabase/supabase-js";
-import type { User as SupabaseUser } from "@supabase/supabase-js";
 import { ENV } from "./env.js";
 
 let _client: ReturnType<typeof createClient> | null = null;
+
+type SupabaseAuthUser = {
+  id: string;
+  email?: string | null;
+  user_metadata?: {
+    full_name?: string | null;
+    name?: string | null;
+  } | null;
+  app_metadata?: {
+    provider?: string | null;
+    providers?: string[] | null;
+  } | null;
+};
+
+type SupabaseAuthApi = {
+  getUser: (jwt?: string) => Promise<{
+    data: { user: SupabaseAuthUser | null };
+    error: { message: string } | null;
+  }>;
+};
 
 function getSupabaseClient() {
   if (_client) return _client;
@@ -23,11 +42,12 @@ function getSupabaseClient() {
 
 export async function getSupabaseUser(
   accessToken: string
-): Promise<SupabaseUser | null> {
+): Promise<SupabaseAuthUser | null> {
   if (!accessToken) return null;
   const supabase = getSupabaseClient();
   if (!supabase) return null;
-  const { data, error } = await supabase.auth.getUser(accessToken);
+  const auth = supabase.auth as unknown as SupabaseAuthApi;
+  const { data, error } = await auth.getUser(accessToken);
   if (error) {
     console.warn("[Auth] Supabase token verification failed", error.message);
     return null;

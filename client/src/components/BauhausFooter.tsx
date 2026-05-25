@@ -39,7 +39,7 @@ export default function BauhausFooter({ isMobile }: BauhausFooterProps) {
       email: nlEmail.trim(),
       firstName,
       lastName: rest.join(" ") || undefined,
-      source: "site-footer-member-list",
+      source: "Harvest | Footer Member Signup",
       interests: ["membership", "community"],
       member: true,
     });
@@ -77,7 +77,7 @@ export default function BauhausFooter({ isMobile }: BauhausFooterProps) {
           margin: "0 0 14px",
           lineHeight: 1.5,
         }}>
-          A community open day around the end of June 2026. Date being confirmed. Join the member list to hear first.
+          A community open day around the end of June 2026. Date being confirmed. Become a member to hear first.
         </p>
         <div style={{
           display: "flex",
@@ -85,7 +85,7 @@ export default function BauhausFooter({ isMobile }: BauhausFooterProps) {
           justifyContent: "center",
           gap: 12,
         }}>
-          <Link href="/membership" style={smallActionStyle}>JOIN MEMBER LIST</Link>
+          <Link href="/membership" style={smallActionStyle}>BECOME A MEMBER</Link>
           <Link href="/what-is-the-harvest" style={smallActionStyle}>WHAT IS THE HARVEST?</Link>
           <Link href="/works" style={smallActionStyle}>SEE THE WORKS</Link>
         </div>
@@ -106,7 +106,7 @@ export default function BauhausFooter({ isMobile }: BauhausFooterProps) {
           color: colors.goldenHour,
           margin: "0 0 6px",
         }}>
-          MEMBER LIST
+          BECOME A MEMBER
         </p>
         {nlDone ? (
           <p style={{
@@ -241,9 +241,8 @@ export default function BauhausFooter({ isMobile }: BauhausFooterProps) {
       }}>
         <Link href="/" style={linkStyle}>HOME</Link>
         <Link href="/what-is-the-harvest" style={linkStyle}>WHAT IS THE HARVEST?</Link>
-        <Link href="/membership" style={linkStyle}>MEMBER LIST</Link>
         <Link href="/works" style={linkStyle}>WORKS</Link>
-        <Link href="/compendium" style={linkStyle}>THE STORY</Link>
+        <Link href="/membership" style={linkStyle}>MEMBERSHIP</Link>
         <Link href="/people" style={linkStyle}>PEOPLE</Link>
         <Link href="/blog" style={linkStyle}>JOURNAL</Link>
         <Link href="/contact" style={linkStyle}>CONTACT</Link>

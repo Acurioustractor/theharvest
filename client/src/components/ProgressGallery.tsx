@@ -38,9 +38,9 @@ const sampleProgressImages: ProgressImage[] = [
   // The Harvest Themes - showcasing different aspects of community life
   {
     id: "1",
-    src: "/images/harvest-hero.jpg",
+    src: "/images/social/harvest-social-card.jpg",
     title: "The Harvest Today",
-    description: "The transformed site welcomes visitors to a place of eating, learning, growing, making, and gathering.",
+    description: "Milk crates stacked into a pavilion at The Harvest in Witta.",
     date: "2025-01",
     category: "after",
     location: "Main Site",

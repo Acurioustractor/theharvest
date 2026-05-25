@@ -1,4 +1,6 @@
 import {
+  boolean,
+  date,
   integer,
   pgEnum,
   pgTable,
@@ -72,21 +74,21 @@ export type InsertUser = typeof appUsers.$inferInsert;
 /**
  * Community events table for storing event submissions
  */
-export const events = pgTable("events", {
+export const events = pgTable("harvest_events", {
   id: serial("id").primaryKey(),
-  title: varchar("title", { length: 255 }).notNull(),
-  date: timestamp("date", { withTimezone: false }).notNull(),
-  time: varchar("time", { length: 100 }).notNull(),
-  location: varchar("location", { length: 255 }).notNull(),
+  title: text("title").notNull(),
+  date: date("date", { mode: "date" }).notNull(),
+  time: text("time").notNull(),
+  location: text("location").notNull(),
   category: eventCategoryEnum("category").notNull(),
   description: text("description").notNull(),
-  contactEmail: varchar("contactEmail", { length: 320 }).notNull(),
+  contactEmail: text("contactEmail").notNull(),
   status: eventStatusEnum("status").default("pending").notNull(),
-  submittedBy: varchar("submittedBy", { length: 255 }),
-  createdAt: timestamp("createdAt", { withTimezone: false })
+  submittedBy: text("submittedBy"),
+  createdAt: timestamp("created_at", { withTimezone: true })
     .defaultNow()
     .notNull(),
-  updatedAt: timestamp("updatedAt", { withTimezone: false })
+  updatedAt: timestamp("updated_at", { withTimezone: true })
     .defaultNow()
     .notNull(),
 });
@@ -97,23 +99,48 @@ export type InsertEvent = typeof events.$inferInsert;
 /**
  * Business submissions table for local enterprise registrations
  */
-export const businesses = pgTable("businesses", {
+export const businesses = pgTable("harvest_businesses", {
   id: serial("id").primaryKey(),
-  /** Link to user account - set when business is approved and user claims it */
-  userId: integer("userId"),
-  name: varchar("name", { length: 255 }).notNull(),
+  name: text("name").notNull(),
   category: businessCategoryEnum("category").notNull(),
   description: text("description").notNull(),
-  address: varchar("address", { length: 500 }),
-  phone: varchar("phone", { length: 50 }),
-  email: varchar("email", { length: 320 }),
-  website: varchar("website", { length: 500 }),
-  facebook: varchar("facebook", { length: 500 }),
-  instagram: varchar("instagram", { length: 500 }),
-  imageUrl: varchar("imageUrl", { length: 1000 }),
+  address: text("address"),
+  phone: text("phone"),
+  email: text("email"),
+  website: text("website"),
+  facebook: text("facebook"),
+  instagram: text("instagram"),
+  imageUrl: text("imageUrl"),
   status: businessStatusEnum("status").default("pending").notNull(),
-  submittedBy: varchar("submittedBy", { length: 255 }),
-  submitterEmail: varchar("submitterEmail", { length: 320 }).notNull(),
+  submittedBy: text("submittedBy"),
+  submitterEmail: text("submitterEmail").notNull(),
+  userOpenId: text("userOpenId"),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+});
+
+export type Business = typeof businesses.$inferSelect;
+export type InsertBusiness = typeof businesses.$inferInsert;
+
+/**
+ * Public member wall entries for people who want a visible community profile.
+ * These are opt-in, light-touch profiles with no private email shown publicly.
+ */
+export const memberWallEntries = pgTable("member_wall_entries", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 255 }).notNull(),
+  email: varchar("email", { length: 320 }).notNull(),
+  phone: varchar("phone", { length: 50 }),
+  business: varchar("business", { length: 255 }),
+  location: varchar("location", { length: 180 }),
+  likesToDo: text("likesToDo"),
+  needs: text("needs"),
+  connect: text("connect"),
+  isPublic: boolean("isPublic").default(true).notNull(),
   createdAt: timestamp("createdAt", { withTimezone: false })
     .defaultNow()
     .notNull(),
@@ -122,8 +149,8 @@ export const businesses = pgTable("businesses", {
     .notNull(),
 });
 
-export type Business = typeof businesses.$inferSelect;
-export type InsertBusiness = typeof businesses.$inferInsert;
+export type MemberWallEntry = typeof memberWallEntries.$inferSelect;
+export type InsertMemberWallEntry = typeof memberWallEntries.$inferInsert;
 
 /**
  * Story theme categories for community voices

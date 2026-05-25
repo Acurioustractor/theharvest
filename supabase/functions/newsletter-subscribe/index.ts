@@ -95,7 +95,7 @@ Deno.serve(async req => {
       lastName,
       phone: payload?.phone ?? undefined,
       locationId,
-      source: payload?.source ?? "The Harvest Website",
+      source: payload?.source ?? "Harvest | Newsletter",
     }),
   });
 
@@ -137,7 +137,7 @@ Deno.serve(async req => {
     : Deno.env.get("GHL_NEWSLETTER_WORKFLOW_ID");
   if (workflowId && contactId) {
     try {
-      await fetch(`${GHL_API_BASE}/workflows/${workflowId}/subscribe`, {
+      await fetch(`${GHL_API_BASE}/contacts/${contactId}/workflow/${workflowId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -145,7 +145,6 @@ Deno.serve(async req => {
           "Authorization": `Bearer ${apiKey}`,
           "Version": GHL_API_VERSION,
         },
-        body: JSON.stringify({ contactId }),
       });
     } catch {
       // Workflow failure shouldn't block the response

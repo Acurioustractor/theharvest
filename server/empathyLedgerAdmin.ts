@@ -1535,6 +1535,11 @@ export type PublicHarvestStoryteller = {
   transcriptCount: number;
 };
 
+// EL can expose project storytellers publicly before the Harvest editorial
+// approval pass is finished. Keep names here until consent, quotes, photos,
+// and context are cleared for the public People surface.
+const DRAFT_PUBLIC_STORYTELLER_SLUGS = new Set(["barry-rodgerig"]);
+
 function slugifyDisplayName(name: string): string {
   return name
     .toLowerCase()
@@ -1627,7 +1632,7 @@ export async function listPublicHarvestStorytellers(): Promise<PublicHarvestStor
       publishedStoryCount: storyCounts.get(s.id) ?? 0,
       transcriptCount: transcriptCountByTeller.get(s.id) ?? 0,
     };
-  });
+  }).filter((storyteller) => !DRAFT_PUBLIC_STORYTELLER_SLUGS.has(storyteller.slug));
 }
 
 export type PublicStorytellerArticle = {
@@ -1698,6 +1703,8 @@ async function listLocalCompendiumPhotos(firstName: string): Promise<PublicStory
 export async function getPublicHarvestStorytellerBySlug(
   slug: string,
 ): Promise<PublicHarvestStorytellerDetail | null> {
+  if (DRAFT_PUBLIC_STORYTELLER_SLUGS.has(slug)) return null;
+
   // Uses EL public content-hub API. As of 2026-05-13 EL added:
   //   - slug field on storyteller responses
   //   - public /storytellers/:slug (O(1) lookup instead of list-and-find)
@@ -1711,6 +1718,8 @@ export async function getPublicHarvestStorytellerBySlug(
   //                  merged with local taking precedence on filename collision.
   const single = await empathyLedgerClient.fetchStoryteller(slug);
   if (!single) return null;
+  const canonicalSlug = single.slug ?? slugifyDisplayName(single.displayName);
+  if (DRAFT_PUBLIC_STORYTELLER_SLUGS.has(canonicalSlug)) return null;
 
   // Build the PublicHarvestStoryteller shell. Article counts come from the
   // articles list; transcriptCount from the storyteller payload.
@@ -1735,7 +1744,7 @@ export async function getPublicHarvestStorytellerBySlug(
 
   const base: PublicHarvestStoryteller = {
     id: single.id,
-    slug: single.slug ?? slugifyDisplayName(single.displayName),
+    slug: canonicalSlug,
     displayName: single.displayName,
     bio: single.bio,
     avatarUrl: single.avatarUrl,

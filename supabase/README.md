@@ -20,6 +20,7 @@ supabase functions deploy admin-events
 supabase functions deploy admin-businesses
 supabase functions deploy business-claim
 supabase functions deploy business-update
+supabase functions deploy contact-form
 supabase functions deploy newsletter-subscribe
 ```
 
@@ -34,6 +35,7 @@ supabase secrets set ADMIN_OPEN_IDS=COMMA_SEPARATED_USER_IDS
 supabase secrets set GHL_API_KEY=YOUR_GHL_KEY
 supabase secrets set GHL_TOKEN=YOUR_PRIVATE_INTEGRATION_TOKEN
 supabase secrets set GHL_LOCATION_ID=YOUR_GHL_LOCATION_ID
+supabase secrets set GHL_CONTACT_FORM_WORKFLOW_ID=YOUR_GHL_CONTACT_FORM_WORKFLOW_ID
 ```
 
 Notes:

@@ -2,7 +2,6 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { trpc } from "@/lib/trpc";
 import BlogCard, { type ELArticle } from "@/components/BlogCard";
-import BlogCategories, { type BlogTheme } from "@/components/BlogCategories";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -25,17 +24,10 @@ const staggerContainer = {
 };
 
 export default function Blog() {
-  const [theme, setTheme] = useState<BlogTheme>(null);
-  const [workFilter, setWorkFilter] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Fetch articles from Empathy Ledger, filter server-side by work (project) too
-  const { data, isLoading } = trpc.blog.list.useQuery(
-    {
-      theme: theme ?? undefined,
-      project: workFilter ?? undefined,
-    },
-  );
+  // Public articles come from Empathy Ledger when they are published and syndicated to Harvest.
+  const { data, isLoading } = trpc.blog.list.useQuery();
 
   const articles = data?.articles || [];
 
@@ -94,40 +86,25 @@ export default function Blog() {
       {/* Search and Filters */}
       <section className="py-8 border-b border-stone-200 bg-white sticky top-[76px] z-30">
         <div className="container space-y-4">
-          <div className="flex flex-col lg:flex-row gap-6 items-start lg:items-center justify-between">
-            <BlogCategories selected={theme} onChange={setTheme} />
-
-            <div className="relative w-full lg:w-72">
+          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+            <div>
+              <p className="font-mono text-xs uppercase tracking-[0.18em] text-stone-400">
+                Empathy Ledger
+              </p>
+              <p className="mt-1 text-sm text-stone-600">
+                Published stories syndicated to The Harvest.
+              </p>
+            </div>
+            <div className="relative w-full md:w-80">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-stone-400" />
               <Input
                 type="search"
-                placeholder="Search articles..."
+                placeholder="Search the current stories..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10 bg-stone-50 border-stone-200"
               />
             </div>
-          </div>
-
-          {/* Work filter, chip row */}
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="text-xs font-mono uppercase tracking-wider text-stone-400 mr-1">
-              Work:
-            </span>
-            <BlogWorkChip label="All" active={!workFilter} onClick={() => setWorkFilter(null)} />
-            {[
-              { slug: "the-garden", label: "The Garden" },
-              { slug: "milk-crate-pavilion", label: "Milk Crate Pavilion" },
-              { slug: "the-cedar", label: "The Cedar" },
-              { slug: "the-shop", label: "The Shop" },
-            ].map((w) => (
-              <BlogWorkChip
-                key={w.slug}
-                label={w.label}
-                active={workFilter === w.slug}
-                onClick={() => setWorkFilter(w.slug)}
-              />
-            ))}
           </div>
         </div>
       </section>
@@ -183,35 +160,6 @@ export default function Blog() {
                 Become a member for letters, invites, and early opportunities.
               </Link>
             </div>
-            <Link href="/people/barry-rodgerig">
-              <Card className="overflow-hidden border-0 bg-stone-800 group cursor-pointer hover:ring-2 hover:ring-amber-500/50 transition-all">
-                <div className="grid md:grid-cols-2">
-                  <div className="relative h-64 md:h-auto overflow-hidden">
-                    <img
-                      src="/images/optimized/barry-5764-1000.webp"
-                      alt="Barry at golden hour"
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                  </div>
-                  <CardContent className="p-8 flex flex-col justify-center">
-                    <span className="text-amber-400 font-mono text-xs uppercase tracking-wider mb-2">
-                      Photo Essay
-                    </span>
-                    <h3 className="text-2xl md:text-3xl font-serif font-bold text-white mb-3">
-                      Barry & The Shed
-                    </h3>
-                    <p className="text-stone-300 leading-relaxed mb-4">
-                      Barry has been on this land since 1972. His shed is full of machines
-                      that built the hinterland: log trucks, Blitz trucks, a little Italian
-                      tractor with a Lombardini diesel.
-                    </p>
-                    <p className="text-amber-500 text-sm font-medium group-hover:text-amber-400 transition-colors">
-                      Read the full story →
-                    </p>
-                  </CardContent>
-                </div>
-              </Card>
-            </Link>
           </motion.div>
         </div>
       </section>
@@ -247,15 +195,14 @@ export default function Blog() {
                   ? "Try adjusting your search or filters"
                   : "Check back soon for new stories from The Harvest"}
               </p>
-              {(searchQuery || theme) && (
+              {searchQuery && (
                 <Button
                   variant="outline"
                   onClick={() => {
                     setSearchQuery("");
-                    setTheme(null);
                   }}
                 >
-                  Clear filters
+                  Clear search
                 </Button>
               )}
             </motion.div>
@@ -296,29 +243,5 @@ export default function Blog() {
 
       <SiteFooter />
     </div>
-  );
-}
-
-function BlogWorkChip({
-  label,
-  active,
-  onClick,
-}: {
-  label: string;
-  active: boolean;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors ${
-        active
-          ? "bg-stone-800 text-amber-300 border-stone-800"
-          : "bg-white text-stone-700 border-stone-300 hover:bg-stone-100"
-      }`}
-    >
-      {label}
-    </button>
   );
 }

@@ -106,7 +106,7 @@ function FooterNewsletter() {
         phone: phone.trim() || undefined,
         firstName,
         lastName: rest.join(" ") || undefined,
-        source: "footer-member-list",
+        source: "Harvest | Footer Member Signup",
         interests: ["membership", "community"],
         member: true,
       });

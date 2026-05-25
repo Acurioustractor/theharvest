@@ -356,7 +356,7 @@ export default function Journey() {
                 className="border-white/30 text-white hover:bg-white/10"
                 asChild
               >
-                <Link href="/visit">Plan Your Visit</Link>
+                <Link href="/contact">Plan Your Visit</Link>
               </Button>
             </div>
           </motion.div>

@@ -103,6 +103,32 @@ Build the first supporter deck from 10 assets:
 
 Use these as the first deck spine before adding icons or decorative marks.
 
+## Current website share image
+
+Default social preview image:
+
+```text
+client/public/images/social/harvest-social-card.jpg
+```
+
+Source:
+
+```text
+Real Harvest milk-crate photo supplied by Ben, cropped from `client/public/images/membership/member-welcome-crates.jpg`.
+```
+
+Use:
+
+```text
+Default Open Graph, Twitter/X card, and website structured-data image for pages that do not set their own page-specific preview image.
+```
+
+Decision:
+
+```text
+Use this instead of the old generated long-table hero image. No identifiable people visible. Fits the current timber, dairy, and co-operative story better than generic venue imagery.
+```
+
 ## Simple icons and support visuals
 
 Use icons like road signs, not illustrations trying to carry the brand.

@@ -166,7 +166,7 @@ export function ShopInterestSection({
                   required
                   maxLength={2000}
                   className="min-h-32 w-full rounded-none border border-stone-300 bg-white px-3 py-3 text-stone-900"
-                  placeholder="Tell us what you grow, make, cook, stock, or want to help test."
+                  placeholder="At least a sentence: what you grow, make, cook, stock, or want to help test."
                 />
               </label>
 
@@ -180,7 +180,7 @@ export function ShopInterestSection({
                   required
                   maxLength={180}
                   className="h-12 w-full rounded-none border border-stone-300 bg-white px-3 text-stone-900"
-                  placeholder="Ready now, June, later in winter..."
+                  placeholder="Tell us roughly when you could start."
                 />
               </label>
 

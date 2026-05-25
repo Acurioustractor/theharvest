@@ -1,6 +1,7 @@
 import { supabase } from "@/lib/supabase";
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 async function getAccessToken() {
   const { data } = await supabase.auth.getSession();
@@ -11,8 +12,13 @@ async function callFunction<T>(path: string, payload?: unknown, options?: Reques
   const token = await getAccessToken();
   const headers = new Headers(options?.headers);
   headers.set("Content-Type", "application/json");
-  if (token) {
-    headers.set("Authorization", `Bearer ${token}`);
+  const authToken = token ?? supabaseAnonKey;
+  if (authToken) {
+    headers.set("Authorization", `Bearer ${authToken}`);
+  }
+
+  if (!supabaseUrl) {
+    throw new Error("Supabase URL is not configured");
   }
 
   const response = await fetch(`${supabaseUrl}/functions/v1/${path}`, {

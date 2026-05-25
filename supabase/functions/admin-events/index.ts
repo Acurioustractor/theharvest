@@ -4,6 +4,14 @@ const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
 const serviceRoleKey = Deno.env.get("SERVICE_ROLE_KEY") ?? "";
 const supabase = createClient(supabaseUrl, serviceRoleKey);
 
+function mapEvent(row: Record<string, unknown>) {
+  return {
+    ...row,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  };
+}
+
 function getBearerToken(req: Request) {
   const header = req.headers.get("authorization") ?? "";
   const [scheme, token] = header.split(" ");
@@ -46,7 +54,7 @@ Deno.serve(async req => {
       .from("harvest_events")
       .select("*")
       .eq("status", status)
-      .order("createdAt", { ascending: false });
+      .order("created_at", { ascending: false });
 
     if (error) {
       return new Response(JSON.stringify({ error: error.message }), {
@@ -55,7 +63,7 @@ Deno.serve(async req => {
       });
     }
 
-    return new Response(JSON.stringify({ events: data ?? [] }), {
+    return new Response(JSON.stringify({ events: (data ?? []).map(mapEvent) }), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
@@ -70,7 +78,7 @@ Deno.serve(async req => {
 
     const { data, error } = await supabase
       .from("harvest_events")
-      .update({ status, updatedAt: new Date().toISOString() })
+      .update({ status, updated_at: new Date().toISOString() })
       .eq("id", eventId)
       .select()
       .maybeSingle();
@@ -82,7 +90,7 @@ Deno.serve(async req => {
       });
     }
 
-    return new Response(JSON.stringify({ event: data }), {
+    return new Response(JSON.stringify({ event: data ? mapEvent(data) : data }), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });

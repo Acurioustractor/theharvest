@@ -152,7 +152,7 @@ describe("Go High Level Newsletter Integration", () => {
 
       const result = await upsertGHLContact({
         email: "test@example.com",
-        source: "The Harvest Website Newsletter",
+        source: "Harvest | Newsletter",
         tags: ["newsletter", "website-signup"],
       });
 
@@ -227,7 +227,7 @@ describe("Go High Level Newsletter Integration", () => {
       await caller.newsletter.subscribe({
         email: "member@example.com",
         firstName: "Mira",
-        source: "Harvest member list",
+        source: "Harvest | Member Signup",
         interests: ["membership", "community", "sustainability"],
         member: true,
       });
@@ -251,6 +251,47 @@ describe("Go High Level Newsletter Integration", () => {
         String(url).endsWith("/contacts/contact-123/workflow/member-welcome-workflow")
       );
       expect(workflowCall).toBeDefined();
+    });
+
+    it("creates a Universal Inquiry card when a member signup includes a comment", async () => {
+      const caller = appRouter.createCaller(ctx);
+
+      await caller.newsletter.subscribe({
+        email: "member-comment@example.com",
+        firstName: "Mira",
+        lastName: "Stone",
+        source: "Harvest | Member Signup",
+        interests: ["membership"],
+        member: true,
+        notes: "I can help with planting days.",
+      });
+
+      const tagCall = mockFetch.mock.calls.find(([url]) =>
+        String(url).endsWith("/contacts/contact-123/tags")
+      );
+      expect(JSON.parse(tagCall![1].body).tags).toEqual(expect.arrayContaining([
+        "member-comments",
+        "harvest-inbox",
+      ]));
+
+      const noteCall = mockFetch.mock.calls.find(([url]) =>
+        String(url).endsWith("/contacts/contact-123/notes")
+      );
+      expect(JSON.parse(noteCall![1].body).body).toContain("I can help with planting days.");
+
+      const opportunityCall = mockFetch.mock.calls.find(([url]) =>
+        String(url).endsWith("/opportunities/upsert")
+      );
+      expect(opportunityCall).toBeDefined();
+      const opportunityBody = JSON.parse(opportunityCall![1].body);
+      expect(opportunityBody).toMatchObject({
+        contactId: "contact-123",
+        name: "Mira Stone - Member comment",
+        source: "Harvest | Member Signup",
+        pipelineId: "ggQw10DuH0XRji6keimS",
+        pipelineStageId: "2eded979-7439-407d-89b6-762499b56658",
+        status: "open",
+      });
     });
 
     it("does not sync pulse survey submissions to GHL without a name", async () => {
@@ -301,7 +342,7 @@ describe("Go High Level Newsletter Integration", () => {
         email: "mira@example.com",
         phone: "0400000000",
         question: "Can kids help design the play area?",
-        source: "Membership page question form",
+        source: "Harvest | Member Question",
       });
 
       const tagCall = mockFetch.mock.calls.find(([url]) =>
@@ -312,6 +353,7 @@ describe("Go High Level Newsletter Integration", () => {
         "harvest-newsletter",
         "interest-membership",
         "member-question",
+        "harvest-inbox",
       ]));
 
       const noteCall = mockFetch.mock.calls.find(([url]) =>
@@ -324,6 +366,40 @@ describe("Go High Level Newsletter Integration", () => {
         String(url).endsWith("/contacts/contact-123/workflow/member-question-workflow")
       );
       expect(workflowCall).toBeDefined();
+
+      const opportunityCall = mockFetch.mock.calls.find(([url]) =>
+        String(url).endsWith("/opportunities/upsert")
+      );
+      expect(opportunityCall).toBeDefined();
+      expect(JSON.parse(opportunityCall![1].body)).toMatchObject({
+        contactId: "contact-123",
+        name: "Mira Stone - Member question",
+        source: "Harvest | Member Question",
+      });
+    });
+
+    it("creates a Universal Inquiry card for shop interest submissions", async () => {
+      const caller = appRouter.createCaller(ctx);
+
+      await caller.shopInterest.submit({
+        name: "Mira Stone",
+        email: "shop@example.com",
+        phone: "0400000000",
+        offerType: "produce",
+        description: "We can bring seasonal herbs and vegetables for the shop trial.",
+        location: "Witta",
+        readiness: "From launch week",
+      });
+
+      const opportunityCall = mockFetch.mock.calls.find(([url]) =>
+        String(url).endsWith("/opportunities/upsert")
+      );
+      expect(opportunityCall).toBeDefined();
+      expect(JSON.parse(opportunityCall![1].body)).toMatchObject({
+        contactId: "contact-123",
+        name: "Mira Stone - Shop interest",
+        source: "Harvest | Shop",
+      });
     });
 
     it("tags June 20 phone-only RSVP with the gathering and event attendee tags", async () => {
@@ -350,6 +426,97 @@ describe("Go High Level Newsletter Integration", () => {
         "witta-gathering-2026-06-20",
         "harvest-event-attendee",
         "harvest-website",
+        "harvest-inbox",
+      ]));
+
+      const opportunityCall = mockFetch.mock.calls.find(([url]) =>
+        String(url).endsWith("/opportunities/upsert")
+      );
+      expect(opportunityCall).toBeDefined();
+      expect(JSON.parse(opportunityCall![1].body)).toMatchObject({
+        contactId: "contact-123",
+        name: "Phone Guest - RSVP 2026-06-20",
+        source: "Harvest | RSVP 2026-06-20",
+      });
+    });
+
+    it("creates a Universal Inquiry card for workshop bookings", async () => {
+      const caller = appRouter.createCaller(ctx);
+
+      await caller.workshops.book({
+        name: "Mira Stone",
+        email: "workshop@example.com",
+        phone: "0400000000",
+        workshopTitle: "Fermentation afternoon",
+        workshopDate: "2026-06-21",
+        attendees: 2,
+      });
+
+      const tagCall = mockFetch.mock.calls.find(([url]) =>
+        String(url).endsWith("/contacts/contact-123/tags")
+      );
+      expect(JSON.parse(tagCall![1].body).tags).toEqual(expect.arrayContaining([
+        "workshop-booking",
+        "harvest-inbox",
+      ]));
+
+      const opportunityCall = mockFetch.mock.calls.find(([url]) =>
+        String(url).endsWith("/opportunities/upsert")
+      );
+      expect(opportunityCall).toBeDefined();
+      expect(JSON.parse(opportunityCall![1].body)).toMatchObject({
+        contactId: "contact-123",
+        name: "Mira Stone - Workshop booking",
+        source: "Harvest | Workshop",
+      });
+    });
+
+    it("creates a Universal Inquiry card for photo wall responses", async () => {
+      const caller = appRouter.createCaller(ctx);
+
+      await caller.photoWall.submit({
+        firstName: "Mira",
+        email: "photo@example.com",
+        response: "More kids building days.",
+      });
+
+      const tagCall = mockFetch.mock.calls.find(([url]) =>
+        String(url).endsWith("/contacts/contact-123/tags")
+      );
+      expect(JSON.parse(tagCall![1].body).tags).toEqual(expect.arrayContaining([
+        "photo-wall",
+        "harvest-inbox",
+      ]));
+
+      const opportunityCall = mockFetch.mock.calls.find(([url]) =>
+        String(url).endsWith("/opportunities/upsert")
+      );
+      expect(opportunityCall).toBeDefined();
+      expect(JSON.parse(opportunityCall![1].body)).toMatchObject({
+        contactId: "contact-123",
+        name: "Mira - Photo wall response",
+        source: "Harvest | Photo Wall",
+      });
+    });
+
+    it("slugifies pulse interest tags before syncing to GHL", async () => {
+      const caller = appRouter.createCaller(ctx);
+
+      await caller.pulse.submit({
+        name: "Pulse Person",
+        email: "pulse@example.com",
+        wouldUse: ["Community garden", "Live music & events"],
+      });
+
+      const tagCall = mockFetch.mock.calls.find(([url]) =>
+        String(url).endsWith("/contacts/contact-123/tags")
+      );
+      expect(tagCall).toBeDefined();
+      expect(JSON.parse(tagCall![1].body).tags).toEqual(expect.arrayContaining([
+        "pulse-respondent",
+        "harvest-website",
+        "interest-community-garden",
+        "interest-live-music-events",
       ]));
     });
   });

@@ -37,6 +37,18 @@ interface GHLErrorResponse {
   statusCode?: number;
 }
 
+interface GHLOpportunityInput {
+  contactId: string;
+  name: string;
+  source: string;
+  pipelineId?: string;
+  pipelineStageId?: string;
+  monetaryValue?: number;
+}
+
+const DEFAULT_HARVEST_INBOX_PIPELINE_ID = "ggQw10DuH0XRji6keimS";
+const DEFAULT_HARVEST_INBOX_NEW_STAGE_ID = "2eded979-7439-407d-89b6-762499b56658";
+
 /**
  * Create a contact in Go High Level
  * Used for newsletter signups
@@ -68,7 +80,7 @@ export async function createGHLContact(input: GHLContactInput): Promise<{ succes
         lastName: input.lastName || undefined,
         phone: input.phone || undefined,
         locationId: locationId,
-        source: input.source || "The Harvest Website",
+        source: input.source || "Harvest | Website",
         tags: input.tags || ["newsletter", "website-signup"],
       }),
     });
@@ -135,7 +147,7 @@ export async function upsertGHLContact(input: GHLContactInput): Promise<{ succes
         lastName: input.lastName || undefined,
         phone: input.phone || undefined,
         locationId: locationId,
-        source: input.source || "The Harvest Website",
+        source: input.source || "Harvest | Website",
       }),
     });
 
@@ -197,6 +209,52 @@ export async function upsertGHLContact(input: GHLContactInput): Promise<{ succes
       success: false,
       error: "Unable to connect to newsletter service. Please try again later.",
     };
+  }
+}
+
+export async function upsertGHLHarvestInboxOpportunity(input: GHLOpportunityInput): Promise<{ success: boolean; opportunityId?: string; error?: string }> {
+  const apiKey = process.env.GHL_API_KEY;
+  const locationId = process.env.GHL_LOCATION_ID;
+  const pipelineId = input.pipelineId || process.env.GHL_HARVEST_INBOX_PIPELINE_ID || DEFAULT_HARVEST_INBOX_PIPELINE_ID;
+  const pipelineStageId = input.pipelineStageId || process.env.GHL_HARVEST_INBOX_NEW_STAGE_ID || DEFAULT_HARVEST_INBOX_NEW_STAGE_ID;
+
+  if (!apiKey || !locationId) {
+    console.error("Go High Level credentials not configured.");
+    return { success: false, error: "GHL is not configured." };
+  }
+
+  try {
+    const response = await fetch(`${GHL_API_BASE}/opportunities/upsert`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Authorization": `Bearer ${apiKey}`,
+        "Version": GHL_API_VERSION,
+      },
+      body: JSON.stringify({
+        pipelineId,
+        locationId,
+        contactId: input.contactId,
+        name: input.name,
+        status: "open",
+        pipelineStageId,
+        monetaryValue: input.monetaryValue ?? 0,
+        source: input.source,
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json() as GHLErrorResponse;
+      console.error("GHL Opportunity Upsert Error:", errorData);
+      return { success: false, error: errorData.message || "Failed to create inbox card." };
+    }
+
+    const data = await response.json() as { opportunity?: { id?: string } };
+    return { success: true, opportunityId: data.opportunity?.id };
+  } catch (error) {
+    console.error("GHL Opportunity Upsert request failed:", error);
+    return { success: false, error: "Unable to create inbox card." };
   }
 }
 
@@ -906,7 +964,7 @@ export async function batchTriggerWorkflow(
     const batch = contactIds.slice(i, i + batchSize);
     const results = await Promise.allSettled(
       batch.map(async (contactId) => {
-        const response = await fetch(`${GHL_API_BASE}/workflows/${workflowId}/subscribe`, {
+        const response = await fetch(`${GHL_API_BASE}/contacts/${contactId}/workflow/${workflowId}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -914,7 +972,6 @@ export async function batchTriggerWorkflow(
             Authorization: `Bearer ${apiKey}`,
             Version: GHL_API_VERSION,
           },
-          body: JSON.stringify({ contactId }),
         });
         if (!response.ok) throw new Error(`Status ${response.status}`);
       })

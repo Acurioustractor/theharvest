@@ -394,7 +394,7 @@ export const appRouter = router({
 
     // Owner: Get my business profile
     myBusiness: protectedProcedure.query(async ({ ctx }) => {
-      const business = await getBusinessByUserId(ctx.user.id);
+      const business = await getBusinessByUserId(ctx.user.openId);
       return business ?? null; // tRPC requires non-undefined return values
     }),
 
@@ -410,11 +410,11 @@ export const appRouter = router({
       }))
       .mutation(async ({ ctx, input }) => {
         // Check if user already has a business
-        const existingBusiness = await getBusinessByUserId(ctx.user.id);
+        const existingBusiness = await getBusinessByUserId(ctx.user.openId);
         if (existingBusiness) {
           throw new Error("You already have a claimed business");
         }
-        const success = await claimBusiness(input.businessId, ctx.user.id);
+        const success = await claimBusiness(input.businessId, ctx.user.openId);
         if (!success) {
           throw new Error("Unable to claim this business. It may already be claimed or not approved.");
         }
@@ -441,7 +441,7 @@ export const appRouter = router({
         const cleanUpdates = Object.fromEntries(
           Object.entries(updates).filter(([_, v]) => v !== undefined)
         );
-        const business = await updateBusinessProfile(businessId, ctx.user.id, cleanUpdates);
+        const business = await updateBusinessProfile(businessId, ctx.user.openId, cleanUpdates);
         return { success: true, business };
       }),
   }),

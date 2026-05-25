@@ -1,5 +1,7 @@
 const GHL_API_BASE = "https://services.leadconnectorhq.com";
 const GHL_API_VERSION = "2021-07-28";
+const DEFAULT_HARVEST_INBOX_PIPELINE_ID = "ggQw10DuH0XRji6keimS";
+const DEFAULT_HARVEST_INBOX_NEW_STAGE_ID = "2eded979-7439-407d-89b6-762499b56658";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -11,6 +13,37 @@ function jsonResponse(body: Record<string, unknown>, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
     headers: { ...corsHeaders, "Content-Type": "application/json" },
+  });
+}
+
+async function upsertHarvestInboxOpportunity(input: {
+  apiKey: string;
+  locationId: string;
+  contactId: string;
+  name: string;
+  source: string;
+}) {
+  const pipelineId = Deno.env.get("GHL_HARVEST_INBOX_PIPELINE_ID") || DEFAULT_HARVEST_INBOX_PIPELINE_ID;
+  const pipelineStageId = Deno.env.get("GHL_HARVEST_INBOX_NEW_STAGE_ID") || DEFAULT_HARVEST_INBOX_NEW_STAGE_ID;
+
+  await fetch(`${GHL_API_BASE}/opportunities/upsert`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      Authorization: `Bearer ${input.apiKey}`,
+      Version: GHL_API_VERSION,
+    },
+    body: JSON.stringify({
+      pipelineId,
+      locationId: input.locationId,
+      contactId: input.contactId,
+      name: input.name,
+      status: "open",
+      pipelineStageId,
+      monetaryValue: 0,
+      source: input.source,
+    }),
   });
 }
 
@@ -48,7 +81,7 @@ Deno.serve(async (req) => {
     return jsonResponse({ success: false, error: "Type, name and email are required." }, 400);
   }
 
-  const tags = [...(TYPE_TAGS[type] ?? ["harvest-website"])];
+  const tags = [...(TYPE_TAGS[type] ?? ["harvest-website"]), "harvest-inbox"];
   if (fields.residencyType) tags.push(`residency-${fields.residencyType}`);
   if (fields.ideaType) tags.push(`idea-${fields.ideaType}`);
   if (fields.interestType) tags.push(`biz-${fields.interestType}`);
@@ -75,7 +108,7 @@ Deno.serve(async (req) => {
         lastName,
         phone: fields.phone ?? undefined,
         locationId,
-        source: `Website - ${type}`,
+        source: `Harvest | ${type}`,
       }),
     });
     if (ghlRes.ok) {
@@ -121,6 +154,18 @@ Deno.serve(async (req) => {
           Version: GHL_API_VERSION,
         },
         body: JSON.stringify({ body: noteLines.join("\n\n") }),
+      });
+    } catch {
+      // Non-critical
+    }
+
+    try {
+      await upsertHarvestInboxOpportunity({
+        apiKey,
+        locationId,
+        contactId: ghlContactId,
+        name: `${String(name).trim()} - ${type}`,
+        source: `Harvest | ${type}`,
       });
     } catch {
       // Non-critical
@@ -197,7 +242,7 @@ Deno.serve(async (req) => {
   const workflowId = Deno.env.get("GHL_COMMUNITY_SUBMIT_WORKFLOW_ID");
   if (workflowId && ghlContactId) {
     try {
-      await fetch(`${GHL_API_BASE}/workflows/${workflowId}/subscribe`, {
+      await fetch(`${GHL_API_BASE}/contacts/${ghlContactId}/workflow/${workflowId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -205,7 +250,6 @@ Deno.serve(async (req) => {
           "Authorization": `Bearer ${apiKey}`,
           "Version": GHL_API_VERSION,
         },
-        body: JSON.stringify({ contactId: ghlContactId }),
       });
     } catch {
       // Workflow failure shouldn't block the response
