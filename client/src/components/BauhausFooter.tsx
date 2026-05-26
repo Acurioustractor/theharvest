@@ -39,9 +39,9 @@ export default function BauhausFooter({ isMobile }: BauhausFooterProps) {
       email: nlEmail.trim(),
       firstName,
       lastName: rest.join(" ") || undefined,
-      source: "Harvest | Footer Member Signup",
-      interests: ["membership", "community"],
-      member: true,
+      source: "Harvest | Footer Follow",
+      interests: ["community"],
+      member: false,
     });
   };
 
@@ -106,7 +106,7 @@ export default function BauhausFooter({ isMobile }: BauhausFooterProps) {
           color: colors.goldenHour,
           margin: "0 0 6px",
         }}>
-          BECOME A MEMBER
+          FOLLOW ALONG
         </p>
         {nlDone ? (
           <p style={{
@@ -116,7 +116,7 @@ export default function BauhausFooter({ isMobile }: BauhausFooterProps) {
             color: colors.milk,
             margin: 0,
           }}>
-            You're on the list!
+            You're following along.
           </p>
         ) : (
           <>
@@ -128,7 +128,7 @@ export default function BauhausFooter({ isMobile }: BauhausFooterProps) {
               margin: "0 0 12px",
               lineHeight: 1.5,
             }}>
-              Weekly notes, invites, practical asks, and first-access opportunities.
+              The occasional note from the place: stories from the land, what's coming up, and real ways to help. No commitment.
             </p>
             <form onSubmit={handleNlSubmit} style={{
               display: "flex",
@@ -179,7 +179,7 @@ export default function BauhausFooter({ isMobile }: BauhausFooterProps) {
                   whiteSpace: "nowrap",
                 }}
               >
-                {nlMutation.isPending ? "..." : "JOIN"}
+                {nlMutation.isPending ? "..." : "KEEP ME POSTED"}
               </button>
             </form>
             {nlError && (
