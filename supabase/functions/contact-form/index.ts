@@ -81,6 +81,8 @@ Deno.serve(async req => {
     "contact-form",
     "harvest-website",
     "harvest-inbox",
+    "act-inquiry", // ACT-wide inquiry marker the shared notification workflow triggers on
+    "project-harvest", // stable project key; the workflow maps this to the Project Designation label
     ...(subscribe ? ["newsletter", "harvest-newsletter"] : []),
   ];
 
