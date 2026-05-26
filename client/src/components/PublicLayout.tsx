@@ -106,9 +106,9 @@ function FooterNewsletter() {
         phone: phone.trim() || undefined,
         firstName,
         lastName: rest.join(" ") || undefined,
-        source: "Harvest | Footer Member Signup",
-        interests: ["membership", "community"],
-        member: true,
+        source: "Harvest | Footer Follow",
+        interests: ["community"],
+        member: false,
       });
       setStatus("success");
       setName("");
@@ -124,8 +124,11 @@ function FooterNewsletter() {
     return (
       <div className="bg-stone-800 py-10">
         <div className="container text-center">
-          <p className="text-amber-400 font-serif text-lg">You're in. Welcome to The Harvest.</p>
-          <p className="text-stone-400 text-sm mt-2">We'll be in touch with stories, events, and ways to get involved.</p>
+          <p className="text-amber-400 font-serif text-lg">You're following along.</p>
+          <p className="text-stone-400 text-sm mt-2">
+            We'll send the occasional note from the place. When you want the closer list with first calls and invitations,{" "}
+            <Link href="/membership" className="text-amber-400 underline underline-offset-2 hover:text-amber-300">become a member</Link>.
+          </p>
         </div>
       </div>
     );
@@ -137,7 +140,7 @@ function FooterNewsletter() {
         <div className="max-w-2xl mx-auto text-center space-y-4">
           <h3 className="text-amber-400 font-serif text-xl">Stay close to what's growing</h3>
           <p className="text-stone-400 text-sm leading-relaxed">
-            Stories from the land, upcoming gatherings, and ways to be part of something worth building.
+            The occasional note from the place: stories from the land, what's coming up, and real ways to help when hands are needed. No commitment.
           </p>
           <form onSubmit={handleSubmit} className="max-w-md mx-auto space-y-2">
             <div className="flex flex-col sm:flex-row gap-2">
@@ -172,7 +175,7 @@ function FooterNewsletter() {
                 className="px-5 py-2.5 rounded-lg bg-amber-500 text-black font-medium text-sm hover:bg-amber-400 transition-colors disabled:opacity-60 flex items-center gap-2"
               >
                 {status === "loading" ? <Loader2 className="h-4 w-4 animate-spin" /> : <ArrowRight className="h-4 w-4" />}
-                Join
+                Keep me posted
               </button>
             </div>
           </form>
