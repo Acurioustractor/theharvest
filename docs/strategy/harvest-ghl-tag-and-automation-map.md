@@ -126,6 +126,20 @@ Verified result after refresh on 2026-05-14:
 | Harvest duplicate email groups | `0` |
 | Harvest duplicate phone groups | `1`, already covered by duplicate review handling |
 
+## Engagement Ladder Stages
+
+The engagement ladder named in `docs/strategy/community-engagement-launch-plan.md` maps onto tags and the Notion Harvest Engagement DB status field that already exist. No new tags are required to run it.
+
+| Rung | What the person gets | GHL tag | Engagement DB status |
+| --- | --- | --- | --- |
+| Receive | A fortnightly or seasonal story. No ask. | `harvest-newsletter` | Initial Contact |
+| Show up | Open work days, events, garden visits. | event / RSVP tags | Participating |
+| Use it | Content and resources useful for their own goals. | `interest-*` tags | Participating |
+| Make it | Owns a mini-project. | `interest-volunteer` plus collaborator tags | Participating |
+| Hold it | Named, ongoing member or steward. | `harvest-member` | deeper / named |
+
+Note: the website currently tags both footer and `/membership` signups as `harvest-member`, which collapses Receive into Hold-it. Making the Receive rung real needs a separate lighter "follow along" intake that applies `harvest-newsletter` without `harvest-member`. Tracked as a roadmap action.
+
 ## Automation Trigger Recommendations
 
 - Newsletter send: trigger/filter on `harvest-newsletter`.
