@@ -77,12 +77,11 @@ A dedicated pipeline with real stages, so a maker or grower is never lost betwee
 asked" and "they are on the shelf".
 
 ```
-New interest -> Acknowledged -> In conversation -> Sampling / trial shelf -> On the shelf
-                                                                                 \-> Not now / parked
+New interest -> In conversation -> Sampling / trial shelf -> On the shelf
+                                                                 \-> Not now / parked
 ```
 
-- **New interest** — just submitted. The form drops them here automatically (see wiring).
-- **Acknowledged** — receipt sent. A workflow can auto-advance this.
+- **New interest** — just submitted. The form drops them here automatically (see wiring); the receipt fires on its own, so this stage does not need a separate "acknowledged" column.
 - **In conversation** — we have replied, talking detail: volumes, timing, food safety.
 - **Sampling / trial shelf** — they have brought something in.
 - **On the shelf** — live stockist.
@@ -101,12 +100,14 @@ and shop EOIs fall back to the shared Harvest Inbox (current behaviour, no break
 3. Set `GHL_SHOP_PIPELINE_ID` and `GHL_SHOP_PIPELINE_NEW_STAGE_ID` in local `.env` and Vercel.
 4. Redeploy. New shop EOIs now land in the Shop pipeline.
 
-### The other three pipelines (decided 2026-05-27, Ben)
+### The right-sized set: three pipelines (decided 2026-05-27, Ben)
 
 Reframe that governs all of this: **a pipeline is for a process that ends** (they become a
-stockist, or they do not; they book a team day, or they do not). Where someone sits on the
-engagement ladder is *not* a pipeline; it is a tag on the person. So followers and members
-never go in a pipeline. Only deals do. Four pipelines, all stood up now:
+stockist, or they do not). Where someone sits on the engagement ladder is *not* a pipeline;
+it is a tag on the person. So followers and members never go in a pipeline. Only deals do.
+
+We deliberately built **three**, not four, after a right-sizing pass. An empty board is
+ceremony, not organisation.
 
 **1. Shop stockist** — above.
 
@@ -118,28 +119,27 @@ website's default routing still lands correctly (`DEFAULT_HARVEST_INBOX_NEW_STAG
 New -> In progress -> Waiting on them -> Resolved
 ```
 
-**3. Partners & Funders (cultivation).** One slow-cultivation pipeline for both; a tag
-(`partner` vs `funder`) distinguishes them inside it. Pre-seed it now with the named
-prospects (Centrecorp, Oonchiumpa, known funders) so it opens with real cards, not empty.
+**3. Partners (cultivation).** Slow cultivation of partner orgs. Pre-seed with the named
+prospects (Centrecorp, Oonchiumpa) so it opens with real cards. **Funders are NOT in here** —
+they live in the ACT funder ledger (`act-global-infrastructure/wiki/narrative/funders.json`,
+GrantScope, the money-brain). Putting them in Harvest GHL would duplicate that. One place per
+thing.
 
 ```
-Identified -> Warming -> In conversation -> Proposal / application -> Active / funded
-                                                                          \-> Parked
+Identified -> Warming -> In conversation -> Proposal -> Active partner
+                                                           \-> Parked
 ```
 
-**4. Bookings (team days + venue hire).** One revenue pipeline; a tag (`team-day` vs
-`venue-hire`) distinguishes them. This one starts empty and fills as enquiries arrive; that
-is fine, it is a ready container with a clear close.
+**Deferred, on purpose:**
 
-```
-Enquiry -> Quoted -> Booked -> Ran -> Repeat / follow-up
-                                          \-> Lost
-```
+- **Bookings (team days + venue hire)** — not built yet. It would sit empty until we actively
+  offer these post-launch. Use a `team-day` / `venue-hire` tag in the meantime, and stand up
+  the pipeline (Enquiry -> Quoted -> Booked -> Ran -> Repeat / Lost) the day the first real
+  enquiry lands. Building an empty board now is the exact "overdoing it" we are avoiding.
 
-Only the Shop pipeline is wired to a website form so far (shop EOIs route in automatically).
-For the others, the website's existing opportunities land in the Inbox by default; partner,
-funder, and booking cards are added or dragged in by hand at current volumes. Auto-routing
-specific forms into specific pipelines can come later if volume justifies it.
+Only the Shop pipeline is wired to a website form (shop EOIs route in automatically). Inbox
+catches the website's default opportunities; partner cards are added by hand at current
+volumes. Auto-routing other forms into pipelines can come later if volume justifies it.
 
 ## Membership: list + belonging, not a portal (decided 2026-05-27, Ben)
 
@@ -173,13 +173,15 @@ Tracking is only half of it. The other half is making sure nobody waits on us.
 
 ## Build checklist
 
-Pipelines (in GHL):
-- [ ] **Shop stockist** — create with the 6 stages, then send the pipeline ID + "New
+Pipelines (in GHL) — three, right-sized:
+- [ ] **Shop stockist** — create with the 5 stages, then send the pipeline ID + "New
       interest" stage ID so the two env vars get wired + deployed (auto-routes shop EOIs).
 - [ ] **Inbox** — add stages (New / In progress / Waiting on them / Resolved) to the existing
       shared pipeline; keep the entry stage so default routing still lands.
-- [ ] **Partners & Funders** — create with its 6 stages, pre-seed the named prospects.
-- [ ] **Bookings** — create with its 6 stages (empty until enquiries arrive).
+- [ ] **Partners** — create with its 5 stages, pre-seed Centrecorp + Oonchiumpa. Funders stay
+      in the ACT ledger, not here.
+- [ ] ~~Bookings~~ — **deferred**. Use a `team-day` / `venue-hire` tag; build the pipeline
+      when the first real enquiry arrives.
 
 Messages (in GHL):
 - [ ] Shop nurture (spec 6) so makers get a second touch.
