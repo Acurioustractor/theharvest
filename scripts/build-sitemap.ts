@@ -33,6 +33,7 @@ type Entry = {
 const STATIC_ROUTES: Entry[] = [
   { loc: "/", priority: "1.0", changefreq: "weekly" },
   { loc: "/membership", priority: "0.9", changefreq: "weekly" },
+  { loc: "/shop", priority: "0.8", changefreq: "weekly" },
   { loc: "/what-is-the-harvest", priority: "0.8", changefreq: "monthly" },
   { loc: "/story", priority: "0.8", changefreq: "monthly" },
   { loc: "/witta", priority: "0.7", changefreq: "monthly" },

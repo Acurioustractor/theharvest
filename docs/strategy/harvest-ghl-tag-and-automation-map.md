@@ -4,6 +4,8 @@ Last verified: 2026-05-14
 
 This is the operating map for Harvest contacts in GoHighLevel. The website creates or updates contacts, applies tags, adds notes where useful, and triggers workflows when a workflow env var is configured.
 
+To build the workflows that do not exist in GHL yet, and to see the current env wiring state, use `ghl-workflow-build-specs.md`. On 2026-05-27 footer follows were wired to a dedicated **"Harvest - Follow Welcome"** workflow (`0cf2479e-791c-43ac-a8cd-a3395a03cdaa`), verified end to end (correct Harvest-voice email delivered). Do NOT use the generic Newsletter Signup workflow (`0c61347a-b59b-4de5-ae90-32a59c8e4805`) for Harvest: a live test showed it sends an ACT-branded welcome (wrong brand, violates Harvest voice); it is a shared/legacy ACT workflow. Open follow-up: the welcome sends from `hi@act.place`, not a Harvest address (location-wide sending-domain setup needed). The Witta Gathering Photos workflow (`65819e73-09c8-4598-b982-41dfeeb8624e`) is wired in Vercel production.
+
 ## System Rules
 
 - Use `harvest-website` as the base tag for every contact created by the Harvest website.
@@ -138,7 +140,7 @@ The engagement ladder named in `docs/strategy/community-engagement-launch-plan.m
 | Make it | Owns a mini-project. | `interest-volunteer` plus collaborator tags | Participating |
 | Hold it | Named, ongoing member or steward. | `harvest-member` | deeper / named |
 
-Note: the website currently tags both footer and `/membership` signups as `harvest-member`, which collapses Receive into Hold-it. Making the Receive rung real needs a separate lighter "follow along" intake that applies `harvest-newsletter` without `harvest-member`. Tracked as a roadmap action.
+Note: the follow-vs-member split is live as of 2026-05-27. The footer "follow along" intake applies `harvest-newsletter` without `harvest-member` (Receive rung); the `/membership` "join" intake adds `harvest-member` (Hold-it rung). The split is enforced in `buildNewsletterTags` (`server/routers.ts`), which only adds `harvest-member` when `member: true` or interests include membership.
 
 ## Automation Trigger Recommendations
 

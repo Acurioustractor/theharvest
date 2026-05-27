@@ -874,9 +874,12 @@ export const appRouter = router({
         email: z.string().email(),
         phone: z.string().trim().max(60).optional(),
         offerType: z.enum(SHOP_INTEREST_OFFER_TYPES),
-        description: z.string().trim().min(20, "Tell us a bit more about what you can offer.").max(2000),
-        location: z.string().trim().min(3, "Tell us roughly where you are based.").max(180),
-        readiness: z.string().trim().min(3, "Tell us when you might be ready.").max(180),
+        // Stage-1 door: keep it light. Only name, email, and offer type are required.
+        // location / readiness / detail are enriched later via the shop nurture drip or a
+        // real conversation (community-engagement-launch-plan.md §4).
+        description: z.string().trim().max(2000).optional(),
+        location: z.string().trim().max(180).optional(),
+        readiness: z.string().trim().max(180).optional(),
       }))
       .mutation(async ({ input }) => {
         const { firstName, lastName } = splitPersonName(input.name);
@@ -906,13 +909,13 @@ export const appRouter = router({
               "**Harvest Shop Expression of Interest**",
               "",
               `**Offer type:** ${input.offerType}`,
-              `**Location:** ${input.location}`,
-              `**Readiness:** ${input.readiness}`,
+              ...(input.location ? [`**Location:** ${input.location}`] : []),
+              ...(input.readiness ? [`**Readiness:** ${input.readiness}`] : []),
+              ...(input.description
+                ? ["", "**What they can provide / help with:**", input.description]
+                : []),
               "",
-              "**What they can provide / help with:**",
-              input.description,
-              "",
-              "**Source:** /works/the-shop",
+              "**Source:** Shop interest form",
             ].join("\n"),
           );
 

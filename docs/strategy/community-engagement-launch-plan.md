@@ -102,9 +102,9 @@ This plan is the strategy layer. It rides on systems already built. Nothing new 
 
 The ladder-to-tag mapping (which GHL tag and which Engagement DB status each rung uses) lives in the GHL tag and automation map under "Engagement Ladder Stages", so tag operations stay in one place.
 
-### The following-vs-member split (roadmap action, not done in this pass)
+### The following-vs-member split (done 2026-05-27)
 
-Today the footer and `/membership` both submit as `member: true`, so everyone who signs up becomes a member. That collapses the Receive rung into the Hold-it rung. To make the bottom rung real, the website needs a lighter "follow along" intake (`harvest-newsletter` only, no `harvest-member`) separate from the "join as member" intake (adds `harvest-member`). This is a website plus GHL change, tracked as a roadmap action, not implemented here.
+The footer "follow along" intake and the `/membership` "join" intake are now separate. The footer submits `member: false` with `interest-community`, so it applies `harvest-newsletter` only and fires the Newsletter Signup workflow (`GHL_NEWSLETTER_WORKFLOW_ID`). The `/membership` form submits `member: true`, which adds `harvest-member` plus `interest-membership` and fires the Member Welcome workflow (`GHL_MEMBER_WELCOME_WORKFLOW_ID`). The gating lives in `buildNewsletterTags` (`server/routers.ts`), which only adds `harvest-member` when `member: true` or interests include membership. The Receive rung is now a real rung, distinct from Hold-it. Both welcome workflows are wired and verified live as of 2026-05-27: member joins fire "Harvest - Member Welcome", footer follows fire "Harvest - Follow Welcome" (`0cf2479e`). Note: the generic "Newsletter Signup" workflow was found to send an off-brand ACT welcome and must not be used for Harvest. Open follow-up: welcomes send from `hi@act.place`, not a Harvest address (sending-domain setup in GHL).
 
 ### Target audiences and their mediums
 

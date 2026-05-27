@@ -33,6 +33,7 @@ import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 import HarvestJourneyPost from "./pages/HarvestJourneyPost";
 import Membership from "./pages/Membership";
+import Shop from "./pages/Shop";
 import Stories from "./pages/Stories";
 import GetInvolved from "./pages/GetInvolved";
 import Journey from "./pages/Journey";
@@ -127,6 +128,7 @@ function Router() {
     return <BlogPost slug={slug} />;
   }
   if (location === "/membership") return <Membership />;
+  if (location === "/shop") return <Shop />;
   if (location === "/stories") return <Stories />;
   if (location === "/get-involved") return <GetInvolved />;
   if (location === "/story") return <Journey />;

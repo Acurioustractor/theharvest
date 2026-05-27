@@ -29,8 +29,6 @@ export function ShopInterestSection({
   const [phone, setPhone] = useState("");
   const [offerType, setOfferType] = useState<(typeof shopOfferOptions)[number]["value"]>("produce");
   const [description, setDescription] = useState("");
-  const [location, setLocation] = useState("");
-  const [readiness, setReadiness] = useState("");
 
   const mutation = trpc.shopInterest.submit.useMutation({
     onSuccess: () => {
@@ -40,8 +38,6 @@ export function ShopInterestSection({
       setPhone("");
       setOfferType("produce");
       setDescription("");
-      setLocation("");
-      setReadiness("");
     },
     onError: (error) => {
       toast.error("Could not save shop interest", {
@@ -57,9 +53,7 @@ export function ShopInterestSection({
       email: email.trim(),
       phone: phone.trim() || undefined,
       offerType,
-      description: description.trim(),
-      location: location.trim(),
-      readiness: readiness.trim(),
+      description: description.trim() || undefined,
     });
   };
 
@@ -126,61 +120,32 @@ export function ShopInterestSection({
                 </label>
                 <label className="block">
                   <span className="mb-2 block font-mono text-[11px] uppercase tracking-[0.16em] text-stone-500">
-                    Location
+                    What fits best?
                   </span>
-                  <input
-                    value={location}
-                    onChange={(event) => setLocation(event.target.value)}
-                    required
-                    maxLength={180}
+                  <select
+                    value={offerType}
+                    onChange={(event) => setOfferType(event.target.value as typeof offerType)}
                     className="h-12 w-full rounded-none border border-stone-300 bg-white px-3 text-stone-900"
-                    placeholder="Witta, Maleny, Montville..."
-                  />
+                  >
+                    {shopOfferOptions.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
                 </label>
               </div>
 
               <label className="block">
                 <span className="mb-2 block font-mono text-[11px] uppercase tracking-[0.16em] text-stone-500">
-                  What fits best?
-                </span>
-                <select
-                  value={offerType}
-                  onChange={(event) => setOfferType(event.target.value as typeof offerType)}
-                  className="h-12 w-full rounded-none border border-stone-300 bg-white px-3 text-stone-900"
-                >
-                  {shopOfferOptions.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-              </label>
-
-              <label className="block">
-                <span className="mb-2 block font-mono text-[11px] uppercase tracking-[0.16em] text-stone-500">
-                  What could go on the shelf?
+                  What could go on the shelf, optional
                 </span>
                 <textarea
                   value={description}
                   onChange={(event) => setDescription(event.target.value)}
-                  required
                   maxLength={2000}
-                  className="min-h-32 w-full rounded-none border border-stone-300 bg-white px-3 py-3 text-stone-900"
-                  placeholder="At least a sentence: what you grow, make, cook, stock, or want to help test."
-                />
-              </label>
-
-              <label className="block">
-                <span className="mb-2 block font-mono text-[11px] uppercase tracking-[0.16em] text-stone-500">
-                  Timing
-                </span>
-                <input
-                  value={readiness}
-                  onChange={(event) => setReadiness(event.target.value)}
-                  required
-                  maxLength={180}
-                  className="h-12 w-full rounded-none border border-stone-300 bg-white px-3 text-stone-900"
-                  placeholder="Tell us roughly when you could start."
+                  className="min-h-28 w-full rounded-none border border-stone-300 bg-white px-3 py-3 text-stone-900"
+                  placeholder="Optional: a line on what you grow, make, cook, stock, or want to help test. We'll ask for the detail when we talk."
                 />
               </label>
 
