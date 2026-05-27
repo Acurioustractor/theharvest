@@ -26,11 +26,17 @@ round-robin between them). Limit the slots (a few windows a week, not the whole 
 Auto-confirmation + a reminder. Drop the booking link into the shop nurture email (spec 6,
 `[booking link]`) and on `/shop`. This turns "we should call them" into "they book us."
 
-**B. "RSVP — 20 June members' day"** — use the **Class Booking** calendar type (a fixed event
-with capacity), not a slot picker. Set the date (Sat 20 June), a capacity, auto-confirmation,
-and a **day-before reminder**. This gives you a clean booking link + a live headcount.
-The link goes ONLY in Harvest Note 02 (members), keeping the day members-first. Do not put it
-on the public website.
+**B. "RSVP — 20 June members' day"** — build **two** Class Booking events (a fixed event with
+capacity, not a slot picker), both dated Sat 20 June, each with a capacity, auto-confirmation,
+and a **day-before reminder**. Two slots so the pizza dinner headcount is real:
+
+- **B1 — Maker session (10am–2pm).** Link goes in the Wk4 Makers' invite (makers and doers:
+  shop EOIs + doers tag).
+- **B2 — Afternoon + pizza (from 2pm).** Link goes in the Makers' invite (for those staying on)
+  and in Harvest Note 02 (members). **B2 bookings = the dough count** for the pizza dinner.
+
+Keep both links members-first: the morning link is makers-only, the afternoon link goes to the
+member list. Do not put either on the public website.
 
 ---
 
