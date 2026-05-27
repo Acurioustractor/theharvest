@@ -106,8 +106,8 @@ Reframe that governs all of this: **a pipeline is for a process that ends** (the
 stockist, or they do not). Where someone sits on the engagement ladder is *not* a pipeline;
 it is a tag on the person. So followers and members never go in a pipeline. Only deals do.
 
-We deliberately built **three**, not four, after a right-sizing pass. An empty board is
-ceremony, not organisation.
+After right-sizing, only **two** boards are live (Shop + Harvest Inbox). Partners and Bookings
+are deferred until they have real cards. An empty board is ceremony, not organisation.
 
 **1. Shop stockist** — above.
 
@@ -130,27 +130,23 @@ member-comment opportunities were moved from Universal Inquiry into "Resolved" (
 update only: no tags, no enrolment, nothing fired). One member-comment contact had no
 opportunity and was left as-is.
 
-**3. Partners (cultivation).** Slow cultivation of partner orgs. Pre-seed with the named
-prospects (Centrecorp, Oonchiumpa) so it opens with real cards. **Funders are NOT in here** —
-they live in the ACT funder ledger (`act-global-infrastructure/wiki/narrative/funders.json`,
-GrantScope, the money-brain). Putting them in Harvest GHL would duplicate that. One place per
-thing.
+So only **two** are live: Shop + Harvest Inbox.
 
-```
-Identified -> Warming -> In conversation -> Proposal -> Active partner
-                                                           \-> Parked
-```
+**Deferred, on purpose (no real cards yet):**
 
-**Deferred, on purpose:**
+- **Partners (cultivation)** — corrected 2026-05-27: Centrecorp and Oonchiumpa are not Harvest
+  partners (more ACT-level), and the real target (Fairfax) is not engaged yet. With zero real
+  prospects, an empty board is ceremony. Tag a real partner lead `partner-interest`, and build
+  the pipeline (Identified -> Warming -> In conversation -> Proposal -> Active partner /
+  Parked) when one is genuinely in motion. Funders never go here regardless; they live in the
+  ACT funder ledger. The shared `Supporters & Donors` pipeline is ACT donors, not partners.
+- **Bookings (team days + venue hire)** — same logic. Use a `team-day` / `venue-hire` tag, and
+  stand up the pipeline (Enquiry -> Quoted -> Booked -> Ran -> Repeat / Lost) the day the first
+  real enquiry lands.
 
-- **Bookings (team days + venue hire)** — not built yet. It would sit empty until we actively
-  offer these post-launch. Use a `team-day` / `venue-hire` tag in the meantime, and stand up
-  the pipeline (Enquiry -> Quoted -> Booked -> Ran -> Repeat / Lost) the day the first real
-  enquiry lands. Building an empty board now is the exact "overdoing it" we are avoiding.
-
-Only the Shop pipeline is wired to a website form (shop EOIs route in automatically). Inbox
-catches the website's default opportunities; partner cards are added by hand at current
-volumes. Auto-routing other forms into pipelines can come later if volume justifies it.
+Only the Shop pipeline is wired to a website form (shop EOIs route in automatically). The
+Harvest Inbox catches the website's other opportunities. Partner and booking cards get added
+by hand once those pipelines exist.
 
 ## Membership: list + belonging, not a portal (decided 2026-05-27, Ben)
 
@@ -215,8 +211,9 @@ Pipelines (in GHL) — three, right-sized:
 - [x] **Harvest Inbox** — built + wired + deployed 2026-05-27 (`GHL_HARVEST_INBOX_PIPELINE_ID`
       = `5ZqAuFokM4LsNqMCMPmY`). All Harvest opportunities route here; 10 historical
       member-comments moved to Resolved.
-- [ ] **Partners** — create with its 5 stages, pre-seed Centrecorp + Oonchiumpa. Funders stay
-      in the ACT ledger, not here.
+- [ ] ~~Partners~~ — **deferred**. No real Harvest partner engaged yet (Fairfax is the target,
+      not there; Centrecorp/Oonchiumpa are ACT-level). Tag `partner-interest`; build when one
+      is in motion.
 - [ ] ~~Bookings~~ — **deferred**. Use a `team-day` / `venue-hire` tag; build the pipeline
       when the first real enquiry arrives.
 

@@ -83,10 +83,15 @@ After publishing, send the new workflow ID to repoint `GHL_NEWSLETTER_WORKFLOW_I
 
 ---
 
-Five forms have no workflow in GHL. Build the specs below, then paste each ID into its
-env var (local and Vercel).
+Five forms have no workflow in GHL yet. **Simplest path (recommended): build each as a
+tag-triggered workflow** ("Contact Tag added is <the trigger tag>") and leave the env var
+blank. The website already stamps these unique tags, so the workflow fires on its own — no
+env var, no redeploy. Verify the first one with a real test submission. Only if a tag-trigger
+does not fire (it should) fall back to enrol-by-ID: build with no trigger and paste the
+workflow ID into the env var below (local + Vercel), then redeploy. Either way, never do both
+for the same workflow or the contact enrols twice.
 
-| Env var | Form route | Trigger tag | Spec |
+| Env var (enrol-by-ID fallback only) | Form route | Trigger tag | Spec |
 | --- | --- | --- | --- |
 | `GHL_WORKSHOP_WORKFLOW_ID` | `workshops.book` | `workshop-booking` | 1 below |
 | `GHL_QUIZ_WORKFLOW_ID` | `quiz.submit` | `quiz-completed` | 2 below |
