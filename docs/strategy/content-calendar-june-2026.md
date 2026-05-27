@@ -125,7 +125,8 @@ J. Were you there on Saturday? Add your photos to the wall. [link to /photo-wall
 
 ## Placeholders to fill before sending
 
-- [RSVP LINK] — the member RSVP (a GHL Calendar booking or the garden-launch member form).
+- [RSVP LINK] — the "RSVP — 20 June members' day" GHL Class Booking calendar (set up per
+  `ghl-setup-runbook.md` Part 0 B). Members only; do not put it on the public site.
 - [START TIME] / [END TIME] / [PARKING NOTE] / bring-list — the day's logistics.
 - [MAKER NAME] / [WHAT THEY ARE SHAPING] — a real person for Wk3 B.
 - Real photos for every social post.

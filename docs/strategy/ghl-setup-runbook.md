@@ -15,6 +15,25 @@
 
 ---
 
+## Part 0 — Calendars (do first)
+
+In `Settings -> Calendars` (or the `Calendars` nav). First, **connect Google Calendar with
+2-way sync** for Susie + Joey + Ben so GHL respects real availability and writes bookings back.
+That shared sync is what stops double-booking. Then build two:
+
+**A. "Book a chat about the shop"** — a regular booking calendar, owned by Susie/Joey (or
+round-robin between them). Limit the slots (a few windows a week, not the whole diary).
+Auto-confirmation + a reminder. Drop the booking link into the shop nurture email (spec 6,
+`[booking link]`) and on `/shop`. This turns "we should call them" into "they book us."
+
+**B. "RSVP — 20 June members' day"** — use the **Class Booking** calendar type (a fixed event
+with capacity), not a slot picker. Set the date (Sat 20 June), a capacity, auto-confirmation,
+and a **day-before reminder**. This gives you a clean booking link + a live headcount.
+The link goes ONLY in Harvest Note 02 (members), keeping the day members-first. Do not put it
+on the public website.
+
+---
+
 ## Part 1 — The auto-message workflows
 
 All in `Automation -> Workflows` (where "Harvest - Follow Welcome" was built). These six are
