@@ -12,9 +12,10 @@ This repo is a community-hub website project, but the real strategy work lives i
 1. **`docs/strategy/the-harvest-philosophy.md`** — the why-this-exists and how-it-connects layer (the heritage thread, the message, the link to the wider ACT ecosystem, the deepening phases). The foundation everything else hangs off. Read for meaning, then read the plan for execution.
 2. **`docs/strategy/the-harvest-strategic-plan-notion.md`** — v2.1 strategic plan (site-steward, Bridged Year-1). The executive view.
 3. **`docs/strategy/community-engagement-launch-plan.md`** — the engagement and membership strategy (the engagement ladder, audiences and mediums, the no-funnel principle).
-4. **`TODOS.md`** — deferred items with dates: community governance (Mar 2027), exit vision (Month 6), Year-2 Foundation/DGR (Month 9).
-5. **`docs/strategy/notion-page-setup.md`** — how to paste the plan into Notion.
-6. **`docs/strategy/the-harvest-lease-v2-draft.md`** + **`the-harvest-lease-legal-review.md`** — amended lease + QLD law review.
+4. **`docs/strategy/email-operating-system.md`** — how we send email safely: the workflow-vs-broadcast rule, the three lists (newsletter, members, shop), the guardrails, and the safe-send checklist. Read before sending anything.
+5. **`TODOS.md`** — deferred items with dates: community governance (Mar 2027), exit vision (Month 6), Year-2 Foundation/DGR (Month 9).
+6. **`docs/strategy/notion-page-setup.md`** — how to paste the plan into Notion.
+7. **`docs/strategy/the-harvest-lease-v2-draft.md`** + **`the-harvest-lease-legal-review.md`** — amended lease + QLD law review.
 
 ## Operational canon (not on GitHub — local wiki)
 

@@ -5,6 +5,7 @@
 > canonical for their own layer:
 > - `harvest-ghl-tag-and-automation-map.md` — the full tag list per flow.
 > - `ghl-workflow-build-specs.md` — the build sheet + email copy for each workflow.
+> - `email-operating-system.md` — the rules for sending safely (workflow vs broadcast, the three lists, guardrails). Read before sending anything.
 >
 > This doc adds the part those two do not cover: the pipeline / tracking model, and how to
 > build it out so the team can get back to people easily and see where everyone is at.
