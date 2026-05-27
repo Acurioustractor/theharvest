@@ -31,12 +31,12 @@ Cadence holds the Comms Playbook rhythm (a named email beat + 2 social/week), ti
 
 ### Field Note — Wk4 (public list: `harvest-newsletter`)
 
-Subject: Witta hasn't had a shop in a generation
+Subject: Witta hasn't had a shop in a long time
 Preview: We are trying to put one back. Here is how you could be on the shelf.
 
 Hi {{contact.first_name}},
 
-Here is something most people do not clock about Witta: around 1,300 people live here, and there is nowhere to buy a loaf of bread or the thing your neighbour grew. The last shop closed a generation ago.
+Here is something most people do not clock about Witta: around 1,300 people live here, and there is nowhere to buy a loaf of bread or the thing your neighbour grew. Witta has not had a shop in a long time.
 
 We are trying to put one back at The Harvest. Not a supermarket, not a boutique. A shared shelf for what people around Witta and Maleny already grow and make, with honest signage about who made it and what they got paid.
 
@@ -121,7 +121,7 @@ B. The art space gets made by artists. The kids area gets made by kids. This is 
 
 **Wk4 — The shop, the question**
 
-C. Witta has around 1,300 people and no shop. The last one closed a generation ago. We are trying to put one back, a shared shelf for what people here already grow and make. [link to /shop]
+C. Witta has around 1,300 people and has not had a shop in a long time. We are trying to put one back, a shared shelf for what people here already grow and make. [link to /shop]
 
 D. Four ways onto the first shelf: produce from your garden, something you make by hand, food and ferments, or a shared-shelf spot. Or just help us shape it. [link to /shop]
 
@@ -144,6 +144,17 @@ I. The garden is open. Thank you to everyone who came and walked the rows with u
 J. Were you there on Saturday? Add your photos to the wall. [link to /photo-wall]
 
 ---
+
+## Sourced facts (the figures in public copy)
+
+- "around 1,300 people" in Witta (Field Note + social C): 2021 Census, Witta locality (SAL)
+  = 1,296 residents; median age skews older (around 54 to 60+). NOTE: the repo's
+  `research/data/abs-census.json` is postcode-level (POA 4552, Maleny + Witta + surrounds
+  = 9,019 persons), a wider geography, so do not cross-check the Witta township figure
+  against it. Wider Maleny / Witta / North Maleny region is roughly 5,972.
+- "Witta has not had a shop in a long time" (Field Note subject + body, social C): softened
+  2026-05-28 (Ben) from "the last shop closed a generation ago". Deliberately non-specific, no
+  timeframe asserted, so no source needed.
 
 ## Placeholders to fill before sending
 
