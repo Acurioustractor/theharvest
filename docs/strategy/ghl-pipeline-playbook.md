@@ -101,16 +101,65 @@ and shop EOIs fall back to the shared Harvest Inbox (current behaviour, no break
 3. Set `GHL_SHOP_PIPELINE_ID` and `GHL_SHOP_PIPELINE_NEW_STAGE_ID` in local `.env` and Vercel.
 4. Redeploy. New shop EOIs now land in the Shop pipeline.
 
-### Future audience pipelines (launch plan section 7)
+### The other three pipelines (decided 2026-05-27, Ben)
 
-Same pattern, built when each audience activates. Each is a pipeline with its own stages:
+Reframe that governs all of this: **a pipeline is for a process that ends** (they become a
+stockist, or they do not; they book a team day, or they do not). Where someone sits on the
+engagement ladder is *not* a pipeline; it is a tag on the person. So followers and members
+never go in a pipeline. Only deals do. Four pipelines, all stood up now:
 
-- **Partners** — aware -> interested -> conversation -> partner.
-- **Corporate (team days)** — enquiry -> proposal -> booked -> repeat.
-- **Funders** — aware -> warm -> conversation -> applied / funded.
+**1. Shop stockist** — above.
 
-Do not build these before there are real people to put in them. A pipeline with three cards
-is honest; ten empty pipelines are noise.
+**2. Inbox (general inquiry).** Give the existing shared inbox real stages so contact-form
+questions and one-offs are tracked, not a black hole. Keep the entry stage named so the
+website's default routing still lands correctly (`DEFAULT_HARVEST_INBOX_NEW_STAGE_ID`).
+
+```
+New -> In progress -> Waiting on them -> Resolved
+```
+
+**3. Partners & Funders (cultivation).** One slow-cultivation pipeline for both; a tag
+(`partner` vs `funder`) distinguishes them inside it. Pre-seed it now with the named
+prospects (Centrecorp, Oonchiumpa, known funders) so it opens with real cards, not empty.
+
+```
+Identified -> Warming -> In conversation -> Proposal / application -> Active / funded
+                                                                          \-> Parked
+```
+
+**4. Bookings (team days + venue hire).** One revenue pipeline; a tag (`team-day` vs
+`venue-hire`) distinguishes them. This one starts empty and fills as enquiries arrive; that
+is fine, it is a ready container with a clear close.
+
+```
+Enquiry -> Quoted -> Booked -> Ran -> Repeat / follow-up
+                                          \-> Lost
+```
+
+Only the Shop pipeline is wired to a website form so far (shop EOIs route in automatically).
+For the others, the website's existing opportunities land in the Inbox by default; partner,
+funder, and booking cards are added or dragged in by hand at current volumes. Auto-routing
+specific forms into specific pipelines can come later if volume justifies it.
+
+## Membership: list + belonging, not a portal (decided 2026-05-27, Ben)
+
+Do not build a GHL Membership / Community portal. Membership at The Harvest is a free tagged
+list plus real-world belonging, delivered where people already are (email, in person). A
+login-to portal is exactly the destination Croft warned nobody uses
+(`community-engagement-launch-plan.md`). The "Hold it" rung is a tag (`harvest-member`) and a
+relationship, not a software product. Revisit only if members start asking for an online
+space of their own.
+
+## Supporting GHL features (what actually helps)
+
+| Feature | How it serves the system | Verdict |
+| --- | --- | --- |
+| Calendars / Appointments | Garden visits, workshop slots, "book a chat with Susie/Joey", team days. The "Show up" rung made bookable. | Adopt |
+| Conversations inbox (incl. WhatsApp) | One place for Susie/Joey to reply across email/SMS/WhatsApp. WhatsApp is the community's real channel. This is the "get back to people" surface. | Adopt |
+| Custom fields on contacts | Store the stage-2 detail (produce type, volumes, stall size) we stopped asking at the door. Makes progressive profiling real. | Adopt |
+| Smart lists / segments | Audience x rung filtering ("makers who came in but were not contacted"). The right-message-right-audience engine. | Adopt |
+| Trigger links | Measure who clicks what (real engagement signal); powers the member reconfirm. | Adopt |
+| Memberships / Communities portal | A destination to log into. Contradicts the strategy. | Hold |
 
 ## How to get back to people (the follow-up engine)
 
@@ -124,12 +173,30 @@ Tracking is only half of it. The other half is making sure nobody waits on us.
 
 ## Build checklist
 
-- [ ] Create the Shop pipeline + stages in GHL, wire the two env vars, redeploy (above).
-- [ ] Build the shop nurture workflow (spec 6) so makers get a second touch.
-- [ ] Build the five silent receipts (specs 1-5: workshop, quiz, business, event, pulse) so
-      every submitter hears back. Each just needs its workflow built and its ID pasted into
-      the matching env var (local + Vercel), then `npm run verify:forms:ghl`.
+Pipelines (in GHL):
+- [ ] **Shop stockist** — create with the 6 stages, then send the pipeline ID + "New
+      interest" stage ID so the two env vars get wired + deployed (auto-routes shop EOIs).
+- [ ] **Inbox** — add stages (New / In progress / Waiting on them / Resolved) to the existing
+      shared pipeline; keep the entry stage so default routing still lands.
+- [ ] **Partners & Funders** — create with its 6 stages, pre-seed the named prospects.
+- [ ] **Bookings** — create with its 6 stages (empty until enquiries arrive).
+
+Messages (in GHL):
+- [ ] Shop nurture (spec 6) so makers get a second touch.
+- [ ] The five silent receipts (specs 1-5: workshop, quiz, business, event, pulse) so every
+      submitter hears back. Build each, paste its ID into the matching env var (local +
+      Vercel), then `npm run verify:forms:ghl`.
+- [ ] Member reconfirm for the 15 legacy contacts (one-time campaign in `ghl-workflow-build-specs.md`).
 - [ ] Fix the `hi@act.place` sender (location-wide), separate task.
+
+Supporting features (in GHL, as capacity allows):
+- [ ] Calendars for garden visits / workshops / "book a chat" / team days.
+- [ ] Conversations inbox set up for Susie + Joey, WhatsApp connected.
+- [ ] Custom fields for stage-2 profiling (produce type, volumes, stall size).
+- [ ] Smart lists per audience x ladder rung.
+
+Decided, do NOT build:
+- [ ] ~~GHL Membership / Community portal~~ — membership stays a list + belonging, no login.
 
 ## Cross-references
 
