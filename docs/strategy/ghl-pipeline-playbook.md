@@ -111,13 +111,24 @@ ceremony, not organisation.
 
 **1. Shop stockist** — above.
 
-**2. Inbox (general inquiry).** Give the existing shared inbox real stages so contact-form
-questions and one-offs are tracked, not a black hole. Keep the entry stage named so the
-website's default routing still lands correctly (`DEFAULT_HARVEST_INBOX_NEW_STAGE_ID`).
+**2. Harvest Inbox (general inquiry).** The existing `Universal Inquiry` pipeline
+(`ggQw10DuH0XRji6keimS`) is the SHARED ACT/Goods inbox, so Harvest member questions and
+contact-form inquiries currently mix in with ACT-wide ones. Decision 2026-05-27 (Ben):
+create a **dedicated Harvest Inbox** pipeline instead, and re-point the website to it by
+wiring `GHL_HARVEST_INBOX_PIPELINE_ID` + `GHL_HARVEST_INBOX_NEW_STAGE_ID` (same pattern as
+Shop; the code already reads these and falls back to Universal Inquiry if unset). This moves
+all Harvest opportunities (member questions, events, business, workshops, photo wall) off the
+shared pipeline in one go.
 
 ```
 New -> In progress -> Waiting on them -> Resolved
 ```
+
+**Wired + live 2026-05-27:** pipeline `5ZqAuFokM4LsNqMCMPmY`, "New" stage
+`aafc9a01-1ad6-42c8-8c47-69a74cf1141d`, in `.env` + Vercel + deployed. The 10 historical
+member-comment opportunities were moved from Universal Inquiry into "Resolved" (opportunity
+update only: no tags, no enrolment, nothing fired). One member-comment contact had no
+opportunity and was left as-is.
 
 **3. Partners (cultivation).** Slow cultivation of partner orgs. Pre-seed with the named
 prospects (Centrecorp, Oonchiumpa) so it opens with real cards. **Funders are NOT in here** —
@@ -150,6 +161,31 @@ login-to portal is exactly the destination Croft warned nobody uses
 relationship, not a software product. Revisit only if members start asking for an online
 space of their own.
 
+## Financial supporters / founding circle (entity question first, GHL second)
+
+Distinct from the free membership: people who back The Harvest with *money* (a founding
+circle). This is genuinely pipeline-shaped (decide to back -> commit -> contribute ->
+ongoing), so a pipeline fits eventually. But the gating question is NOT GHL, it is the
+entity/finance one, and it must be settled first:
+
+- **No DGR path.** Harvest Pty is not DGR, and A Kind Tractor (the charity) is ACNC-registered
+  but NOT DGR and dormant. So there is no tax-deductible route for a backer today.
+- The mechanism decides the home:
+  - Money routed through **A Kind Tractor** (charity, non-DGR) earmarked for Harvest -> use or
+    extend the existing shared **"Supporters & Donors"** pipeline with a Harvest tag.
+  - Money to **Harvest Pty directly** (taxable revenue, e.g. a paid founding membership or
+    sponsorship) -> a dedicated **"Harvest Founding Circle"** pipeline.
+  - Not taking money yet -> just tag interest, decide later.
+- This is an **ACT entity/finance decision** (defer to the ACT business-research skill +
+  Standard Ledger), not a website-repo one. Do NOT build the pipeline before the mechanism is
+  defined, or you are building a board for a process that does not legally exist yet.
+- **For now:** tag anyone offering to back The Harvest `harvest-founding-interest` so they are
+  not lost, and settle the mechanism with Standard Ledger before standing up any board.
+
+Do NOT use the shared ACT "Supporters & Donors" pipeline for *free* supporters (the
+engagement crowd) either way; those are tags, not a money motion. That pipeline, and the
+"Grants" pipeline, are ACT-wide and not Harvest's to populate.
+
 ## Supporting GHL features (what actually helps)
 
 | Feature | How it serves the system | Verdict |
@@ -174,10 +210,11 @@ Tracking is only half of it. The other half is making sure nobody waits on us.
 ## Build checklist
 
 Pipelines (in GHL) — three, right-sized:
-- [ ] **Shop stockist** — create with the 5 stages, then send the pipeline ID + "New
-      interest" stage ID so the two env vars get wired + deployed (auto-routes shop EOIs).
-- [ ] **Inbox** — add stages (New / In progress / Waiting on them / Resolved) to the existing
-      shared pipeline; keep the entry stage so default routing still lands.
+- [x] **Shop stockist** — built + wired + deployed 2026-05-27 (`GHL_SHOP_PIPELINE_ID` =
+      `Pdtr1ZIOvg3LrMSeNvHe`). Auto-routes shop EOIs.
+- [x] **Harvest Inbox** — built + wired + deployed 2026-05-27 (`GHL_HARVEST_INBOX_PIPELINE_ID`
+      = `5ZqAuFokM4LsNqMCMPmY`). All Harvest opportunities route here; 10 historical
+      member-comments moved to Resolved.
 - [ ] **Partners** — create with its 5 stages, pre-seed Centrecorp + Oonchiumpa. Funders stay
       in the ACT ledger, not here.
 - [ ] ~~Bookings~~ — **deferred**. Use a `team-day` / `venue-hire` tag; build the pipeline
