@@ -152,6 +152,23 @@ Note: the follow-vs-member split is live as of 2026-05-27. The footer "follow al
 - Photo wall follow-up: trigger on `photo-wall` or `harvest-gathering-photos`.
 - Contact form: trigger on `contact-form`.
 
+## Calendar Booking Tags
+
+Each GHL booking calendar applies a tag on booking so RSVPs flow into the engagement
+system. A calendar does not tag reliably from its own settings, so use a one-step workflow
+per calendar: trigger *Customer Booked Appointment*, filter *Calendar is X*, action *Add Tag*.
+
+| Calendar | Tags on booking | Note |
+| --- | --- | --- |
+| RSVP - 20 June maker session (10am-2pm) | `witta-gathering-2026-06-20` + `rsvp-maker-morning` | Event tag fires the event-RSVP workflow; morning tag segments makers. Show-up rung. |
+| RSVP - 20 June afternoon + pizza (from 2pm) | `witta-gathering-2026-06-20` + `rsvp-pizza-dinner` | `rsvp-pizza-dinner` count = the pizza dough headcount. Show-up rung. |
+| Book a chat about the shop (round robin) | `harvest-shop-interest` + `shop-call-booked` | `harvest-shop-interest` drives the Shop pipeline + shop nurture; `shop-call-booked` marks a booked call vs a form EOI. |
+
+New tags to add to the GHL tag library: `rsvp-maker-morning`, `rsvp-pizza-dinner`, `shop-call-booked`.
+
+Do NOT auto-apply `harvest-newsletter` or `harvest-member` on an RSVP. An event yes is not a
+subscribe; invite event guests to follow in the post-event recap, by choice.
+
 ## Operational Commands
 
 ```bash

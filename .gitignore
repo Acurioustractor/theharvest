@@ -167,7 +167,7 @@ supabase/.temp/
 # Root-level scratch (screenshots, design source files, decks, AI image dumps)
 /*.psd
 /*.pptx
-/harvest-*.png
+/*.png
 /harvest-*-snapshot.md
 /images/
 
