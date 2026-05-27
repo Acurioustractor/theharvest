@@ -923,10 +923,18 @@ export const appRouter = router({
             throw new Error(noteResult.error || "Failed to save shop interest note");
           }
 
+          // Route into the dedicated Shop pipeline once it exists in GHL. Both env vars
+          // must be set together (a stage ID only belongs to its own pipeline); until then
+          // this falls back to the shared Harvest Inbox. See ghl-pipeline-playbook.md.
+          const shopPipelineId = process.env.GHL_SHOP_PIPELINE_ID;
+          const shopStageId = process.env.GHL_SHOP_PIPELINE_NEW_STAGE_ID;
           await upsertGHLHarvestInboxOpportunity({
             contactId: result.contactId,
             name: formatHarvestInboxOpportunityName(input.name, "Shop interest"),
             source: "Harvest | Shop",
+            ...(shopPipelineId && shopStageId
+              ? { pipelineId: shopPipelineId, pipelineStageId: shopStageId }
+              : {}),
           });
 
           const workflowId = process.env.GHL_SHOP_INTEREST_WORKFLOW_ID || process.env.GHL_CONTACT_FORM_WORKFLOW_ID;
