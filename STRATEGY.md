@@ -2,10 +2,21 @@
 
 This repo is a community-hub website project, but the real strategy work lives in the docs below. This file is the map.
 
-**Last updated:** 2026-04-25 (strategic plan v2.2 after Notion HQ reconciliation)
+**Last updated:** 2026-05-28 (added priority build plan + 20 June launch readiness)
 **Commencement date:** 1 July 2026 (lease signed 17 Feb 2026; Harvest Pty Ltd being incorporated May 2026)
-**Operating model:** Site-steward — Harvest Pty runs programming + Art Space + garden; café + retail sublicenced. Paired Community Stewards: Susie + Joey. Director cover: Ben overseas 20 Jun – 15 Aug 2026; Nic on-deck through critical commencement window.
+**Operating model:** Site-steward — Harvest Pty runs programming + Art Space + garden; café + retail sublicenced. Paired Community Stewards: Susie + Joey. Director cover: Ben overseas 27 Jun – 15 Aug 2026 (present for the 20 June members' day); Nic on-deck through critical commencement window.
 **Other planning surface:** The Harvest Witta HQ page on Notion is the live day-to-day operational surface (separate from this repo). Strategy docs here are the canonical planning layer; Notion is for activity, meetings, and zone-specific work. The two surfaces will be integrated post-reconciliation.
+
+## The one plan (start here)
+
+**`docs/strategy/harvest-master-plan.md`** is the integrated view across all six high-need areas (shop, communications, event, Pty, insurance, other) with the Year-1 cost basis (sourced) and a Year-2+ future-cost outlook. Source map for every dollar figure: **`harvest-master-plan.provenance.md`**.
+
+Detail layers stay canonical for their domain:
+- **`docs/strategy/harvest-build-plan.md`** — priority-ordered task list (P1 shop, P2 20 June, P3 CRM, P4 entity); P1 + P2 tasks loaded into the Notion main Actions DB (Harvest view) with owners + suggested dates.
+- **`docs/strategy/launch-readiness-20-june-2026.md`** — the 20 June countdown and critical path.
+- **`docs/strategy/ghl-setup-runbook.md`** — how to build in GHL (calendars, workflows, Conversations, WhatsApp).
+- **`docs/strategy/the-harvest-strategic-plan-notion.md`** §Capital + §Monthly Operating Budget — the canonical Year-1 budget the master plan re-cuts by area.
+- **`thoughts/wiki/operations/working-capital-plan.md`** — funding options (director loan, ACT loan, trust capital, grants).
 
 ## Current strategy (read in this order)
 

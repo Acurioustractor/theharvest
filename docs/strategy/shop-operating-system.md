@@ -67,10 +67,138 @@ GHL holds steps 1 to 4 and 7 (the relationship and follow-up). Square holds step
 - **Signage:** the brand promise made physical, on the wall and on each product.
 - The customer side barely touches GHL beyond the newsletter list and "new on the shelf" broadcasts.
 
+## Food-business tier (Phase A position, council to confirm)
+
+The shop is **retail of others' food**, not on-site preparation, so the food-business path here
+differs from the cafe path in `thoughts/wiki/operations/food-business-setup-roadmap.md`. That doc
+covers the future kitchen and cafe; this section covers the shelf.
+
+Three categories with different rules:
+
+- **Fresh whole fruit and vegetables: exempt** under the Queensland Food Act. Sell freely on the
+  shelf.
+- **Pre-packaged shelf-stable food** (preserves, jams, honey, dried, baked, ferments) **made by a
+  maker who holds their own QLD home-based food business licence: legally retailable** from the
+  shelf. The maker carries the food-safety obligation under their own licence; the shop is a
+  retail outlet. Council can confirm site-level requirements (labelling display, storage, no
+  on-site repackaging).
+- **High-risk perishables** (chilled dairy, meat, ready-to-eat foods needing temperature
+  control): **not yet.** These require a shop-level Food Business Licence (~$400 to $700/yr) plus
+  a Food Safety Supervisor. Avoid these on the shelf at launch; revisit at Phase B (the cafe).
+
+**Recommended Phase A position:** "Retail of pre-packaged shelf-stable food + fresh whole
+produce", **no shop-level food business licence required**, each maker holds their own licence
+where needed. **Confirm in writing with the Sunshine Coast Council Environmental Health team
+before the first sale.** Single phone call, about 30 minutes. This is a Notion action.
+
+Sources: Queensland Food Act 2006, QLD Health "Do I need a food business licence?", Sunshine
+Coast Council food-business pages, `food-business-setup-roadmap.md` (cafe tier ladder).
+
+## Signage copy (paste-ready, hold the percent until SL confirms)
+
+Two pieces. The final shop-wide pledge percent waits on Standard Ledger confirming the
+consignment split.
+
+### Shop-wide pledge (one large board, prominent at entrance or above the shelf)
+
+> Makers keep [X percent] of what you pay. The Harvest keeps the rest, to cover card fees and
+> the shop's share of work. We tell you both, because we think you should know.
+
+Variant for an entry sign or window decal:
+
+> A shared shelf for what Witta and the hinterland grow and make. Honest about who made it
+> and what they were paid.
+
+`[X percent]` resolves to 75 to 80 once Standard Ledger confirms (P4 task).
+
+### Per-product label template (card on or near each item)
+
+```
+[ITEM NAME] · [MAKER FIRST NAME] · [PROPERTY OR BUSINESS NAME]
+Made at [PLACE], from [SOURCE].
+$[PRICE]
+```
+
+Optional: a one-sentence story line under the heading, in the maker's own words.
+
+Example:
+
+```
+Plum Jam · Sarah · Sarah's Stone Fruit
+Made at Maleny, from her own backyard plums.
+$8.50
+"Cooked in a copper pot, no pectin, just plums and time."
+```
+
+### Implementation
+
+- The shop-wide pledge: printed once, A2 or larger, mounted prominently. **Nic to design** in
+  Harvest visual language.
+- Per-product labels: a simple template Susie/Joey fill per item. Card stock and handwriting
+  works for the small-and-honest feel; or print in small batches. **Each maker confirms their
+  own line** so the story is theirs.
+- Update labels whenever a maker's offer changes. Part of the steward weekly rhythm, not a
+  special task.
+
+## Square setup (with the consignment add-on decision)
+
+The blunt finding: **Square POS does not natively handle consignment commission splits.** This
+is the main decision for the till.
+
+### Two paths
+
+**Path A: Square + manual reconciliation (recommended at launch).**
+- Square POS standalone (free app, transaction fees about 1.6 percent in-person card-present in
+  Australia).
+- Each maker tagged as a vendor in Square via item description or SKU prefix (e.g. `SAR-` for
+  Sarah's items).
+- Weekly reconciliation: Susie or Joey exports the sales report, splits by maker, pays out
+  manually by bank transfer.
+- **Pros:** no monthly fee, dead simple, full control over the numbers.
+- **Cons:** reconciliation time grows with volume; depends on someone running it weekly.
+- **Fit:** the launch phase ("starts small and opens slowly"), 1 to 20 active makers, low
+  weekly turnover.
+
+**Path B: Square + a consignment add-on (consider at scale).**
+- A third-party tool layered over Square: Rose (~$75/month/location), Circle-Hand, or
+  ConsignCloud.
+- Automated commission splits, consignor portals, payout tracking.
+- **Pros:** scales without admin burden.
+- **Cons:** monthly subscription, another tool to learn and maintain.
+- **Fit:** the shelf grows past roughly 20 active makers with steady weekly turnover, or manual
+  reconciliation starts taking more than an hour a week.
+
+**Recommended Phase A position: Path A (manual reconciliation), revisit at scale.** A monthly
+subscription only earns its keep once volume justifies it.
+
+### Hardware (Path A, one-off)
+
+- **Square Reader** (contactless + chip): about $65 from Square Australia, one-off.
+- **iPad or Android tablet** for the POS app: use an existing tablet or a refurb.
+- Optional later: cash drawer + receipt printer for a full-till feel, about $300 combined.
+  Defer until the till is in regular use.
+
+### Setup checklist
+
+- [ ] Open a Square account at squareup.com.au under The Harvest Pty Ltd ABN.
+- [ ] Order the Square Reader.
+- [ ] Set up items in Square, one item per maker product (or one item per maker with sub-SKUs).
+      Put the maker's name in the item description or SKU prefix so the sales report can be
+      filtered.
+- [ ] Set up the weekly sales report export from the Square dashboard.
+- [ ] Agree the reconciliation rhythm (suggested: Monday morning, looking back at Sat/Sun
+      sales).
+- [ ] Path A vs Path B review at six months, or sooner if reconciliation runs over an hour a
+      week.
+
+Sources: Square Community thread on consignment, Circle-Hand "Square POS for consignment"
+guide, Square Australia pricing pages.
+
 ## Open items to confirm
 
-- **Exact consignment split** (within 75 to 80 percent) with Standard Ledger, so the cut covers real costs without breaking the fair-pay promise.
-- **Operating-model alignment note:** the locked operating model says "retail sublicensed". Record that this now means the future commercial cafe and retail layer, not the community shelf, so the two do not drift. Worth a line in the strategic plan / operating-model record.
-- **Food-business tier** for the shelf (what food can be sold), per the food-business roadmap.
-- **Square setup:** account, hardware (card reader), and the maker-payout configuration.
+- **Exact consignment split** (within 75 to 80 percent) with Standard Ledger, so the cut covers
+  real costs without breaking the fair-pay promise. Gates the final shop-wide pledge percent.
+- **Sunshine Coast Council EHO call** to confirm the Phase A food position above (single phone
+  call, about 30 minutes).
 - **Shop nurture workflow** (spec 6) still to be built in GHL.
+- **Square Path A vs Path B review** at six months, or sooner if reconciliation overruns.
