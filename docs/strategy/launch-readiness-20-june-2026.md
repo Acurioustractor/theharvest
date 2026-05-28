@@ -101,6 +101,9 @@ inputs before send:
 
 ### Thread 4: 20 June readiness (the human gates)
 
+The day-of operational detail (roster, run sheet, open/serve/close checklist, signage, stock,
+service flow, onboarding) lives in `launch-ops-run-sheet.md`. The gates below stay here.
+
 - **Public liability insurance** (the hard gate, see top of page).
 - **Pizza lead:** who runs the make-your-own pizza dinner. Unassigned.
 - **Extra hands for the maker session:** Nic leads; confirm Kurtis + partner (possible Alice
