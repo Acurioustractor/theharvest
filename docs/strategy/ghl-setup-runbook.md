@@ -38,6 +38,64 @@ and a **day-before reminder**. Two slots so the pizza dinner headcount is real:
 Keep both links members-first: the morning link is makers-only, the afternoon link goes to the
 member list. Do not put either on the public website.
 
+### Build checklist (Susie/Joey, tick straight through)
+
+Order matters. Do the Google sync first, then the two 20 June events, then the shop calendar.
+About 45 minutes. The three booking links are the goal: they unblock the launch emails.
+
+**Step 0. Google 2-way sync (once each).**
+- [ ] Susie, Joey, and Ben each connect their own Google Calendar in GHL (your user profile,
+      then Calendar Connections, then Google, allow 2-way). Done when each shows "2-way".
+- Why: GHL then reads real availability and writes bookings back, so nobody double-books.
+
+**Step 1. B1, the maker session (10am to 2pm, Sat 20 June).**
+- [ ] `Calendars` then `Create Calendar`, pick the event type ("Class Booking": a fixed event
+      with seats, not a slot picker).
+- [ ] Name: `RSVP: Maker session, Sat 20 June`.
+- [ ] Owner: Nic (so it writes to Nic's synced calendar).
+- [ ] Location (in person): The Harvest, 9 Gumland Dr, Witta.
+- [ ] Date and time: Sat 20 June 2026, 10:00am, 4 hours (to 2:00pm).
+- [ ] Seats / capacity: the real cap for the morning. **Ask Ben or Nic, do not guess a number.**
+- [ ] Auto-confirmation ON. Confirmation message short and warm ("you're booked for the maker
+      session, see you in the garden").
+- [ ] Form fields: name, email, phone.
+- [ ] Save, copy the booking link, label it **B1 link**.
+- Done when: open the B1 link in a private browser window, book a test seat, confirm it lands
+  on Nic's Google calendar, then delete the test booking.
+
+**Step 2. B2, the afternoon and pizza (from 2pm, Sat 20 June). This is the dough count.**
+- [ ] New Class Booking calendar, same as B1.
+- [ ] Name: `RSVP: Afternoon + pizza, Sat 20 June`.
+- [ ] Date and time: Sat 20 June 2026, 2:00pm (set an end like 6:00pm; the time is nominal, the
+      point is the headcount).
+- [ ] Seats / capacity: set generous, you want everyone to fit. **Confirm the cap with Ben/Nic.**
+- [ ] Auto-confirmation ON, same fields as B1.
+- [ ] Save, copy the link, label it **B2 link**.
+- Done when: test-book, confirm, then delete the test.
+
+**Step 3. Day-before reminder (both 20 June calendars). Nice to have, not blocking.**
+- [ ] In each calendar's notification settings, add a reminder 1 day before. If there is no
+      reminder option, skip it and tell Ben (it is a small workflow). Do not let this hold up
+      the links.
+
+**Step 4. Book a chat about the shop (ongoing, lower urgency).**
+- [ ] `Create Calendar`, a regular booking calendar (round-robin between Susie and Joey, or
+      simple owned by one).
+- [ ] Name: `Book a chat about the shop`.
+- [ ] Availability: a few windows a week only, not the whole diary (e.g. two afternoons).
+- [ ] Auto-confirmation ON.
+- [ ] Save, copy the link, label it **shop-chat link**.
+
+**Step 5. Hand the three links back to Ben.**
+- [ ] Send Ben the three links. They are what unblock the emails:
+  - **B1** goes in the Wk4 Makers' invite.
+  - **B2** goes in Harvest Note 02 and the Makers' invite (for those staying).
+  - **shop-chat** goes in the shop nurture email (spec 6) and on the `/shop` page.
+- [ ] Do not put the B1/B2 links on the public website. Members first.
+
+**Stop and message Ben if:** the Class Booking type is not visible, or Google will not connect
+2-way. Do not improvise around either; they are the foundation.
+
 ---
 
 ## Part 1 — The auto-message workflows
