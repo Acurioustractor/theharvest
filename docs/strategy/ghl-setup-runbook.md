@@ -198,3 +198,71 @@ connection later.
 forwarding number + caller ID under `Settings -> Phone System`), automated **SMS reminders**
 on Calendar bookings, and possibly WhatsApp (per Part 3a). Keep the friendly name and
 forwarding current so calls reach a human.
+
+---
+
+## Part 5: Sender domain fix (Harvest address instead of hi@act.place)
+
+Why: launch and member emails currently send from `hi@act.place` (the shared ACT location
+default). It works, and is parked for now, but it is off-brand for Harvest. The fix is a
+location-wide GHL setup plus DNS records on the Harvest domain. Allow 30 to 60 minutes of
+hands-on time plus DNS propagation (up to 24 to 48 hours).
+
+### Pick the sending subdomain first
+
+Use a **subdomain**, not the bare domain, so a campaign hiccup does not damage the root
+domain's reputation. Two reasonable choices:
+
+- `mail.theharvest.com.au` (cleaner, dedicated to Harvest).
+- `harvest.act.place` (ties Harvest visually to ACT).
+
+Default to `mail.theharvest.com.au` unless you want the ACT visual tie. The friendly From
+address on emails can be e.g. `hi@theharvest.com.au`; the sending subdomain is the technical
+plumbing underneath.
+
+### Step 1: add the domain in GHL
+
+1. Open `Settings -> Email Services -> Dedicated Domain & IP`.
+2. Click `+ Add Domain`, enter the chosen subdomain.
+3. GHL displays a table of DNS records to add: SPF (TXT), DKIM (TXT or CNAME), CNAME for the
+   return-path, MX for bounces, DMARC (TXT). Leave this tab open.
+
+### Step 2: add the records in the DNS provider
+
+1. Log in to wherever the Harvest domain's DNS is hosted (Cloudflare, GoDaddy, Namecheap,
+   etc.).
+2. If GHL detects the DNS provider and offers **auto-config**, authorize it and let GHL set
+   the records. This is the easy path.
+3. Otherwise, copy each record from GHL exactly (name, type, value) and paste into the DNS
+   provider's records UI. Save.
+
+### Step 3: verify
+
+1. Back in GHL, click **Verify** on each DNS record.
+2. Many records verify within minutes; full propagation can take 24 to 48 hours.
+3. Each record should show ✓ verified before relying on the sender.
+
+### Step 4: switch the From address on the workflows
+
+1. Open each Harvest workflow (Follow Welcome, Member Welcome, the six tag-triggered specs
+   once built).
+2. In each Email step, set **From Email** to e.g. `hi@theharvest.com.au`, and **From Name**
+   to "The Harvest".
+3. Test-send one workflow. Confirm SPF and DKIM pass in the email headers (in Gmail, "Show
+   original" reveals both).
+
+### DMARC alignment (the deliverability check)
+
+DMARC requires the From-address domain to align with the DKIM/SPF signing domain. If the
+From is `hi@theharvest.com.au` and the sending subdomain is `mail.theharvest.com.au`,
+alignment is satisfied (both share parent `theharvest.com.au`). If alignment ever fails on a
+campaign, GHL falls back to the default header configured under the dedicated domain.
+
+### Who does what
+
+- **Ben:** confirms domain ownership, gives DNS access.
+- **Susie/Joey (or Ben):** clicks through Steps 1 to 4 above. Anyone with DNS access can do
+  it.
+
+Sources: HighLevel support docs (Add and Verify Domain DNS Records; Email Sending Guide;
+Email Authentication DMARC).
