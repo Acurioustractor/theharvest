@@ -112,6 +112,49 @@ Before the day, every helper gets: their role and window (from the roster), the 
 rule (nothing is sold, BYO alcohol), the consent rule for photos, and the close checklist if
 they are on pack-down. Keep it to one page; send it with the crew brief on 19 June.
 
+## Pre-launch scripts (ready to use)
+
+### Insurance broker brief (send to Clear / NFPIB / Aon)
+
+> Subject: PL insurance quote, The Harvest community hub, Witta QLD (event 20 June)
+>
+> We are seeking a Public and Products Liability quote, $20M limit, for a community hub at
+> 9 Gumland Dr, Maleny QLD 4552 (locally "Witta").
+>
+> Insured entity: [The Harvest Pty Ltd, CONFIRM with Standard Ledger]. Directors Ben Knight
+> and Nicholas Marchesi. Building insurance is held by the landlord (Sonas Properties), so we
+> need liability only, not building.
+>
+> Activities: community garden, work days, public gatherings and events, an art space, and
+> kids' activities. Food is served, not sold, at events (a make-your-own pizza night using an
+> outdoor wood-fired oven; fallback is tea and water). Cafe and retail will later be
+> sublicensed to a single operator who will carry their own food and PL cover, so please note
+> the split.
+>
+> Immediate need: an invite-only members' event on Sat 20 June 2026, around 40 people, food
+> served free. We need either the annual policy bound by 19 June, or a same-day or event
+> binder for that date if the annual policy cannot be bound in time.
+>
+> Timeline: quote by Mon 9 June; bind by 19 June. Target at or under $15K per year. Happy to
+> send the lease, ACN, site photos, and an operations profile. Who do you need it from?
+
+### Council call script (Sunshine Coast Environmental Health)
+
+Frame: "We are running a private, invite-only community gathering on 20 June at 9 Gumland Dr,
+and I want to confirm what food-safety approvals apply." Ask in order:
+
+1. Serving vs selling. We serve make-your-own pizza and drinks to invited members and makers.
+   If it is free and not for sale to a closed group, does that fall outside food-business
+   licensing? (The pivotal question; the night is free.)
+2. If we charged, would it be a temporary food event needing notification, or a food business
+   needing a licence, and what is the lodgement lead time?
+3. Wood-fired or pizza oven outdoors: any specific requirements (siting, fire, structure)?
+4. Minimums for the day: handwashing, potable water, waste and greywater, food temperature
+   control?
+5. Food Safety Supervisor: required for a one-off event like this?
+6. The site (former nursery): any existing food-premises approval, or is that a separate
+   licence for the ongoing shop or cafe later?
+
 ## Still open (the gates, owned elsewhere)
 
 These live in `launch-readiness-20-june-2026.md` Thread 4 and the Notion launch gates:
