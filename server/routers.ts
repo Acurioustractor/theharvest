@@ -101,24 +101,29 @@ export const REFERRAL_SOURCE_OPTIONS = [
 
 type ReferralSource = (typeof REFERRAL_SOURCE_OPTIONS)[number];
 
+// Namespaced ACT-wide taxonomy (source:* / interest:*) is canonical. The flat
+// source-* / interest-* aliases are dual-written at apply-time via withFlatAlias()
+// so existing GHL smart lists keep receiving contacts; remove the flat aliases in
+// Phase C once smart lists are repointed.
+// See docs/strategy/harvest-ghl-alignment-2026-06-02.md
 const REFERRAL_SOURCE_TAGS: Record<ReferralSource, string> = {
-  "friend-or-neighbour": "source-referral",
-  "social-media": "source-social",
-  "in-witta": "source-local-witta",
-  other: "source-other",
+  "friend-or-neighbour": "source:referral",
+  "social-media": "source:social",
+  "in-witta": "source:local-witta",
+  other: "source:other",
 };
 
 const NEWSLETTER_INTEREST_TAGS: Record<NewsletterInterest, string> = {
-  events: "interest-events",
-  workshops: "interest-workshops",
-  markets: "interest-markets",
-  "venue-hire": "interest-venue",
-  "garden-centre": "interest-garden",
-  "food-kitchen": "interest-food",
-  community: "interest-community",
-  volunteering: "interest-volunteer",
-  membership: "interest-membership",
-  sustainability: "interest-sustainability",
+  events: "interest:events",
+  workshops: "interest:workshops",
+  markets: "interest:markets",
+  "venue-hire": "interest:venue",
+  "garden-centre": "interest:garden",
+  "food-kitchen": "interest:food",
+  community: "interest:community",
+  volunteering: "interest:volunteer",
+  membership: "interest:membership",
+  sustainability: "interest:sustainability",
 };
 
 const SHOP_INTEREST_TAGS: Record<ShopInterestOfferType, string> = {
@@ -149,20 +154,40 @@ function slugifyTagPart(value: string) {
     .replace(/^-+|-+$/g, "");
 }
 
+// Dual-write a namespaced tag alongside its legacy flat alias (colon -> hyphen)
+// during the 2026-06 tag migration. Only call on interest:* / source:* tags that
+// have an existing flat smart-list dependency — NOT on tier:/role:/comms: (no legacy).
+function withFlatAlias(tag: string): string[] {
+  const flat = tag.replace(":", "-");
+  return flat === tag ? [tag] : [tag, flat];
+}
+
 export function buildNewsletterTags(input: {
   interests?: NewsletterInterest[];
   member?: boolean;
   extraTags?: string[];
 }) {
-  const tags = new Set(["newsletter", "harvest-newsletter", "harvest-website"]);
+  // Scope + channel tags. `newsletter` (bare) is legacy cross-location; keep until Phase C.
+  const tags = new Set([
+    "newsletter",
+    "harvest-newsletter",
+    "harvest-website",
+    "comms:harvest-newsletter",
+  ]);
 
   for (const interest of input.interests || []) {
-    tags.add(NEWSLETTER_INTEREST_TAGS[interest]);
+    for (const t of withFlatAlias(NEWSLETTER_INTEREST_TAGS[interest])) tags.add(t);
   }
 
+  // Journey bridge: membership is a tier: rung, NOT a role: (canonical vocabulary
+  // has no role:member). Everyone else who subscribes has raised a hand -> tier:connected.
+  // project:act-hv is stamped at the GHL-client chokepoint. Feeds the Membership Journey.
   if (input.member || input.interests?.includes("membership")) {
     tags.add("harvest-member");
-    tags.add("interest-membership");
+    tags.add("tier:member");
+    for (const t of withFlatAlias("interest:membership")) tags.add(t);
+  } else {
+    tags.add("tier:connected");
   }
 
   for (const tag of input.extraTags || []) {
@@ -572,7 +597,8 @@ export const appRouter = router({
           firstName,
           lastName,
           source: "Harvest | Quiz",
-          tags: [...input.ghlTags, "quiz-completed", "harvest-website"],
+          // A quiz-taker is a first touch: tier:curious feeds the top of the Journey.
+          tags: [...input.ghlTags, "quiz-completed", "harvest-website", "tier:curious"],
         });
 
         if (result.contactId) {
@@ -648,7 +674,7 @@ export const appRouter = router({
         const interests = input.interests || [];
         const extraTags = input.notes ? ["member-comments", "harvest-inbox"] : [];
         if (input.heardAbout) {
-          extraTags.push(REFERRAL_SOURCE_TAGS[input.heardAbout]);
+          extraTags.push(...withFlatAlias(REFERRAL_SOURCE_TAGS[input.heardAbout]));
         }
         const allTags = buildNewsletterTags({
           interests,
@@ -778,8 +804,9 @@ export const appRouter = router({
               source: "Harvest | Member Wall",
               tags: [
                 "harvest-member",
-                "interest-membership",
-                "interest-community",
+                "tier:member",
+                ...withFlatAlias("interest:membership"),
+                ...withFlatAlias("interest:community"),
                 "member-wall",
                 "harvest-website",
               ],
@@ -894,6 +921,9 @@ export const appRouter = router({
             "harvest-shop-interest",
             "harvest-website",
             "shop-follow-up",
+            "shop-stage-1",
+            "role:supplier",
+            "interest:markets",
             offerTag,
           ],
         });
@@ -1532,7 +1562,7 @@ export const appRouter = router({
 
         // Only sync to GHL when we have both email and a real name.
         if (cleanEmail && cleanName) {
-          const interestTags = (input.wouldUse || []).map(u => `interest-${slugifyTagPart(u)}`);
+          const interestTags = (input.wouldUse || []).flatMap(u => withFlatAlias(`interest:${slugifyTagPart(u)}`));
           const pulseResult = await upsertGHLContact({
             email: cleanEmail,
             firstName: cleanName.split(" ")[0],

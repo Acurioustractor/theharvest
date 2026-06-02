@@ -16,7 +16,7 @@ import { Card, CardContent } from "@/components/ui/card";
 
 const EVENT = {
   date: "Saturday 20 June 2026",
-  time: "3pm – 7pm",
+  time: "From 2pm",
   address: "9 Gumland Drive, Witta QLD 4552",
   shortAddress: "Witta · Sunshine Coast Hinterland",
   acknowledgement: "Jinibara Country",
@@ -57,7 +57,7 @@ export default function GardenLaunch() {
       meta.name = "description";
       document.head.appendChild(meta);
     }
-    meta.content = "Saturday 20 June 2026, 3pm-7pm. The first soft opening at The Harvest, Witta. Member list only for this one. Join the member list for the invite.";
+    meta.content = "Saturday 20 June 2026, from 2pm. The first soft opening at The Harvest, Witta. Member list only for this one. Join the member list for the invite.";
   }, []);
 
   return (
@@ -183,7 +183,7 @@ export default function GardenLaunch() {
                     Confirmed
                   </p>
                   <ul className="space-y-2 text-stone-700">
-                    <li className="flex gap-2"><CheckCircle2 className="h-4 w-4 mt-1 flex-none text-emerald-700" /> Saturday 20 June 2026, 3pm to 7pm</li>
+                    <li className="flex gap-2"><CheckCircle2 className="h-4 w-4 mt-1 flex-none text-emerald-700" /> Saturday 20 June 2026, from 2pm</li>
                     <li className="flex gap-2"><CheckCircle2 className="h-4 w-4 mt-1 flex-none text-emerald-700" /> 9 Gumland Drive, Witta. Jinibara Country.</li>
                     <li className="flex gap-2"><CheckCircle2 className="h-4 w-4 mt-1 flex-none text-emerald-700" /> Member list only. About 40 seats.</li>
                     <li className="flex gap-2"><CheckCircle2 className="h-4 w-4 mt-1 flex-none text-emerald-700" /> Free. No register, no bar.</li>

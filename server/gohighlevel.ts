@@ -81,7 +81,9 @@ export async function createGHLContact(input: GHLContactInput): Promise<{ succes
         phone: input.phone || undefined,
         locationId: locationId,
         source: input.source || "Harvest | Website",
-        tags: input.tags || ["newsletter", "website-signup"],
+        // Every contact from the Harvest site belongs to project:act-hv — stamp the
+        // canonical router tag here so no individual handler can omit it.
+        tags: Array.from(new Set([...(input.tags || ["newsletter", "website-signup"]), "project:act-hv"])),
       }),
     });
 
@@ -181,8 +183,10 @@ export async function upsertGHLContact(input: GHLContactInput): Promise<{ succes
       }
     }
 
-    // 3. Add tags separately (merges with existing tags)
-    const tags = input.tags || ["newsletter", "harvest-website"];
+    // 3. Add tags separately (merges with existing tags).
+    // Stamp the canonical project:act-hv router tag at this chokepoint so every
+    // Harvest contact carries it regardless of which handler created them.
+    const tags = Array.from(new Set([...(input.tags || ["newsletter", "harvest-website"]), "project:act-hv"]));
     if (tags.length > 0 && contactId) {
       try {
         await fetch(`${GHL_API_BASE}/contacts/${contactId}/tags`, {

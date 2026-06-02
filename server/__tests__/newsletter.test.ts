@@ -241,6 +241,9 @@ describe("Go High Level Newsletter Integration", () => {
           "newsletter",
           "harvest-newsletter",
           "harvest-member",
+          "project:act-hv",
+          "tier:member",
+          "interest:membership",
           "interest-membership",
           "interest-community",
           "interest-sustainability",
@@ -519,5 +522,36 @@ describe("Go High Level Newsletter Integration", () => {
         "interest-live-music-events",
       ]));
     });
+  });
+});
+
+describe("Phase B — namespaced taxonomy + Journey bridge", () => {
+  it("tags a member with tier:member + comms + namespaced interest (no role:member; that's a tier)", () => {
+    const tags = buildNewsletterTags({ member: true, interests: ["membership", "community"] });
+    expect(tags).toEqual(expect.arrayContaining([
+      "tier:member",
+      "comms:harvest-newsletter",
+      "interest:membership",
+      "interest:community",
+    ]));
+    // legacy flat aliases still dual-written during the migration (remove in Phase C)
+    expect(tags).toEqual(expect.arrayContaining(["interest-membership", "interest-community"]));
+    // membership is a tier: rung, never a role: — role:member is not in the canonical vocabulary
+    expect(tags).not.toContain("role:member");
+    expect(tags).not.toContain("tier:connected");
+    // project:act-hv is stamped at the GHL-client chokepoint, not in buildNewsletterTags
+    expect(tags).not.toContain("project:act-hv");
+  });
+
+  it("tags a non-member follower as tier:connected, never as a member", () => {
+    const tags = buildNewsletterTags({ member: false, interests: ["events"] });
+    expect(tags).toEqual(expect.arrayContaining([
+      "tier:connected",
+      "comms:harvest-newsletter",
+      "interest:events",
+      "interest-events",
+    ]));
+    expect(tags).not.toContain("tier:member");
+    expect(tags).not.toContain("harvest-member");
   });
 });
