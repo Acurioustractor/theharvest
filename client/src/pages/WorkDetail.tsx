@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { ArrowLeft, ArrowRight, ExternalLink, Camera } from "lucide-react";
-import { worksBySlug, works, LIFECYCLE_VOCAB, sortLifecycleTags, type LifecycleTag } from "@/data/works";
+import { worksBySlug, works, LIFECYCLE_VOCAB, sortLifecycleTags, resolveWorkStatus, type LifecycleTag } from "@/data/works";
 import { trpc } from "@/lib/trpc";
 import { HarvestImage } from "@/components/HarvestImage";
 import { EditableText } from "@/components/EditableText";
@@ -145,6 +145,8 @@ export default function WorkDetail({ slug }: { slug: string }) {
   })();
   const activeTags: LifecycleTag[] = savedTags ?? work.lifecycleTags;
   const lifecycleTags = sortLifecycleTags(activeTags);
+  const status = resolveWorkStatus(activeTags);
+  const isNote = work.weight === "note";
   const index = works.findIndex((w) => w.slug === work.slug);
   const number = work.number ?? String(index + 1).padStart(2, "0");
   const next = works[(index + 1) % works.length];
@@ -181,17 +183,25 @@ export default function WorkDetail({ slug }: { slug: string }) {
                   {number}
                 </p>
                 <div className="flex flex-wrap gap-1.5">
-                  {lifecycleTags.map((tag) => {
-                    const meta = LIFECYCLE_VOCAB[tag];
-                    return (
-                      <span
-                        key={tag}
-                        className={`px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.14em] ${meta.badgeClass}`}
-                      >
-                        {meta.label}
-                      </span>
-                    );
-                  })}
+                  {isAdmin ? (
+                    lifecycleTags.map((tag) => {
+                      const meta = LIFECYCLE_VOCAB[tag];
+                      return (
+                        <span
+                          key={tag}
+                          className={`px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.14em] ${meta.badgeClass}`}
+                        >
+                          {meta.label}
+                        </span>
+                      );
+                    })
+                  ) : (
+                    <span
+                      className={`px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.14em] ${status.badgeClass}`}
+                    >
+                      {status.label}
+                    </span>
+                  )}
                 </div>
               </div>
               <div className="md:col-span-2">
@@ -248,10 +258,8 @@ export default function WorkDetail({ slug }: { slug: string }) {
                 <p className="text-stone-800">{work.materials}</p>
               </div>
               <div>
-                <p className="font-mono text-stone-400 uppercase tracking-wider text-[11px] mb-2">Lifecycle</p>
-                <p className="text-stone-800">
-                  {lifecycleTags.map((t) => LIFECYCLE_VOCAB[t].label).join(" · ")}
-                </p>
+                <p className="font-mono text-stone-400 uppercase tracking-wider text-[11px] mb-2">Status</p>
+                <p className="text-stone-800 font-medium">{status.label}</p>
               </div>
             </motion.div>
           </div>
@@ -261,8 +269,9 @@ export default function WorkDetail({ slug }: { slug: string }) {
       {/* What it is */}
       <Section label="What it is" body={work.whatItIs} slot={`${work.slug}-whatItIs`} />
 
-      {/* Inline feature image — slot 1 (after "What it is") */}
-      <InlineFeatureImage work={work} slotKey="feature-1" />
+      {/* Inline feature image — slot 1 (after "What it is"). Notes skip the
+          inline image slots entirely. */}
+      {!isNote && <InlineFeatureImage work={work} slotKey="feature-1" />}
 
       {/* Why */}
       <Section label="Why" body={work.why} slot={`${work.slug}-why`} tone="dark" />
@@ -270,30 +279,37 @@ export default function WorkDetail({ slug }: { slug: string }) {
       {/* How */}
       <Section label="How" body={work.how} slot={`${work.slug}-how`} />
 
-      {/* Inline feature image — slot 2 (after "How") */}
-      <InlineFeatureImage work={work} slotKey="feature-2" caption="In the making." />
+      {/* Inline feature image — slot 2 (after "How"). */}
+      {!isNote && <InlineFeatureImage work={work} slotKey="feature-2" caption="In the making." />}
 
-      {/* Work story — free text, so each work can hold a note, poem, source story, or context */}
+      {/* Work story — free text. Notes skip the story text (it would just repeat
+          the blurb) but keep any calls to action; the section hides entirely when
+          a note has neither. */}
+      {(!isNote || (work.storyLinks && work.storyLinks.length > 0)) && (
       <section className="py-20 md:py-28 bg-stone-100">
         <div className="container">
           <div className="max-w-4xl mx-auto">
-            <motion.div {...fadeInUp} className="mb-12">
-              <p className="font-mono text-amber-700 text-sm mb-3 uppercase tracking-[0.2em]">
-                Story
-              </p>
-              <h2 className="text-3xl md:text-4xl font-serif font-bold text-stone-800">
-                A note on this work.
-              </h2>
-            </motion.div>
+            {!isNote && (
+              <>
+                <motion.div {...fadeInUp} className="mb-12">
+                  <p className="font-mono text-amber-700 text-sm mb-3 uppercase tracking-[0.2em]">
+                    Story
+                  </p>
+                  <h2 className="text-3xl md:text-4xl font-serif font-bold text-stone-800">
+                    A note on this work.
+                  </h2>
+                </motion.div>
 
-            <EditableText
-              page="works"
-              slot={`${work.slug}-story`}
-              defaultContent={work.blurb}
-              as="p"
-              className="max-w-3xl whitespace-pre-line text-xl leading-relaxed text-stone-700 md:text-2xl"
-              multiline
-            />
+                <EditableText
+                  page="works"
+                  slot={`${work.slug}-story`}
+                  defaultContent={work.blurb}
+                  as="p"
+                  className="max-w-3xl whitespace-pre-line text-xl leading-relaxed text-stone-700 md:text-2xl"
+                  multiline
+                />
+              </>
+            )}
             {work.storyLinks && work.storyLinks.length > 0 && (
               <div className="mt-8 flex flex-col items-start gap-3">
                 {work.storyLinks.map((link, linkIndex) => (
@@ -333,11 +349,12 @@ export default function WorkDetail({ slug }: { slug: string }) {
           </div>
         </div>
       </section>
+      )}
 
       {work.slug === "the-shop" && <ShopInterestSection />}
 
-      {/* Two-up spread — slots 3 and 4 (between Witta thread and Hands) */}
-      <InlineSpreadImages work={work} />
+      {/* Two-up spread — slots 3 and 4 (between Witta thread and Hands). */}
+      {!isNote && <InlineSpreadImages work={work} />}
 
       {/* Photographs from Empathy Ledger */}
       <WorkPhotographsSection slug={work.slug} />
@@ -1018,13 +1035,21 @@ function InlineFeatureImage({
   slotKey: string;
   caption?: string;
 }) {
+  const { user } = useAuth();
+  const isAdmin = user?.role === "admin";
+  const slot = `${work.slug}-${slotKey}`;
+  const overrideQuery = trpc.imageOverrides.get.useQuery({ page: "works", slot });
+  // Visitors only see this slot when a real photo override exists, so a work
+  // without its own photo library no longer repeats the hero image down the
+  // page. Admins always see it, so the swap affordance stays reachable.
+  if (!isAdmin && (overrideQuery.isPending || !overrideQuery.data)) return null;
   return (
     <section className="py-12 md:py-16">
       <div className="container">
         <div className="max-w-5xl mx-auto">
           <HarvestImage
             page="works"
-            slot={`${work.slug}-${slotKey}`}
+            slot={slot}
             defaultWorkSlug={work.slug}
             src={work.heroImage}
             alt={`${work.title} — feature image`}
@@ -1045,6 +1070,16 @@ function InlineFeatureImage({
  * Each side is its own slot so admins can swap them independently.
  */
 function InlineSpreadImages({ work }: { work: import("@/data/works").Work }) {
+  const { user } = useAuth();
+  const isAdmin = user?.role === "admin";
+  const leftQuery = trpc.imageOverrides.get.useQuery({ page: "works", slot: `${work.slug}-spread-left` });
+  const rightQuery = trpc.imageOverrides.get.useQuery({ page: "works", slot: `${work.slug}-spread-right` });
+  // Visitors only see the two-image spread when both slots have real photos, so
+  // we never show a half-empty spread or the hero image repeated twice. Admins
+  // always see it, so both swap affordances stay reachable.
+  const resolved = !leftQuery.isPending && !rightQuery.isPending;
+  const hasBoth = Boolean(leftQuery.data) && Boolean(rightQuery.data);
+  if (!isAdmin && (!resolved || !hasBoth)) return null;
   return (
     <section className="py-12 md:py-16 bg-stone-50">
       <div className="container">

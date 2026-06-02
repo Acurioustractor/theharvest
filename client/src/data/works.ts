@@ -68,6 +68,27 @@ export function sortLifecycleTags(tags: LifecycleTag[]): LifecycleTag[] {
   });
 }
 
+export type WorkStatusLabel = "Built" | "Growing" | "Forthcoming";
+
+/**
+ * Resolve a work's many lifecycle tags down to the single human status the
+ * /works hero promises ("some built, some growing, some forthcoming"). The full
+ * tag taxonomy stays for admins and comms; visitors see one honest word.
+ */
+export function resolveWorkStatus(
+  tags: LifecycleTag[],
+): { label: WorkStatusLabel; badgeClass: string } {
+  const growing: LifecycleTag[] = ["growing", "building", "making", "extending"];
+  const built: LifecycleTag[] = ["built", "made", "harvested", "open", "maintained"];
+  if (tags.some((t) => growing.includes(t))) {
+    return { label: "Growing", badgeClass: "bg-emerald-700 text-emerald-50" };
+  }
+  if (tags.some((t) => built.includes(t))) {
+    return { label: "Built", badgeClass: "bg-stone-800 text-amber-300" };
+  }
+  return { label: "Forthcoming", badgeClass: "bg-amber-100 text-stone-800 border border-amber-300" };
+}
+
 /** @deprecated Use lifecycleTags array instead. Kept only for legacy callers. */
 export type WorkStatus = "built" | "growing" | "forthcoming";
 
@@ -127,6 +148,9 @@ export type Work = {
   storyLinks?: { label: string; href: string }[];
   /** Optional related works for cross-linking */
   related?: string[];
+  /** Display weight. "note" renders a short template (label, intro, hands, any
+   *  calls to action); "feature" (the default) renders the full long-form page. */
+  weight?: "feature" | "note";
 };
 
 export const works: Work[] = [
@@ -188,18 +212,18 @@ export const works: Work[] = [
     subtitle: "A gathering structure made from the dairy industry’s everyday object.",
     lifecycleTags: ["building"],
     materials: "Reclaimed milk crates · scaffold · salvaged timber · community hands",
-    year: "Built March 2026",
+    year: "Building through 2026",
     heroImage: "/images/optimized/gathering-recap-crowd-1200.webp",
-    heroAlt: "People gathered at The Harvest during the milk crate pavilion build",
+    heroAlt: "People gathered at The Harvest",
     heroCredit: "Radical Scoops fellowship · Regional Arts Australia",
     blurb:
-      "Eighty people built it together in a single weekend. Milk crates from the dairy industry, scaffold poles, found timber. The first piece of architecture on the site is also the most communal.",
+      "The community is building it together. Milk crates from the dairy industry, scaffold poles, found timber. The first piece of architecture on the site, and the most communal.",
     whatItIs:
       "A modular open-air pavilion at the heart of The Harvest. Roughly 14m × 9m, sized to fit comfortably under the pecan trees. Plays the role of gallery, theatre, market hall, dining room and weather shelter, sometimes in the same afternoon. Designed to come apart, rearrange, and grow.",
     why:
-      "We needed a shared roof before we needed walls. A pavilion lets the community show up before the buildings finish. Markets, exhibitions, films, dinners, conversations. It says clearly: this place is for gathering, and gathering is the first work.",
+      "A pavilion lets the community gather before anything else is finished. Markets, exhibitions, films, dinners, conversations. It says clearly: this place is for gathering, and gathering is the first work.",
     how:
-      "Built across one weekend in March 2026 with more than eighty community members under the Radical Scoops fellowship. Milk crates were sourced from the dairy industry that once powered Witta. Scaffold was hired and rebuilt as structure. Timber was offcuts, salvage, and gifts. No single builder. Everyone took a corner.",
+      "Being built by community members under the Radical Scoops fellowship. Milk crates were sourced from the dairy industry that once powered Witta. Scaffold was hired and rebuilt as structure. Timber is offcuts, salvage, and gifts. No single builder. Everyone takes a corner.",
     wittaThreads: [
       {
         year: "1904",
@@ -221,7 +245,7 @@ export const works: Work[] = [
       },
     ],
     hands: [
-      { name: "Eighty community members", role: "Builders, weekend of 7 March 2026" },
+      { name: "Community members", role: "Builders" },
       { name: "Regional Arts Australia", role: "Radical Scoops fellowship funder" },
       { name: "Ben Knight & Nicholas Marchesi", role: "Co-founders, project leads" },
     ],
@@ -254,7 +278,7 @@ export const works: Work[] = [
     why:
       "The timber story belongs in the ground, not only on a wall. Paths are how people first read a garden: where to enter, where to slow down, where to notice what is growing.",
     how:
-      "Reclaimed from St Mary's Cathedral in Sydney and being prepared for use as garden walkways at The Harvest. The source trail is still being checked; for now the timber speaks as material first. Used visibly so the grain, marks, and provenance remain part of the work.",
+      "Timber we believe came from St Mary's Cathedral in Sydney, being prepared for use as garden walkways at The Harvest. We are still tracing exactly how it left the cathedral and reached the range. Used visibly, so the grain, the old marks, and the honest gaps in its story stay part of the work.",
     wittaThreads: [
       {
         year: "1860",
@@ -346,6 +370,7 @@ export const works: Work[] = [
     slug: "kids-area",
     title: "Kids' Area",
     subtitle: "A play area shaped with the kids who will use it",
+    weight: "note",
     lifecycleTags: ["consulting", "planned"],
     materials: "Logs · shade · loose parts · local kids' ideas",
     year: "In design 2026",
@@ -362,7 +387,7 @@ export const works: Work[] = [
     wittaThreads: [
       {
         year: "Today",
-        moment: "Families, working bees, and open days bring children through the gate.",
+        moment: "Families, work days, and open days bring children through the gate.",
         thread:
           "The kids area makes room for children as contributors to the place, not just people waiting while adults talk.",
       },
@@ -385,6 +410,7 @@ export const works: Work[] = [
     slug: "the-milk-man",
     title: "The Milk Man",
     subtitle: "A milk crate sentinel at the front of The Harvest",
+    weight: "note",
     lifecycleTags: ["built", "made"],
     materials: "Milk crates · stacked figure · front gate marker · dairy memory",
     year: "Standing now",
