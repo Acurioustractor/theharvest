@@ -5,6 +5,20 @@
 > Companion to `community-engagement-launch-plan.md` (why), `ghl-setup-runbook.md` (how to
 > build), `ghl-workflow-build-specs.md` (email copy), `content-calendar-june-2026.md` (the
 > dated run), `shop-operating-system.md` (the shop model). Voice: plain, no marketing-speak.
+>
+> Reconciled 2026-06-02 to `june-sprint-operating-plan-2026-06-02.md`. The current model is
+> B1 maker session 10am to 2pm, capacity 18, and B2 afternoon plus pizza from 2pm, capacity
+> 40. The older 3pm-7pm reply-led proof-night frame is superseded.
+
+## Implementation state on 2026-06-02
+
+- HighLevel app connector is reauthenticated. Connector search returned live GHL contacts.
+- Local GHL scripts still work. Latest local audit: 1152 contacts scanned, 160 Harvest
+  contacts, 0 unintended tag refreshes, 0 Harvest duplicate email groups.
+- B1/B2 calendars and shop-chat calendar are live. `npm run count:rsvps:ghl` currently shows
+  B1 0/18 and B2 0/40.
+- Calendar tag workflows, Google Calendar sync, Susie/Joey calendar ownership, GHL campaign
+  drafts, and GHL test sends are not verified live until the acceptance checks pass.
 
 ## The one hard gate
 
@@ -16,7 +30,7 @@ counting it done.
 
 ## The date that moves everything
 
-- **Today: 28 May 2026 (Wk3).**
+- **Today: 2 June 2026 (Wk4).**
 - **Ben departs 27 June, overseas to 15 August.** So Ben is present for launch day (20 June)
   and the week after, but gone for the 30 June sole-trader-to-Pty cutover. Every Ben-only
   decision still wants to clear before 27 June; the email-chain deadlines below are tighter
@@ -50,40 +64,48 @@ Two keystones, run in parallel:
    RSVP links, so neither the Wk4 Makers' invite nor Harvest Note 02 can send with the date.
 2. **PL insurance** is the keystone for the event itself.
 
-Both must clear before mid-June. The calendars are the tighter deadline: the Makers' invite
-wants to go out the week of 2 June, so the calendars realistically need to be built **by
-Sun 1 June**.
+Both must clear before mid-June. The calendars are now overdue: the Makers' invite wants to
+go out in the week of 2 June, so B1 and B2 need to be built before that campaign is scheduled.
 
 ## The six threads, sequenced
 
 | # | Thread | Status | Blocked on | Owner | Unblocks | When |
 |---|--------|--------|-----------|-------|----------|------|
-| 1 | B1/B2 RSVP calendars + book-a-chat | Specced, not built | Nothing. GHL UI work | Susie/Joey/Ben | threads 2, 3 | by 1 Jun |
-| 2 | Harvest Note 02 to members | Copy paste-ready | B2 link (thread 1) + sender decision | Ben/Susie | the members' invite | 9 Jun |
-| 3 | Maker engine (nurture spec 6, maker smart list) | Specced | Thread 1 (book-a-chat link) | Susie/Joey | ongoing shop follow-up | not launch-gating |
+| 1 | B1/B2 RSVP calendars + book-a-chat | Calendars live, workflows not verified | GHL UI workflow build + Google sync + Susie/Joey users | Susie/Joey/Ben | threads 2, 3 | immediate |
+| 2 | Harvest Note 02 to members | Copy paste-ready, B2 link live | Sender decision + test send | Ben/Susie | the members' invite | 9 Jun |
+| 3 | Maker engine (nurture spec 6, maker smart list) | Specced, shop-chat link live | Workflow build + shop-chat owner update later | Susie/Joey | ongoing shop follow-up | not launch-gating |
 | 4 | 20 June readiness opens | In progress | PL insurance, pizza lead, extra hands | Ben/Nic | the day itself | before 20 Jun |
 | 5 | Standard Ledger questions | Drafted this session | Ben to send | Ben | founding-circle + shop cut | not launch-gating |
 | 6 | Operating-model alignment note | **Done this session** | Nothing | (shipped) | removes shop/retail drift | done |
 
 ### Thread 1: Calendars (the email-chain keystone)
 
-Build per `ghl-setup-runbook.md` Part 0. Three calendars:
-- **B1: Maker session (10am to 2pm)**, Class Booking, capacity, day-before reminder. Link
-  goes in the Wk4 Makers' invite.
-- **B2: Afternoon + pizza (from 2pm)**, Class Booking. **B2 bookings = the dough count.**
-  Link goes in the Makers' invite (for those staying) and in Harvest Note 02.
-- **Book a chat about the shop**, regular booking calendar, owned by Susie/Joey. Link goes
-  in the shop nurture email (spec 6) and on `/shop`. This serves thread 3.
+Built per `ghl-setup-runbook.md` Part 0. Three calendars are live:
+- **B1: Maker session (10am to 2pm)**, ID `M0KzSu7Bo3jJ3ZQta3ag`, capacity **18**.
+  Link: `https://api.leadconnectorhq.com/widget/bookings/harvest-2026-06-20-maker-session`.
+- **B2: Afternoon + pizza (from 2pm)**, ID `4IpU9GnzAChTMkKFJPWi`, capacity **40**.
+  Link: `https://api.leadconnectorhq.com/widget/bookings/harvest-2026-06-20-afternoon-pizza`.
+  **B2 bookings = the dough count.**
+- **Book a chat about the shop**, ID `viM1BRnHG9gwpIEZd4HM`, current Ben/Nicholas round-robin.
+  Link: `https://api.leadconnectorhq.com/widget/bookings/harvest-shop-chat`.
+  Move this to Susie/Joey after their GHL users exist. This serves thread 3.
 
 Connect Google Calendar 2-way for Susie + Joey + Ben first, so availability is real and
 bookings write back. Keep both 20 June links members-first; never on the public site.
+
+Then build one calendar tag workflow per calendar:
+
+- B1 booking adds `witta-gathering-2026-06-20` and `rsvp-maker-morning`.
+- B2 booking adds `witta-gathering-2026-06-20` and `rsvp-pizza-dinner`.
+- Shop-chat booking adds `harvest-shop-interest` and `shop-call-booked`.
 
 ### Thread 2: Harvest Note 02 (the members' invite)
 
 Copy is paste-ready in `content-calendar-june-2026.md` (the "Harvest Note 02" block). It is
 a **broadcast** to `harvest-member`, not a workflow (per `email-operating-system.md`). Two
 inputs before send:
-- The **real B2 RSVP link** (from thread 1), pasted at `[RSVP LINK: afternoon + pizza]`.
+- The **real B2 RSVP link** from thread 1 is live:
+  `https://api.leadconnectorhq.com/widget/bookings/harvest-2026-06-20-afternoon-pizza`.
 - **Sender decision.** Default position (per runbook): send from `hi@act.place` for now;
   the Harvest-address fix stays parked so it does not block the members' invite. Flip only
   if Ben wants the domain verified first, which would add setup and risk the 9 Jun date.
@@ -97,9 +119,13 @@ inputs before send:
   and onto `/shop`.
 - **Maker smart list:** GHL smart list of makers/growers for "new on the shelf" touches and
   for the Wk4 Makers' invite segment (shop EOIs + doers). Build as: has any of
-  `harvest-shop-interest` / `shop-produce` / `shop-maker` / `shop-food` / `shop-consignment`.
+  `harvest-shop-interest` / `shop-prospect` / `shop-produce` / `shop-maker` / `shop-food` /
+  `shop-consignment` / `shop-follow-up`, plus known volunteer/doer contacts.
 
 ### Thread 4: 20 June readiness (the human gates)
+
+The day-of operational detail (roster, run sheet, open/serve/close checklist, signage, stock,
+service flow, onboarding) lives in `launch-ops-run-sheet.md`. The gates below stay here.
 
 - **Public liability insurance** (the hard gate, see top of page).
 - **Pizza lead:** who runs the make-your-own pizza dinner. Unassigned.

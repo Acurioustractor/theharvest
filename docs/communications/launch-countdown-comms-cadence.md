@@ -1,5 +1,11 @@
 # Launch Countdown Comms Cadence — 22 May to 27 June 2026
 
+> **Superseded for execution on 2026-06-02.** This cadence is retained as the May
+> decision history. Do not use its 3pm-7pm reply-led proof-night copy for June sends.
+> Current campaign copy and sequencing live in
+> `../strategy/content-calendar-june-2026.md` and
+> `../strategy/june-sprint-operating-plan-2026-06-02.md`.
+
 **Parent doc:** [docs/strategy/harvest-launch-alignment-2026-05-22.md](../strategy/harvest-launch-alignment-2026-05-22.md)
 **Frame assumption:** Path A (invite-only proof night). If Path B (public open day) is chosen, branch points are marked `[Path B branch]` inline.
 **Source of comms infrastructure:** [docs/strategy/harvest-ghl-tag-and-automation-map.md](../strategy/harvest-ghl-tag-and-automation-map.md), [docs/communications/welcome-email-and-ghl-workflow.md](welcome-email-and-ghl-workflow.md)

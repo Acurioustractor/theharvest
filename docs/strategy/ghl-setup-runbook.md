@@ -5,6 +5,15 @@
 > it without Ben. Companion to `ghl-pipeline-playbook.md` (the why) and
 > `ghl-workflow-build-specs.md` (the email copy). The GHL location is shared across
 > ACT/Goods/Harvest, so keep everything tagged and named "Harvest -".
+>
+> Reconciled 2026-06-02: the current 20 June model is two Class Booking calendars:
+> B1 maker session 10am to 2pm, default capacity 18, and B2 afternoon plus pizza from 2pm,
+> default capacity 40. If the HighLevel app connector is unavailable, build these directly
+> in the GHL UI.
+>
+> API update 2026-06-02: B1, B2, and shop-chat calendars are live in GHL. Calendar tag
+> workflows, day-before reminders, Google Calendar sync, and Susie/Joey user ownership are
+> not verified yet.
 
 ## Suggested order
 
@@ -15,24 +24,43 @@
 
 ---
 
-## Part 0 — Calendars (do first)
+## Part 0 --- Calendars (do first)
+
+### Live assets created 2026-06-02
+
+| Label | Calendar ID | Link | Verified configuration |
+| --- | --- | --- | --- |
+| B1 maker session | `M0KzSu7Bo3jJ3ZQta3ag` | `https://api.leadconnectorhq.com/widget/bookings/harvest-2026-06-20-maker-session` | Active, 18 seats, Sat 20 Jun, 10am to 2pm |
+| B2 afternoon and pizza | `4IpU9GnzAChTMkKFJPWi` | `https://api.leadconnectorhq.com/widget/bookings/harvest-2026-06-20-afternoon-pizza` | Active, 40 seats, Sat 20 Jun, 2pm to 6pm |
+| Shop chat | `viM1BRnHG9gwpIEZd4HM` | `https://api.leadconnectorhq.com/widget/bookings/harvest-shop-chat` | Active, Ben/Nicholas round-robin, Tue/Thu 1pm to 4pm |
+
+Current GHL user list only shows Ben and Nicholas. Move the shop-chat calendar to Susie/Joey
+after their GHL users exist and their calendars are connected.
+
+Run this to re-check or recreate missing calendars without duplicating existing ones:
+
+```bash
+npm run setup:june-sprint-calendars:ghl
+```
+
+Use `-- --apply` only when you intend to create missing calendars.
 
 In `Settings -> Calendars` (or the `Calendars` nav). First, **connect Google Calendar with
 2-way sync** for Susie + Joey + Ben so GHL respects real availability and writes bookings back.
 That shared sync is what stops double-booking. Then build two:
 
-**A. "Book a chat about the shop"** — a regular booking calendar, owned by Susie/Joey (or
+**A. "Book a chat about the shop"** --- a regular booking calendar, owned by Susie/Joey (or
 round-robin between them). Limit the slots (a few windows a week, not the whole diary).
 Auto-confirmation + a reminder. Drop the booking link into the shop nurture email (spec 6,
 `[booking link]`) and on `/shop`. This turns "we should call them" into "they book us."
 
-**B. "RSVP — 20 June members' day"** — build **two** Class Booking events (a fixed event with
+**B. "RSVP --- 20 June members' day"** --- build **two** Class Booking events (a fixed event with
 capacity, not a slot picker), both dated Sat 20 June, each with a capacity, auto-confirmation,
 and a **day-before reminder**. Two slots so the pizza dinner headcount is real:
 
-- **B1 — Maker session (10am–2pm).** Link goes in the Wk4 Makers' invite (makers and doers:
+- **B1 --- Maker session (10am---2pm).** Link goes in the Wk4 Makers' invite (makers and doers:
   shop EOIs + doers tag).
-- **B2 — Afternoon + pizza (from 2pm).** Link goes in the Makers' invite (for those staying on)
+- **B2 --- Afternoon + pizza (from 2pm).** Link goes in the Makers' invite (for those staying on)
   and in Harvest Note 02 (members). **B2 bookings = the dough count** for the pizza dinner.
 
 Keep both links members-first: the morning link is makers-only, the afternoon link goes to the
@@ -55,7 +83,7 @@ About 45 minutes. The three booking links are the goal: they unblock the launch 
 - [ ] Owner: Nic (so it writes to Nic's synced calendar).
 - [ ] Location (in person): The Harvest, 9 Gumland Dr, Witta.
 - [ ] Date and time: Sat 20 June 2026, 10:00am, 4 hours (to 2:00pm).
-- [ ] Seats / capacity: the real cap for the morning. **Ask Ben or Nic, do not guess a number.**
+- [ ] Seats / capacity: **18**, unless Ben or Nic changes it in writing.
 - [ ] Auto-confirmation ON. Confirmation message short and warm ("you're booked for the maker
       session, see you in the garden").
 - [ ] Form fields: name, email, phone.
@@ -68,7 +96,7 @@ About 45 minutes. The three booking links are the goal: they unblock the launch 
 - [ ] Name: `RSVP: Afternoon + pizza, Sat 20 June`.
 - [ ] Date and time: Sat 20 June 2026, 2:00pm (set an end like 6:00pm; the time is nominal, the
       point is the headcount).
-- [ ] Seats / capacity: set generous, you want everyone to fit. **Confirm the cap with Ben/Nic.**
+- [ ] Seats / capacity: **40**, unless Ben or Nic changes it in writing.
 - [ ] Auto-confirmation ON, same fields as B1.
 - [ ] Save, copy the link, label it **B2 link**.
 - Done when: test-book, confirm, then delete the test.
@@ -98,7 +126,7 @@ About 45 minutes. The three booking links are the goal: they unblock the launch 
 
 ---
 
-## Part 1 — The auto-message workflows
+## Part 1 --- The auto-message workflows
 
 All in `Automation -> Workflows` (where "Harvest - Follow Welcome" was built). These six are
 **tag-triggered**: they fire off a tag the website already stamps on the contact. No env var,
@@ -125,7 +153,7 @@ no code, no deploy. Build and publish, done.
 **Verify the first one:** GHL should fire a tag-trigger when the website adds the tag via
 API (standard behaviour, ~90% sure). After building the first workflow, do a real test
 submission and confirm the email arrives. If it does not fire, the fallback is enrol-by-ID
-(build with no trigger, paste the workflow ID into the matching env var, redeploy) — ask Ben.
+(build with no trigger, paste the workflow ID into the matching env var, redeploy) --- ask Ben.
 
 Follow Welcome and Member Welcome are different: the website enrols those by ID, so they have
 no trigger. Do not add tag triggers to them.
@@ -135,28 +163,28 @@ The **Member Reconfirm** (15 legacy members) is a one-time campaign using Trigge
 
 ---
 
-## Part 2 — Conversations (the reply surface)
+## Part 2 --- Conversations (the reply surface)
 
 The `Conversations` tab is one inbox for every contact's email / SMS / WhatsApp / DMs,
 threaded per person, logged on their contact card. This is the day-to-day surface for Susie
 and Joey.
 
-1. **Phone number** — `Settings -> Phone System`. One number exists: +61 468 052 660. This
+1. **Phone number** --- `Settings -> Phone System`. One number exists: +61 468 052 660. This
    unlocks SMS + calls in the inbox. (Email already works.)
-2. **Email sending** — `Settings -> Email Services`. Sends from `hi@act.place` for now (the
+2. **Email sending** --- `Settings -> Email Services`. Sends from `hi@act.place` for now (the
    Harvest-address fix is parked).
-3. **Open `Conversations`** — reply from here; it logs on the contact.
-4. **Assign owners** — route conversations to Susie or Joey.
+3. **Open `Conversations`** --- reply from here; it logs on the contact.
+4. **Assign owners** --- route conversations to Susie or Joey.
 5. **Mobile app (the killer move):** Susie + Joey install **LeadConnector** on their phones
    and reply on the go, all logged. This is what makes "easy to get back to people" real.
 
 ---
 
-## Part 3 — WhatsApp (the community's real channel)
+## Part 3 --- WhatsApp (the community's real channel)
 
 Worth it because it is where people actually are, but the fiddliest. Do it after Conversations.
 
-**Read the number gotcha first (Part 3a) — it decides everything.**
+**Read the number gotcha first (Part 3a) --- it decides everything.**
 
 ### 3a. The phone-number rule (critical)
 
@@ -165,7 +193,7 @@ Meta sometimes rejects virtual/VoIP numbers.
 
 - If +61 468 052 660 is a GHL/LeadConnector-provisioned number (not a real phone with
   personal WhatsApp), try it for WhatsApp first.
-- If it is Ben's actual mobile with WhatsApp on it, **do not use it** — pick a separate
+- If it is Ben's actual mobile with WhatsApp on it, **do not use it** --- pick a separate
   dedicated number.
 - Confirm which it is before starting, or the connection will fail confusingly.
 
@@ -173,7 +201,7 @@ Meta sometimes rejects virtual/VoIP numbers.
 
 WhatsApp API lives under a Meta Business account. If the existing Facebook business account
 has issues, **create a fresh Meta Business account** at business.facebook.com with
-**benjamin@act.place** as admin — clean home for ACT/Harvest. Name it "A Curious Tractor".
+**benjamin@act.place** as admin --- clean home for ACT/Harvest. Name it "A Curious Tractor".
 
 ### 3c. Connect in GHL
 
@@ -240,7 +268,7 @@ plumbing underneath.
 
 1. Back in GHL, click **Verify** on each DNS record.
 2. Many records verify within minutes; full propagation can take 24 to 48 hours.
-3. Each record should show ✓ verified before relying on the sender.
+3. Each record should show -�- verified before relying on the sender.
 
 ### Step 4: switch the From address on the workflows
 

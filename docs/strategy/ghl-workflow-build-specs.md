@@ -22,6 +22,8 @@ Five workflows exist in GHL and are correctly wired:
 | `GHL_CONTACT_FORM_WORKFLOW_ID` | Contact Form to Universal Inquiry | `f0c1f3db-8809-4283-ba91-907626ac0bb7` |
 | `GHL_SHOP_INTEREST_WORKFLOW_ID` | Harvest - Shop Interest Receipt | `ff4ff43e-0174-415d-828e-3610f5386de5` |
 
+**`ff4ff43e` confirmed 2026-05-30:** its Create-Opportunity action points at **The Shop pipeline / New interest** (trigger: Form Submitted, no filters), so future `/shop` form EOIs card correctly. An earlier version created the opp in Universal Inquiry; that is fixed and verified live.
+
 Photo Wall is correctly wired in Vercel production (`GHL_PHOTO_WALL_WORKFLOW_ID` =
 `65819e73-09c8-4598-b982-41dfeeb8624e`, present since well before 2026-05-27).
 
@@ -298,6 +300,36 @@ The Harvest
 
 ---
 
+## 7. The 20 June RSVP calendar to tag workflows
+
+Three GHL booking calendars drive the 20 June members' day and the ongoing shop chat. A calendar
+does not reliably tag the contact from its own settings, so each calendar needs a one-step
+workflow: trigger *Customer Booked Appointment*, filter *In Calendar is X*, action *Add Contact
+Tag*. The booking tags already exist in the location tag library.
+
+**Prerequisite state, 2026-06-02:** the 3 calendars are live in GHL. Build the workflows
+behind them in the workflow UI, then test one booking per calendar.
+
+| # | Calendar | Type | Cap | When | Tags the workflow adds | Re-entry |
+| --- | --- | --- | --- | --- | --- | --- |
+| 7a | RSVP: Maker session, Sat 20 June, ID `M0KzSu7Bo3jJ3ZQta3ag` | Class/Event | 18 (B1) | Sat 20 Jun 10am-2pm | `witta-gathering-2026-06-20` + `rsvp-maker-morning` | OFF |
+| 7b | RSVP: Afternoon + pizza, Sat 20 June, ID `4IpU9GnzAChTMkKFJPWi` | Class/Event | 40 (B2) | Sat 20 Jun from 2pm | `witta-gathering-2026-06-20` + `rsvp-pizza-dinner` | OFF |
+| 7c | Book a chat about the shop, ID `viM1BRnHG9gwpIEZd4HM` | Round robin | 1 | Tue/Thu 1pm-4pm | `harvest-shop-interest` + `shop-call-booked` | ON |
+
+Notes:
+
+- `rsvp-pizza-dinner` count is the pizza dough headcount.
+- `witta-gathering-2026-06-20` is the event tag; it feeds the The Harvest Events smart list (empty
+  until the first booking) and would fire an event-RSVP workflow if one is built later.
+- 7c reuses `harvest-shop-interest` so a booked shop chat flows into the Shop pipeline and the shop
+  nurture; `shop-call-booked` distinguishes a booked call from a form EOI.
+- Build 7a, then clone it twice and swap the calendar filter and the two tags. No email step: the
+  calendar sends its own booking confirmation.
+- Do NOT auto-apply `harvest-newsletter` or `harvest-member` on an RSVP. An event yes is not a
+  subscribe; invite event guests to follow in the post-event recap, by choice.
+
+---
+
 ## One-time cleanup: Harvest - Member Reconfirm
 
 Not a form workflow. A one-time campaign to clean up the 15 contacts tagged `harvest-member`
@@ -308,10 +340,12 @@ The 15 are listed in `thoughts/shared/ghl-member-segmentation-2026-05-27.md` (gi
 
 ### Target segment
 
-Build a GHL smart list: has tag `harvest-member` AND does not have tag `interest-membership`.
-Exclude any test contacts. Going forward the website never creates that tag combination, so
-this list is exactly the legacy group. Add the tag `member-reconfirm-pending` to the list to
-enrol them.
+The legacy cohort is the **15 contacts tagged `member-migration-review-2026-05-15`** (verified
+live 2026-05-30, count 15). Note: the earlier definition here, "`harvest-member` AND NOT
+`interest-membership`", is now **empty** — the 2026-05-15 migration added `interest-membership`
+to all 57 members, so that pair runs 1:1. Use the `member-migration-review-2026-05-15` tag as the
+segment, exclude any test contacts, and add `member-reconfirm-pending` to enrol them. That tag
+add is the send trigger (Workflow C), so build A, B, and C and publish them first.
 
 ### Mechanism (set up in GHL)
 

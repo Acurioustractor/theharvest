@@ -53,6 +53,19 @@ GHL holds steps 1 to 4 and 7 (the relationship and follow-up). Square holds step
 - A **makers' channel** (a WhatsApp group or a regular work day) turns stockists into a community who shape the shop, not just suppliers. The maker version of the members' inner ring.
 - The **20 June maker session** (RSVP calendar B1) is the first gathering of this community.
 
+## Outreach order for June
+
+Use 1:1 emails, DMs, or calls. Do not broadcast to makers as a generic shop list. When someone
+replies, move them from `New interest` to `In conversation` in the Shop pipeline and add the
+best-fit offer tags.
+
+1. **Warm leads first:** Leeza, Rebecca, Monita, Lachie.
+2. **Witta and Wootha neighbours next:** Robyn Jay, Fleur / Pinch & Spin, Jacky Lowry,
+   Fresh Flavours Farm.
+3. **Fast shelf-stable wins:** honey, coffee, chai, preserves.
+4. **Gallery and market channels:** David Linton, Maleny Handmade, Sapling, Peace of Green,
+   Maleny Arts & Crafts.
+
 ## Customers and the brand
 
 - **Discovery:** the launch after-story, "new on the shelf this week" in the newsletter, signage, locals, word of mouth in a town of around 1,300.
