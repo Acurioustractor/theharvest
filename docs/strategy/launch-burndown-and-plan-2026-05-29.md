@@ -531,18 +531,16 @@ Risk: low, not launch-gating. Slips if field types are guessed and later need re
 
 ### Comms and Content
 
-**T19 Paste real RSVP links into the Makers' invite (morning + afternoon) and Harvest Note 02 (afternoon), Ben, Sun 1 Jun 2026**
-Ideation: wait until both B1 and B2 slots are live, copy each slot's public booking URL, paste into the three bracket positions. The brackets are blank to avoid fabrication, so the only honest fill is the real GHL URL.
+**T19 Paste real RSVP links into the Makers' invite (morning + afternoon) and Harvest Note 02 (afternoon), Ben, Sun 1 Jun 2026 - DONE 2026-06-02**
+Ideation: both B1 and B2 slots are live. The honest fill is the real GHL URL.
 Steps:
-1. Confirm the B1 and B2 slots are live in GHL.
-2. Copy the public booking URL for the B1 morning slot and the B2 afternoon slot.
-3. Replace "[RSVP LINK - morning maker session]" (Makers' invite) with the B1 URL.
-4. Replace both "[RSVP LINK - afternoon + pizza]" positions (Makers' invite + Harvest Note 02) with the B2 URL.
-5. Click each pasted link to confirm it opens the correct slot and shows the right capacity.
-6. Confirm no "[RSVP LINK" brackets remain anywhere.
-Done when: zero "[RSVP LINK" bracket strings remain; all three pasted URLs open the correct live slot when clicked.
+1. B1 live URL: `https://api.leadconnectorhq.com/widget/bookings/harvest-2026-06-20-maker-session`.
+2. B2 live URL: `https://api.leadconnectorhq.com/widget/bookings/harvest-2026-06-20-afternoon-pizza`.
+3. Content calendar and local GHL email-template source updated with the live URLs.
+4. Public URL check returned 200 for both links.
+Done when: zero RSVP placeholder strings remain in active copy; both pasted URLs open the correct live slot.
 Depends on: T11, T13.
-Risk: slips if the calendars are not built by 1 Jun. Early sign: no live URL to copy on 1 Jun. This is the single dependency that gates the whole email chain.
+Risk: existing GHL templates created before 2026-06-02 may still need a manual link check before send because the template fetch/patch API did not expose those records cleanly.
 
 **T20 Send the Wk4 Makers' invite to makers/doers (carries the date first + both RSVP links), Ben/Susie, Wk4, by Wed 3 Jun 2026**
 Ideation: send as a one-off Campaign to the maker smart list. It is a broadcast, not a workflow, so never add a tag on send. Keep strictly off the public newsletter list so the date does not leak.

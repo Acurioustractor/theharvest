@@ -1,5 +1,10 @@
 # Newsletter — Soft Opening, 20 June 2026
 
+> **Superseded for execution on 2026-06-02.** Do not paste this 3pm-7pm reply-led
+> draft into HighLevel. The current June campaign copy is in
+> `../strategy/content-calendar-june-2026.md`: B1 maker session 10am to 2pm,
+> B2 afternoon plus pizza from 2pm, GHL RSVP links, members-first sequence.
+
 > **Updated 2026-05-22 to Path A frame.** This is the invite-only soft opening version. The earlier "Garden Launch + Community Day" public-frame draft was retired by [harvest-launch-alignment-2026-05-22.md](../strategy/harvest-launch-alignment-2026-05-22.md). Companion cadence: [launch-countdown-comms-cadence.md](launch-countdown-comms-cadence.md).
 
 **Send window:** Wed 27 May 2026, late morning Brisbane (W-3 invite per the cadence)

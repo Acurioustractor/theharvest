@@ -19,6 +19,8 @@
     "slides:all": "npx @marp-team/marp-cli docs/vision-prep/slides/ --output docs/vision-prep/slides/ --allow-local-files",
     "sync:social": "tsx scripts/sync-social.ts",
     "draft:comms:ghl": "tsx scripts/draft-weekly-comms-ghl.ts",
+    "draft:june-sprint-emails:ghl": "tsx scripts/draft-june-sprint-emails-ghl.ts",
+    "setup:june-sprint-calendars:ghl": "tsx scripts/setup-june-sprint-calendars-ghl.ts",
     "draft:whatsapp:ghl": "tsx scripts/draft-whatsapp-ideas-ghl.ts",
     "draft:next-two-weeks:ghl": "tsx scripts/draft-next-two-weeks-ghl.ts",
     "report:social:ghl": "tsx scripts/report-ghl-social.ts",

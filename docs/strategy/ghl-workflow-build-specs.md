@@ -300,21 +300,21 @@ The Harvest
 
 ---
 
-## 7. The 20 June RSVP calendar → tag workflows
+## 7. The 20 June RSVP calendar to tag workflows
 
 Three GHL booking calendars drive the 20 June members' day and the ongoing shop chat. A calendar
 does not reliably tag the contact from its own settings, so each calendar needs a one-step
 workflow: trigger *Customer Booked Appointment*, filter *In Calendar is X*, action *Add Contact
-Tag*. The three booking tags already exist in the location tag library (created 2026-05-30).
+Tag*. The booking tags already exist in the location tag library.
 
-**Prerequisite:** build the 3 calendars first (Calendars → Create calendar), then the workflow
-behind each.
+**Prerequisite state, 2026-06-02:** the 3 calendars are live in GHL. Build the workflows
+behind them in the workflow UI, then test one booking per calendar.
 
 | # | Calendar | Type | Cap | When | Tags the workflow adds | Re-entry |
 | --- | --- | --- | --- | --- | --- | --- |
-| 7a | RSVP - 20 June maker session | Class/Event | 18 (B1) | Sat 20 Jun 10am-2pm | `witta-gathering-2026-06-20` + `rsvp-maker-morning` | OFF |
-| 7b | RSVP - 20 June afternoon + pizza | Class/Event | 40 (B2) | Sat 20 Jun from 2pm | `witta-gathering-2026-06-20` + `rsvp-pizza-dinner` | OFF |
-| 7c | Book a chat about the shop | Round robin | — | ongoing | `harvest-shop-interest` + `shop-call-booked` | ON |
+| 7a | RSVP: Maker session, Sat 20 June, ID `M0KzSu7Bo3jJ3ZQta3ag` | Class/Event | 18 (B1) | Sat 20 Jun 10am-2pm | `witta-gathering-2026-06-20` + `rsvp-maker-morning` | OFF |
+| 7b | RSVP: Afternoon + pizza, Sat 20 June, ID `4IpU9GnzAChTMkKFJPWi` | Class/Event | 40 (B2) | Sat 20 Jun from 2pm | `witta-gathering-2026-06-20` + `rsvp-pizza-dinner` | OFF |
+| 7c | Book a chat about the shop, ID `viM1BRnHG9gwpIEZd4HM` | Round robin | 1 | Tue/Thu 1pm-4pm | `harvest-shop-interest` + `shop-call-booked` | ON |
 
 Notes:
 

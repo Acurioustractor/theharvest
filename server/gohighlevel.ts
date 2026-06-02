@@ -565,7 +565,7 @@ async function withTokenRetry<T>(fn: () => Promise<T>): Promise<T> {
   }
 }
 
-/** Get the best available token for social planner (OAuth > Agency > Sub-account) */
+/** Get the best available token for social planner (OAuth > Sub-account > Agency) */
 function getSocialApiKey(): string | undefined {
   // Prefer OAuth access token (from OAuth2 flow)
   if (process.env.GHL_OAUTH_ACCESS_TOKEN) return process.env.GHL_OAUTH_ACCESS_TOKEN;
@@ -576,8 +576,9 @@ function getSocialApiKey(): string | undefined {
     process.env.GHL_OAUTH_REFRESH_TOKEN = fileData.refresh_token as string;
     return fileData.access_token as string;
   }
-  // Fallback to Private Integration tokens
-  return process.env.GHL_AGENCY_API_KEY || process.env.GHL_API_KEY;
+  // Fallback to Private Integration tokens. Social Planner is location-scoped;
+  // the agency token may not carry the required socialplanner scopes.
+  return process.env.GHL_API_KEY || process.env.GHL_AGENCY_API_KEY;
 }
 
 interface GHLSocialAccount {

@@ -1,6 +1,6 @@
 # Harvest GHL Tag And Automation Map
 
-Last verified: 2026-05-14
+Last verified: 2026-06-02
 
 This is the operating map for Harvest contacts in GoHighLevel. The website creates or updates contacts, applies tags, adds notes where useful, and triggers workflows when a workflow env var is configured.
 
@@ -16,18 +16,22 @@ To build the workflows that do not exist in GHL yet, and to see the current env 
 
 ## Flow Tags
 
+> Reconciled to website code 2026-05-29. The code (`server/routers.ts` `buildNewsletterTags` + the Supabase edge functions `contact-form` / `community-submit`) is the source of truth for tags; this doc is kept in sync with it.
+
 | Flow | Tags applied by the website | Workflow env var |
 | --- | --- | --- |
-| Newsletter signup | `newsletter`, `harvest-newsletter`, `harvest-website`, selected interest tags | `GHL_NEWSLETTER_WORKFLOW_ID` |
+| Newsletter signup | `newsletter`, `harvest-newsletter`, `harvest-website`, `interest-community` (hardcoded), selected interest tags, one `source-*` tag (see Newsletter section below); if `notes` field filled: `member-comments` + `harvest-inbox` | `GHL_NEWSLETTER_WORKFLOW_ID` |
 | Membership signup | Newsletter tags plus `harvest-member`, `interest-membership` | `GHL_MEMBER_WELCOME_WORKFLOW_ID`, fallback `GHL_NEWSLETTER_WORKFLOW_ID` |
-| Member question | Membership tags plus `member-question` | `GHL_MEMBER_QUESTION_WORKFLOW_ID`, fallback `GHL_CONTACT_FORM_WORKFLOW_ID` |
+| Member question | Membership tags plus `member-question` + `harvest-inbox` | `GHL_MEMBER_QUESTION_WORKFLOW_ID`, fallback `GHL_CONTACT_FORM_WORKFLOW_ID` |
+| Members wall | `member-wall`, `harvest-member`, `interest-membership`, `interest-community`, `harvest-website` (no workflow triggered) | none |
 | Shop EOI | `harvest-shop-interest`, `harvest-website`, `shop-follow-up`, one shop offer tag | `GHL_SHOP_INTEREST_WORKFLOW_ID`, fallback `GHL_CONTACT_FORM_WORKFLOW_ID` |
-| Current gathering RSVP | Dormant. Public Garden Launch RSVP form is disabled for this phase | Leave `GHL_GATHERING_RSVP_WORKFLOW_ID` unset until reopened |
-| Photo wall | `photo-wall`, `harvest-website`, `harvest-gathering-photos` | `GHL_PHOTO_WALL_WORKFLOW_ID` |
-| Contact form | `contact-form`, `harvest-website`, optional `newsletter`, `harvest-newsletter` | `GHL_CONTACT_FORM_WORKFLOW_ID` |
-| Event submission | `event-submission`, `harvest-website` | `GHL_EVENT_SUBMIT_WORKFLOW_ID` |
-| Business registration | `business-registration`, `harvest-website` | `GHL_BUSINESS_REG_WORKFLOW_ID` |
-| Workshop booking | `workshop-booking`, `harvest-website` | `GHL_WORKSHOP_WORKFLOW_ID` |
+| Witta Gathering RSVP | Form disabled; handler armed. Sets `witta-gathering-2026-06-20`, `harvest-event-attendee`, `harvest-website`, `harvest-inbox`, `Event: Witta Gathering - 2026-06-20`, `Event type: Public launch (50-150)`, `Access: Open registration (Public)`. With `GHL_GATHERING_RSVP_WORKFLOW_ID` unset, no welcome email fires but tags above are still stamped if the route is hit. | `GHL_GATHERING_RSVP_WORKFLOW_ID` (leave unset while form is disabled) |
+| Photo wall | `photo-wall`, `harvest-website`, `harvest-gathering-photos`; also `harvest-inbox` when a response is filled; also `photo-wall-ready` when `notifyAll` is used | `GHL_PHOTO_WALL_WORKFLOW_ID` |
+| Contact form (Supabase edge fn `contact-form`) | `contact-form`, `harvest-website`, `act-inquiry`, `project-harvest`, optional `newsletter` + `harvest-newsletter` | `GHL_CONTACT_FORM_WORKFLOW_ID` |
+| Event submission | `event-submission`, `harvest-website`, `harvest-inbox` | `GHL_EVENT_SUBMIT_WORKFLOW_ID` |
+| Business registration | `business-registration`, `harvest-website`, `harvest-inbox` | `GHL_BUSINESS_REG_WORKFLOW_ID` |
+| Workshop booking | `workshop-booking`, `harvest-website`, `harvest-inbox` | `GHL_WORKSHOP_WORKFLOW_ID` |
+| Community / GetInvolved (Supabase edge fn `community-submit`) | `harvest-website`, `harvest-inbox`; by type: `community-idea` / `residency-applicant` / `business-interest` / `workshop-suggestion` / `story-feature` / `venue-enquiry`; dynamic: `idea-<type>` / `biz-<type>` / `residency-<type>` | none wired yet |
 | Pulse survey | `pulse-respondent`, `harvest-website`, dynamic `interest-*` tags | `GHL_PULSE_WORKFLOW_ID` |
 | Visitor quiz | `quiz-completed`, `harvest-website`, persona tags | `GHL_QUIZ_WORKFLOW_ID` |
 
@@ -51,7 +55,7 @@ Observed Harvest workflows:
 | Contact Form to Universal Inquiry | `f0c1f3db-8809-4283-ba91-907626ac0bb7` | `published` | `5` | Contact receipt email action verified in builder |
 | Harvest - Shop Interest Receipt | `ff4ff43e-0174-415d-828e-3610f5386de5` | `published` | `3` | Shop-specific receipt workflow |
 | Harvest Locals Day | `ea8bf9b7-a012-4f8c-b5e8-4a73b4ac5ae1` | `published` | `4` | Not API-accessible |
-| Harvest — EOI Gathering Confirmation | `ca37ba92-5a8b-4209-9b88-34fc924c5393` | `published` | `7` | Not API-accessible |
+| Harvest --- EOI Gathering Confirmation | `ca37ba92-5a8b-4209-9b88-34fc924c5393` | `published` | `7` | Not API-accessible |
 | Newsletter Signup | `0c61347a-b59b-4de5-ae90-32a59c8e4805` | `published` | `3` | Not API-accessible |
 | Witta Gathering Photos | `65819e73-09c8-4598-b982-41dfeeb8624e` | `published` | `3` | Not API-accessible |
 
@@ -84,12 +88,28 @@ These are used by newsletter signup and can be used for segmented sends.
 | Membership | `interest-membership` |
 | Sustainability | `interest-sustainability` |
 
+## Newsletter Source Tags
+
+The `heardAbout` field on the newsletter / follow form sets one source tag. Use these for origin-channel analysis only, not for workflow branching.
+
+| How they heard | GHL tag |
+| --- | --- |
+| Referral / word of mouth | `source-referral` |
+| Social media | `source-social` |
+| Local / Witta community | `source-local-witta` |
+| Other | `source-other` |
+
+Note: `interest-community` is hardcoded on every footer "follow along" submission regardless of which interest checkboxes are ticked. It is not a no-interest follow.
+
+Note on intentional dual-tagging: `newsletter` + `harvest-newsletter` are both applied deliberately. `harvest-newsletter` scopes sends to Harvest contacts only; `newsletter` is kept for any cross-location tooling. Similarly `interest-membership` + `harvest-member` are both applied on membership sign-up for the same scoping reason. Do not remove either tag of either pair.
+
 ## Shop Tags
 
 Use `harvest-shop-interest` as the primary trigger. Branch inside GHL by offer tag.
 
 | Shop offer | GHL tag |
 | --- | --- |
+| Shop prospect, imported or manually identified | `shop-prospect` |
 | Produce | `shop-produce` |
 | Handmade goods | `shop-maker` |
 | Food, preserves, ferments, baking, drinks | `shop-food` |
@@ -116,17 +136,16 @@ Run:
 npm run audit:contacts:ghl
 ```
 
-Verified result after refresh on 2026-05-14:
+Verified result from a read-only audit on 2026-06-02:
 
 | Check | Status |
 | --- | --- |
-| GHL contacts scanned | `873` |
-| Harvest contacts found | `101` |
+| GHL contacts scanned | `1152` |
+| Harvest contacts found | `160` |
 | Canonical tag refreshes needed | `0` |
-| Canonical tags in GHL location tag library | `49/49` |
-| Missing names | `20`, already tagged for review |
+| Missing names | `13`, already tagged for review |
 | Harvest duplicate email groups | `0` |
-| Harvest duplicate phone groups | `1`, already covered by duplicate review handling |
+| Harvest duplicate phone groups | `0` |
 
 ## Engagement Ladder Stages
 
@@ -146,11 +165,14 @@ Note: the follow-vs-member split is live as of 2026-05-27. The footer "follow al
 
 - Newsletter send: trigger/filter on `harvest-newsletter`.
 - Member onboarding: trigger on `harvest-member`.
-- Member questions: trigger on `member-question`.
+- Member wall display: filter on `member-wall` (no workflow fires; this is a display/filter tag only).
+- Member questions: trigger on `member-question`; contacts also carry `harvest-inbox` for inbox routing.
 - Shop follow-up: trigger on `harvest-shop-interest`, then branch by `shop-produce`, `shop-maker`, `shop-food`, or `shop-consignment`.
-- Current event RSVP: trigger on `witta-gathering-2026-06-20`.
-- Photo wall follow-up: trigger on `photo-wall` or `harvest-gathering-photos`.
-- Contact form: trigger on `contact-form`.
+- Current event RSVP: trigger on `witta-gathering-2026-06-20` or `harvest-event-attendee`.
+- Photo wall follow-up: trigger on `photo-wall` or `harvest-gathering-photos`; use `photo-wall-ready` to filter contacts with a response ready to display.
+- Contact form: trigger on `contact-form`; ACT notification routing uses `act-inquiry` + `project-harvest`.
+- Inbox triage: filter on `harvest-inbox` --- set by event submission, business registration, workshop booking, member question, photo wall response, community submit, and gathering RSVP handler.
+- Community / GetInvolved triage: filter by type tag (`community-idea`, `residency-applicant`, `business-interest`, `workshop-suggestion`, `story-feature`, `venue-enquiry`).
 
 ## Calendar Booking Tags
 
@@ -160,11 +182,11 @@ per calendar: trigger *Customer Booked Appointment*, filter *Calendar is X*, act
 
 | Calendar | Tags on booking | Note |
 | --- | --- | --- |
-| RSVP - 20 June maker session (10am-2pm) | `witta-gathering-2026-06-20` + `rsvp-maker-morning` | Event tag fires the event-RSVP workflow; morning tag segments makers. Show-up rung. |
-| RSVP - 20 June afternoon + pizza (from 2pm) | `witta-gathering-2026-06-20` + `rsvp-pizza-dinner` | `rsvp-pizza-dinner` count = the pizza dough headcount. Show-up rung. |
-| Book a chat about the shop (round robin) | `harvest-shop-interest` + `shop-call-booked` | `harvest-shop-interest` drives the Shop pipeline + shop nurture; `shop-call-booked` marks a booked call vs a form EOI. |
+| RSVP - 20 June maker session (10am-2pm), ID `M0KzSu7Bo3jJ3ZQta3ag` | `witta-gathering-2026-06-20` + `rsvp-maker-morning` | Calendar is live. Tag workflow still needs GHL UI build. |
+| RSVP - 20 June afternoon + pizza (from 2pm), ID `4IpU9GnzAChTMkKFJPWi` | `witta-gathering-2026-06-20` + `rsvp-pizza-dinner` | Calendar is live. `rsvp-pizza-dinner` count = the pizza dough headcount after workflow is live. |
+| Book a chat about the shop, ID `viM1BRnHG9gwpIEZd4HM` | `harvest-shop-interest` + `shop-call-booked` | Calendar is live with Ben/Nicholas as current GHL users. Move to Susie/Joey after their users exist. |
 
-New tags to add to the GHL tag library: `rsvp-maker-morning`, `rsvp-pizza-dinner`, `shop-call-booked`.
+Tags verified present in the GHL tag library: `rsvp-maker-morning`, `rsvp-pizza-dinner`, `shop-call-booked`.
 
 Do NOT auto-apply `harvest-newsletter` or `harvest-member` on an RSVP. An event yes is not a
 subscribe; invite event guests to follow in the post-event recap, by choice.
@@ -173,6 +195,8 @@ subscribe; invite event guests to follow in the post-event recap, by choice.
 
 ```bash
 npm run audit:contacts:ghl
+npm run setup:june-sprint-calendars:ghl
+npm run count:rsvps:ghl
 npm run refresh:contacts:ghl
 npm run prepare:contacts:ghl
 ```

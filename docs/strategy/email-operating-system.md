@@ -2,6 +2,10 @@
 
 > Status: living reference. Created 2026-05-28.
 > The rules for sending email at The Harvest without sending the wrong thing to the wrong people. This is the "how", and it is the thing the team lives by. The tag mechanics live in `harvest-ghl-tag-and-automation-map.md`, the welcome-email copy in `ghl-workflow-build-specs.md`, and the broadcast copy in `content-calendar-june-2026.md`. This doc does not repeat those. It is the rules of the road that sit over them.
+>
+> Reconciled 2026-06-02 to the June sprint plan. The HighLevel app connector has been
+> reauthenticated. Local audit/report scripts work. The remaining GHL work is campaign
+> build/test-send/schedule plus the calendar tag workflows.
 
 ## The one rule that prevents disasters
 
@@ -41,8 +45,9 @@ Every time you send a Field Note or Harvest Note:
 2. Set the audience to **one smart list**. Read the contact count out loud.
 3. Confirm the **From address** is a Harvest address (see the open item below).
 4. Paste the copy from the content calendar. Do not add or remove tags as part of the send.
-5. **Test-send to yourself.** Open it on a phone. Click every link.
-6. Schedule or send.
+5. **Set the first-name merge-field fallback to "there".** When you insert `{{contact.first_name}}`, set its default value to `there`. About 19 members are stored with an email where a first name should be (they carry the `harvest-needs-name-review` tag), so without a fallback the greeting renders as "Hi pcf.bmt@gmail.com,". The fallback turns that into "Hi there,". This is not optional for any send that greets people by name.
+6. **Test-send to yourself.** Open it on a phone. Click every link.
+7. Schedule or send.
 
 Open item: Harvest welcomes and sends currently go from `hi@act.place`, the shared location default, not a Harvest address. To send from a Harvest address, verify the domain as a GHL sending domain and set it in each workflow and campaign. Worth fixing before the first members-first broadcast.
 
@@ -53,9 +58,26 @@ The members-first "you hear the 20 June date first" email, scheduled 9 June.
 1. It is a **broadcast**. Build it as a one-off Campaign, not a workflow.
 2. Audience: the **Harvest Members** smart list. Nothing else.
 3. Copy is ready in `content-calendar-june-2026.md`.
-4. **Blocker:** the email contains the afternoon-plus-pizza RSVP link, which does not exist until the B2 Class Booking calendar is built (see `ghl-setup-runbook.md` Part 0 B). So this send is gated on the calendar work.
+4. **RSVP link:** the B2 afternoon-plus-pizza calendar is live. Use `https://api.leadconnectorhq.com/widget/bookings/harvest-2026-06-20-afternoon-pizza`.
 5. Fix the From address first (above).
 6. Test-send to yourself, then schedule for 9 June.
+
+## June sprint broadcast queue
+
+Every item below is a Campaign, not a Workflow. Build, test-send, then schedule. Do not add
+or remove tags as part of the send.
+
+| Campaign | Audience | Send window | GHL template ID | Current gate |
+| --- | --- | --- | --- | --- |
+| Wk4 Field Note | `harvest-newsletter` | 2 to 8 Jun | `6a1de93fa5ab652f24f6bee8` | Test send, approved media if used |
+| Wk4 Makers' invite | Makers/doers segment | 2 to 8 Jun | `6a1de93f6972087910787f77` | Test send and confirm existing GHL template has live B1/B2 links |
+| Harvest Note 02 | `harvest-member` | Tue 9 Jun | `6a1de9407526e35f3eb1506a` | Test send and confirm existing GHL template has live B2 link |
+| Harvest Note 03 | `harvest-member` | Fri 19 Jun | `6a1de941eae4d2744602e305` | Final practical details |
+| Thank-you plus photos | `harvest-member` | Wed 24 Jun | `6a1de9410d36220d2b79cdd6` | Event happened, photos cleared |
+| Early July Harvest Note | `harvest-member` | Early Jul | `6a1de942ce86ea75af0fe3f0` | Debrief completed |
+
+All first-name merge fields use fallback `there`. If a public send uses the June shop story,
+it goes to `harvest-newsletter` only and does not name 20 June as a public invite.
 
 ## How events layer on top
 

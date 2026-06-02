@@ -3,9 +3,39 @@ import "dotenv/config";
 const GHL_API_BASE = "https://services.leadconnectorhq.com";
 const GHL_API_VERSION = "2021-07-28";
 
-const SOFT_OPENING_TAG = "witta-soft-opening-2026-06-20";
-const RSVP_NOTE_PREFIX = "Soft-opening RSVP:";
-const SEAT_TARGET = 40;
+const EVENT_START_MS = new Date("2026-06-20T00:00:00+10:00").getTime();
+const EVENT_END_MS = new Date("2026-06-21T00:00:00+10:00").getTime();
+
+const CALENDAR_NAMES = {
+  maker: "RSVP: Maker session, Sat 20 June",
+  pizza: "RSVP: Afternoon + pizza, Sat 20 June",
+};
+
+const TAGS = {
+  event: "witta-gathering-2026-06-20",
+  maker: "rsvp-maker-morning",
+  pizza: "rsvp-pizza-dinner",
+};
+
+type GhlCalendar = {
+  id: string;
+  name: string;
+  widgetSlug?: string;
+  appoinmentPerSlot?: number;
+  appointmentPerSlot?: number;
+};
+
+type GhlEvent = {
+  id: string;
+  title?: string | null;
+  calendarId?: string;
+  contactId?: string;
+  appointmentStatus?: string | null;
+  startTime?: string | null;
+  endTime?: string | null;
+  dateAdded?: string | null;
+  guests?: unknown[];
+};
 
 type GhlContact = {
   id: string;
@@ -14,13 +44,6 @@ type GhlContact = {
   lastName?: string | null;
   email?: string | null;
   tags?: string[];
-  dateUpdated?: string | null;
-};
-
-type GhlNote = {
-  id: string;
-  body?: string | null;
-  dateAdded?: string | null;
 };
 
 function requireEnv(name: string): string {
@@ -44,6 +67,24 @@ async function ghlJson<T>(pathname: string): Promise<T> {
   return response.json() as Promise<T>;
 }
 
+async function listCalendars(): Promise<GhlCalendar[]> {
+  const locationId = requireEnv("GHL_LOCATION_ID");
+  const data = await ghlJson<{ calendars?: GhlCalendar[] }>(`/calendars/?locationId=${locationId}`);
+  return data.calendars ?? [];
+}
+
+async function listEvents(calendarId: string): Promise<GhlEvent[]> {
+  const locationId = requireEnv("GHL_LOCATION_ID");
+  const params = new URLSearchParams({
+    locationId,
+    calendarId,
+    startTime: String(EVENT_START_MS),
+    endTime: String(EVENT_END_MS),
+  });
+  const data = await ghlJson<{ events?: GhlEvent[] }>(`/calendars/events?${params.toString()}`);
+  return (data.events ?? []).filter((event) => !["cancelled", "canceled"].includes((event.appointmentStatus ?? "").toLowerCase()));
+}
+
 async function listAllContacts(): Promise<GhlContact[]> {
   const locationId = requireEnv("GHL_LOCATION_ID");
   const contacts: GhlContact[] = [];
@@ -59,81 +100,86 @@ async function listAllContacts(): Promise<GhlContact[]> {
   return contacts;
 }
 
-async function listNotes(contactId: string): Promise<GhlNote[]> {
-  const data = await ghlJson<{ notes?: GhlNote[] }>(`/contacts/${contactId}/notes`);
-  return data.notes ?? [];
+function contactLabel(contact?: GhlContact): string {
+  if (!contact) return "";
+  return contact.contactName || [contact.firstName, contact.lastName].filter(Boolean).join(" ") || contact.email || contact.id;
 }
 
-function contactLabel(c: GhlContact): string {
-  return c.contactName || [c.firstName, c.lastName].filter(Boolean).join(" ") || c.email || c.id;
+function seatsFor(event: GhlEvent): number {
+  return 1 + (Array.isArray(event.guests) ? event.guests.length : 0);
 }
 
-function parseSeatsFromNote(body: string): number | null {
-  // Expected pattern: "Soft-opening RSVP: 3 seats, vegan, ..."
-  const match = body.match(/RSVP:\s*(\d+)\s*seat/i);
-  if (match) return Number(match[1]);
-  return null;
+function bookingLabel(event: GhlEvent, contactsById: Map<string, GhlContact>): string {
+  const fromContact = event.contactId ? contactLabel(contactsById.get(event.contactId)) : "";
+  return fromContact || event.title || event.contactId || event.id;
+}
+
+function brisbaneDate(date = new Date()): string {
+  const parts = new Intl.DateTimeFormat("en-AU", {
+    timeZone: "Australia/Brisbane",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(date);
+  const byType = Object.fromEntries(parts.map((part) => [part.type, part.value]));
+  return `${byType.year}-${byType.month}-${byType.day}`;
 }
 
 async function main() {
-  const all = await listAllContacts();
-  const tagged = all.filter((c) => (c.tags ?? []).includes(SOFT_OPENING_TAG));
+  const [calendars, contacts] = await Promise.all([listCalendars(), listAllContacts()]);
+  const contactsById = new Map(contacts.map((contact) => [contact.id, contact]));
 
-  let totalSeats = 0;
-  const rows: Array<{ name: string; seats: number; note: string; dateAdded: string | null }> = [];
+  const makerCalendar = calendars.find((calendar) => calendar.name === CALENDAR_NAMES.maker);
+  const pizzaCalendar = calendars.find((calendar) => calendar.name === CALENDAR_NAMES.pizza);
 
-  for (const contact of tagged) {
-    const notes = await listNotes(contact.id);
-    const rsvpNotes = notes
-      .filter((n) => (n.body ?? "").startsWith(RSVP_NOTE_PREFIX))
-      .sort((a, b) => (b.dateAdded ?? "").localeCompare(a.dateAdded ?? ""));
-    const latest = rsvpNotes[0];
-    const seats = latest ? parseSeatsFromNote(latest.body ?? "") ?? 1 : 1;
-    totalSeats += seats;
-    rows.push({
-      name: contactLabel(contact),
-      seats,
-      note: (latest?.body ?? "").replace(/\s+/g, " ").trim().slice(0, 180),
-      dateAdded: latest?.dateAdded ?? null,
-    });
+  if (!makerCalendar || !pizzaCalendar) {
+    throw new Error(`Missing current RSVP calendars. Maker exists: ${Boolean(makerCalendar)}. Pizza exists: ${Boolean(pizzaCalendar)}.`);
   }
 
-  rows.sort((a, b) => (b.dateAdded ?? "").localeCompare(a.dateAdded ?? ""));
+  const [makerEvents, pizzaEvents] = await Promise.all([
+    listEvents(makerCalendar.id),
+    listEvents(pizzaCalendar.id),
+  ]);
 
-  const now = new Date().toISOString().slice(0, 10);
-  const pct = Math.round((totalSeats / SEAT_TARGET) * 100);
+  const tagCounts = Object.fromEntries(
+    Object.entries(TAGS).map(([key, tag]) => [
+      key,
+      contacts.filter((contact) => (contact.tags ?? []).includes(tag)).length,
+    ]),
+  );
 
-  console.log(`# Soft-opening RSVP headcount — ${now}`);
+  const makerSeats = makerEvents.reduce((sum, event) => sum + seatsFor(event), 0);
+  const pizzaSeats = pizzaEvents.reduce((sum, event) => sum + seatsFor(event), 0);
+  const makerCapacity = makerCalendar.appoinmentPerSlot ?? makerCalendar.appointmentPerSlot ?? 18;
+  const pizzaCapacity = pizzaCalendar.appoinmentPerSlot ?? pizzaCalendar.appointmentPerSlot ?? 40;
+  const now = brisbaneDate();
+
+  console.log(`# Witta 20 June RSVP headcount - ${now}`);
   console.log();
-  console.log(`- Tag: \`${SOFT_OPENING_TAG}\``);
-  console.log(`- Contacts tagged: **${tagged.length}**`);
-  console.log(`- Total seats requested: **${totalSeats} / ${SEAT_TARGET}** (${pct}%)`);
+  console.log(`- B1 calendar: \`${makerCalendar.id}\` (${makerCalendar.name})`);
+  console.log(`- B2 calendar: \`${pizzaCalendar.id}\` (${pizzaCalendar.name})`);
+  console.log(`- B1 maker session bookings: **${makerSeats} / ${makerCapacity}**`);
+  console.log(`- B2 afternoon + pizza bookings: **${pizzaSeats} / ${pizzaCapacity}**`);
+  console.log(`- Tag counts: \`${TAGS.event}\` ${tagCounts.event}, \`${TAGS.maker}\` ${tagCounts.maker}, \`${TAGS.pizza}\` ${tagCounts.pizza}`);
   console.log();
 
-  if (tagged.length === 0) {
-    console.log("_No contacts tagged yet — invite not yet sent or no replies in._");
+  if (makerEvents.length === 0 && pizzaEvents.length === 0) {
+    console.log("_No B1 or B2 bookings found yet._");
     return;
   }
 
-  console.log("| Replied | Name | Seats | Note |");
-  console.log("| --- | --- | --- | --- |");
-  for (const row of rows) {
-    const date = row.dateAdded ? row.dateAdded.slice(0, 10) : "—";
-    const note = row.note || "_no RSVP note on contact_";
-    console.log(`| ${date} | ${row.name} | ${row.seats} | ${note} |`);
-  }
+  console.log("| Session | Start | Name | Seats | Status |");
+  console.log("| --- | --- | --- | --- | --- |");
 
-  console.log();
-  console.log(`### Headcount-tracker block (paste into alignment page)`);
-  console.log();
-  console.log("| Signal | Target | Current | Last checked |");
-  console.log("| --- | --- | --- | --- |");
-  console.log(`| \`harvest-member\` tag count | grows with each touchpoint | (run audit:contacts:ghl) | — |`);
-  console.log(`| Soft-opening reply count | ~${SEAT_TARGET} seats | ${totalSeats} | ${now} |`);
-  console.log(`| \`${SOFT_OPENING_TAG}\` tag count | match reply count | ${tagged.length} | ${now} |`);
+  for (const event of makerEvents) {
+    console.log(`| B1 maker | ${event.startTime ?? ""} | ${bookingLabel(event, contactsById)} | ${seatsFor(event)} | ${event.appointmentStatus ?? ""} |`);
+  }
+  for (const event of pizzaEvents) {
+    console.log(`| B2 pizza | ${event.startTime ?? ""} | ${bookingLabel(event, contactsById)} | ${seatsFor(event)} | ${event.appointmentStatus ?? ""} |`);
+  }
 }
 
 main().catch((error) => {
-  console.error(error);
+  console.error(error instanceof Error ? error.message : error);
   process.exit(1);
 });

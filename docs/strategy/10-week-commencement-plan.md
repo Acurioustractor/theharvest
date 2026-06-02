@@ -8,7 +8,10 @@
 **Deadline:** Lease commences 1 July 2026. No slack in the critical path.
 
 > **⚠️ Critical ownership note (D17):** Ben overseas 20 Jun – 15 Aug 2026. Nic physically in Maleny through Week 7-10. Any task marked `[B]` after 20 Jun is remote-sign-only; any `[N]` or `[BN]` task assumes Nic is on-deck. See Week-by-week tables below for owner column.
-> **⚠️ Pending decision (D19):** 20 June 2026 soft-open Go/No-Go — resolve in Week 5-6. Options: proceed invite-only Phase-A event; shift to post-Ben-return (Aug/Sep); skip to 1 Jul formal open.
+> **Updated 2026-06-02:** D19 is no longer pending for execution. The current operating
+> model is the 20 June 2026 private members' day: B1 maker session 10am to 2pm, B2 afternoon
+> plus pizza from 2pm. Use `june-sprint-operating-plan-2026-06-02.md` for current execution.
+> Older Week 5-6 decision rows below are retained as history.
 
 ---
 

@@ -1,5 +1,11 @@
 # Harvest Launch Alignment — 20 June 2026
 
+> **Superseded for execution on 2026-06-02.** This document is retained as the decision
+> history that moved Harvest away from a public launch. The current operating model is in
+> `june-sprint-operating-plan-2026-06-02.md`: private members' day, B1 maker session
+> 10am to 2pm, B2 afternoon plus pizza from 2pm. The older 3pm-7pm reply-led proof-night
+> model below is not the current run sheet.
+
 **Owner:** Ben (decision), Nic (co-sign)
 **Status:** Decision-forcing. Go/No-Go target: 2026-05-25 (this week).
 **Source-of-truth Notion page:** [Harvest Launch Alignment - Countdown to 20 June 2026](https://www.notion.so/acurioustractor/Harvest-Launch-Alignment-Countdown-to-20-June-2026-363ebcf981cf81b19deef477e76983e0)

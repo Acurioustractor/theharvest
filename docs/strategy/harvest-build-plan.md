@@ -7,7 +7,13 @@
 > Detail docs: `shop-operating-system.md` (shop model), `launch-readiness-20-june-2026.md`
 > (the 20 June countdown), `ghl-setup-runbook.md` (how to build in GHL),
 > `ghl-workflow-build-specs.md` (email copy), `content-calendar-june-2026.md` (the dated copy),
-> `ghl-pipeline-playbook.md` (pipelines + founding circle).
+> `ghl-pipeline-playbook.md` (pipelines + founding circle), and
+> `june-sprint-operating-plan-2026-06-02.md` (current June sprint source of truth).
+>
+> Reconciled 2026-06-02: current 20 June model is B1 maker session 10am to 2pm, capacity 18,
+> and B2 afternoon plus pizza from 2pm, capacity 40. The older 3pm-7pm proof-night model is
+> superseded. HighLevel app connector is reauthenticated. B1, B2, and shop-chat calendars
+> are live in GHL; calendar tag workflows and campaign test sends are still unverified.
 
 ## How to read this
 
@@ -21,7 +27,8 @@ stewards/people); reassign as you like.
 
 ## The immovable dates (so nothing in P1 buries them)
 
-- **Calendars built by Sun 1 Jun** (gates the launch emails).
+- **Calendars are overdue as of Tue 2 Jun** (gates the launch emails). First move:
+  reauthenticate HighLevel connector or build directly in the GHL UI.
 - **Wk4 Makers' invite 2 to 8 Jun. Harvest Note 02 Tue 9 Jun. Harvest Note 03 Fri 19 Jun.**
 - **Sat 20 Jun: the day.** PL insurance bound before it (hard gate).
 
@@ -63,8 +70,9 @@ Detail and countdown: `launch-readiness-20-june-2026.md`. Copy: `content-calenda
 
 | Task | Owner | Depends on | Done when |
 |------|-------|-----------|-----------|
-| Decide seat capacities (B1, B2) | Ben/Nic | none | numbers given to Susie/Joey |
+| Decide seat capacities (B1, B2) | Ben/Nic | none | B1 18 and B2 40 confirmed or changed in writing |
 | Build B1 + B2 RSVP calendars | Susie/Joey | capacities, Google sync | both links live, test bookings land (runbook Part 0) |
+| Build B1/B2/shop-chat tag workflows | Susie/Joey | calendars | test bookings apply the right tags and no subscription tags |
 | Send Wk4 Makers' invite | Ben/Susie | B1+B2 links, maker smart list | broadcast to makers/doers, date carried, 2 to 8 Jun |
 | Send Harvest Note 02 | Ben/Susie | B2 link, sender decision | broadcast to `harvest-member`, Tue 9 Jun |
 | Send Harvest Note 03 | Ben/Susie | none | Fri 19 Jun |
@@ -107,6 +115,15 @@ Detail and countdown: `launch-readiness-20-june-2026.md`. Copy: `content-calenda
 - [x] Calendar build checklist added to the runbook (Part 0).
 - [x] Standard Ledger follow-up questions drafted.
 - [x] Ben's departure corrected to 27 June across docs + memory.
+
+## Done this session (2026-06-02)
+
+- [x] Added `june-sprint-operating-plan-2026-06-02.md` as the current June source of truth.
+- [x] Marked B1/B2 model as current and the 3pm-7pm proof-night model as superseded.
+- [x] Verified local GHL audit/report commands still read live data while the HighLevel app
+      connector needs reauthentication.
+- [x] Expanded the June content calendar with the thank-you email, early July note, GHL
+      campaign checklist, and acceptance checks.
 
 ## Next: turn this into tasks
 
