@@ -521,3 +521,31 @@ describe("Go High Level Newsletter Integration", () => {
     });
   });
 });
+
+describe("Phase B — namespaced taxonomy + Journey bridge", () => {
+  it("tags a member with tier:member, role:member, comms + namespaced interest (dual-written)", () => {
+    const tags = buildNewsletterTags({ member: true, interests: ["membership", "community"] });
+    expect(tags).toEqual(expect.arrayContaining([
+      "tier:member",
+      "role:member",
+      "comms:harvest-newsletter",
+      "interest:membership",
+      "interest:community",
+    ]));
+    // legacy flat aliases still dual-written during the migration (remove in Phase C)
+    expect(tags).toEqual(expect.arrayContaining(["interest-membership", "interest-community"]));
+    expect(tags).not.toContain("tier:connected");
+  });
+
+  it("tags a non-member follower as tier:connected, never as a member", () => {
+    const tags = buildNewsletterTags({ member: false, interests: ["events"] });
+    expect(tags).toEqual(expect.arrayContaining([
+      "tier:connected",
+      "comms:harvest-newsletter",
+      "interest:events",
+      "interest-events",
+    ]));
+    expect(tags).not.toContain("tier:member");
+    expect(tags).not.toContain("harvest-member");
+  });
+});

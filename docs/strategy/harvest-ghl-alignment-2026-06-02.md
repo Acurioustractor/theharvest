@@ -57,11 +57,12 @@ One tag per job. Scope + tier + role are the spine; interest/source/consent are 
    - Shop Interest Receipt → add action *Add Tag* `role:supplier`
 3. **Build the 3 calendar-tag workflows** per `ghl-calendar-tag-workflows-runbook.md` (7a/b/c). RSVP tags only — no tier change (an RSVP is not a subscribe).
 
-### B. Website code — I do, Phase 2 (one PR, deployed + verified)
-Migrate the form handlers so they apply the canonical tags at source instead of the in-workflow bridge:
-- `server/routers.ts` (`buildNewsletterTags`, shop/quiz/member handlers) + `server/gohighlevel.ts`
-- flat `interest-*` → `interest:*`; flat `source-*` → `source:*`; apply `tier:`/`role:` at submit.
-- Keep `harvest-*` scope tags. Don't break the live forms; ship behind the existing upsert path.
+### B. Website code — SHIPPED to branch `wip/harvest-launch-fixes-2026-06-02` (not yet deployed)
+All in `server/routers.ts` (no `gohighlevel.ts` change needed — it POSTs tags to `/contacts/{id}/tags`, which merges and preserves colons):
+- `interest:*` / `source:*` are now canonical, **dual-written** with their flat `interest-*` / `source-*` aliases via `withFlatAlias()` so existing smart lists keep receiving contacts (NOT a hard switch — avoids silently dropping new contacts from flat-tag segments mid-launch).
+- Journey bridge applied at submit: member → `tier:member` + `role:member`; follower → `tier:connected`; quiz → `tier:curious`; shop EOI → `role:supplier`. Channel tag `comms:harvest-newsletter` added.
+- Kept `harvest-*` scope tags + bare `newsletter`. 22 tests pass (2 new assertions pin the namespaced/tier output). `tsc` clean.
+- **Note:** because code now applies `tier:`/`role:`, the in-workflow bridge in A2 becomes redundant once this deploys — but tags are idempotent (set membership), so running both is harmless. After deploy, A2 can be dropped.
 
 ### C. Tag hygiene — later, after B ships
 Deprecate the duplicate flat `interest-*` / `source-*` tags (stop applying, then archive — never bulk-delete mid-launch; check no other ACT project relies on them first).
