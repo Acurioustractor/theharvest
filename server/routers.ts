@@ -894,6 +894,7 @@ export const appRouter = router({
             "harvest-shop-interest",
             "harvest-website",
             "shop-follow-up",
+            "shop-stage-1",
             offerTag,
           ],
         });
