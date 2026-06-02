@@ -210,15 +210,18 @@ describe("Go High Level Newsletter Integration", () => {
         interests: ["membership", "community", "volunteering"],
       });
 
+      // canonical-only (Phase 3 flip): flat newsletter/harvest-newsletter/harvest-member/interest-* dropped
       expect(tags).toEqual(expect.arrayContaining([
-        "newsletter",
-        "harvest-newsletter",
         "harvest-website",
-        "harvest-member",
-        "interest-membership",
-        "interest-community",
-        "interest-volunteer",
+        "comms:harvest-newsletter",
+        "tier:member",
+        "interest:membership",
+        "interest:community",
+        "interest:volunteer",
       ]));
+      expect(tags).not.toContain("harvest-member");
+      expect(tags).not.toContain("newsletter");
+      expect(tags).not.toContain("interest-membership");
     });
 
     it("tags member signup with the Harvest member audience and selected interests", async () => {
@@ -238,15 +241,12 @@ describe("Go High Level Newsletter Integration", () => {
       expect(tagCall).toBeDefined();
       expect(JSON.parse(tagCall![1].body)).toEqual({
         tags: expect.arrayContaining([
-          "newsletter",
-          "harvest-newsletter",
-          "harvest-member",
+          "comms:harvest-newsletter",
           "project:act-hv",
           "tier:member",
           "interest:membership",
-          "interest-membership",
-          "interest-community",
-          "interest-sustainability",
+          "interest:community",
+          "interest:sustainability",
         ]),
       });
 
@@ -352,9 +352,10 @@ describe("Go High Level Newsletter Integration", () => {
         String(url).endsWith("/contacts/contact-123/tags")
       );
       expect(JSON.parse(tagCall![1].body).tags).toEqual(expect.arrayContaining([
-        "harvest-member",
-        "harvest-newsletter",
-        "interest-membership",
+        "project:act-hv",
+        "tier:member",
+        "comms:harvest-newsletter",
+        "interest:membership",
         "member-question",
         "harvest-inbox",
       ]));
@@ -518,8 +519,8 @@ describe("Go High Level Newsletter Integration", () => {
       expect(JSON.parse(tagCall![1].body).tags).toEqual(expect.arrayContaining([
         "pulse-respondent",
         "harvest-website",
-        "interest-community-garden",
-        "interest-live-music-events",
+        "interest:community-garden",
+        "interest:live-music-events",
       ]));
     });
   });
@@ -534,8 +535,9 @@ describe("Phase B — namespaced taxonomy + Journey bridge", () => {
       "interest:membership",
       "interest:community",
     ]));
-    // legacy flat aliases still dual-written during the migration (remove in Phase C)
-    expect(tags).toEqual(expect.arrayContaining(["interest-membership", "interest-community"]));
+    // canonical-only (Phase 3 flip): flat aliases no longer minted
+    expect(tags).not.toContain("interest-membership");
+    expect(tags).not.toContain("interest-community");
     // membership is a tier: rung, never a role: — role:member is not in the canonical vocabulary
     expect(tags).not.toContain("role:member");
     expect(tags).not.toContain("tier:connected");
@@ -549,8 +551,8 @@ describe("Phase B — namespaced taxonomy + Journey bridge", () => {
       "tier:connected",
       "comms:harvest-newsletter",
       "interest:events",
-      "interest-events",
     ]));
+    expect(tags).not.toContain("interest-events");
     expect(tags).not.toContain("tier:member");
     expect(tags).not.toContain("harvest-member");
   });

@@ -40,9 +40,10 @@
 
 1. On 7a: **⋮ → Clone.** Rename: **`Harvest - Shop Chat Booked (tag)`**
 2. **Edit the trigger filter:** In Calendar → is → `Book a chat about the shop` (ID `viM1BRnHG9gwpIEZd4HM`)
-3. **Edit the Add-Tag action** to:
-   - `harvest-shop-interest`  ← reuses the shop tag so a booked chat flows into the Shop pipeline + nurture
-   - `shop-call-booked`       ← distinguishes a booked call from a form EOI
+3. **Edit the Add-Tag action** to (CANONICAL — updated 2026-06-03; the site no longer mints `harvest-shop-interest`, and the shop Smart Lists now key on `interest:markets`):
+   - `project:act-hv`     ← project router (calendar bookings skip the website chokepoint, so stamp it here)
+   - `interest:markets`   ← so a booked chat lands in the Shop Smart Lists + nurture
+   - `shop-call-booked`   ← distinguishes a booked call from a form EOI
 4. **Re-entry: ON** (someone may book more than one chat over time).
 5. **Publish.**
 

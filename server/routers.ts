@@ -64,6 +64,7 @@ const CURRENT_GATHERING_SWITCHBOARD_TAGS = [
   "Event type: Public launch (50-150)",
   "Access: Open registration (Public)",
 ];
+const DEFAULT_NOTION_HARVEST_PROJECT_ID = "11debcf981cf80828fd0d6031a9709f2";
 
 export const NEWSLETTER_INTEREST_OPTIONS = [
   "events",
@@ -155,11 +156,12 @@ function slugifyTagPart(value: string) {
 }
 
 // Dual-write a namespaced tag alongside its legacy flat alias (colon -> hyphen)
-// during the 2026-06 tag migration. Only call on interest:* / source:* tags that
-// have an existing flat smart-list dependency — NOT on tier:/role:/comms: (no legacy).
+// Phase 3 flip (2026-06-03): CANONICAL-ONLY. Flat aliases are no longer minted — the flat
+// tags (interest-*, source-*, newsletter, harvest-newsletter, harvest-member) are retiring in
+// CONTRACT and the smart lists are already re-pointed to canonical. Vestigial passthrough kept
+// to avoid churn at the call sites.
 function withFlatAlias(tag: string): string[] {
-  const flat = tag.replace(":", "-");
-  return flat === tag ? [tag] : [tag, flat];
+  return [tag];
 }
 
 export function buildNewsletterTags(input: {
@@ -167,10 +169,9 @@ export function buildNewsletterTags(input: {
   member?: boolean;
   extraTags?: string[];
 }) {
-  // Scope + channel tags. `newsletter` (bare) is legacy cross-location; keep until Phase C.
+  // Scope + channel (canonical). harvest-website kept (broad scope, retire later);
+  // bare `newsletter` + `harvest-newsletter` dropped in favour of comms:harvest-newsletter.
   const tags = new Set([
-    "newsletter",
-    "harvest-newsletter",
     "harvest-website",
     "comms:harvest-newsletter",
   ]);
@@ -179,11 +180,9 @@ export function buildNewsletterTags(input: {
     for (const t of withFlatAlias(NEWSLETTER_INTEREST_TAGS[interest])) tags.add(t);
   }
 
-  // Journey bridge: membership is a tier: rung, NOT a role: (canonical vocabulary
-  // has no role:member). Everyone else who subscribes has raised a hand -> tier:connected.
-  // project:act-hv is stamped at the GHL-client chokepoint. Feeds the Membership Journey.
+  // Journey bridge: membership is a tier: rung (no role:member). project:act-hv is stamped at
+  // the GHL-client chokepoint. harvest-member dropped (retiring in CONTRACT); tier:member stays.
   if (input.member || input.interests?.includes("membership")) {
-    tags.add("harvest-member");
     tags.add("tier:member");
     for (const t of withFlatAlias("interest:membership")) tags.add(t);
   } else {
@@ -803,7 +802,6 @@ export const appRouter = router({
               phone: input.phone || undefined,
               source: "Harvest | Member Wall",
               tags: [
-                "harvest-member",
                 "tier:member",
                 ...withFlatAlias("interest:membership"),
                 ...withFlatAlias("interest:community"),
@@ -918,7 +916,6 @@ export const appRouter = router({
           phone: input.phone || undefined,
           source: "Harvest | Shop",
           tags: [
-            "harvest-shop-interest",
             "harvest-website",
             "shop-follow-up",
             "shop-stage-1",
@@ -2087,6 +2084,45 @@ export const appRouter = router({
           communicationType: input?.communicationType,
         });
       }),
+
+    // Harvest-specific editorial rows. Keeps the Notion project ID server-side.
+    harvestList: publicProcedure
+      .input(z.object({
+        status: z.string().optional(),
+        communicationType: z.string().optional(),
+      }).optional())
+      .query(async ({ input }) => {
+        return await queryEditorialCalendar({
+          projectId: process.env.NOTION_HARVEST_PROJECT_ID || DEFAULT_NOTION_HARVEST_PROJECT_ID,
+          status: input?.status,
+          communicationType: input?.communicationType,
+        });
+      }),
+
+    // Control-room friendly Harvest editorial state. Notion credentials can drift;
+    // return that as an operator signal instead of taking down the whole page.
+    harvestSummary: publicProcedure.query(async () => {
+      try {
+        const posts = await queryEditorialCalendar({
+          projectId: process.env.NOTION_HARVEST_PROJECT_ID || DEFAULT_NOTION_HARVEST_PROJECT_ID,
+        });
+
+        return {
+          ok: true,
+          source: "The Harvest editorial project",
+          posts,
+          error: null,
+        };
+      } catch (error) {
+        const message = error instanceof Error ? error.message : "Notion editorial lookup failed";
+        return {
+          ok: false,
+          source: "The Harvest editorial project",
+          posts: [],
+          error: message,
+        };
+      }
+    }),
 
     // Create a new post in Notion
     create: publicProcedure
