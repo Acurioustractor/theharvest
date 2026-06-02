@@ -179,12 +179,12 @@ export function buildNewsletterTags(input: {
     for (const t of withFlatAlias(NEWSLETTER_INTEREST_TAGS[interest])) tags.add(t);
   }
 
-  // Journey bridge: a member is tier:member + role:member; everyone else who
-  // subscribes has raised a hand, so tier:connected. Feeds the Membership Journey pipeline.
+  // Journey bridge: membership is a tier: rung, NOT a role: (canonical vocabulary
+  // has no role:member). Everyone else who subscribes has raised a hand -> tier:connected.
+  // project:act-hv is stamped at the GHL-client chokepoint. Feeds the Membership Journey.
   if (input.member || input.interests?.includes("membership")) {
     tags.add("harvest-member");
     tags.add("tier:member");
-    tags.add("role:member");
     for (const t of withFlatAlias("interest:membership")) tags.add(t);
   } else {
     tags.add("tier:connected");
@@ -805,7 +805,6 @@ export const appRouter = router({
               tags: [
                 "harvest-member",
                 "tier:member",
-                "role:member",
                 ...withFlatAlias("interest:membership"),
                 ...withFlatAlias("interest:community"),
                 "member-wall",
@@ -924,6 +923,7 @@ export const appRouter = router({
             "shop-follow-up",
             "shop-stage-1",
             "role:supplier",
+            "interest:markets",
             offerTag,
           ],
         });
