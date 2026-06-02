@@ -2,6 +2,8 @@
 
 > Created 2026-05-27. Reconciled 2026-06-02 to the current
 > [June sprint operating plan](june-sprint-operating-plan-2026-06-02.md).
+> This is the dated schedule and the copy. The intent behind it, how and in what order we
+> connect with the community, lives in [community-connection-cadence.md](community-connection-cadence.md).
 > The run covers 2026-06-02 to 2026-07-01. Saturday 20 June 2026 is a private
 > members' day in two parts: maker session 10am to 2pm, then afternoon plus pizza
 > from 2pm. Makers and doers hear first in Wk4. Members hear through Harvest Note 02
