@@ -21,7 +21,7 @@ import { Card, CardContent } from "@/components/ui/card";
 // so nothing is ever a dead link.
 const IM_COMING_URL = "";
 const SUPPLY_URL = "/shop"; // shop EOI: interest:markets + role:supplier
-const IDEA_URL = "/get-involved"; // interim idea capture
+const IDEA_URL = "/get-involved?form=idea"; // deep-links straight to the idea form
 
 const imComingHref = IM_COMING_URL || "#ways-in";
 const imComingExternal = IM_COMING_URL.startsWith("http");

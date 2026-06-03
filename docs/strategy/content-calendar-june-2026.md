@@ -16,6 +16,16 @@
 >
 > **[BRACKETS] = a real detail only Ben can supply** (a photo, a maker's name, the day's
 > timing, the RSVP link). Do not ship with brackets unfilled.
+>
+> **RECONCILED 2026-06-03 — 20 June is now a PUBLIC OPEN DAY** (see
+> `RECONCILED-20-june-public-open-day-2026-06-03.md`). What changed in this doc: the **emails
+> below are updated** (gate from 1pm, pizza from 5pm, Harvest Note 02 re-timed to **Fri 6 Jun**
+> so members still hear before the Sat 7 Jun public announce). **Superseded by the public page's
+> 6-post series** (`docs/content/june-20-copy.md`): the "public never / date is members-only"
+> rule, the date-suppression social posts **E, F, G, H**, and the "public never" date-reveal
+> sequence at the foot of this doc. The Wk3–Wk4 dateless shop/garden/people posts (A–D, the 1–7
+> Jun daily run) still stand. **Open (sub-decision 3):** the maker session's exact hours / handoff
+> to the 1pm public gate — keep 10am–2pm private if Ben confirms; not finalised here.
 
 ## Schedule
 
@@ -23,7 +33,7 @@
 | --- | --- | --- | --- | --- | --- |
 | Wk3 | Wed 27 May to Sun 1 Jun | The makers | none | A / B | none |
 | Wk4 | Mon 2 to Sun 8 Jun | The shop, the question | **Field Note** (public) + **Makers' invite** (makers/doers) | C / D | Shop EOIs + makers invited to the 20 Jun morning session |
-| Wk5 | Mon 9 to Sun 15 Jun | The date, to members first | **Harvest Note 02** (Tue 9, members only) | E / F | Members get the date + RSVP opens |
+| Wk5 | Mon 9 to Sun 15 Jun | The date | **Harvest Note 02** (Fri 6, members first) | E / F | Members get the date Fri 6, before the Sat 7 public announce |
 | Wk6 | Mon 16 to Sat 20 Jun | Countdown + launch | **Harvest Note 03** (Fri 19, members) | G / H | **Launch: Sat 20 Jun** |
 | After | Sun 21 Jun on | The after-story | Thank-you + photos, then early July Harvest Note | I · J | Photo wall, thank-you, learnings |
 
@@ -64,7 +74,7 @@ You have had a hand in The Harvest, as a maker, a grower, a doer, someone shapin
 
 On Saturday 20 June we are opening the garden at Witta on Jinibara Country. The morning, 10am to 2pm, is yours: a maker session for the people building the place. A chance to get hands on, see how it is coming together, and shape the parts still forming.
 
-From 2pm it opens up to everyone and runs till late, with a make-your-own pizza dinner from the garden and local makers. Stay for that too.
+From 1pm the gate opens to everyone and runs till dark, with a make-your-own pizza dinner from the garden and local makers from 5pm. Stay for that too.
 
 There are two things to let us know, so we can plan properly.
 
@@ -83,11 +93,11 @@ Preview: Members get the first word, and the first invite.
 
 Hi {{contact.first_name}},
 
-You are on the member list, so you are hearing this before anyone else: we are opening the garden at The Harvest for a members' day on Saturday 20 June.
+You are on the member list, so you are hearing this first: we are opening the gate at The Harvest for an open day on Saturday 20 June.
 
 It is a chance to walk the rows, see what is taking shape across the garden, the events space and the art space, and meet the people building it. Nothing polished, nothing performative. Just the place as it is right now, and you in it.
 
-The day runs in two parts. The morning is a maker session for the makers and doers helping build the place. From the afternoon it opens up for everyone and runs into the evening, with a make-your-own pizza dinner from the garden and local makers. Come for the part that suits you.
+The day runs in two parts. The morning is a maker session for the makers and doers helping build the place. From 1pm the gate opens to everyone and runs into the evening, with a make-your-own pizza dinner from the garden and local makers from 5pm. Come for the part that suits you.
 
 We will send the practical details, timing, what to bring, where to park, closer to the day. For now, let us know you are coming so we can plan: https://api.leadconnectorhq.com/widget/bookings/harvest-2026-06-20-afternoon-pizza
 
@@ -103,9 +113,9 @@ Hi {{contact.first_name}},
 
 Tomorrow is the day. Here is what you need.
 
-The day runs in two parts. From 10am to 2pm it is a maker session for the makers and doers, the people helping build and shape the place. From 2pm it opens up for everyone and runs till late, with a make-your-own pizza dinner from the garden and local makers.
+The day runs in two parts. From 10am to 1pm it is a maker session for the makers and doers, the people helping build and shape the place. From 1pm the gate opens for everyone and runs till late, with a make-your-own pizza dinner from the garden and local makers from 5pm.
 
-When: Saturday 20 June, 10am till late.
+When: Saturday 20 June. Maker session from 10am, gate opens to everyone from 1pm, pizza from 5pm, then till late.
 Where: The Harvest, 9 Gumland Dr, Witta. Parking is out the side, follow the signs in.
 Bring: a hat, water and good walking shoes. It is a garden, so dress for being outside.
 
@@ -267,7 +277,7 @@ scheduling. Do not add tags as part of sending.
 | --- | --- | --- | --- | --- |
 | Wk4 Field Note | `harvest-newsletter` | 2 to 8 Jun | `6a1de93fa5ab652f24f6bee8` | Template created, needs campaign test send |
 | Wk4 Makers' invite | Makers and doers segment | 2 to 8 Jun | `6a1de93f6972087910787f77` | Template created earlier; local source has live B1/B2 links |
-| Harvest Note 02 | `harvest-member` | Tue 9 Jun | `6a1de9407526e35f3eb1506a` | Template created earlier; local source has live B2 link |
+| Harvest Note 02 | `harvest-member` | **Fri 6 Jun** (was Tue 9) | `6a1de9407526e35f3eb1506a` | Re-timed so members hear before Sat 7 public announce; update GHL template times to gate 1pm / pizza 5pm before send |
 | Harvest Note 03 | `harvest-member` | Fri 19 Jun | `6a1de941eae4d2744602e305` | Template created |
 | Thank-you + photos | `harvest-member` | Wed 24 Jun | `6a1de9410d36220d2b79cdd6` | Template created, fill after event |
 | Early July Harvest Note | `harvest-member` | Early Jul | `6a1de942ce86ea75af0fe3f0` | Template created, fill after debrief |
