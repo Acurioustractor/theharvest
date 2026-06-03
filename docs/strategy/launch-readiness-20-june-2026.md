@@ -1,5 +1,11 @@
 # Launch Readiness: 20 June Members' Day
 
+> **SUPERSEDED 2026-06-03. 20 June is now a PUBLIC OPEN DAY.** Written for the private
+> members'-day model (capped, members-first, date public never, pizza from 2pm). That model is
+> retired. Current truth: `RECONCILED-20-june-public-open-day-2026-06-03.md` (everyone welcome,
+> public date, RSVP via the public page plus the B2/trigger-link, pizza from 5pm). Read the framing
+> here as history. Still-valid operational detail (calendar IDs, tags, GHL build steps) stands.
+
 > Created 2026-05-28. The single sequencing view that ties the open launch threads
 > together. It does not duplicate the engagement docs; it orders them and names the gates.
 > Companion to `community-engagement-launch-plan.md` (why), `ghl-setup-runbook.md` (how to

@@ -1,5 +1,11 @@
 # The Harvest: Priority Build Plan
 
+> **SUPERSEDED 2026-06-03 on the 20 June model. 20 June is now a PUBLIC OPEN DAY.** Written for
+> the private members'-day model (capped, members-first, date public never, pizza from 2pm). That
+> model is retired. Current truth: `RECONCILED-20-june-public-open-day-2026-06-03.md` (everyone
+> welcome, public date, RSVP via the public page plus the B2/trigger-link, pizza from 5pm). Read
+> the 20 June framing here as history. Still-valid build detail stands.
+
 > Created 2026-05-28. The single priority-ordered execution view, built so each row can become
 > a task with an owner. Shop-led. This orders the work and names who, when, and done-when; the
 > detail lives in the companion docs. Voice: plain, no marketing-speak.

@@ -1,5 +1,11 @@
 # The Harvest — 20 June Soft Launch Playbook
 
+> **SUPERSEDED 2026-06-03. 20 June is now a PUBLIC OPEN DAY.** Written for the private
+> members'-day model (capped, members-first, date public never, pizza from 2pm). That model is
+> retired. Current truth: `RECONCILED-20-june-public-open-day-2026-06-03.md` (everyone welcome,
+> public date, RSVP via the public page plus the B2/trigger-link, pizza from 5pm). Read the framing
+> here as history. Still-valid operational detail stands.
+
 > Community-engagement + art-led content strategy for the 20 June 2026 soft launch.
 > Generated 2026-06-02 by a 6-lane research workflow (community-launch · controlled-reveal · art-led posting · simple countdown · shop-contribution · internal grounding), synthesised and voice-checked against the Harvest/ACT voice (Curtis method; AI tells and drama em-dashes stripped). Builds on the locked date spine and existing assets — net-new is deliberately tiny. Members-first, no public RSVP form, free night, nothing sold.
 

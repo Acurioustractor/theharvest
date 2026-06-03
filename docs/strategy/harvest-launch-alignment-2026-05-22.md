@@ -1,5 +1,10 @@
 # Harvest Launch Alignment — 20 June 2026
 
+> **SUPERSEDED AGAIN 2026-06-03. 20 June is now a PUBLIC OPEN DAY.** First superseded to the
+> private members'-day model on 2-Jun (note below); now that model is retired too. Current truth:
+> `RECONCILED-20-june-public-open-day-2026-06-03.md` (everyone welcome, public date, RSVP via the
+> public page plus the B2/trigger-link, pizza from 5pm). Read everything here as history.
+
 > **Superseded for execution on 2026-06-02.** This document is retained as the decision
 > history that moved Harvest away from a public launch. The current operating model is in
 > `june-sprint-operating-plan-2026-06-02.md`: private members' day, B1 maker session

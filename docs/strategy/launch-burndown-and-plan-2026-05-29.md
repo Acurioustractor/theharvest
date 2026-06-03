@@ -1,5 +1,11 @@
 # The Harvest 20 June Launch: Burndown + Plan
 
+> **SUPERSEDED 2026-06-03. 20 June is now a PUBLIC OPEN DAY.** Written for the private
+> members'-day model (capped, members-first, date public never, pizza from 2pm). That model is
+> retired. Current truth: `RECONCILED-20-june-public-open-day-2026-06-03.md` (everyone welcome,
+> public date, RSVP via the public page plus the B2/trigger-link, pizza from 5pm). Read the framing
+> here as history. Still-valid operational detail stands.
+
 > How to use this (29 May 2026). This is the one working doc for the 20 June members' day. Open it to see what to do and by when. Find your tasks under "Task plans by category", check your week against "Burndown", and read "Running the venue on the day" before the morning of.
 
 ## The one hard gate

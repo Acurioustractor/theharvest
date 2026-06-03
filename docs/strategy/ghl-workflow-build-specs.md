@@ -1,5 +1,11 @@
 # Harvest GHL Workflow Build Specs
 
+> **SUPERSEDED 2026-06-03 on the 20 June model. 20 June is now a PUBLIC OPEN DAY.** The B1/B2
+> "from 2pm" / members-first framing is retired. Current truth:
+> `RECONCILED-20-june-public-open-day-2026-06-03.md` and `GHL-completion-handoff-2026-06-03.md`
+> (public RSVP via trigger link, pizza from 5pm). The calendar IDs, tag names, and workflow build
+> steps below still stand; read the day-model framing as history.
+
 Last verified against live GHL: 2026-05-27
 
 Companion to `harvest-ghl-tag-and-automation-map.md`. The map records which workflows
