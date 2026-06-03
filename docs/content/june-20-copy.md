@@ -22,7 +22,10 @@ Single source for the open-day copy: the website page, the short and micro versi
 
 ## 1. Website page (/june-20)
 
-Canonical copy. Already shipped in the page component, repeated here in plain text.
+The page copy was revised 2026-06-03 to shift funnel grammar to welcome grammar (offer before
+ask, witness not capture, handover not conversion). See `welcome-grammar-20-june.md` for the
+doctrine and the current page wording. The plain text below is the pre-revision version, kept for
+reference; the live page in `GardenLaunch.tsx` is the source of truth.
 
 **Hero**
 Saturday 20 June 2026 · Witta · Jinibara Country

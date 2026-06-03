@@ -52,8 +52,8 @@ const dayBlocks = [
   {
     icon: Lightbulb,
     time: "Through the afternoon",
-    title: "Two questions",
-    body: "What you could grow or make for the shop shelf. How you'd use this space: market mornings, maker days, the kids' corner, the empty rooms. Leave it on the wall or tell us at the long table.",
+    title: "Leave a thought, if one comes",
+    body: "What you might grow or make for the shop shelf. How you'd use this space: market mornings, maker days, the kids' corner, the empty rooms. There's a wall for it, or tell us at the long table. No one's keeping score.",
   },
   {
     icon: Flame,
@@ -67,23 +67,23 @@ const waysIn = [
   {
     icon: CalendarCheck,
     title: "I'm coming",
-    body: "One tap so we make enough dough.",
+    body: "One tap, so there's enough dough. That's all it does.",
     cta: "I'm coming",
     href: imComingHref,
     external: imComingExternal,
   },
   {
     icon: Carrot,
-    title: "I'd grow or make for the shop",
-    body: "What's in your patch or on your bench.",
+    title: "Something to grow or make?",
+    body: "The shelf fills with local hands. Tell us at the table, or here.",
     cta: "Put something on the shelf",
     href: SUPPLY_URL,
     external: false,
   },
   {
     icon: Lightbulb,
-    title: "I've got an idea",
-    body: "The space, the kids' corner, a maker day.",
+    title: "An idea for the place?",
+    body: "A maker day, the kids' corner, something we haven't thought of.",
     cta: "Share an idea",
     href: IDEA_URL,
     external: false,
@@ -100,7 +100,7 @@ export default function GardenLaunch() {
       document.head.appendChild(meta);
     }
     meta.content =
-      "Saturday 20 June 2026, from 1pm at The Harvest, Witta. An old nursery on Jinibara Country opens its gate for the afternoon: walk the gardens, grow for the shop's shelf, stay for pizza from 5pm.";
+      "Saturday 20 June 2026, from 1pm at The Harvest, Witta. An old nursery on Jinibara Country opens its gate for the afternoon. Walk the gardens, meet your neighbours, stay for pizza from 5pm. Everyone welcome.";
   }, []);
 
   return (
@@ -134,13 +134,14 @@ export default function GardenLaunch() {
               The gate <span className="text-amber-400">opens.</span>
             </h1>
             <p className="text-xl md:text-2xl text-stone-200 italic font-serif leading-snug max-w-2xl mx-auto mb-6">
-              An old nursery on the hill becoming a place to eat, gather, make
-              and grow. Come for the afternoon: walk the gardens, tell us what
-              you'd put on the shop shelf, leave an idea, stay for pizza from
-              five.
+              An old nursery on the hill, opening up to be a place to eat,
+              gather, make and grow. Come for the afternoon. Walk the gardens,
+              find the oven under the pecans, meet whoever's there. Stay for
+              pizza from five.
             </p>
             <p className="text-stone-300 max-w-2xl mx-auto mb-10">
-              Open day for anyone who might grow, make or gather here.
+              Open day. Everyone's welcome, and you don't need a reason to
+              come.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
               <a
@@ -203,11 +204,14 @@ export default function GardenLaunch() {
                   that have grown things here for a hundred years.
                 </p>
                 <p>
-                  On 20 June we open the gate for the afternoon. Come see the
-                  place. Walk the gardens. Tell us one thing: what you'd grow or
-                  make for the shop, how you'd use this space.
+                  On 20 June the gate's open for the afternoon. Come see the
+                  place. Walk the gardens. Sit at the long table.
                 </p>
-                <p>We write it all down, then the oven goes on under the pavilion.</p>
+                <p>
+                  If something comes to you, a thing you'd grow, a corner you'd
+                  use, there's a wall to put it on. Then the oven goes on under
+                  the pavilion.
+                </p>
                 <p className="font-serif italic text-stone-600">
                   Come for an hour or stay till dark. Bring a chair if you've got
                   one.
@@ -276,8 +280,13 @@ export default function GardenLaunch() {
                 Before the day
               </p>
               <h2 className="text-3xl md:text-5xl font-serif font-bold leading-tight">
-                Three small ways in.
+                Come as you are.
               </h2>
+              <p className="mt-4 text-stone-300 max-w-xl mx-auto leading-relaxed">
+                You don't have to bring a thing. Come empty-handed, that's the
+                whole invitation. If you're the sort who likes to bring
+                something, here's where it goes.
+              </p>
             </motion.div>
             <div className="grid gap-5 md:grid-cols-3">
               {waysIn.map((w) => {
@@ -325,7 +334,10 @@ export default function GardenLaunch() {
                   It only works if it's full of local hands. You grow it or make
                   it, we hold the shelf.
                 </p>
-                <p>20 June is where we find out who's in. Come see if you are.</p>
+                <p>
+                  We hold the shelf for now. One day the town won't need us to.
+                  Come walk through it, that's the only ask.
+                </p>
               </div>
             </motion.div>
           </div>
