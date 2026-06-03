@@ -30,7 +30,7 @@ const EVENT = {
   date: "Saturday 20 June 2026",
   time: "From 1pm, pizza from 5pm",
   address: "9 Gumland Drive, Witta QLD 4552",
-  shortAddress: "Witta · 10 min from Maleny",
+  shortAddress: "9 Gumland Drive, Witta · 10 min from Maleny",
   acknowledgement: "Jinibara Country",
   audience: "Everyone welcome",
 };
@@ -46,19 +46,19 @@ const dayBlocks = [
   {
     icon: Sprout,
     time: "From 1pm",
-    title: "Walk the place.",
+    title: "Walk the place",
     body: "The gardens, the rammed earth building, the pavilion under the pecans. What's here, what's coming.",
   },
   {
     icon: Lightbulb,
     time: "Through the afternoon",
-    title: "Two questions.",
-    body: "What you could grow or make for the shop's shelf. How you'd use this space: market mornings, maker days, the kids' corner, the empty rooms. Leave it on the wall or tell us at the long table.",
+    title: "Two questions",
+    body: "What you could grow or make for the shop shelf. How you'd use this space: market mornings, maker days, the kids' corner, the empty rooms. Leave it on the wall or tell us at the long table.",
   },
   {
     icon: Flame,
     time: "From 5pm",
-    title: "Pizza.",
+    title: "Pizza",
     body: "Three doughs, whatever the garden gave. Music. Stay till dark.",
   },
 ];
@@ -67,7 +67,7 @@ const waysIn = [
   {
     icon: CalendarCheck,
     title: "I'm coming",
-    body: "One tap, so we make enough dough.",
+    body: "One tap so we make enough dough.",
     cta: "I'm coming",
     href: imComingHref,
     external: imComingExternal,
@@ -127,16 +127,20 @@ export default function GardenLaunch() {
             <p className="font-mono text-amber-300 text-sm mb-4 uppercase tracking-[0.25em]">
               {EVENT.date} · Witta · {EVENT.acknowledgement}
             </p>
+            <p className="font-serif text-2xl md:text-3xl text-amber-200 mb-2">
+              The Harvest Witta
+            </p>
             <h1 className="text-5xl md:text-7xl font-serif font-bold leading-[0.95] mb-6">
-              The gate
-              <br />
-              <span className="text-amber-400">opens.</span>
+              The gate <span className="text-amber-400">opens.</span>
             </h1>
-            <p className="text-xl md:text-2xl text-stone-200 italic font-serif leading-snug max-w-2xl mx-auto mb-10">
-              An old nursery on the hill, becoming a place to eat, gather, make
+            <p className="text-xl md:text-2xl text-stone-200 italic font-serif leading-snug max-w-2xl mx-auto mb-6">
+              An old nursery on the hill becoming a place to eat, gather, make
               and grow. Come for the afternoon: walk the gardens, tell us what
-              you'd put on the shop's shelf, leave an idea, stay for pizza from
+              you'd put on the shop shelf, leave an idea, stay for pizza from
               five.
+            </p>
+            <p className="text-stone-300 max-w-2xl mx-auto mb-10">
+              Open day for anyone who might grow, make or gather here.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
               <a
@@ -174,7 +178,8 @@ export default function GardenLaunch() {
           </div>
           <p className="text-center text-stone-500 italic text-sm mt-8">
             We acknowledge the Jinibara people as the Traditional Custodians of
-            this Country. The day begins with a Welcome.
+            this Country. The day begins with a Welcome, and The Harvest is being
+            shaped with that in mind.
           </p>
         </div>
       </section>
@@ -202,7 +207,7 @@ export default function GardenLaunch() {
                   place. Walk the gardens. Tell us one thing: what you'd grow or
                   make for the shop, how you'd use this space.
                 </p>
-                <p>We write it all down. Then the oven goes on under the pavilion.</p>
+                <p>We write it all down, then the oven goes on under the pavilion.</p>
                 <p className="font-serif italic text-stone-600">
                   Come for an hour or stay till dark. Bring a chair if you've got
                   one.
@@ -222,7 +227,7 @@ export default function GardenLaunch() {
                 The shape of the day
               </p>
               <h2 className="text-3xl md:text-4xl font-serif font-bold text-stone-800">
-                Afternoon to fire.
+                Afternoon into fire.
               </h2>
               <p className="mt-4 text-stone-600 leading-relaxed">
                 Free. No register, no bar. Kids welcome, there's a corner with
@@ -271,7 +276,7 @@ export default function GardenLaunch() {
                 Before the day
               </p>
               <h2 className="text-3xl md:text-5xl font-serif font-bold leading-tight">
-                Tell us you're coming.
+                Three small ways in.
               </h2>
             </motion.div>
             <div className="grid gap-5 md:grid-cols-3">
@@ -320,7 +325,7 @@ export default function GardenLaunch() {
                   It only works if it's full of local hands. You grow it or make
                   it, we hold the shelf.
                 </p>
-                <p>20 June is where we find out who's in. Come see if it's for you.</p>
+                <p>20 June is where we find out who's in. Come see if you are.</p>
               </div>
             </motion.div>
           </div>
@@ -335,11 +340,12 @@ export default function GardenLaunch() {
               Stay close
             </p>
             <h2 className="text-2xl md:text-3xl font-serif font-bold text-stone-800 mb-4">
-              Hear about the day, and the next one.
+              Hear about this day, and the next one.
             </h2>
             <p className="text-stone-600 mb-8 leading-relaxed">
               The Harvest's quietest channel is the newsletter: one note before
-              each gathering, never more. Or follow along where the photos go.
+              each gathering, never more. Or follow along where the photos and
+              work-in-progress go.
             </p>
             <div className="flex flex-wrap gap-3 justify-center">
               <a
