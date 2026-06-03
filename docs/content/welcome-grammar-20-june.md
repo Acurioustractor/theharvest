@@ -87,6 +87,35 @@ Two ACT frames hold this:
   heading from "hear about the next one" toward "we'll only ever send a note before the gate opens
   again." The quietest channel stays the quietest channel.
 
+## The social series, rewritten (`june-20-copy.md` §4)
+
+Three of the six posts carried funnel grammar. Fixed:
+- **Sat 7 Jun (announce).** "Walk the gardens, grow for the shop shelf, leave an idea, stay for
+  pizza" became "Walk the gardens, find the oven under the pecans, meet whoever's there, stay for
+  pizza." Plus "Everyone welcome, you don't need a reason to come."
+- **Tue 10 Jun (the shop).** "Got something for the shelf? Tell us on the 20th" became "It only
+  fills if the town fills it. Come see it on the 20th." (belonging, not solicitation)
+- **Fri 13 Jun (the space).** "Bring the idea on the 20th. We're writing them all down" became
+  "Come wonder out loud on the 20th. There's a wall for it, no one's keeping score." (witness, not
+  capture)
+- Kept as-is: the 4 Jun tease, the 16 Jun pizza/RSVP (the smallest honest capture), the 19 Jun eve.
+
+## What already passes (checked, not changed)
+
+The pass went through all of it. The funnel grammar lived in the page and those three posts. These
+already speak in welcome voice and were left alone:
+- **Harvest Note 02 (members):** "Just the place as it is right now, and you in it." Belonging,
+  not recruitment.
+- **Makers' invite:** "You have had a hand in The Harvest... so you are hearing this first. The
+  morning is yours." Gift and belonging; the two RSVP links are honest logistics for people who opted in.
+- **Field Note (public shop):** leads with "there is a place for you" and closes "we read every
+  one." Invitation and witness.
+- **Maker 1:1 outreach** (`harvest-shop-outreach-messages.md`): already gift-shaped by the radical
+  transparency, "we name you and say what you were paid." That single promise is the most
+  anti-extractive line in the whole launch. Untouched.
+- Open item, not grammar: the maker-session end time (10am to 1pm vs 10am to 2pm) drifts between the
+  emails and the B1 calendar. That belongs to sub-decision 3 in `RECONCILED-…`, not this pass.
+
 ## What this protects
 The other instance is about to build the GHL funnel. This doc is the conscience that rides next to
 the plumbing: the page is welcome, the capture is small and underneath, and nobody who simply comes
