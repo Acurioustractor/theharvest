@@ -6,6 +6,11 @@
 >
 > Only these 5 need building. Everything else (newsletter, shop EOI, contact form, quiz, pulse)
 > already tags via the website code and existing workflows. Do not rebuild those.
+>
+> **Philosophy lock (orbit model, see `harvest-audience-map-2026-06-03.md`):** these workflows
+> **tag only, they never climb anyone.** An RSVP is not a rung. The public stays curious; people
+> enter the Membership Journey by *doing*, hand-read after the day. Never drip a `lane:community`
+> contact. The system catches energy; a human reads it.
 
 ## The tags these workflows use (type them exactly)
 
@@ -68,6 +73,7 @@ redirect `https://www.theharvestwitta.com.au/june-20`. Then the workflow:
 
 ## 5. Shop nurture  (not launch-gating, build after if short on time)
 - **Trigger:** Contact Tag added `harvest-shop-interest`
+- **Filter (community line, do not skip):** exclude anyone tagged `lane:community`. A drip must never reach a storyteller, elder, or community contact.
 - **Action:** Wait 4 days
 - **Action:** If/Else by offer tag (`shop-produce` / `shop-maker` / `shop-food` / `shop-consignment`)
 - **Action:** Send the matching shop email (copy in `ghl-workflow-build-specs.md` spec 6)

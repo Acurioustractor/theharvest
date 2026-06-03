@@ -87,8 +87,9 @@ aggregate into **one dough count**:
 - **Sender:** `hi@act.place` (default — does not risk the date) vs verified Harvest sending domain.
 - **Members RSVP path:** B2 booking (rec) vs point members at the trigger link too. Both feed
   `rsvp-pizza-dinner` either way.
-- **RSVP → Membership Journey:** optionally have the "I'm coming" workflow also create a *Curious*
-  card (`85da97c5-…`) so RSVPs become nurturable. Tag-only is fine for launch.
+- **RSVP → rings: NO auto-climb (orbit model).** Do not create a Membership Journey card from an
+  RSVP. An RSVP is not a rung. The public stays curious; people enter the rings by *doing*,
+  hand-read after the day. Lane logic: `harvest-audience-map-2026-06-03.md`.
 - **Maker-morning hours / handoff** to the 1pm public gate (sub-decision 3 in RECONCILED). Emails
   currently set maker session 10am–1pm; B1 calendar is still 10am–2pm — align them.
 

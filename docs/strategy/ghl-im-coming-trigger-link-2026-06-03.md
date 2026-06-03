@@ -25,14 +25,17 @@ GHL → **Automation → Workflows → + Create Workflow** (blank)
 - **Trigger:** `Trigger Link Clicked` → choose the link from Step 1.
 - **Action 1:** `Add Contact Tag` → **`rsvp-pizza-dinner`**
 - **Action 2:** `Add Contact Tag` → **`witta-gathering-2026-06-20`**
-- *(Optional)* **Action 3:** `Create / Update Opportunity` → pipeline **Harvest Membership Journey**
-  (`ijPN2jEoEuMshXXKbQ4z`), stage **Curious** (`85da97c5-7cdc-4500-95d7-7dbdaea0ee5c`) — only if you want
-  RSVPs to become a nurturable list. Tag-only is fine for launch; skip if unsure.
+- **No Action 3. Tags only.** Do NOT create a Membership Journey card from this click. An RSVP is
+  not a rung. The public stays in the outer ring (curious) and climbs only by *doing*, hand-read
+  after the day (orbit model, see `harvest-audience-map-2026-06-03.md`). Auto-climbing is the
+  funnel reflex this design refuses.
 - **Settings → Re-entry: OFF** (one contact, one count, no double-tagging).
 - **Publish** (toggle the workflow live, not just save).
 
 ### Guardrails (do not skip)
+- **Tags only, no pipeline.** No auto-climb into Membership Journey. People enter the rings by doing, hand-read.
 - **Do NOT add `harvest-member` or `harvest-newsletter`** here. An event "yes" is not a subscribe.
+- **Community line.** A Jinibara elder / storyteller who taps the link carries `lane:community` and must never be ringed, scored, or dripped. A gathering tag for the headcount is fine; nothing else.
 - **Do NOT also put the B2 booking link on the public page.** Trigger link is the single public RSVP surface.
 
 ## Step 3 — Wire the page
