@@ -5,6 +5,20 @@
 > (`act-global-infrastructure/wiki/concepts/energy-orbit.md` + `relationship-first-crm.md`): sort
 > by energy not money, two lanes never one funnel, belonging before money. The day is the engine;
 > this just catches and sorts the energy it makes.
+>
+> **This is not a Harvest-local model. It inherits ACT's ecosystem orbit + constellation**
+> (`act-global-infrastructure/wiki/concepts/`: `energy-orbit.md`, `relationship-first-crm.md`,
+> `ecosystem-value-exchange.md`). The GHL location is shared across all of ACT, so the tags below
+> (`role:`, `tier:`, `lane:community`, `action:`, `consent:`) are the **ecosystem's canonical
+> vocabulary, not new Harvest tags**. A Jinibara elder or storyteller tagged at the Harvest is the
+> same person in the one constellation, held by the same OCAP rights. The Harvest Membership
+> Journey is just this project's board; the cross-project `tier:` tag is what unifies it with the
+> whole orbit, and **rungs are earned by real `action:` gives** (`action:volunteered`,
+> `action:contributed`), never seeded by an RSVP.
+>
+> Canonical `role:` per lane: public + makers/users = `role:supporter` (climb the `tier:` rungs by
+> doing); producers = `role:supplier`; community = `role:community` / `role:storyteller` /
+> `role:elder` (**never** `tier:`).
 
 ## One line each
 - **Public** comes to belong. Tag the gathering, share the open day, leave them be. Most stay, that is the win.
@@ -57,15 +71,27 @@ the model working, not a tagging mess.
 - **Their get:** a second outlet, fair pay, named on the shelf.
 - **NEVER:** blast them; fuse the commercial pipe with the rings; drip a `lane:community` producer.
 
-## 4. Community — Jinibara, elders, storytellers
-- **Who:** the Jinibara custodians whose Country this is, elders, anyone whose name, story, or photo appears.
-- **Engage:** the Welcome to Country, relationship, the day. Not a form.
-- **Path:** **the constellation. `lane:community`. Measured by what we owe back, never by energy to ACT.**
-- **Carries:** `lane:community` (plus `role:elder` / `is_storyteller` where true). A gathering tag
-  for the headcount is fine; nothing else.
-- **Share with them:** nothing as a funnel. Content flows the other way, we owe them. Any publish of
-  a name, story, or photo runs **consent-check first** (OCAP gate).
-- **Their get:** consent-held sovereignty, what we owe back.
+## 4. Community — Jinibara, elders, storytellers (the constellation, not a lane to climb)
+This lane runs on a different grammar: **not give/get, but OCAP-holds / CARE-owes.** What community
+**holds** (their rights) → what ACT **owes** (its obligations). Same model, opposite direction, and
+the difference *is* the anti-extraction statement. Canonical: `ecosystem-value-exchange.md` § the
+community lane. **Worked by a human, by hand. Never a workflow.**
+- **Who / role:** `role:community` / `role:community-controlled` (the Jinibara collective, Tier 2);
+  `role:storyteller` / `role:elder` (individuals, Tier 1). Elder authority is a **veto, not a preference.**
+- **Engage:** the Welcome to Country, relationship, the day. Never a form, never a pipeline.
+- **Carries:** `lane:community` (+ `role:elder` / `is_storyteller` / `consent:` where true). A
+  gathering tag for the headcount is fine; nothing else. **Never `tier:`, never a drip.**
+- **What the Harvest owes (CARE), because it is ON Jinibara Country:** be a **guest** on Country,
+  name places correctly, never map or represent Country without authority; benefit that flows to the
+  community by design, not as a side effect; a real path to **run it themselves** (beautiful
+  obsolescence, hand over the keys); consent checked at the time of any use, revocable anytime.
+- **Any yarn / photo / transcript captured on the day** enters the **ecosystem owes-ledger**
+  (`build-contributor-constellation.mjs`): the transcript is their gift; "honoured" means ACT
+  brought it to a live story **under consent**, not left it raw or used it without the conversation.
+  `action:` tags here record what **ACT delivered** (`action:consent-reviewed`,
+  `action:attribution-confirmed`, `action:benefit-reported`), never what ACT took.
+- **Share with them:** nothing as a funnel. Content flows the other way. Any publish of a name,
+  story, or photo runs **consent-check first** (OCAP gate).
 - **NEVER:** ring them, energy-score them, drip them, or publish without consent.
 
 ---
