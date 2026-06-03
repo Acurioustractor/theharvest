@@ -30,9 +30,9 @@ const EVENT = {
   date: "Saturday 20 June 2026",
   time: "From 1pm, pizza from 5pm",
   address: "9 Gumland Drive, Witta QLD 4552",
-  shortAddress: "Witta · Sunshine Coast Hinterland",
+  shortAddress: "Witta · 10 min from Maleny",
   acknowledgement: "Jinibara Country",
-  audience: "Members and locals",
+  audience: "Everyone welcome",
 };
 
 const fadeInUp = {
@@ -46,20 +46,20 @@ const dayBlocks = [
   {
     icon: Sprout,
     time: "From 1pm",
-    title: "Walk the garden.",
-    body: "The new beds, the old ones, who's tending which row. The shop, and what it could hold again.",
+    title: "Walk the place.",
+    body: "The gardens, the rammed earth building, the pavilion under the pecans. What's here, what's coming.",
   },
   {
     icon: Lightbulb,
     time: "Through the afternoon",
-    title: "Two questions, out loud.",
-    body: "What could you grow or make for the shop. How would you use this space: maker days, the playground, the empty corners. Leave it on the wall or tell us at the table.",
+    title: "Two questions.",
+    body: "What you could grow or make for the shop's shelf. How you'd use this space: market mornings, maker days, the kids' corner, the empty rooms. Leave it on the wall or tell us at the long table.",
   },
   {
     icon: Flame,
     time: "From 5pm",
     title: "Pizza.",
-    body: "The oven, three doughs, whatever the garden gave. Music. Stay till dark.",
+    body: "Three doughs, whatever the garden gave. Music. Stay till dark.",
   },
 ];
 
@@ -67,23 +67,23 @@ const waysIn = [
   {
     icon: CalendarCheck,
     title: "I'm coming",
-    body: "One tap, so we know how much dough to make.",
+    body: "One tap, so we make enough dough.",
     cta: "I'm coming",
     href: imComingHref,
     external: imComingExternal,
   },
   {
     icon: Carrot,
-    title: "I'd grow for the shop",
-    body: "Tell us what's in your patch.",
-    cta: "Supply the shop",
+    title: "I'd grow or make for the shop",
+    body: "What's in your patch or on your bench.",
+    cta: "Put something on the shelf",
     href: SUPPLY_URL,
     external: false,
   },
   {
     icon: Lightbulb,
     title: "I've got an idea",
-    body: "The space, the playground, a maker day.",
+    body: "The space, the kids' corner, a maker day.",
     cta: "Share an idea",
     href: IDEA_URL,
     external: false,
@@ -92,7 +92,7 @@ const waysIn = [
 
 export default function GardenLaunch() {
   useEffect(() => {
-    document.title = "20 June 2026 · The garden and shop reopen · The Harvest";
+    document.title = "20 June 2026 · The Harvest opens its gate · Witta";
     let meta = document.querySelector('meta[name="description"]') as HTMLMetaElement | null;
     if (!meta) {
       meta = document.createElement("meta");
@@ -100,7 +100,7 @@ export default function GardenLaunch() {
       document.head.appendChild(meta);
     }
     meta.content =
-      "Saturday 20 June 2026, from 1pm at The Harvest, Witta. One day to reopen the garden and the shop. Walk the beds, grow for the shelf, stay for pizza from 5pm.";
+      "Saturday 20 June 2026, from 1pm at The Harvest, Witta. An old nursery on Jinibara Country opens its gate for the afternoon: walk the gardens, grow for the shop's shelf, stay for pizza from 5pm.";
   }, []);
 
   return (
@@ -125,16 +125,18 @@ export default function GardenLaunch() {
             className="max-w-3xl mx-auto text-center"
           >
             <p className="font-mono text-amber-300 text-sm mb-4 uppercase tracking-[0.25em]">
-              {EVENT.date} · {EVENT.shortAddress}
+              {EVENT.date} · Witta · {EVENT.acknowledgement}
             </p>
             <h1 className="text-5xl md:text-7xl font-serif font-bold leading-[0.95] mb-6">
-              The gate's open
+              The gate
               <br />
-              <span className="text-amber-400">again</span>
+              <span className="text-amber-400">opens.</span>
             </h1>
             <p className="text-xl md:text-2xl text-stone-200 italic font-serif leading-snug max-w-2xl mx-auto mb-10">
-              One day to reopen the garden and the shop. Walk the beds. Tell us
-              what you'd grow. Leave an idea on the wall. Pizza from five.
+              An old nursery on the hill, becoming a place to eat, gather, make
+              and grow. Come for the afternoon: walk the gardens, tell us what
+              you'd put on the shop's shelf, leave an idea, stay for pizza from
+              five.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
               <a
@@ -186,25 +188,24 @@ export default function GardenLaunch() {
                 What it is
               </p>
               <h2 className="text-3xl md:text-5xl font-serif font-bold text-stone-800 mb-6 leading-tight">
-                A reopening, not a launch.
+                An old nursery, opening its gate.
               </h2>
               <div className="space-y-5 text-lg text-stone-700 leading-relaxed">
                 <p>
-                  The garden went quiet. The shop stayed shut. On 20 June we open
-                  the gate and find out who's still here.
+                  Witta has about 1,300 people and nowhere to stop. No shop in a
+                  generation, nowhere to gather. The Harvest is five acres on the
+                  hill: an old nursery with a rammed earth building and gardens
+                  that have grown things here for a hundred years.
                 </p>
                 <p>
-                  Come for the afternoon. Walk the beds. See the work. Tell us one
-                  thing: what you'd grow for the shop, what you'd make in this
-                  space.
+                  On 20 June we open the gate for the afternoon. Come see the
+                  place. Walk the gardens. Tell us one thing: what you'd grow or
+                  make for the shop, how you'd use this space.
                 </p>
-                <p>We write it all down. Then the oven goes on.</p>
-                <p>
-                  Under the Milk Create Pavilion that 80 of you helped build in
-                  March. On Jinibara Country at Witta.
-                </p>
+                <p>We write it all down. Then the oven goes on under the pavilion.</p>
                 <p className="font-serif italic text-stone-600">
-                  Come for an hour or stay till dark. The kettle stays on.
+                  Come for an hour or stay till dark. Bring a chair if you've got
+                  one.
                 </p>
               </div>
             </motion.div>
@@ -224,8 +225,8 @@ export default function GardenLaunch() {
                 Afternoon to fire.
               </h2>
               <p className="mt-4 text-stone-600 leading-relaxed">
-                If kids come, there's paper and chalk in the corner. Free. No
-                register, no bar. Bring a chair if you've got one.
+                Free. No register, no bar. Kids welcome, there's a corner with
+                paper and chalk.
               </p>
             </motion.div>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -291,7 +292,7 @@ export default function GardenLaunch() {
               })}
             </div>
             <p className="text-center text-stone-400 italic text-sm mt-8">
-              No register, no bar. We count the pizza by hand.
+              Free. We count the pizza by hand.
             </p>
           </div>
         </div>
@@ -306,18 +307,20 @@ export default function GardenLaunch() {
                 What this is for
               </p>
               <h2 className="text-3xl md:text-5xl font-serif font-bold text-stone-800 mb-6 leading-tight">
-                A shop that buys from down the road.
+                A shop that sells what your neighbour grew.
               </h2>
               <div className="space-y-5 text-lg text-stone-700 leading-relaxed">
                 <p>
-                  The shop only works when it's full of things grown and made near
-                  here. You grow it, we stock it, the money stays in the valley.
+                  Witta hasn't had a shop in a generation. The Harvest is putting
+                  one back: a shared shelf for the growers and makers who already
+                  live around Witta and Maleny. Not a supermarket, not a boutique.
+                  A shelf, kept simple on purpose.
                 </p>
                 <p>
-                  The garden only works when people use it. Maker days. Kids in the
-                  corner. Hands in the dirt.
+                  It only works if it's full of local hands. You grow it or make
+                  it, we hold the shelf.
                 </p>
-                <p>20 June is where that starts. Come see if it's for you.</p>
+                <p>20 June is where we find out who's in. Come see if it's for you.</p>
               </div>
             </motion.div>
           </div>
