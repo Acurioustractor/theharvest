@@ -52,6 +52,22 @@ aggregate into **one dough count**:
    - Schedule: Field Note (Wk4, public, dateless — can go now) · Makers' invite (Wk4) · Note 02
      (Fri 6) · Note 03 (Fri 19) · Thank-you (post-event) · early-July note (post-debrief).
 
+   **Exact template time-edits (repo source already fixed in `content-calendar-june-2026.md` +
+   `scripts/draft-june-sprint-emails-ghl.ts`; apply the same to the live GHL templates by hand).**
+   Re-running the draft script may create duplicate templates (the API didn't cleanly update the
+   earlier records), so editing the 3 affected templates in the GHL UI is the safer path:
+   - **Makers' invite** (`6a1de93f6972087910787f77`): "From 2pm it opens up to everyone and runs
+     till late... Stay for that too." → "From 1pm the gate opens to everyone and runs till dark...
+     from 5pm. Stay for that too." (maker-session "10am to 2pm" stays — sub-decision 3.)
+   - **Harvest Note 02** (`6a1de9407526e35f3eb1506a`): reschedule **9 Jun → Fri 6 Jun**; "hearing
+     this before anyone else... a members' day" → "hearing this first... an open day"; "From the
+     afternoon it opens up for everyone..." → "From 1pm the gate opens to everyone... from 5pm."
+   - **Harvest Note 03** (`6a1de941eae4d2744602e305`): "From 10am to 2pm it is a maker session...
+     From 2pm it opens up for everyone..." → "From 10am to 1pm... From 1pm the gate opens for
+     everyone... from 5pm"; "When: Saturday 20 June, 10am till late." → "When: Saturday 20 June.
+     Maker session from 10am, gate opens to everyone from 1pm, pizza from 5pm, then till late."
+   - Field Note, Thank-you, early-July: no time changes.
+
 ### P1 — not launch-gating, can land after 20 Jun
 4. **Shop nurture workflow** (spec 6): trigger `harvest-shop-interest` → Wait 4 days → If/Else by offer
    tag → send → tag `shop-nurture-sent`. Drop the shop-chat booking link into `[booking link]` + `/shop`.
