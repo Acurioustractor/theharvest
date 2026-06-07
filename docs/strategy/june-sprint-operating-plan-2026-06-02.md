@@ -1,5 +1,11 @@
 # Harvest June Sprint Operating Plan
 
+> **SUPERSEDED 2026-06-03. 20 June is now a PUBLIC OPEN DAY.** Written for the private
+> members'-day model (capped, members-first, date public never, pizza from 2pm). That model is
+> retired. Current truth: `RECONCILED-20-june-public-open-day-2026-06-03.md` (everyone welcome,
+> public date, RSVP via the public page plus the B2/trigger-link, pizza from 5pm). Read the framing
+> here as history. Still-valid operational detail (calendar IDs, tags, GHL build steps) stands.
+
 > Current as of 2026-06-02 Brisbane time. Covers 2026-06-02 to 2026-07-01.
 > This is the current operating view for the June sprint. It supersedes the older
 > 3pm-7pm reply-led proof-night frame in the May launch-alignment drafts.

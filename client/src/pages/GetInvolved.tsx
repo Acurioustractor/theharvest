@@ -143,7 +143,11 @@ const FORMS: FormConfig[] = [
 ];
 
 export default function GetInvolved() {
-  const [activeForm, setActiveForm] = useState<FormType>("residency");
+  const [activeForm, setActiveForm] = useState<FormType>(() => {
+    if (typeof window === "undefined") return "residency";
+    const param = new URLSearchParams(window.location.search).get("form");
+    return FORMS.some((f) => f.id === param) ? (param as FormType) : "residency";
+  });
   const [formData, setFormData] = useState<Record<string, string>>({});
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");

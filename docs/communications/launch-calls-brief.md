@@ -1,9 +1,12 @@
 # Launch calls brief - three calls only Ben can make
 
 Companion to [june-sprint-operating-plan-2026-06-02.md](../strategy/june-sprint-operating-plan-2026-06-02.md).
-This brief was first written for the May Path A proof-night frame and was reconciled on
-2026-06-02. Use the current B1/B2 private members' day model for every call:
-maker session 10am to 2pm, afternoon plus pizza from 2pm, default B2 capacity 40.
+> **REFRAMED 2026-06-03. 20 June is a PUBLIC OPEN DAY** (everyone welcome, public date), per
+> `../strategy/RECONCILED-20-june-public-open-day-2026-06-03.md`. First written for the May
+> proof-night frame, then the private members'-day model. Both retired. For every call: a free
+> public open day at 9 Gumland Drive, Witta. A maker session from 10am, the gate opens to the
+> public from 1pm, free make-your-own pizza from 5pm, no sales, no alcohol. Turnout is open, so the
+> planning headcount matters more than under the old 40-cap (see the food and insurance calls).
 
 Each section: **who · why now · ask · be ready with · success · fallback**.
 
@@ -13,14 +16,14 @@ Each section: **who · why now · ask · be ready with · success · fallback**.
 
 **Who:** Sunshine Coast Council Environmental Health team. Main switch 07 5475 7272, or `customer@sunshinecoast.qld.gov.au`. Ask to speak to whoever handles temporary food permits / private event food service for Maleny / Witta area.
 
-**Why now:** Path A food story (pizza-if-ready / tea-if-not) is the operational unknown. If a Temporary Food Licence is needed, the lead time is up to 14 days. Today is 2026-05-25. The night is 2026-06-20. If we haven't called by Wednesday, we cut into the licence-application window.
+**Why now:** the food story (pizza-if-ready / tea-if-not) is the operational unknown. If a Temporary Food Licence is needed, the lead time is up to 14 days. Today is 2026-06-03. The day is 2026-06-20, 17 days out, so this call is now urgent and sits right at the edge of the licence lead time.
 
 **Ask:**
-1. We are hosting a private members' day at 9 Gumland Drive, Witta on Saturday 20 June 2026. The maker session is 10am to 2pm. The afternoon plus pizza gathering starts from 2pm. B2 default capacity is 40. Free food (no transactions).
+1. We are hosting a free public open day at 9 Gumland Drive, Witta on Saturday 20 June 2026. A maker session runs from 10am; the gate opens to the public from 1pm; a free make-your-own pizza dinner runs from 5pm. Everyone welcome, turnout is open. Free food, no sales, no alcohol.
 2. Two food scenarios we are planning for:
    - Wood-fired pizza from an on-site oven, three types, free on the night
    - Tea + water + light snacks from a serving table, free on the night
-3. Which of these scenarios requires a Temporary Food Licence under SCC rules? Which is exempt as a private event with no sale?
+3. Which of these scenarios requires a Temporary Food Licence under SCC rules for a free public event with no sale? Which is exempt?
 4. If a Temporary Food Licence is needed, what is the application path and lead time?
 5. Is there a contact name we can put on the run sheet for the night, in case a question comes up?
 
@@ -28,9 +31,9 @@ Each section: **who · why now · ask · be ready with · success · fallback**.
 - Address: 9 Gumland Drive, Witta QLD 4552
 - Postcode confirmation, lot number if asked
 - Entity name: **The Harvest Pty Ltd** (in registration - confirm if asked)
-- Attendance estimate: ~40 people
+- Attendance estimate: [PLANNING HEADCOUNT, Ben to set. A public open day in a town of ~1,300 with ~2,000 cars through each weekend can draw well past the old 40-person cap. Give the council a realistic upper estimate.]
 - Free food, no register, no sales, no alcohol
-- Time window: 10am to late Saturday 20 June 2026, with pizza service from the afternoon gathering
+- Time window: maker session from 10am, public gate from 1pm, pizza service from 5pm, Saturday 20 June 2026, running till late
 
 **Success looks like:**
 - Clear answer on which scenario is exempt vs licenced, in writing if possible (email confirmation)
@@ -52,7 +55,7 @@ Each section: **who · why now · ask · be ready with · success · fallback**.
 **Ask:**
 1. We need PL $20M cover in **The Harvest Pty Ltd**'s name, bound by Friday 19 June 2026 at latest.
 2. The annual policy covers ongoing site, programming, garden, and event hosting.
-3. We also need a **same-day binder option** for a private event on Saturday 20 June 2026, with the afternoon plus pizza gathering capped by B2, free food, no transactions, in case the annual policy slips past 19 June. Is that available as a separate placement?
+3. We also need a **same-day binder option** for a free public open day on Saturday 20 June 2026, free food, no transactions, in case the annual policy slips past 19 June. This is a public event with open turnout, not a capped private function, so size the cover for that. Is that available as a separate placement?
 4. What underwriter is on the placement and what is the indicative annual premium?
 5. What evidence (Certificate of Currency) will we hold on the day to satisfy the landlord and council?
 
@@ -61,7 +64,7 @@ Each section: **who · why now · ask · be ready with · success · fallback**.
 - Property: 9 Gumland Drive, Witta QLD 4552
 - Landlord: Sonas Properties Pty Ltd (ACN 671 416 532)
 - Target premium ceiling: **≤ $15K/year** (budget locked in Notion Budget DB as Insurance binding row, Draft)
-- Operational summary: garden, pavilion (Milk Create Pavilion built March 2026), Wednesday crew (paid Community Stewards), invite-only events at Year 1 scale
+- Operational summary: garden, the Milk Crate Pavilion, Wednesday crew (paid Community Stewards), a public open day at launch with smaller programming through Year 1
 - Public liability $20M minimum per lease (existing condition)
 
 **Success looks like:**
@@ -83,7 +86,7 @@ Each section: **who · why now · ask · be ready with · success · fallback**.
 **Why now:** Path A run sheet on the alignment page names Nic as primary host with Susie + Joey as paired deputies. Ben is in transit and out of contact 20 June. If either of Susie or Joey is uncertain or unavailable, the deputy chain breaks and Path A loses its safety margin.
 
 **Ask:** (use your own framing - these are conversation seeds, not a script)
-1. We want to lock the private members' day for Saturday 20 June 2026: maker session 10am to 2pm, afternoon plus pizza from 2pm, B2 default capacity 40. Are you in for it?
+1. We want to lock the public open day for Saturday 20 June 2026: a maker session from 10am, the gate opens to the public from 1pm, free pizza from 5pm, open turnout. Are you in for it?
 2. Run sheet has you as paired deputies to Nic on the day. Nic is primary host; you are the people who hold the room if Nic has to step out for any reason. Comfortable with that?
 3. There is one specific deputy job each:
    - **Susie:** site reset + safety walk before the maker session, support during the day, then close

@@ -1,5 +1,11 @@
 # Newsletter — Soft Opening, 20 June 2026
 
+> **SUPERSEDED AGAIN 2026-06-03. 20 June is now a PUBLIC OPEN DAY.** First superseded off the
+> 3pm-7pm frame on 2-Jun (note below), then the private members'-day model; both retired. Current
+> truth: `../strategy/RECONCILED-20-june-public-open-day-2026-06-03.md` (everyone welcome, public
+> date, pizza from 5pm). Current member-email copy lives in
+> `../strategy/content-calendar-june-2026.md`. Read the framing here as history.
+
 > **Superseded for execution on 2026-06-02.** Do not paste this 3pm-7pm reply-led
 > draft into HighLevel. The current June campaign copy is in
 > `../strategy/content-calendar-june-2026.md`: B1 maker session 10am to 2pm,

@@ -49,7 +49,7 @@ const templates: EmailTemplateDraft[] = [
 
 <p>On Saturday 20 June we are opening the garden at Witta on Jinibara Country. The morning, 10am to 2pm, is yours: a maker session for the people building the place. A chance to get hands on, see how it is coming together, and shape the parts still forming.</p>
 
-<p>From 2pm it opens up to everyone and runs till late, with a make-your-own pizza dinner from the garden and local makers. Stay for that too.</p>
+<p>From 1pm the gate opens to everyone and runs till dark, with a make-your-own pizza dinner from the garden and local makers from 5pm. Stay for that too.</p>
 
 <p>There are two things to let us know, so we can plan properly.</p>
 
@@ -63,18 +63,18 @@ const templates: EmailTemplateDraft[] = [
 <p>See you in the garden,<br>The Harvest</p>`,
   },
   {
-    name: "Harvest June Sprint - Harvest Note 02 - 2026-06-09",
+    name: "Harvest June Sprint - Harvest Note 02 - 2026-06-06",
     subject: "You are hearing this first: the garden opens Saturday 20 June",
     preheader: "Members get the first word, and the first invite.",
     audience: "harvest-member",
-    sendWindow: "2026-06-09",
+    sendWindow: "2026-06-06",
     html: `<p>Hi {{contact.first_name}},</p>
 
-<p>You are on the member list, so you are hearing this before anyone else: we are opening the garden at The Harvest for a members' day on Saturday 20 June.</p>
+<p>You are on the member list, so you are hearing this first: we are opening the gate at The Harvest for an open day on Saturday 20 June.</p>
 
 <p>It is a chance to walk the rows, see what is taking shape across the garden, the events space and the art space, and meet the people building it. Nothing polished, nothing performative. Just the place as it is right now, and you in it.</p>
 
-<p>The day runs in two parts. The morning is a maker session for the makers and doers helping build the place. From the afternoon it opens up for everyone and runs into the evening, with a make-your-own pizza dinner from the garden and local makers. Come for the part that suits you.</p>
+<p>The day runs in two parts. The morning is a maker session for the makers and doers helping build the place. From 1pm the gate opens to everyone and runs into the evening, with a make-your-own pizza dinner from the garden and local makers from 5pm. Come for the part that suits you.</p>
 
 <p>We will send the practical details, timing, what to bring, where to park, closer to the day. For now, let us know you are coming so we can plan: <a href="${B2_RSVP_URL}">afternoon and pizza RSVP</a></p>
 
@@ -90,9 +90,9 @@ const templates: EmailTemplateDraft[] = [
 
 <p>Tomorrow is the day. Here is what you need.</p>
 
-<p>The day runs in two parts. From 10am to 2pm it is a maker session for the makers and doers, the people helping build and shape the place. From 2pm it opens up for everyone and runs till late, with a make-your-own pizza dinner from the garden and local makers.</p>
+<p>The day runs in two parts. From 10am to 1pm it is a maker session for the makers and doers, the people helping build and shape the place. From 1pm the gate opens for everyone and runs till late, with a make-your-own pizza dinner from the garden and local makers from 5pm.</p>
 
-<p><strong>When:</strong> Saturday 20 June, 10am till late.<br>
+<p><strong>When:</strong> Saturday 20 June. Maker session from 10am, gate opens to everyone from 1pm, pizza from 5pm, then till late.<br>
 <strong>Where:</strong> The Harvest, 9 Gumland Dr, Witta. Parking is out the side, follow the signs in.<br>
 <strong>Bring:</strong> a hat, water and good walking shoes. It is a garden, so dress for being outside.</p>
 

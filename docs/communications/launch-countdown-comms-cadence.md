@@ -1,5 +1,11 @@
 # Launch Countdown Comms Cadence — 22 May to 27 June 2026
 
+> **SUPERSEDED AGAIN 2026-06-03. 20 June is now a PUBLIC OPEN DAY.** First superseded on 2-Jun
+> (note below); the private members'-day model is now retired too. Current truth:
+> `../strategy/RECONCILED-20-june-public-open-day-2026-06-03.md` (everyone welcome, public date
+> announced Sat 7 Jun, member Note 02 moved to Fri 6 Jun so members still hear first). Read the
+> cadence framing here as history.
+
 > **Superseded for execution on 2026-06-02.** This cadence is retained as the May
 > decision history. Do not use its 3pm-7pm reply-led proof-night copy for June sends.
 > Current campaign copy and sequencing live in

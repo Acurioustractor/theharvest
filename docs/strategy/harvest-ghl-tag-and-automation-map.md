@@ -1,5 +1,11 @@
 # Harvest GHL Tag And Automation Map
 
+> **SUPERSEDED 2026-06-03 on the 20 June model. 20 June is now a PUBLIC OPEN DAY.** The "from 2pm"
+> / members-first framing is retired. Current truth:
+> `RECONCILED-20-june-public-open-day-2026-06-03.md` and `GHL-completion-handoff-2026-06-03.md`
+> (public RSVP via trigger link feeding `rsvp-pizza-dinner`, pizza from 5pm). The tag names and
+> calendar IDs below still stand; read the day-model framing as history.
+
 Last verified: 2026-06-02
 
 This is the operating map for Harvest contacts in GoHighLevel. The website creates or updates contacts, applies tags, adds notes where useful, and triggers workflows when a workflow env var is configured.
