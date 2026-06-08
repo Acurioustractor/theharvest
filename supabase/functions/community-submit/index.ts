@@ -47,14 +47,17 @@ async function upsertHarvestInboxOpportunity(input: {
   });
 }
 
-// Tag mappings for each submission type
+// Tag mappings for each submission type — canonical ACT GHL namespaces only
+// (role:/interest:/source:/place:/lane:). The flat aliases this function used to mint
+// (community-idea, residency-applicant, business-interest, workshop-suggestion,
+// story-feature, venue-enquiry, residency-*/idea-*/biz-*) are dropped.
 const TYPE_TAGS: Record<string, string[]> = {
-  idea: ["community-idea", "harvest-website"],
-  residency: ["residency-applicant", "harvest-website"],
-  "business-interest": ["business-interest", "harvest-website"],
-  "workshop-suggestion": ["workshop-suggestion", "harvest-website"],
-  "story-feature": ["story-feature", "harvest-website"],
-  "venue-enquiry": ["venue-enquiry", "harvest-website"],
+  idea: ["interest:community"],
+  residency: ["role:resident", "interest:community"],
+  "business-interest": ["role:supplier", "interest:markets"],
+  "workshop-suggestion": ["interest:workshops"],
+  "story-feature": ["role:storyteller", "interest:community"],
+  "venue-enquiry": ["interest:venue"],
 };
 
 Deno.serve(async (req) => {
@@ -81,10 +84,16 @@ Deno.serve(async (req) => {
     return jsonResponse({ success: false, error: "Type, name and email are required." }, 400);
   }
 
-  const tags = [...(TYPE_TAGS[type] ?? ["harvest-website"]), "harvest-inbox"];
-  if (fields.residencyType) tags.push(`residency-${fields.residencyType}`);
-  if (fields.ideaType) tags.push(`idea-${fields.ideaType}`);
-  if (fields.interestType) tags.push(`biz-${fields.interestType}`);
+  // OCAP guard: every community-line submission is stamped lane:community so these
+  // contacts can NEVER be auto-enrolled in comms drips. project:act-hv stamps Harvest
+  // scope at this chokepoint. NO comms: tag is granted here — community-line is tend-only.
+  const tags = [
+    "project:act-hv",
+    "lane:community",
+    ...(TYPE_TAGS[type] ?? []),
+    "harvest-website",
+    "harvest-inbox",
+  ];
 
   // Parse name
   const nameParts = String(name).trim().split(/\s+/).filter(Boolean);

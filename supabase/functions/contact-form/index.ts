@@ -77,16 +77,36 @@ Deno.serve(async req => {
   const nameParts = String(name).trim().split(/\s+/).filter(Boolean);
   const firstName = nameParts[0] || undefined;
   const lastName = nameParts.slice(1).join(" ") || undefined;
+
+  // Canonical ACT GHL tag contract (mirrors server/gohighlevel.ts + server/routers.ts):
+  // project:act-hv stamped on every Harvest contact write; canonical namespaces only
+  // (project:/role:/comms:/interest:/source:/place:/lane:). The flat aliases this
+  // function used to mint (contact-form, harvest-newsletter, project-harvest, …) are dropped.
+  // CONSENT GATE (Spam Act 2003): comms:harvest-newsletter is granted ONLY when the
+  // contact ticked the newsletter opt-in (the `subscribe` checkbox = explicit consent).
+  // Fail safe — no checkbox => no comms tag.
+  const newsletterConsent = subscribe === true;
   const tags = [
-    "contact-form",
+    "project:act-hv",
     "harvest-website",
     "harvest-inbox",
     "act-inquiry", // ACT-wide inquiry marker the shared notification workflow triggers on
-    "project-harvest", // stable project key; the workflow maps this to the Project Designation label
-    ...(subscribe ? ["newsletter", "harvest-newsletter"] : []),
+    ...(newsletterConsent ? ["comms:harvest-newsletter"] : []),
   ];
 
-  // Create/update contact in GHL
+  // Create/update contact in GHL. When the visitor opted in, stamp newsletter_consent=Yes
+  // so the consent trail lives on the contact record, not just on a tag.
+  const contactBody: Record<string, unknown> = {
+    email,
+    firstName,
+    lastName,
+    locationId,
+    source: "Harvest | Contact",
+  };
+  if (newsletterConsent) {
+    contactBody.customFields = [{ key: "newsletter_consent", field_value: "Yes" }];
+  }
+
   const contactResponse = await fetch(`${GHL_API_BASE}/contacts/upsert`, {
     method: "POST",
     headers: {
@@ -95,13 +115,7 @@ Deno.serve(async req => {
       "Authorization": `Bearer ${apiKey}`,
       "Version": GHL_API_VERSION,
     },
-    body: JSON.stringify({
-      email,
-      firstName,
-      lastName,
-      locationId,
-      source: "Harvest | Contact",
-    }),
+    body: JSON.stringify(contactBody),
   });
 
   if (!contactResponse.ok) {
