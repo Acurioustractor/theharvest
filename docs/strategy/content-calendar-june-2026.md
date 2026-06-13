@@ -231,6 +231,16 @@ A dated cadence for the first week, mixing the themed posts above with three new
 - **Sat 6 Jun (FB) - members first (reworks E/F):** Something is taking shape at The Harvest, and our members will hear about it first. Late June, the garden is nearly ready to share. If you want the first word, and the first invite, the member list is the place to be. It is free to join. theharvestwitta.com.au/membership
 - **Sun 7 Jun (IG) - people (reworks A):** The Harvest is being built by the people who will use it. Growers, makers, cooks, kids, neighbours from around Witta on Jinibara Country. None of it is finished, and that is the point. There is still room to shape the garden, the events space and the art space. theharvestwitta.com.au/people
 
+**Membership, made simple (ongoing, from the week of 20 June; public membership stays one sentence until after the open day)**
+
+Plain explainers for the newsletter and social once the open day has passed. Pair each with a real photo. Describe what people do, never levels or rank.
+
+M1. What it is (square). Membership at The Harvest is free. It means you hear first, and you help shape what this place becomes. No fee. No card. Just a way in. Reply with one word: garden, shop, workshop. [link to /membership]
+
+M2. Members hear first (story). The date went to our members before it went anywhere else. That is how it works here. Members hear first. Want in? It is free to join. [link to /membership]
+
+M3. How to support (square). The best way to back The Harvest is to show up. Come to a work day. Make something for the shop. Bring a friend. That is what being a member looks like. [link to /membership]
+
 Image notes: real photos preferred (garden, the spaces, people on site). For any made graphic use the graphite-on-cream illustration style. No post names 20 June.
 
 ---
