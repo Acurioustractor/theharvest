@@ -107,8 +107,8 @@ temp/
 *.sqlite3
 .vercel
 
-# Claude/Cursor IDE files
-.claude/
+# Claude/Cursor IDE files (local-only, except the committed selling-system skill — see end of file)
+.claude/*
 
 # Other AI/IDE agent configs
 .agent/
@@ -177,3 +177,8 @@ docs/brand/*.pptx
 docs/brand/screenshots/
 docs/communications/debriefs/_whatsapp-exports/
 
+
+# Track ONLY the selling-system skill (overrides .claude/* and skills/ above; last match wins)
+!.claude/skills/
+.claude/skills/*
+!.claude/skills/harvest-selling-system/
