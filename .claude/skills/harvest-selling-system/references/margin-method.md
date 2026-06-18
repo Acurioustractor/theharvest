@@ -84,7 +84,9 @@ Seasonings, flour, semolina, dressing are cents per serve — fold into the real
 
 ### Sample builds → recommended prices
 
-Member price set below public but kept above cost (see `member-model.md`).
+The Member column is the design target; on the day it is enforced as a flat **15% Members
+discount** in Square (which lands within ~$0.50 of these and rounds member-favourably), plus
+a free coffee. See `square-setup.md` and `launch-runbook.md`. Member prices stay above cost.
 
 | Item | Food cost | Public | Member | Public cost % |
 |---|---|---|---|---|
@@ -104,16 +106,18 @@ A night selling ~80–100 pizzas at a ~$16 average is roughly **$1,000+ gross ma
 before labour. That is the engine. Drinks add a few hundred dollars of margin and round
 out the offer.
 
-## Three things this order flags
+## Three things this order flagged (resolved for the ~60-pizza launch night)
 
-1. **Cheese is the binding constraint.** 3 × 2kg shredded mozz at 120g/pizza = only
-   ~50 pizzas of cheese, well short of the 117 bases ordered. Either portion cheese
-   tighter (~100g) or order more cheese next time. Cheese is also the 2nd-biggest pizza
-   cost, so portioning it is the single biggest margin lever on pizza.
+1. **Cheese was the binding constraint - now par'd.** 3 × 2kg shredded mozz at 120g/pizza
+   was only ~50 pizzas of cheese. Par is now **4 × 2kg** (8kg, ~60-70 pizzas at ~110g) in
+   `par-sheet-template.csv`. Cheese is the 2nd-biggest pizza cost, so portioning it tight
+   (~110g) is the single biggest margin lever on pizza.
 2. **The pizza boxes don't fit the pizzas.** Ordered boxes are 7"/18cm; bases are
-   11–12"/28–30cm. For 12" takeaway you need ~13" boxes. Check before the next night.
-3. **Vegan needs vegan cheese.** There's a GF/vegan *base* but only dairy cheese in the
-   order — a "vegan" pizza isn't currently possible. Add a plant cheese if it's on menu.
+   11-12"/28-30cm. Order a **12-13"** box for whole-pizza takeaway; keep the 7" for garlic
+   bread and dessert slices. Confirm the Bidfood code for a 12-13" box before the next order.
+3. **Vegan: GF only for now.** Founder decision (2026-06-18): no vegan pizza on the launch
+   menu. The GF base is served with dairy cheese, so there is no vegan claim. Add a plant
+   cheese later if a vegan pizza goes on. (No plant cheese in the next order.)
 
 ## Menu engineering (review quarterly)
 

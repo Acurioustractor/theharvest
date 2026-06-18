@@ -74,16 +74,17 @@ The $20/week Supporter fee charges through **Mighty Networks** as a paid Plan.
 - You **can't set/change billing during the free trial** — the Harvest network must exit
   the trial / pick a paid Mighty plan before it can charge. (Currently on the 3-months-free trial.)
 
-### Fee drag (what you keep)
+### Fee drag (what you keep) - verified AU rates 2026-06-18
 | Fee | Rate | On ~$1,044/yr |
 |---|---|---|
-| Mighty take | 2% Launch · 1% Scale · 0.5% Growth (5% on Growth trial) | ~$21 (Launch) |
-| Stripe | ~2.9% + $0.30/charge (AU domestic cards often ~1.75%+$0.30 — verify) | ~$34 (monthly billing) |
-| Mighty platform | Launch $79/mo fixed (all members); Scale/Growth higher | spread across the tier |
-| **Apple iOS** | **15% if they subscribe via the iOS app** (Mighty take = 0 then) | **AVOID — use web checkout** |
+| Mighty take | 2% Launch · 1% Scale · 0.5% Growth | ~$21 (Launch) |
+| Stripe (AU domestic) | **1.70% + $0.30/charge** (since 1 Apr 2024; +10% GST on the fee, claimable) | ~$21 (monthly billing, ex-GST) |
+| Mighty platform | Launch **$79/mo** · Scale **$179/mo** · Growth **$354/mo** (fixed, all members) | spread across the tier |
+| **Apple iOS** | **15% if they subscribe via the iOS app** (Mighty take = 0 then) | **AVOID - use web checkout** |
 
-Net ≈ **~$985/member/yr** before the fixed platform fee, which shrinks per-member as the
-tier grows. The **iOS 15% trap is the big one** — always send the join link to Mighty's
+Net ≈ **~$1,000/member/yr** before the fixed platform fee, which shrinks per-member as the
+tier grows. (AU Stripe is much cheaper than the US ~2.9% - the earlier ~$985 estimate used the
+US rate.) The **iOS 15% trap is the big one** - always send the join link to Mighty's
 **web checkout**, never "download the app and subscribe". (Sources in `research-and-benchmarks.md`.)
 
 ### The role-shift (reconcile, don't overwrite, the Mighty doc)
@@ -112,15 +113,23 @@ Mighty paid Supporter Plan  ->  GHL `supporter-member` tag  ->  Square Members c
   Scale-and-up per the Mighty doc), which also drops the take rate to 1%. Mighty
   join/cancel -> GHL tag -> Square group.
 
+## Decided (2026-06-18)
+
+- **Mighty plan tier: launch on Launch** ($79/mo, 2%, manual Monday sweep). The 2%->1%
+  saving on Scale only beats its extra $1,200/yr platform cost above ~$120k/yr of
+  Mighty-processed revenue (~115 paid supporters), and Scale's real value (Zapier + Admin API
+  auto-sync) is Phase B. Upgrade trigger: the manual sweep becomes a burden, or supporters
+  approach ~100.
+- **Square enforcement: one automatic 15% Members discount + a free coffee comp.** Confirmed
+  via the test sale in `launch-runbook.md` §2 before promising it. The member offer is "15%
+  off the menu + a free coffee each visit" - simpler to say and to enforce than a per-item grid.
+
 ## Still open (decide before charging)
 
-1. **Mighty plan tier** — start on Launch ($79/mo, 2%, manual sync); move to Scale for
-   auto-sync + 1% once the tier has the numbers to justify it.
-2. **Naming** — "Supporter" vs "Member" vs something Harvest. Don't collide with the
+1. **Naming** - "Supporter" vs "Member" vs something Harvest. Don't collide with the
    existing free "member" language (footer/history).
-3. **Square enforcement** — confirm the Customer Group auto-discount + coffee comp actually
-   work on the day before promising them.
-4. **GST** — the membership fee is likely a taxable supply; confirm treatment with Standard
-   Ledger (entity-level — defer to ACT business-research).
+2. **GST** - the membership fee is likely a taxable supply; confirm treatment with Standard
+   Ledger (entity-level - defer to ACT business-research).
 
-This is **day-shift, human-in-loop** work: it charges real people. Plan it, then do it deliberately.
+This is **day-shift, human-in-loop** work: it charges real people. The execution steps live in
+`launch-runbook.md`. Plan it, then do it deliberately.

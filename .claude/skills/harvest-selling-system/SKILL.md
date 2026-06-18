@@ -58,10 +58,11 @@ This skill complements, and does not duplicate:
 
 | You want to… | Go to |
 |---|---|
+| **Stand the whole system up (Square + Mighty + sweep), step by step** | `references/launch-runbook.md` |
 | Get cost per unit, or price something to a target margin | run `scripts/margin.mjs` + `references/margin-method.md` |
 | Understand the method, GST handling, the worked Bidfood order | `references/margin-method.md` |
-| Set up or run Square (items, costs, member discount, reports) | `references/square-setup.md` |
-| Do stocktake, set par levels, place a Bidfood reorder | `references/stocktake-and-ordering.md` |
+| Set up or run Square (items, costs, member discount, reports) | `references/square-setup.md` + `references/square-item-build-sheet.csv` |
+| Do stocktake, set par levels, place a Bidfood reorder | `references/stocktake-and-ordering.md` + `references/par-sheet-template.csv` |
 | Design or price the membership and its perks | `references/member-model.md` |
 | See the sourced benchmarks behind all of this | `references/research-and-benchmarks.md` |
 
@@ -104,9 +105,12 @@ node .claude/skills/harvest-selling-system/scripts/margin.mjs price 2.54 50 --gs
 
 | Need | Reference |
 |---|---|
+| **Stand-it-up runbook (Square + Mighty + sweep + test sale)** | `references/launch-runbook.md` |
 | Pricing method, GST, worked Bidfood order | `references/margin-method.md` |
 | Square setup + member pricing enforcement | `references/square-setup.md` |
+| Square item library values (import-ready) | `references/square-item-build-sheet.csv` |
 | Stocktake, par levels, Bidfood reorder | `references/stocktake-and-ordering.md` |
+| Par sheet, par levels set for ~60 pizzas | `references/par-sheet-template.csv` |
 | Member model, perks, breakeven, retention | `references/member-model.md` |
 | Sourced benchmarks (committed digest) | `references/research-and-benchmarks.md` |
 | Full research report (local only, gitignored) | `thoughts/shared/handoffs/selling-system-research.md` |

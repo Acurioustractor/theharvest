@@ -40,18 +40,24 @@ drinks actually paid. Re-enter costs whenever a Bidfood invoice moves the price.
 
 ## 4. Member pricing enforcement
 
-Order of preference:
-1. **Customer Group "Members" + automatic discount.** Tag the customer as a Member in
-   Square; an automatic discount (e.g. "Member price") applies at checkout when they're
-   attached to the sale. Cleanest and least error-prone.
-2. **A "Member" discount button** the cashier taps after checking membership status
-   (Mighty Networks app / GHL tag / member card). Fastest to set up, relies on staff.
-3. **Member variations** (e.g. "Pepperoni — public / member") — visible and simple but
-   clutters the screen; fine if you only have a few member-priced lines.
+**Locked (2026-06-18): one automatic 15% Members discount + a free coffee.** A single flat
+15% off lands within ~$0.50 of every target member price in `margin-method.md`, rounds in the
+member's favour, and is one rule instead of a per-item grid. The offer is also simple to say:
+"15% off the menu + a free coffee each visit."
 
-Keep member prices from `margin-method.md` — set so they never fall below cost. The
-weekly free coffee is best handled as a **comp** (or a $0 "Member coffee" item) so it
-shows in reports as redemptions, not lost sales.
+1. **Customer Group "Members" + automatic discount "Member 15%".** Tag the customer as a
+   Member in Square; the automatic 15%-off discount, restricted to the Members group, applies
+   itself at checkout when they're attached to the sale. Cleanest and least error-prone.
+2. **Fallback - a "Member 15%" button** the cashier taps after checking membership status
+   (Mighty app / GHL tag / member card). Use this only if the automatic discount won't fire.
+3. **Free coffee** is a **comp** (or a $0 "Member coffee" item) so it shows in reports as a
+   redemption, not a lost sale. One per visit.
+
+If you later want the exact per-item grid (e.g. $3 off pizza, $1 off drinks), build
+category-scoped automatic discounts instead of the single flat one - more setup, more exact.
+
+Run the **test sale in `launch-runbook.md` §2** before promising members the discount: a
+Pepperoni + soda for a Members customer should drop $22.00 -> $18.70 automatically.
 
 Square **Loyalty** (points/visits) is a paid add-on — optional. The membership itself
 lives in Mighty Networks / GHL, not Square; Square just enforces the price on the day.
