@@ -57,6 +57,24 @@ in the repo. Verification status is marked per item per the project's verificati
   discount**. *(Verified across CSA research.)* → The member tier must deliver felt,
   weekly value (the coffee) and belonging, or it churns.
 
+### Mighty Networks billing (the chosen rail, verified 2026-06-18)
+
+- **Intervals:** weekly / monthly / annual / daily / one-time all supported, so $20/week is
+  possible — but the fixed ~$0.30/charge makes weekly the dear way to bill (≈$15.60/yr vs
+  ≈$3.60 monthly). *(Verified — Mighty Help Center "installment plans & subscription intervals".)*
+- **Transaction fee:** 2% Launch · 1% Scale · 0.5% Growth (5% on the Growth free trial),
+  on top of Stripe (~2.9% + $0.30; AU domestic often ~1.75%+$0.30 — verify). *(Verified —
+  Mighty Help Center "does Mighty charge a transaction fee".)*
+- **iOS:** Apple takes **15%** on in-app purchases; Mighty charges 0% then. → Use web
+  checkout. *(Verified — same Mighty fee page.)*
+- **Platform fee:** Launch plan **$79/mo** entry point after the 2025 restructure; Zapier +
+  Admin API (needed to auto-sync paid status → GHL → Square) are **Scale-and-up**.
+  *(Verified — Mighty pricing page + the Harvest Mighty operating-system doc.)*
+
+Sources: [Mighty intervals](https://faq.mightynetworks.com/en/articles/11101060-how-do-i-set-up-installment-plans-and-subscription-intervals) ·
+[Mighty fees](https://faq.mightynetworks.com/en/articles/9140682-does-mighty-networks-charge-a-transaction-fee) ·
+[Mighty pricing](https://www.mightynetworks.com/pricing)
+
 ## Events ("pizza night")
 
 - Cost an event **separately from pantry stock**; food cost commonly ~**$8–10/head** for a

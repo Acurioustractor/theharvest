@@ -58,26 +58,69 @@ modelling if sign-up is slow — change the number in the calculator and re-run 
 
 | System | Role |
 |---|---|
-| **Mighty Networks** | The community home + member directory + member comms. Possibly the subscription billing surface. See `docs/strategy/mighty-community-operating-system-2026-06-11.md`. |
-| **Square** | Enforces member *price* on the day (Customer Group auto-discount / comp). Not the membership database. |
-| **GoHighLevel** | CRM source of truth for tags/segments and automation. The `harvest-member` / interest tags. |
-| **Stripe-via-Mighty or Square recurring or GHL** | Where the $20/week actually charges — **decide before launch** (see open decisions). |
+| **Mighty Networks** | **Billing rail** for the paid Supporter Plan (charges the card via Stripe) + community home. See `docs/strategy/mighty-community-operating-system-2026-06-11.md`. |
+| **GoHighLevel** | CRM **source of truth** for tags/segments. Holds the `supporter-member` tag that says "this person is paid up". |
+| **Square** | Enforces member *price* on the day (Customer Group auto-discount / coffee comp). Not the membership database. |
 
-Sync is tag-based and currently manual-ish: a paid supporter gets a `supporter-member`
-tag in GHL, is added to the Members group in Square, and to the paid space in Mighty.
-Keep one of these the source of truth (GHL tag) and reconcile the others to it.
+## Billing — LOCKED: Mighty Networks subscription (2026-06-18)
 
-## Open decisions to reconcile before launch
+The $20/week Supporter fee charges through **Mighty Networks** as a paid Plan.
 
-1. **Billing location** — Mighty subscription vs Square recurring vs GHL/Stripe. One
-   place, auto-charged weekly/monthly, with a clean cancel.
+### How it bills (verified 2026-06-18)
+- Mighty supports weekly / monthly / annual / one-time intervals, so $20/week is literally possible.
+- **Bill MONTHLY at $87/mo, frame it as "$20/week".** Stripe's fixed ~$0.30 per charge ×
+  52 weekly ≈ $15.60/member/yr vs ~$3.60 billed monthly, and weekly = 52 chances for a
+  card decline. Offer an **annual** option (~$1,040, optionally a small discount) for the committed.
+- You **can't set/change billing during the free trial** — the Harvest network must exit
+  the trial / pick a paid Mighty plan before it can charge. (Currently on the 3-months-free trial.)
+
+### Fee drag (what you keep)
+| Fee | Rate | On ~$1,044/yr |
+|---|---|---|
+| Mighty take | 2% Launch · 1% Scale · 0.5% Growth (5% on Growth trial) | ~$21 (Launch) |
+| Stripe | ~2.9% + $0.30/charge (AU domestic cards often ~1.75%+$0.30 — verify) | ~$34 (monthly billing) |
+| Mighty platform | Launch $79/mo fixed (all members); Scale/Growth higher | spread across the tier |
+| **Apple iOS** | **15% if they subscribe via the iOS app** (Mighty take = 0 then) | **AVOID — use web checkout** |
+
+Net ≈ **~$985/member/yr** before the fixed platform fee, which shrinks per-member as the
+tier grows. The **iOS 15% trap is the big one** — always send the join link to Mighty's
+**web checkout**, never "download the app and subscribe". (Sources in `research-and-benchmarks.md`.)
+
+### The role-shift (reconcile, don't overwrite, the Mighty doc)
+`mighty-community-operating-system-2026-06-11.md` says Mighty is "the inside room, **not
+where money happens**", invite-only, with GHL as the source of truth. Charging here shifts
+that for the Supporter tier. Reconcile it:
+- Mighty runs **two plans**: the free invited inside-room (unchanged) and a paid **Supporter** Plan.
+- You're not selling "Mighty access" — you're selling **backing The Harvest + real-world
+  perks**; Mighty is just the billing + membership-home rail. The value is the place, not
+  the online feed (retention rides on belonging, not the room).
+- Update the Mighty doc's "not where money happens" line to: *money happens only for the
+  paid Supporter Plan; the free inside room stays free and invite-only.*
+
+### Entitlement flow (so the perks are honoured off-platform)
+Mighty bills, but the perks are real-world, so the "is-a-Supporter" signal must reach Square:
+
+```
+Mighty paid Supporter Plan  ->  GHL `supporter-member` tag  ->  Square Members customer group
+       (billing)                   (source of truth)              (member price on the day)
+```
+
+- **Phase A (launch) — manual.** The existing Monday sweep reads Mighty's paid-member
+  list, sets `supporter-member` in GHL by hand, and adds them to the Square Members group.
+  Matches the Mighty doc's "Phase A: no cross-system automation".
+- **Phase B — automate** once it's alive: needs Mighty **Scale** (Zapier + Admin API are
+  Scale-and-up per the Mighty doc), which also drops the take rate to 1%. Mighty
+  join/cancel -> GHL tag -> Square group.
+
+## Still open (decide before charging)
+
+1. **Mighty plan tier** — start on Launch ($79/mo, 2%, manual sync); move to Scale for
+   auto-sync + 1% once the tier has the numbers to justify it.
 2. **Naming** — "Supporter" vs "Member" vs something Harvest. Don't collide with the
-   existing free "member" language (footer/history). Reconcile with the Mighty + email
-   operating-system docs.
-3. **Perk enforcement** — confirm the Square Customer Group auto-discount flow and the
-   coffee-comp mechanism actually work on the day before promising them.
-4. **GST** — the membership fee itself is a taxable supply if it buys goods/services;
-   confirm treatment with Standard Ledger (entity-level — defer to ACT business-research).
+   existing free "member" language (footer/history).
+3. **Square enforcement** — confirm the Customer Group auto-discount + coffee comp actually
+   work on the day before promising them.
+4. **GST** — the membership fee is likely a taxable supply; confirm treatment with Standard
+   Ledger (entity-level — defer to ACT business-research).
 
-This is **day-shift, human-in-loop** work: it writes to GHL/Square/Mighty and charges
-real people. Plan it, then do it deliberately.
+This is **day-shift, human-in-loop** work: it charges real people. Plan it, then do it deliberately.
