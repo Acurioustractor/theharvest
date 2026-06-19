@@ -180,7 +180,7 @@ signage and no register signage, nothing is sold.
 - **The morning runs long into the public gate.** Hard stop at 12:45. Clear maker
   signage and reset before 1pm. The afternoon is a different moment.
 - **A photo of a maker who has not said yes.** Do not take it. Consent first,
-  every time. In a town of about 1,296 people, an unconsented photo costs trust
+  every time. In a town of about 1,300 people, an unconsented photo costs trust
   you cannot rebuild.
 
 ## Readiness gates (owned elsewhere, they can stop the day)
