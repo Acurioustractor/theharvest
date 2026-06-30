@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ImageIcon, Loader2, X } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { useAuth } from "@/_core/hooks/useAuth";
@@ -65,12 +65,24 @@ export function HarvestImage({
 
   const [pickerOpen, setPickerOpen] = useState(false);
   const [loaded, setLoaded] = useState(false);
+  const [imgErrored, setImgErrored] = useState(false);
 
   const override = overrideQuery.data;
   const rawSrc = override?.src ?? defaultSrc;
-  const src = optimize(rawSrc, size);
+  const primarySrc = optimize(rawSrc, size);
+  const bundledSrc = optimize(defaultSrc, size);
+  // If the resolved (override or EL) image fails to load — e.g. a deleted
+  // EL asset, a stale Supabase link — fall back to the page's bundled
+  // default rather than leaving a broken image in place.
+  const src = imgErrored && primarySrc !== bundledSrc ? bundledSrc : primarySrc;
   const alt = override?.altText ?? defaultAlt;
   const hasExplicitPosition = /\b(?:absolute|fixed|sticky)\b/.test(className ?? "");
+
+  // Reset the error flag whenever the resolved source changes (e.g. an
+  // admin swaps the photo), so a stale failure doesn't stick around.
+  useEffect(() => {
+    setImgErrored(false);
+  }, [rawSrc]);
 
   const handlePick = async (photo: PickedPhoto) => {
     await setMutation.mutateAsync({
@@ -105,7 +117,10 @@ export function HarvestImage({
           decoding={priority ? "sync" : "async"}
           fetchPriority={priority ? "high" : undefined}
           onLoad={() => setLoaded(true)}
-          onError={() => setLoaded(true)}
+          onError={() => {
+            setLoaded(true);
+            setImgErrored(true);
+          }}
         />
       )}
 

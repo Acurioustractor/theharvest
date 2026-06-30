@@ -24,6 +24,84 @@ interface HarvestGalleryProps {
   columns?: 2 | 3 | 4;
 }
 
+// Shown when Empathy Ledger is unreachable or has nothing tagged yet, so a
+// "Photo Gallery" section never renders as an empty placeholder. Reuses
+// real photos already bundled with the site.
+const FALLBACK_PHOTOS: ELMediaAsset[] = [
+  {
+    id: "fallback-1",
+    src: "/images/social/harvest-social-card.jpg",
+    title: "The Harvest Today",
+    description: "Milk crates stacked into a pavilion at The Harvest in Witta.",
+    altText: "The Harvest site at Witta",
+    category: "after",
+    date: null,
+    tags: [],
+    themes: [],
+    sortOrder: 0,
+  },
+  {
+    id: "fallback-2",
+    src: "/images/harvest-grow.jpg",
+    title: "Grow: Garden Centre",
+    description: "Native species, productive plants, and expert advice for hinterland gardens.",
+    altText: "The Harvest garden centre",
+    category: "after",
+    date: null,
+    tags: [],
+    themes: [],
+    sortOrder: 1,
+  },
+  {
+    id: "fallback-3",
+    src: "/images/harvest-make.jpg",
+    title: "Make: Workshop Spaces",
+    description: "From pottery to preserving, learning new skills with local makers and artisans.",
+    altText: "Workshop space at The Harvest",
+    category: "after",
+    date: null,
+    tags: [],
+    themes: [],
+    sortOrder: 2,
+  },
+  {
+    id: "fallback-4",
+    src: "/images/harvest-gather.jpg",
+    title: "Gather: Community Events",
+    description: "Markets, music, and gatherings that bring neighbours together.",
+    altText: "Community gathering at The Harvest",
+    category: "milestone",
+    date: null,
+    tags: [],
+    themes: [],
+    sortOrder: 3,
+  },
+  {
+    id: "fallback-5",
+    src: "/images/community-gathering.jpg",
+    title: "Community Work Day",
+    description: "Neighbours coming together to turn an overgrown nursery into a community hub.",
+    altText: "Community work day at The Harvest",
+    category: "during",
+    date: null,
+    tags: [],
+    themes: [],
+    sortOrder: 4,
+  },
+  {
+    id: "fallback-6",
+    src: "/images/market-atmosphere.jpg",
+    title: "Market Day",
+    description: "Monthly markets bringing together local producers, makers, and the wider community.",
+    altText: "Market day at The Harvest",
+    category: "milestone",
+    date: null,
+    tags: [],
+    themes: [],
+    sortOrder: 5,
+  },
+];
+
 /**
  * Transform Supabase storage URL to use image transformation
  * Reduces 6-8MB images to ~200KB for mobile performance
@@ -66,30 +144,15 @@ export function HarvestGallery({
     limit,
   });
 
-  const photos = (data?.media as ELMediaAsset[]) || [];
+  const elPhotos = (data?.media as ELMediaAsset[]) || [];
+  // Empathy Ledger is unreachable or has nothing tagged yet — show a
+  // curated set of real local photos instead of an empty placeholder.
+  const photos = !isLoading && (error || elPhotos.length === 0) ? FALLBACK_PHOTOS : elPhotos;
 
   if (isLoading) {
     return (
       <div className={`text-center py-12 text-stone-500 ${className}`}>
         Loading gallery...
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className={`text-center py-12 text-stone-500 ${className}`}>
-        <p className="mb-2">Gallery not available</p>
-        <p className="text-sm text-stone-400">Photos will appear here once connected</p>
-      </div>
-    );
-  }
-
-  if (photos.length === 0) {
-    return (
-      <div className={`text-center py-12 text-stone-500 ${className}`}>
-        <p className="mb-2">No photos yet</p>
-        <p className="text-sm text-stone-400">Photos tagged with "{tag || 'harvest'}" will appear here</p>
       </div>
     );
   }
@@ -114,6 +177,9 @@ export function HarvestGallery({
               alt={photo.altText || photo.title || "Gallery image"}
               className="w-full h-64 object-cover transition-transform duration-300 group-hover:scale-105"
               loading="lazy"
+              onError={(e) => {
+                (e.currentTarget as HTMLImageElement).src = "/images/placeholder.jpg";
+              }}
             />
             {(photo.title || photo.description) && (
               <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-4">
@@ -146,6 +212,9 @@ export function HarvestGallery({
             alt={selectedPhoto.altText || selectedPhoto.title || "Gallery image"}
             className="max-w-full max-h-[90vh] object-contain"
             onClick={(e) => e.stopPropagation()}
+            onError={(e) => {
+              (e.currentTarget as HTMLImageElement).src = "/images/placeholder.jpg";
+            }}
           />
           {(selectedPhoto.title || selectedPhoto.description) && (
             <div className="absolute bottom-4 left-4 right-4 text-center text-white">

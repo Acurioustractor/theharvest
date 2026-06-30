@@ -193,9 +193,10 @@ export function ProgressGallery({
     location: img.location || undefined,
   }));
 
-  // Determine which images to use based on source
+  // Determine which images to use based on source. EL down or empty falls
+  // back to the bundled samples so this never renders an empty gallery.
   const images = source === "empathy-ledger"
-    ? (transformedELImages || [])
+    ? (transformedELImages && transformedELImages.length > 0 ? transformedELImages : sampleProgressImages)
     : source === "local"
     ? (transformedLocalImages || propImages || sampleProgressImages)
     : (propImages || sampleProgressImages);
