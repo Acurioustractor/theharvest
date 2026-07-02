@@ -63,29 +63,19 @@ const infoPoints: InfoPoint[] = [
   },
   {
     id: "cafe",
-    label: "Farm-to-Plate Cafe",
+    label: "Future Cafe (Proposed)",
     description:
-      "Open-air cafe serving local produce from the on-site gardens and surrounding farms. Seasonal menus celebrate the best of the Sunshine Coast hinterland.\n\nSeating for 60 indoors and 40 on the verandah with views over the valley.",
+      "The planned spot for a future cafe, to be run by a sublicenced operator, drawing on produce from the on-site gardens and surrounding farms. Not open yet.",
     x: 55,
     y: 35,
     color: "amber",
-    gallery: [
-      {
-        src: "/images/inspiration/cafe-1.jpg",
-        caption: "Similar cafe in Byron Bay",
-      },
-      {
-        src: "/images/inspiration/cafe-2.jpg",
-        caption: "Outdoor dining concept",
-      },
-    ],
     tags: ["eat", "stage-1"],
   },
   {
     id: "nursery",
     label: "Eatery & Restaurant Pavilion",
     description:
-      "The original nursery buildings, restored and repurposed as an eatery, restaurant pavilion, and retail space for plants and local crafts.",
+      "The original nursery buildings, being restored and repurposed, with plans for an eatery, restaurant pavilion, and retail space for plants and local crafts.",
     x: 72,
     y: 32,
     color: "purple",
@@ -109,7 +99,7 @@ const infoPoints: InfoPoint[] = [
     id: "gathering",
     label: "Community Gathering",
     description:
-      "Multi-purpose community space with colourful pavilion structures. Hosts workshops, markets, and neighbourhood events. Flexible layout adapts to different group sizes.",
+      "Multi-purpose community space with colourful pavilion structures. Planned to host workshops, markets, and neighbourhood events. Flexible layout adapts to different group sizes.",
     x: 20,
     y: 35,
     color: "blue",
@@ -131,10 +121,6 @@ const infoPoints: InfoPoint[] = [
     color: "green",
     gallery: [
       {
-        src: "/images/inspiration/garden-1.jpg",
-        caption: "Terraced garden reference",
-      },
-      {
         src: "/images/site-plan/inspiration/accessible-garden.jpeg",
         caption: "Wheelchair-accessible raised garden bed",
       },
@@ -145,15 +131,11 @@ const infoPoints: InfoPoint[] = [
     id: "bocce",
     label: "Bocce & Event Space",
     description:
-      "Open area with bocce portico for casual play, bordered by seating. Doubles as an event lawn for markets, live music, outdoor cinema, and community gatherings.",
+      "Open area with bocce portico for casual play, bordered by seating. Planned as an event lawn for markets, live music, outdoor cinema, and community gatherings.",
     x: 42,
     y: 65,
     color: "blue",
     gallery: [
-      {
-        src: "/images/inspiration/event-1.jpg",
-        caption: "Outdoor market vibe",
-      },
       {
         src: "/images/site-plan/inspiration/log-climbing-frame.jpeg",
         caption: "Natural play equipment concept",
@@ -165,7 +147,7 @@ const infoPoints: InfoPoint[] = [
     id: "tea-station",
     label: "Tea Station",
     description:
-      "Dedicated tea station and rest stop along the garden path. A quiet spot to pause and enjoy the surroundings with a cup of locally grown tea.",
+      "Dedicated tea station and rest stop along the garden path. A quiet spot to pause and enjoy the surroundings with a cup of tea.",
     x: 35,
     y: 72,
     color: "amber",
@@ -216,7 +198,7 @@ const infoPoints: InfoPoint[] = [
 export default function SitePlan() {
   return (
     <SitePlanCanvas
-      title="The Harvest — Site Plan"
+      title="The Harvest Site Plan"
       groups={groups}
       infoPoints={infoPoints}
       defaultGroupId="master-plan"

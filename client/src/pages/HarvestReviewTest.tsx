@@ -55,7 +55,7 @@ const threads: Thread[] = [
     image: "/images/optimized/barry-5745-1000.webp",
     alt: "Barry beside old machinery at The Harvest",
     note: "Tracing the St Mary's and Witta timber source trail.",
-    body: "Walkways built from St Mary's Cathedral timber. The working question is whether part of that timber began in the Witta region before it travelled south and came back as paths.",
+    body: "The walkway timber carries a St Mary's Cathedral story we are still tracing. The working question is whether part of that timber began in the Witta region before it travelled south and came back as paths.",
     ideas: [],
     icon: Hammer,
     color: "#8B4A2A",
@@ -93,7 +93,7 @@ const workUpdates: WorkUpdate[] = [
     room: "garden",
     image: "/images/optimized/sophie-garden-1000.webp",
     alt: "Sophie working in the garden at The Harvest",
-    body: "Beds, seedlings, mulch, compost, paths and weekly hands in the soil. The garden carries the public work until July.",
+    body: "Beds, seedlings, mulch, compost and paths, with hands in the soil at regular work days.",
     ask: "Seedlings, mulch, gloves, or two spare hours.",
   },
   {
@@ -115,7 +115,7 @@ const workUpdates: WorkUpdate[] = [
     room: "garden paths",
     image: "/images/optimized/barry-5745-1000.webp",
     alt: "Reclaimed timber connected to the garden paths at The Harvest",
-    body: "Walkways from St Mary's Cathedral timber, returning to Witta as garden paths. The source trail is still being followed.",
+    body: "Walkways from reclaimed timber with a St Mary's Cathedral story we are still tracing as it becomes garden paths.",
     ask: "Sawmill leads, timber hands, or a local memory.",
   },
   {
@@ -170,7 +170,7 @@ const ideaGroups: IdeaGroup[] = [
     ideas: [
       "The St Mary's timber story as it is verified.",
       "Where each walkway section lands in the garden.",
-      "Barry's shed, tools and local making memory.",
+      "Old tools and local making memory.",
       "Calls for timber hands, labels and source leads.",
     ],
   },
@@ -180,7 +180,7 @@ const ideaGroups: IdeaGroup[] = [
     ideas: [
       "How the milk crate pavilion is being made.",
       "Dairy family memories, photos and local food history.",
-      "Milk bar and kitchen tests as they begin.",
+      "Ideas for a future kitchen, sublicenced one day.",
       "Ways to lend crates, hands, shade ideas or music.",
     ],
   },
@@ -276,7 +276,7 @@ export default function HarvestReviewTest() {
       document.head.appendChild(meta);
     }
     meta.content =
-      "The Harvest is a garden, kitchen and art space taking shape in Witta on Jinibara Country. Built in public with real photos, real work, and practical asks.";
+      "The Harvest is a community garden and creative gathering place in Witta, on Jinibara Country. A garden, events and art space, built in public with real photos, real work, and practical asks.";
   }, []);
 
   return (
@@ -409,13 +409,16 @@ export function SiteFooter() {
             The Harvest Witta
           </p>
           <p className="mt-3 max-w-sm text-sm leading-relaxed text-stone-600">
-            Grow. Make. Gather. A garden and creative gathering place taking shape on Jinibara Country.
+            Grow. Make. Gather. A garden and creative gathering place in Witta, on Jinibara Country.
           </p>
           <p className="mt-5 text-xs leading-relaxed text-stone-500">
             9 Gumland Drive, Witta QLD 4552
           </p>
           <p className="mt-1 text-xs leading-relaxed text-stone-500">
             © {new Date().getFullYear()} The Harvest Witta. All rights reserved.
+          </p>
+          <p className="mt-4 max-w-sm text-xs leading-relaxed text-stone-500">
+            The Harvest stands on Jinibara Country. We acknowledge the Jinibara people as Traditional Custodians and pay respect to Elders past and present.
           </p>
         </div>
         <nav className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4" aria-label="Footer">
@@ -461,7 +464,7 @@ function Hero() {
           transition={{ duration: 0.72 }}
         >
           <p className="font-mono text-xs uppercase tracking-[0.24em] text-[#C4922A]">
-            Witta · Jinibara Country · Garden opening end of June
+            Witta · Jinibara Country · Open since 20 June
           </p>
           <h1 className="mt-6 text-6xl font-black leading-[0.92] tracking-normal md:text-8xl lg:text-[8.5rem]">
             The Harvest
@@ -470,7 +473,7 @@ function Hero() {
             Grow. Make. Gather.
           </h2>
           <h3 className="mt-8 max-w-3xl text-xl font-normal leading-relaxed text-white/85 md:text-2xl">
-            A community garden and creative gathering place taking shape in Witta.
+            A community garden and creative gathering place in Witta.
           </h3>
 
           <div className="mt-12 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
@@ -496,7 +499,7 @@ function WhatThisIs() {
           <div />
           <div className="space-y-5 text-lg leading-relaxed text-stone-700">
             <p>
-              The Harvest is taking shape on Jinibara Country, on land with a long
+              The Harvest sits on Jinibara Country, on land with a long
               Indigenous history before any industry arrived. The more recent story
               of this ridge runs through dairy, timber, co-operatives, and the hands
               that worked them.
@@ -639,7 +642,7 @@ function WorkNotes() {
           </div>
           <div className="max-w-2xl md:justify-self-end">
             <p className="text-lg leading-relaxed text-stone-700">
-              The garden is the public focus until July: beds, paths, pavilion, kids area, shop test and the Milk Man at the gate.
+              The garden leads the public work: beds, paths, pavilion, kids area, the first shop shelves and the Milk Man at the gate.
             </p>
             <Link
               href="/works"
@@ -762,13 +765,13 @@ function EventCallout() {
       <div className="mx-auto grid max-w-7xl gap-10 px-5 md:grid-cols-[0.86fr_1.14fr] md:px-8">
         <motion.div {...fadeInUp}>
           <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#C4922A]">
-            Membership updates · community day
+            Membership updates · events
           </p>
           <h2 className="mt-3 max-w-xl text-4xl font-black leading-[0.96] md:text-6xl">
-            Become a member for the longer build, and the next community day.
+            Become a member for the longer build, and whatever happens next.
           </h2>
           <p className="mt-6 max-w-xl text-lg leading-relaxed text-white/76">
-            Membership is free. It gives you weekly updates, community-day invites, first-access opportunities and a simple way to ask questions. When the community day around the end of June lands, members hear the details first.
+            Membership is free. It gives you updates, event invites, first-access opportunities and a simple way to ask questions. Upcoming events land on the members page first, and you can RSVP and message us directly there. Members hear first, every time.
           </p>
         </motion.div>
 
@@ -812,13 +815,13 @@ function Closing() {
       <div className="relative mx-auto max-w-7xl px-5 md:px-8">
         <motion.div {...fadeInUp} className="max-w-3xl">
           <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#C4922A]">
-            Coming soon · community day
+            We are open
           </p>
           <h2 className="mt-3 text-4xl font-black leading-[0.96] md:text-6xl">
             Come through the gate and see what is being made.
           </h2>
           <p className="mt-6 max-w-2xl text-lg leading-relaxed text-white/78">
-            We're working toward a community open day around the end of June. Walk the garden, see the works in progress, and get a clear picture of what is being built next. Date and time being confirmed.
+            We opened with a first members and makers day on Saturday 20 June, and from July The Harvest is properly under way. You do not need to book to come and have a look while we find our feet. The garden grows through regular work days, the first shop shelves are being shaped with local makers and growers, and the art space is taking form. Members hear about events first.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Link

@@ -46,13 +46,13 @@ const wittaFacts = [
   },
   {
     icon: Leaf,
-    title: "2,037mm Rainfall",
-    description: "Over two metres of rain a year. The range forces moist coastal air upward — it rains here more than almost anywhere in SEQ.",
+    title: "Two Metres of Rain",
+    description: "Over two metres of rain a year. The range forces moist coastal air upward, so it rains here more than almost anywhere in SEQ.",
   },
   {
     icon: TreePine,
     title: "Volcanic Red Soil",
-    description: "Jurassic-era basalt soils — deep, nutrient-rich krasnozem. The reason everything grows here, from rainforest to dairy pasture to nurseries.",
+    description: "Jurassic-era basalt soils: deep, nutrient-rich krasnozem. The reason everything grows here, from rainforest to dairy pasture to nurseries.",
   },
   {
     icon: Users,
@@ -62,38 +62,38 @@ const wittaFacts = [
   {
     icon: Heart,
     title: "Cooperative Roots",
-    description: "Part of the Maleny co-op region. Butter factories, shared equipment, pooled resources — people here have always done things together.",
+    description: "Part of the Maleny co-op region. Butter factories, shared equipment, pooled resources. People here have always done things together.",
   },
   {
     icon: Milestone,
     title: "Iconic Status",
-    description: "In 2008, the Blackall Range was granted iconic environmental status — only the third in Queensland, after Noosa and Port Douglas.",
+    description: "In 2008, the Blackall Range was granted iconic environmental status, only the third in Queensland, after Noosa and Port Douglas.",
   },
 ];
 
 const timeline = [
-  { year: "Time immemorial", event: "Jinibara (Nalbo clan) custodianship of the Blackall Range. Bunya festivals at Baroon Pocket draw thousands from across south-east Queensland." },
-  { year: "1842", event: "Governor Gipps declares a reserve protecting bunya pines — settlement and clearing prohibited where bunya trees grow." },
+  { year: "Time immemorial", event: "Jinibara (Nalbo clan) custodianship of the Blackall Range. Bunya festivals at Baroon Pocket draw people from across south-east Queensland." },
+  { year: "1842", event: "Governor Gipps declares a reserve protecting bunya pines: settlement and clearing prohibited where bunya trees grow." },
   { year: "1845", event: "Tom Petrie, aged 14, travels from Brisbane with 100 Aboriginal people to attend the Baroon Bunya Festival. One of the only European eyewitness accounts." },
   { year: "1860", event: "Bunya pine reserve rescinded. Timber-getters flood in. The 'red gold' rush begins." },
-  { year: "1878", event: "Isaac Burgess selects the first parcel of land on the Blackall Range — 790 acres, Parish of Maleny." },
-  { year: "1886", event: "Two giant cedar logs shipped to the Indian and Colonial Exhibition in London. No buyer — they're too large for any mill in the world." },
+  { year: "1878", event: "Isaac Burgess selects the first parcel of land on the Blackall Range: 790 acres, Parish of Maleny." },
+  { year: "1886", event: "Two giant cedar logs shipped to the Indian and Colonial Exhibition in London. No buyer; they're too large for any mill in the world." },
   { year: "1887", event: "17 October: German families from Brisbane's Logan district select land and name the settlement Teutoburg." },
   { year: "1890", event: "Railway reaches Landsborough. Timber transport shifts from rafting logs down creeks to rail." },
-  { year: "1893", event: "Teutoburg Lutheran Church built. Meat and Dairy Encouragement Act passed — dairy begins replacing timber." },
-  { year: "1897", event: "Mapleton Tramway construction begins — an 18km narrow-gauge railway climbing from sea level to 380m with Shay geared locomotives." },
+  { year: "1893", event: "Teutoburg Lutheran Church built. Meat and Dairy Encouragement Act passed; dairy begins replacing timber." },
+  { year: "1897", event: "Mapleton Tramway construction begins: an 18km narrow-gauge railway climbing from sea level to 380m with Shay geared locomotives." },
   { year: "1904", event: "Maleny's first butter factory opens. The co-operative model takes root." },
   { year: "1906", event: "Red cedar faces commercial extinction. One-third of Queensland's hoop and bunya pine already gone." },
   { year: "1908", event: "A 627cm-circumference cedar from Frank Dunlop's selection wins a prize at the Franco-British Exhibition in London. 60 bullocks hauled it up Walker's Pinch." },
   { year: "1911", event: "Good Shepherd Lutheran Church opened. Second Maleny butter factory operational." },
-  { year: "1916", event: "18 May: Teutoburg renamed Witta — anti-German sentiment during WWI. 'Witta' comes from the Kabi word 'wetya', meaning dingo." },
-  { year: "1941", event: "The Thynne sisters gift 100 acres of remnant rainforest to the shire — it becomes Mary Cairncross Scenic Reserve." },
+  { year: "1916", event: "18 May: Teutoburg renamed Witta amid anti-German sentiment during WWI. The new name is believed to come from a local word, 'wetya', meaning dingo." },
+  { year: "1941", event: "The Thynne sisters gift 100 acres of remnant rainforest to the shire; it becomes Mary Cairncross Scenic Reserve." },
   { year: "1944", event: "Mapleton Tramway closes after 47 years of hauling timber, cream, fruit, and passengers." },
   { year: "1960s", event: "Dairy industry peak. Around 300 butter and cheese factories operating across the hinterland. One in eight Queenslanders lives on a dairy farm." },
-  { year: "1974", event: "Witta State School closes. The building at 316 Witta Road becomes the community hall — still the social heart of Witta." },
+  { year: "1974", event: "Witta State School closes. The building at 316 Witta Road becomes the community hall, still the social heart of Witta." },
   { year: "1980s", event: "Maleny attracts artists, craftspeople, and alternative lifestylers. Co-ops, organic produce, and intentional communities replace dairy infrastructure." },
   { year: "2000", event: "Dairy deregulation. Guaranteed floor prices disappear overnight. Farms that sustained families for generations become unviable. Across the range, dairy families walk off." },
-  { year: "2008", event: "Blackall Range granted iconic environmental status — third in Queensland." },
+  { year: "2008", event: "Blackall Range granted iconic environmental status, the third in Queensland." },
   { year: "2012", event: "Federal Court recognises the Jinibara People as traditional owners of the Blackall, D'Aguilar, and Conondale Ranges." },
 ];
 
@@ -150,7 +150,7 @@ export default function Witta() {
             <div className="text-stone-300 leading-relaxed space-y-5 text-lg">
               <p>
                 The Blackall Range has been home to the Jinibara people for tens of thousands
-                of years. The tribal name means "people of the lawyer vine" — <em>jini</em> for
+                of years. The tribal name means "people of the lawyer vine": <em>jini</em> for
                 the vine, <em>bara</em> for people. The Nalbo clan held custodianship of this
                 part of the range, including the land where Witta now sits. In 2012, the Federal
                 Court formally recognised the Jinibara as traditional owners of the Blackall,
@@ -159,9 +159,9 @@ export default function Witta() {
               <p>
                 The bunya pine forests of the Blackall Range were central to social, spiritual,
                 and economic life. Every few years when the trees produced a heavy crop, massive
-                inter-tribal gatherings were held at Baroon Pocket — known to the Jinibara as
+                inter-tribal gatherings were held at Baroon Pocket, known to the Jinibara as
                 "Burun." Invitations extended to communities from as far as Townsville, Charleville,
-                and Lismore. Hundreds of people would gather for festivals lasting up to four months —
+                and Lismore. Hundreds of people would gather for festivals lasting up to four months:
                 marriages were arranged, disputes settled, alliances formed, and stories told.
               </p>
               <p>
@@ -171,7 +171,7 @@ export default function Witta() {
                 is one of the only first-hand European records of these ancient gatherings.
               </p>
               <p>
-                In 1842, Governor Gipps had declared a reserve protecting the bunya pines — it was
+                In 1842, Governor Gipps had declared a reserve protecting the bunya pines: it was
                 illegal to settle or clear land where the trees grew. Eighteen years later, in 1860,
                 the reserve was rescinded. The timber-getters moved in, and within a generation,
                 the landscape that the Jinibara had managed through fire, seasonal movement, and deep
@@ -179,7 +179,7 @@ export default function Witta() {
               </p>
               <p>
                 European settlement from the 1860s onward displaced the Jinibara from their
-                traditional lands. The impact was devastating — disease, violence, and forced
+                traditional lands. The impact was devastating: disease, violence, and forced
                 removal fractured communities that had thrived here for tens of thousands of years.
                 The Jinibara people today continue to maintain their connection to Country,
                 language, and culture despite this history.
@@ -236,16 +236,16 @@ export default function Witta() {
             <div className="text-stone-700 leading-relaxed space-y-5 text-lg">
               <p>
                 The first Europeans in the Blackall Range came for the red cedar. They called
-                it "red gold" — a single tree could be worth more than a year's wages. Aboriginal
+                it "red gold": a single tree could be worth more than a year's wages. Aboriginal
                 people knew it as <em>Wootha</em>. Giant trees with girths of 18 to 20 feet were
                 common. By 1906, red cedar faced commercial extinction.
               </p>
               <p>
-                Logs were sent down steep chutes carved into the range — Landers Chute, McCarthy's
-                Chute — smashing through scrub end-over-first. At the bottom, bullock teams of up
+                Logs were sent down steep chutes carved into the range, Landers Chute and McCarthy's
+                Chute, smashing through scrub end-over-first. At the bottom, bullock teams of up
                 to 24 animals hauled them to Mellum Creek, where they were assembled into rafts,
                 tied with chains, and steered on the outgoing tide through Pumicestone Passage to
-                Brisbane. Before sawmills arrived, pit sawyers worked the timber by hand — two men
+                Brisbane. Before sawmills arrived, pit sawyers worked the timber by hand: two men
                 over a pit with a long saw.
               </p>
 
@@ -288,10 +288,10 @@ export default function Witta() {
 
               <p>
                 In 1886, two massive cedar logs from the Blackall Range were shipped to the Indian
-                and Colonial Exhibition in London. No buyer could be found — they were too large
+                and Colonial Exhibition in London. No buyer could be found; they were too large
                 for any mill in the world. Isaac Burgess, the first European to select land on
                 the range in 1878, won a medal for one of them. Twenty-two years later, a cedar
-                from Frank Dunlop's selection — 627 centimetres in circumference — was hauled up
+                from Frank Dunlop's selection, 627 centimetres in circumference, was hauled up
                 Walker's Pinch by a combined team of 60 bullocks and shipped to the Franco-British
                 Exhibition in London. Half of that log is reportedly still in a London museum.
               </p>
@@ -331,7 +331,7 @@ export default function Witta() {
               </div>
 
               <p>
-                After the cedar came broader timber extraction — hoop pine (three-quarters of all
+                After the cedar came broader timber extraction: hoop pine (three-quarters of all
                 timber used in Queensland buildings), blackbutt, tallowwood, bunya pine. The
                 Mapleton Tramway, an 18-kilometre narrow-gauge railway climbing from near sea level
                 to 380 metres with Shay geared locomotives, hauled timber, cream, fruit, and
@@ -368,8 +368,8 @@ export default function Witta() {
             </h2>
             <div className="text-stone-700 leading-relaxed space-y-5 text-lg">
               <p>
-                On 17 October 1887, German families from Brisbane's Logan district — including
-                the Nothling family — selected land on the Blackall Range and named their
+                On 17 October 1887, German families from Brisbane's Logan district, including
+                the Nothling family, selected land on the Blackall Range and named their
                 settlement <strong>Teutoburg</strong>, after the ancient forest in Germany. They
                 built a Lutheran church in 1893, started a school, cleared the vine scrub, and
                 began producing crops, cheese, and wine. Carl Thiedecke, the school teacher,
@@ -440,14 +440,14 @@ export default function Witta() {
               <p>
                 For almost thirty years, Teutoburg was a German-speaking farming community on
                 a Queensland hilltop. Then came the First World War. On 18 May 1916,
-                anti-German sentiment led to the settlement being renamed <strong>Witta</strong> —
+                anti-German sentiment led to the settlement being renamed <strong>Witta</strong>,
                 recorded in the Queensland Government Gazette two days later. The new name is
-                believed to come from the Kabi Kabi word <em>wetya</em>, meaning dingo.
+                believed to come from a local word, <em>wetya</em>, meaning dingo.
               </p>
               <p>
                 The Good Shepherd Lutheran Church, opened in 1911, still stands. B.J. Nothling
                 completed 50 years as church organist by 1964. The German heritage remains a
-                quiet but defining thread in Witta's identity — a community that kept its roots
+                quiet but defining thread in Witta's identity: a community that kept its roots
                 while the name above the door changed.
               </p>
             </div>
@@ -475,10 +475,10 @@ export default function Witta() {
               </p>
               <p>
                 Maleny's first butter factory opened in 1904, a second in 1911. The co-operative
-                model ran deep — farmers pooled resources, shared equipment, and looked out for
+                model ran deep: farmers pooled resources, shared equipment, and looked out for
                 each other. By the late 1930s, one in eight Queenslanders was living on a dairy
                 farm. At the industry's peak in the 1960s, around 300 butter and cheese factories
-                operated across the hinterland region. Even the butter boxes were local — made
+                operated across the hinterland region. Even the butter boxes were local, made
                 from hoop pine, the only timber tasteless and odourless enough not to taint
                 the product.
               </p>
@@ -490,9 +490,9 @@ export default function Witta() {
               </p>
               <p>
                 Some land went to beef, some to macadamias or avocados. The Hopper family at
-                Maleny Dairies survived by building their own processing and bottling plant —
+                Maleny Dairies survived by building their own processing and bottling plant;
                 Great Grandfather Hopper had purchased the land in 1948. They're still going.
-                The old Witta nursery site — where The Harvest now stands — found its second
+                The old Witta nursery site, where The Harvest now stands, found its second
                 life in horticulture, growing seedlings and serving local gardeners through the
                 1970s and beyond.
               </p>
@@ -527,15 +527,15 @@ export default function Witta() {
             {[
               {
                 name: "Mary Cairncross Scenic Reserve",
-                detail: "55 hectares of remnant subtropical rainforest at 420m altitude. In 1941, the three Thynne sisters — Bessie, Mabel, and Mary — gifted 100 acres of untouched rainforest to the shire. Bessie cared for it until her death in 1978 at age 95. It's one of the last fragments of the forest that once covered the entire Maleny plateau.",
+                detail: "55 hectares of remnant subtropical rainforest at 420m altitude. In 1941, the three Thynne sisters, Bessie, Mabel and Mary, gifted 100 acres of untouched rainforest to the shire. Bessie cared for it until her death in 1978 at age 95. It's one of the last fragments of the forest that once covered the entire Maleny plateau.",
               },
               {
                 name: "Baroon Pocket Dam",
-                detail: "Built on the ancient bunya festival grounds at 'Burun.' The dam site was first surveyed in 1946 but took decades of political argument before construction began in 1985. Completed in 1988, it holds 61,000 megalitres and supplies 150 megalitres daily to the Sunshine Coast.",
+                detail: "Built on the ancient bunya festival grounds at 'Burun.' The dam site was first surveyed in 1946 but took decades of political argument before construction began in 1985. Completed in 1988, it now supplies drinking water to the Sunshine Coast.",
               },
               {
                 name: "The Old Witta School",
-                detail: "Opened in 1892 as Maleny Provisional School, renamed Teutoberg in 1893, then Witta in 1926. The school closed in 1974. The building at 316 Witta Road became the community hall — still the social heart of Witta, the place where people gather.",
+                detail: "Opened in 1892 as Maleny Provisional School, renamed Teutoberg in 1893, then Witta in 1926. The school closed in 1974. The building at 316 Witta Road became the community hall, still the social heart of Witta, the place where people gather.",
               },
               {
                 name: "Good Shepherd Lutheran Church",
@@ -570,21 +570,19 @@ export default function Witta() {
             <div className="text-stone-700 leading-relaxed space-y-5 text-lg">
               <p>
                 Witta today is a village of about 1,300 people. There's no main street, no
-                pub, no shop — the school closed in 1974. What there is: a hall, a church,
+                pub, no shop; the school closed in 1974. What there is: a hall, a church,
                 and a lot of people who chose to live here because they wanted something
-                quieter, closer to the ground. The predominant age group is 60–69. Over 85%
-                of homes are owner-occupied. Over a quarter of the land is parks and reserves.
+                quieter, closer to the ground.
               </p>
               <p>
                 In the 1980s, nearby Maleny attracted artists, craftspeople, and alternative
                 lifestylers. Galleries and co-ops replaced dairy infrastructure. Montville
-                became a tourist art village. Witta stayed quiet — the one that didn't change.
-                Two thousand cars pass through every weekend on the way to Kenilworth, and
-                there's nowhere to stop.
+                became a tourist art village. Witta stayed quiet, the one that didn't change.
+                Cars pass through on the way to Kenilworth, and there's nowhere to stop.
               </p>
               <p>
-                The Harvest is writing the next chapter — not erasing what came before, but
-                building on every layer of this place's story. Jinibara Country first. Then
+                The Harvest is a new layer in this story: not erasing what came before, but
+                building on every layer of it. Jinibara Country first. Then
                 cedar. Then Teutoburg. Then dairy. Then nursery. Now this. The land remembers
                 what was here before, and so should we.
               </p>
@@ -636,7 +634,7 @@ export default function Witta() {
               Timeline
             </h2>
             <p className="text-lg text-stone-400 max-w-2xl mx-auto">
-              From bunya festivals to dairy deregulation — the layers of this place.
+              From bunya festivals to dairy deregulation: the layers of this place.
             </p>
           </motion.div>
 
@@ -686,7 +684,7 @@ export default function Witta() {
             {[
               // Barry's Story
               { src: "/images/compendium/barry/IMG_5613.jpg", caption: "Barry at the nursery site", tag: "Barry's Story" },
-              { src: "/images/compendium/barry/IMG_5618.jpg", caption: "27 years of care", tag: "Barry's Story" },
+              { src: "/images/compendium/barry/IMG_5618.jpg", caption: "Years of care", tag: "Barry's Story" },
               { src: "/images/compendium/barry/IMG_5633.jpg", caption: "The shed", tag: "Barry's Story" },
               { src: "/images/compendium/barry/IMG_5659.jpg", caption: "Tools of the trade", tag: "Barry's Story" },
               { src: "/images/compendium/barry/IMG_5687.jpg", caption: "Nursery rows", tag: "Barry's Story" },
@@ -712,7 +710,7 @@ export default function Witta() {
               { src: "/images/witta/history/bunya-pines-witta-1931.png", caption: "Bunya pines at Witta, c. 1931", tag: "Historical" },
               { src: "/images/witta/history/mary-cairncross-glasshouse-mountains.jpg", caption: "Glass House Mountains from Mary Cairncross", tag: "Landmarks" },
               // Architectural Vision
-              { src: "/images/compendium/MASTER FLOOR PLAN_1.jpeg", caption: "The master plan — architect's render", tag: "The Vision" },
+              { src: "/images/compendium/MASTER FLOOR PLAN_1.jpeg", caption: "The master plan, architect's render", tag: "The Vision" },
             ].map((photo, i) => (
               <motion.div
                 key={i}
@@ -821,7 +819,7 @@ function CommunityMemoriesSection() {
                         />
                       )}
                       <p className="text-stone-500 text-sm mt-4 italic">
-                        — {m.authorName}
+                        – {m.authorName}
                       </p>
                     </CardContent>
                   </Card>
@@ -876,7 +874,7 @@ function ContributeMemoryForm() {
       utils.witta.approved.invalidate();
     } catch (err) {
       console.error("Failed to submit memory:", err);
-      toast.error("Couldn't submit just now — please try again in a moment.");
+      toast.error("Couldn't submit just now. Please try again in a moment.");
     }
   };
 
@@ -894,7 +892,7 @@ function ContributeMemoryForm() {
             </h2>
             <p className="text-stone-600 leading-relaxed">
               A photograph, a story, a correction, a name we missed.
-              Memories of Witta — old or recent — that belong on this page.
+              Memories of Witta, old or recent, that belong on this page.
               We review every contribution before it's published.
             </p>
           </motion.div>
@@ -977,7 +975,7 @@ function ContributeMemoryForm() {
                       rows={6}
                     />
                     <p className="text-stone-500 text-xs">
-                      {memory.length}/4000 — minimum 10 characters
+                      {memory.length}/4000, minimum 10 characters
                     </p>
                   </div>
 
@@ -992,8 +990,7 @@ function ContributeMemoryForm() {
                       maxLength={1000}
                     />
                     <p className="text-stone-500 text-xs">
-                      If you have a photograph hosted somewhere, drop the link here. Direct
-                      uploads coming soon.
+                      If you have a photograph hosted somewhere, drop the link here.
                     </p>
                   </div>
 

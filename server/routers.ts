@@ -65,6 +65,39 @@ const CURRENT_GATHERING_SWITCHBOARD_TAGS = [
   "Access: Open registration (Public)",
 ];
 const DEFAULT_NOTION_HARVEST_PROJECT_ID = "11debcf981cf80828fd0d6031a9709f2";
+const HARVEST_PUBLIC_OPEN_DAY_SOURCE =
+  "docs/strategy/RECONCILED-20-june-public-open-day-2026-06-03.md";
+
+type SetupGateStatus = "good" | "watch" | "blocked";
+
+async function safeGhlTagCount(tag: string) {
+  try {
+    return {
+      tag,
+      count: await getGHLContactCountByTag(tag),
+      ok: true,
+      error: null,
+    };
+  } catch (error) {
+    return {
+      tag,
+      count: 0,
+      ok: false,
+      error: error instanceof Error ? error.message : "GHL tag count failed",
+    };
+  }
+}
+
+function setupGate(input: {
+  id: string;
+  title: string;
+  status: SetupGateStatus;
+  owner: string;
+  detail: string;
+  nextAction: string;
+}) {
+  return input;
+}
 
 export const NEWSLETTER_INTEREST_OPTIONS = [
   "events",
@@ -493,6 +526,7 @@ export const appRouter = router({
           source: `Harvest | RSVP ${CURRENT_GATHERING_DATE}`,
           tags: [
             CURRENT_GATHERING_TAG,
+            "rsvp-pizza-dinner",
             "harvest-event-attendee",
             "harvest-website",
             "harvest-inbox",
@@ -502,7 +536,7 @@ export const appRouter = router({
 
         if (result.contactId && input.excitement) {
           await addGHLContactNote(result.contactId,
-            `**RSVP - Witta Gathering ${CURRENT_GATHERING_DATE}**\n\n**What excites them:** ${input.excitement}\n**Source:** ${input.source || "Not specified"}`
+            `**RSVP - Witta Gathering ${CURRENT_GATHERING_DATE}**\n\n**What brings them through the gate:** ${input.excitement}\n**Source:** ${input.source || "Not specified"}`
           );
         }
 
@@ -513,7 +547,7 @@ export const appRouter = router({
             source: `Harvest | RSVP ${CURRENT_GATHERING_DATE}`,
           });
 
-          const workflowId = process.env.GHL_GATHERING_RSVP_WORKFLOW_ID || process.env.GHL_EOI_WORKFLOW_ID;
+          const workflowId = process.env.GHL_GATHERING_RSVP_WORKFLOW_ID;
           if (workflowId) {
             triggerGHLWorkflow(workflowId, result.contactId).catch(err =>
               console.error("GHL workflow trigger failed (gathering rsvp):", err)
@@ -573,7 +607,7 @@ export const appRouter = router({
           }
         }
 
-        return { success: true, message: "Booking request submitted. We'll confirm your spot within 24 hours." };
+        return { success: true, message: "Booking request submitted. We'll be in touch to confirm." };
       }),
   }),
 
@@ -1133,10 +1167,11 @@ export const appRouter = router({
       return getGalleryPhotos();
     }),
 
-    // Delete a photo from the gallery
-    deletePhoto: publicProcedure
+    // Delete a photo from the gallery (admin only)
+    deletePhoto: protectedProcedure
       .input(z.object({ url: z.string().min(1) }))
-      .mutation(async ({ input }) => {
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== "admin") throw new Error("Unauthorized");
         // Delete from Supabase storage
         const supabaseUrl = process.env.VITE_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL;
         const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -1155,8 +1190,9 @@ export const appRouter = router({
         return { success: false };
       }),
 
-    // Add photo-wall-ready tag to all photo-wall contacts (triggers GHL text workflow)
-    notifyAll: publicProcedure.mutation(async () => {
+    // Add photo-wall-ready tag to all photo-wall contacts (triggers GHL text workflow). Admin only.
+    notifyAll: protectedProcedure.mutation(async ({ ctx }) => {
+      if (ctx.user.role !== "admin") throw new Error("Unauthorized");
       const searchResult = await searchGHLContactsByTag("photo-wall");
       if (!searchResult.success || !searchResult.contacts?.length) {
         return { success: false, error: searchResult.error || "No photo-wall contacts found.", tagged: 0 };
@@ -2068,6 +2104,154 @@ export const appRouter = router({
       }),
   }),
 
+  businessSetup: router({
+    summary: protectedProcedure.query(async ({ ctx }) => {
+      if (ctx.user.role !== "admin") {
+        throw new Error("Unauthorized");
+      }
+
+      const [
+        eventCount,
+        pizzaCount,
+        makerCount,
+        newsletterCount,
+        memberCount,
+        harvestInboxCount,
+        shopInterestCount,
+        shopFollowUpCount,
+        shopCallBookedCount,
+        pendingEvents,
+        pendingBusinesses,
+      ] = await Promise.all([
+        safeGhlTagCount(CURRENT_GATHERING_TAG),
+        safeGhlTagCount("rsvp-pizza-dinner"),
+        safeGhlTagCount("rsvp-maker-morning"),
+        safeGhlTagCount("comms:harvest-newsletter"),
+        safeGhlTagCount("tier:member"),
+        safeGhlTagCount("harvest-inbox"),
+        safeGhlTagCount("interest:markets"),
+        safeGhlTagCount("shop-follow-up"),
+        safeGhlTagCount("shop-call-booked"),
+        getPendingEvents(),
+        getPendingBusinesses(),
+      ]);
+
+      const countsOk = [
+        eventCount,
+        pizzaCount,
+        makerCount,
+        newsletterCount,
+        memberCount,
+        harvestInboxCount,
+        shopInterestCount,
+        shopFollowUpCount,
+        shopCallBookedCount,
+      ].every((item) => item.ok);
+
+      const gates = [
+        setupGate({
+          id: "public-open-day-truth",
+          title: "Public open day truth",
+          status: "watch",
+          owner: "Repo + Notion",
+          detail:
+            "Repo decision says 20 June is a public open day. Older Notion dashboard copy still carries members-day framing.",
+          nextAction:
+            "Update The Harvest Witta HQ dashboard to point at the reconciled public-open-day source doc.",
+        }),
+        setupGate({
+          id: "public-rsvp-form",
+          title: "Public RSVP form",
+          status: "good",
+          owner: "Website + GHL",
+          detail:
+            "The public page uses an embedded RSVP form that upserts a GHL contact and applies witta-gathering-2026-06-20 + rsvp-pizza-dinner.",
+          nextAction:
+            "After deploy, submit one production test RSVP, verify the tags, then remove the test contact.",
+        }),
+        setupGate({
+          id: "rsvp-headcount",
+          title: "RSVP headcount signal",
+          status: pizzaCount.count > 0 ? "good" : "blocked",
+          owner: "GHL",
+          detail: `${pizzaCount.count} contacts currently carry rsvp-pizza-dinner. This is the dough and turnout signal.`,
+          nextAction:
+            "Run npm run count:rsvps:ghl after the website RSVP form and calendar tag workflows are live.",
+        }),
+        setupGate({
+          id: "calendar-tag-workflows",
+          title: "Calendar tag workflows",
+          status:
+            eventCount.count > 0 || makerCount.count > 0 || pizzaCount.count > 0
+              ? "watch"
+              : "blocked",
+          owner: "GHL UI",
+          detail:
+            "B1/B2/shop-chat workflows must add the booking tags. The API cannot reliably build workflow-builder steps.",
+          nextAction:
+            "Publish and test the three Customer Booked Appointment workflows in the GHL UI.",
+        }),
+        setupGate({
+          id: "supabase-security",
+          title: "Supabase security review",
+          status: "watch",
+          owner: "Ben / dev",
+          detail:
+            "Harvest server-managed tables are locked behind RLS/service-role access. The shared Supabase project still has broader advisor noise outside this repo's immediate launch path.",
+          nextAction:
+            "Continue the wider shared-schema RLS cleanup before adding any new browser-side Supabase writes.",
+        }),
+        setupGate({
+          id: "shop-operating-loop",
+          title: "Shop operating loop",
+          status: shopInterestCount.count > 0 ? "watch" : "blocked",
+          owner: "Susie / Joey / Ben",
+          detail: `${shopInterestCount.count} contacts carry interest:markets, ${shopFollowUpCount.count} carry shop-follow-up, and ${shopCallBookedCount.count} carry shop-call-booked.`,
+          nextAction:
+            "Finish shop-chat ownership, Square setup, and Monday maker follow-up sweep.",
+        }),
+      ];
+
+      return {
+        generatedAt: new Date().toISOString(),
+        currentTruth: {
+          eventDate: CURRENT_GATHERING_DATE,
+          dayModel: "Public open day",
+          publicRoute: "/june-20",
+          sourceDoc: HARVEST_PUBLIC_OPEN_DAY_SOURCE,
+        },
+        launch: {
+          publicRsvp: {
+            mode: "embedded-form",
+            route: "/june-20#rsvp",
+            tags: [CURRENT_GATHERING_TAG, "rsvp-pizza-dinner"],
+          },
+          tags: {
+            event: eventCount,
+            pizza: pizzaCount,
+            maker: makerCount,
+          },
+        },
+        crm: {
+          tagsOk: countsOk,
+          tags: {
+            newsletter: newsletterCount,
+            members: memberCount,
+            harvestInbox: harvestInboxCount,
+            shopInterest: shopInterestCount,
+            shopFollowUp: shopFollowUpCount,
+            shopCallBooked: shopCallBookedCount,
+          },
+        },
+        website: {
+          pendingEvents: pendingEvents.length,
+          pendingBusinesses: pendingBusinesses.length,
+        },
+        gates,
+      };
+    }),
+  }),
+
   // Editorial calendar (ACT Communications Dashboard in Notion)
   editorial: router({
     // List posts from Notion, optionally filtered by project/status/type
@@ -2200,15 +2384,16 @@ export const appRouter = router({
         return result;
       }),
 
-    // Create/schedule a social post
-    post: publicProcedure
+    // Create/schedule a social post (admin only)
+    post: protectedProcedure
       .input(z.object({
         summary: z.string().min(1).max(5000),
         accountIds: z.array(z.string()).min(1),
         mediaUrls: z.array(z.string()).optional(), // public URLs to images/videos
         scheduledAt: z.string().optional(), // ISO datetime
       }))
-      .mutation(async ({ input }) => {
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== "admin") throw new Error("Unauthorized");
         const result = await createGHLSocialPost(input);
         return result;
       }),

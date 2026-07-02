@@ -175,14 +175,14 @@ function CanvasSection() {
           <FadeIn>
             <div style={bodyStyle}>
               <p>
-                The building is an old nursery — shed bones, good light, room to move. We don't renovate it into a finished product. We treat it like a gallery: exhibitions come and go, the walls get repainted, the furniture moves.
+                The building is an old nursery, shed bones, good light, room to move. We don't renovate it into a finished product. We treat it like a gallery: exhibitions come and go, the walls get repainted, the furniture moves.
               </p>
               <p>
                 <strong style={{ color: "white" }}>Test before you build.</strong>{" "}
                 Pop-ups before capital. Oyster nights before a restaurant. Pizza from a trailer before a kitchen. The scaffold pavilion before the permanent structure.
               </p>
               <p style={{ color: "rgba(217,169,78,0.8)", fontStyle: "italic", fontFamily: "'Playfair Display', serif" }}>
-                You're not coming to something finished — you're coming to something you can be part of.
+                You're not coming to something finished, you're coming to something you can be part of.
               </p>
             </div>
           </FadeIn>
@@ -211,7 +211,7 @@ function CanvasSection() {
           <FadeOnly>
             <div style={principleBox}>
               <p style={principleLabelStyle}>ACT Principle 4</p>
-              <p style={principleTextStyle}>Build for handover (Beautiful Obsolescence) — design for transfer from day one.</p>
+              <p style={principleTextStyle}>Build for handover (Beautiful Obsolescence), design for transfer from day one.</p>
             </div>
           </FadeOnly>
         </div>
@@ -242,7 +242,7 @@ function CanvasSection() {
           }}>
             <div>
               <h3 style={{ fontFamily: "'Playfair Display', serif", fontWeight: 700, fontSize: 18, color: "#292524", margin: 0 }}>
-                The Harvest — Master Plan
+                The Harvest: Master Plan
               </h3>
               <p style={{ fontFamily: "monospace", fontSize: 12, color: "#78716C", margin: "2px 0 0" }}>
                 Hand-drawn site plan · Morpholio Trace
@@ -272,7 +272,7 @@ function CanvasSection() {
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 0.6, ease: "easeOut" }}
               src="/images/compendium/canvas-drawing-full.jpg"
-              alt="The Harvest — hand-drawn master plan"
+              alt="The Harvest: hand-drawn master plan"
               style={{ maxWidth: "none", width: "95vw", borderRadius: 8, boxShadow: "0 25px 50px rgba(0,0,0,0.25)" }}
             />
           </div>
@@ -288,16 +288,16 @@ function CanvasSection() {
 
 const barryImages = [
   { src: "/images/compendium/barry/IMG_5764.jpg", caption: "Barry at golden hour, his shed behind him" },
-  { src: "/images/compendium/barry/IMG_5613.jpg", caption: "The machinery graveyard — engines, axles, memory" },
-  { src: "/images/compendium/barry/IMG_5699.jpg", caption: "Inside the shed — pointing out a bandsaw older than most of us" },
+  { src: "/images/compendium/barry/IMG_5613.jpg", caption: "The machinery graveyard: engines, axles, memory" },
+  { src: "/images/compendium/barry/IMG_5699.jpg", caption: "Inside the shed: pointing out a bandsaw older than most of us" },
   { src: "/images/compendium/barry/IMG_5659.jpg", caption: "Barry among the engines, still knows every one" },
   { src: "/images/compendium/barry/IMG_5745.jpg", caption: "Sitting on the workbench, spanners beside him, telling stories" },
-  { src: "/images/compendium/barry/IMG_5758.jpg", caption: "With the Case bulldozer — been here since '72" },
-  { src: "/images/compendium/barry/IMG_5687.jpg", caption: "The workshop — where everything gets fixed" },
+  { src: "/images/compendium/barry/IMG_5758.jpg", caption: "With the Case bulldozer: been here since '72" },
+  { src: "/images/compendium/barry/IMG_5687.jpg", caption: "The workshop: where everything gets fixed" },
   { src: "/images/compendium/barry/IMG_5618.jpg", caption: "Surveying the yard with the crane at his back" },
-  { src: "/images/compendium/barry/IMG_5727.jpg", caption: "Barry in the shed with visitors — stories are better shared" },
-  { src: "/images/compendium/barry/IMG_5777.jpg", caption: "Looking out — 80 years of hinterland in one gaze" },
-  { src: "/images/compendium/barry/IMG_5819.jpg", caption: "With the Blue Heelers — always the same breed, always called Samantha" },
+  { src: "/images/compendium/barry/IMG_5727.jpg", caption: "Barry in the shed with visitors: stories are better shared" },
+  { src: "/images/compendium/barry/IMG_5777.jpg", caption: "Looking out: 80 years of hinterland in one gaze" },
+  { src: "/images/compendium/barry/IMG_5819.jpg", caption: "With the Blue Heelers: always the same breed, always called Samantha" },
   { src: "/images/compendium/barry/IMG_5633.jpg", caption: "Barry" },
 ];
 
@@ -364,7 +364,7 @@ function ShedSection() {
             </FadeIn>
             <FadeIn>
               <div style={bodyStyle}>
-                <p>Barry Rodgerig is 80 years old. He's been on this land since 1972. Before that, Peachester — 25 years of dairy, timber, and red soil. He drove tractors before he could see over the steering wheel. He still drives them now.</p>
+                <p>Barry Rodgerig is 80 years old. He's been on this land since 1972. Before that, Peachester, 25 years of dairy, timber, and red soil. He drove tractors before he could see over the steering wheel. He still drives them now.</p>
                 <p>His shed is full of machines that built this hinterland. An AB184 log truck from 1963. Ex-army Blitz trucks from the war. A little Italian Valpadana tractor with a Lombardini diesel. A 1957 Land Rover he'd like to restore, if he lives long enough.</p>
                 <p>He starts them up sometimes, just to hear them run.</p>
               </div>
@@ -372,7 +372,7 @@ function ShedSection() {
             <FadeIn>
               <div style={quoteBox}>
                 <p style={quoteText}>"Rust is a terrible thing. It's just like cancer in humans. It eats. It just kills you."</p>
-                <p style={quoteAttrib}>— Barry Rodgerig, Witta</p>
+                <p style={quoteAttrib}>Barry Rodgerig, Witta</p>
               </div>
             </FadeIn>
             <FadeIn>
@@ -384,13 +384,13 @@ function ShedSection() {
             <FadeIn>
               <div style={quoteBox}>
                 <p style={quoteText}>"I think when I die, it'll probably all go for scrap."</p>
-                <p style={quoteAttrib}>— Barry</p>
+                <p style={quoteAttrib}>Barry</p>
               </div>
             </FadeIn>
             <FadeIn>
               <div style={{ ...bodyStyle, color: "#A8A29E" }}>
-                <p>Not if we can help it. Barry's shed isn't scrap — it's archaeology. It's the living memory of what this place was, and the reason why what we build next has to mean something.</p>
-                <p>Barry is one neighbour. There are more. Every person who lives around this land carries a piece of its story — and The Harvest exists to make sure those stories aren't forgotten.</p>
+                <p>Not if we can help it. Barry's shed isn't scrap, it's archaeology. It's the living memory of what this place was, and the reason why what we build next has to mean something.</p>
+                <p>Barry is one neighbour. There are more. Every person who lives around this land carries a piece of its story, and The Harvest exists to make sure those stories aren't forgotten.</p>
                 <p style={{ color: "rgba(217,169,78,0.8)", fontStyle: "italic", fontFamily: "'Playfair Display', serif" }}>
                   Four Blue Heelers. Always called Samantha. "You never have two the same."
                 </p>
@@ -399,7 +399,7 @@ function ShedSection() {
             <FadeOnly>
               <div style={principleBox}>
                 <p style={principleLabelStyle}>ACT Principle 2</p>
-                <p style={principleTextStyle}>Listen before you build — every place has a story already being told.</p>
+                <p style={principleTextStyle}>Listen before you build, every place has a story already being told.</p>
               </div>
             </FadeOnly>
           </div>
@@ -465,7 +465,7 @@ function ShedSection() {
             borderBottom: "1px solid #292524",
           }}>
             <p style={{ fontFamily: "monospace", fontSize: 12, color: "#A8A29E", margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: 1, marginRight: 12 }}>
-              {viewPhoto + 1}/{barryImages.length} — {barryImages[viewPhoto].caption}
+              {viewPhoto + 1}/{barryImages.length} · {barryImages[viewPhoto].caption}
             </p>
             <div style={{ display: "flex", gap: 8 }}>
               <button onClick={() => setViewPhoto((viewPhoto - 1 + barryImages.length) % barryImages.length)} style={navBtn}>◀</button>
@@ -780,12 +780,12 @@ export default function Compendium() {
       <CompendiumSection
         number="I"
         title="The Silence"
-        declaration="Witta has nowhere to gather."
+        declaration="Witta had nowhere to gather."
         principleLabel="ACT Principle 1"
-        principle="Country sets the pace — but the land is waiting for something to happen on it."
+        principle="Country sets the pace: but the land is waiting for something to happen on it."
       >
-        <p>Two thousand cars pass through every weekend. One cafe. No gathering place. The hinterland is hollowing out — people drive through but never stop.</p>
-        <p>The silence isn't peace. It's absence.</p>
+        <p>This is where The Harvest started. Cars passed through every weekend. One cafe. No gathering place. People drove through but never stopped.</p>
+        <p>The silence wasn't peace. It was absence.</p>
         <div style={{
           display: "grid",
           gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(4, 1fr)",
@@ -793,10 +793,10 @@ export default function Compendium() {
           margin: "32px 0",
         }}>
           {[
-            { value: "2,000+", label: "cars every weekend" },
-            { value: "One", label: "cafe — no gathering place" },
-            { value: "#1", label: "homeschooling rate in AU" },
-            { value: "10 min", label: "from Maleny — a world away" },
+            { value: "~1,300", label: "people in Witta" },
+            { value: "One", label: "cafe, no gathering place" },
+            { value: "Many", label: "homeschooling families nearby" },
+            { value: "10 min", label: "from Maleny, a world away" },
           ].map((stat) => (
             <div key={stat.label} style={{ textAlign: "center" }}>
               <p style={{ fontFamily: "'Playfair Display', serif", fontWeight: 700, fontSize: isMobile ? 24 : 28, color: "rgba(217,169,78,1)", margin: 0 }}>
@@ -817,7 +817,7 @@ export default function Compendium() {
         title="The Seed"
         declaration="We believe food is infrastructure. A table is a civic space. Compost is a philosophy."
         principleLabel="ACT Principle 3"
-        principle="Identity before product — we start with belonging, not features."
+        principle="Identity before product: we start with belonging, not features."
         dark={false}
         visual={
           <div style={{ display: "grid", gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(4, 1fr)", gap: 24 }}>
@@ -847,7 +847,7 @@ export default function Compendium() {
           </div>
         }
       >
-        <p>Four seeds: <strong style={{ color: "white" }}>Eat. Gather. Make. Grow.</strong> Not services — beliefs.</p>
+        <p>Four seeds: <strong style={{ color: "white" }}>Eat. Gather. Make. Grow.</strong> Not services, beliefs.</p>
         <p>A cafe is not a business; it's a daily act of showing up. A workshop is not a product; it's an invitation to make something together. A garden is not decoration; it's time made visible.</p>
       </CompendiumSection>
 
@@ -855,18 +855,18 @@ export default function Compendium() {
       <CompendiumSection
         number="IV"
         title="The Cycle"
-        declaration="From seedling to harvest to compost — and back again."
+        declaration="From seedling to harvest to compost: and back again."
         principleLabel="ACT Principle 10"
-        principle="Art returns us to Listen — the loop only completes when change becomes culture."
+        principle="Art returns us to Listen: the loop only completes when change becomes culture."
         bgVideo={{ src: "/images/compendium/oyster-lease.mp4", poster: "/images/compendium/oyster-lease-poster.jpg" }}
       >
-        <p>Shaun Fisher is a Goenpul man — one of the three clans of the Quandamooka People, Traditional Owners of Minjerribah (North Stradbroke Island) and the southern Moreton Bay. The Yoolooburrabee — people of the sand and sea. The quampi shell is their totem, their food source, their cultural symbol.</p>
-        <p>When colonizers arrived in Brisbane, they blew up the Quandamooka oyster leases for limestone. The Treasury building, the banks, the foundations of the city — built from those shells.</p>
-        <p>At The Harvest, Shaun sells oysters direct to community. People eat on picnic blankets on the grass. The shells are collected and worked into benchtops, surfaces, and finishes throughout The Harvest. Everything here is compostable, reusable, returned. <strong style={{ color: "white" }}>The shells come back into the place. Full cycle.</strong></p>
-        <p style={{ color: "#A8A29E", fontSize: 16, fontStyle: "italic" }}>This is just one example of what we're working to do at The Harvest — every material, every relationship, every exchange designed to complete the loop.</p>
+        <p>Shaun Fisher is a Goenpul man, one of the three clans of the Quandamooka People, Traditional Owners of Minjerribah (North Stradbroke Island) and the southern Moreton Bay. The Yoolooburrabee, people of the sand and sea. The quampi shell is their totem, their food source, their cultural symbol.</p>
+        <p>When colonizers arrived in Brisbane, they blew up the Quandamooka oyster leases for limestone. The Treasury building, the banks, the foundations of the city, built from those shells.</p>
+        <p>The idea we are building with Shaun: oysters sold direct to community, eaten on picnic blankets on the grass, the shells collected and worked back into benchtops, surfaces and finishes. Compostable, reusable, returned. <strong style={{ color: "white" }}>The shells come back into the place. Full cycle.</strong></p>
+        <p style={{ color: "#A8A29E", fontSize: 16, fontStyle: "italic" }}>This is just one example of what we're working to do at The Harvest, every material, every relationship, every exchange designed to complete the loop.</p>
         <div style={{ borderLeft: "2px solid #44403C", paddingLeft: 24, margin: "32px 0" }}>
           <p style={{ color: "#A8A29E", fontSize: 16, lineHeight: 1.7 }}>
-            This is LCAA made physical: <strong style={{ color: "#D6D3D1" }}>Listen</strong> to the land and its people. <strong style={{ color: "#D6D3D1" }}>Curiosity</strong> about what's possible. <strong style={{ color: "#D6D3D1" }}>Action</strong> — build it together. <strong style={{ color: "#D6D3D1" }}>Art</strong> — make the change felt. Art returns us to Listen.
+            This is LCAA made physical: <strong style={{ color: "#D6D3D1" }}>Listen</strong> to the land and its people. <strong style={{ color: "#D6D3D1" }}>Curiosity</strong> about what's possible. <strong style={{ color: "#D6D3D1" }}>Action</strong>, build it together. <strong style={{ color: "#D6D3D1" }}>Art</strong>, make the change felt. Art returns us to Listen.
           </p>
         </div>
       </CompendiumSection>
@@ -883,14 +883,14 @@ export default function Compendium() {
         title="The Garden"
         declaration="Dig in. Take something home. Leave something behind."
         principleLabel="ACT Principle 7"
-        principle="Grow what you eat, eat what you grow — the garden is the commons made visible."
+        principle="Grow what you eat, eat what you grow: the garden is the commons made visible."
         dark={false}
         visual={
           <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)", gap: isMobile ? 24 : 16 }}>
             {[
               { time: "Morning", feel: "Dew on seedlings. Someone's already weeding. A kid is watering the strawberries with a hose that's too big for her." },
               { time: "Afternoon", feel: "Quiet. Bees working. A homeschool group is drawing insects. The basil smells like it's trying to get your attention." },
-              { time: "Saturday", feel: "Farmgate day. Tables of produce, seedlings in recycled pots, eggs from up the road, bread still warm." },
+              { time: "One day", feel: "Farmgate tables: produce, seedlings in recycled pots, eggs from up the road, bread still warm." },
             ].map((moment) => (
               <div key={moment.time} style={{ textAlign: "center" }}>
                 <p style={{ color: "rgba(217,169,78,1)", fontFamily: "monospace", fontSize: 12, letterSpacing: "0.15em", textTransform: "uppercase" as const, marginBottom: 8 }}>
@@ -904,9 +904,9 @@ export default function Compendium() {
           </div>
         }
       >
-        <p>This was a nursery once. The bones are still here — the shade cloth frames, the irrigation lines, the propagation benches. We're not building a garden from scratch. We're waking one up.</p>
-        <p><strong style={{ color: "white" }}>The garden is not decorative.</strong> It feeds the kitchen. It teaches the kids. It gives the homeschool families a classroom that smells like dirt and basil instead of carpet and whiteboard markers. Witta has the highest homeschooling rate in Australia — and no learning infrastructure. The garden changes that.</p>
-        <p>You can dig in. Plant a seedling. Pull a carrot. Take home herbs in a paper bag, a punnet of strawberries, a sourdough starter from the kitchen. Or just sit on the bench and watch someone else do the work. Both are fine.</p>
+        <p>This was a nursery once. The bones are still here, the shade cloth frames, the irrigation lines, the propagation benches. We're not building a garden from scratch. We're waking one up.</p>
+        <p><strong style={{ color: "white" }}>The garden is not decorative.</strong> It feeds the table. It teaches the kids. It gives the homeschool families a classroom that smells like dirt and basil instead of carpet and whiteboard markers. Witta has a strong homeschooling community and no learning infrastructure. The garden can change that.</p>
+        <p>You can dig in. Plant a seedling. Pull a carrot. Take home herbs in a paper bag, a punnet of strawberries, a sourdough starter. Or just sit on the bench and watch someone else do the work. Both are fine.</p>
         <p style={{ color: "rgba(217,169,78,0.8)", fontStyle: "italic", fontFamily: "'Playfair Display', serif" }}>
           The garden is time made visible. Everything here was planted by someone, for someone. You eat what the last season grew. You plant what the next season needs.
         </p>
@@ -918,12 +918,12 @@ export default function Compendium() {
         title="The Table"
         declaration="Building for people who want to belong without having to perform."
         principleLabel="ACT Principle 5"
-        principle="Make with lived experience — lived experience is core capability. We hire, train, and design around those who carry the truth."
+        principle="Make with lived experience: lived experience is core capability. We hire, train, and design around those who carry the truth."
       >
         <p>Not a meeting room. Not a Zoom call. Not a networking event with name tags. A table with food on it, made from what grows here.</p>
         <p>The farmer sits next to the architect sits next to the kid who just wants a milkshake. Nobody has to explain why they're here. Nobody has to pitch anything. You just sit down and eat.</p>
-        <p>Shaun's oysters. Pizza from the trailer. Picnic blankets on the grass. That's the whole beginning. No grand opening. No ribbon cutting. <strong style={{ color: "white" }}>Just food, and the people who show up for it.</strong></p>
-        <p style={{ color: "#A8A29E", fontSize: 16, fontStyle: "italic" }}>If that works — if people come back, if they bring someone, if they start saying "see you next week" — then everything else follows. The cafe. The garden. The workshops. The market. All of it grows from the table.</p>
+        <p>Oysters. Pizza. Picnic blankets on the grass. That was always the plan for the beginning: no grand opening, no ribbon cutting. <strong style={{ color: "white" }}>Just food, and the people who show up for it.</strong></p>
+        <p style={{ color: "#A8A29E", fontSize: 16, fontStyle: "italic" }}>It has begun. The Harvest opened with a first members and makers day on Saturday 20 June 2026, and from July it is properly under way. If people keep coming back, if they bring someone, if they start saying "see you next week", then everything else follows. The garden. The workshops. The market. All of it grows from the table.</p>
       </CompendiumSection>
 
       {/* ═══════════ VIII. THE COMMONS ═══════════ */}
@@ -932,22 +932,22 @@ export default function Compendium() {
         title="The Commons"
         declaration="Not a venue. A platform. The connective tissue of the hinterland."
         principleLabel="ACT Principle 6"
-        principle="Enterprise funds the commons — goods, harvest, and enterprise fund land care and community value, not extraction."
+        principle="Enterprise funds the commons: goods, harvest, and enterprise fund land care and community value, not extraction."
         dark={false}
       >
         <p>The Sunshine Coast hinterland is full of people making things. Farmers, bakers, potters, fermenters, weavers, builders, growers. Most of them sell from their driveways or at distant markets. There's no central place where the hinterland economy can show up as itself.</p>
-        <p><strong style={{ color: "white" }}>The Harvest is that place.</strong> Not by owning the supply chain — by being the table everyone brings their dish to. Local producers come here to sell, teach, collaborate. The farmer from down the road brings eggs. The baker from Maleny brings sourdough. Shaun brings oysters from Minjerribah. The kid from next door brings a jar of honey.</p>
-        <p>This isn't a food court. It's a commons — a shared space where the hinterland's scattered economy can gather, find each other, and build something together that none of them could build alone.</p>
-        <p>Every dollar that moves through The Harvest stays local. Every relationship that forms here strengthens the web. The enterprise funds the commons — not shareholders, not landlords, not a head office in Sydney. <strong style={{ color: "white" }}>The wealth stays where the work happens.</strong></p>
+        <p><strong style={{ color: "white" }}>The Harvest can be that place.</strong> Not by owning the supply chain, but by being the table everyone brings their dish to. The picture we are building: the farmer from down the road with eggs, the baker from Maleny with sourdough, Shaun with oysters from Minjerribah, the kid from next door with a jar of honey.</p>
+        <p>This isn't a food court. It's a commons, a shared space where the hinterland's scattered economy can gather, find each other, and build something together that none of them could build alone.</p>
+        <p>Every dollar that moves through The Harvest stays local. Every relationship that forms here strengthens the web. The enterprise funds the commons, not shareholders, not landlords, not a head office in Sydney. <strong style={{ color: "white" }}>The wealth stays where the work happens.</strong></p>
       </CompendiumSection>
 
       {/* ═══════════ IX. THE HANDOVER ═══════════ */}
       <CompendiumSection
         number="IX"
         title="The Handover"
-        declaration="Beautiful Obsolescence. Not an ending — a rebirth."
+        declaration="Beautiful Obsolescence. Not an ending: a rebirth."
         principleLabel="ACT Principle 4"
-        principle="Build for handover — design for transfer from day one. Our success is measured by our irrelevance."
+        principle="Build for handover: design for transfer from day one. Our success is measured by our irrelevance."
         visual={
           <div style={{ position: "relative" }}>
             <div style={{
@@ -990,12 +990,12 @@ export default function Compendium() {
           </div>
         }
       >
-        <p>We call it Beautiful Obsolescence. Not because we walk away — but because we build something that's ready to become whatever it needs to be next.</p>
-        <p>Maybe it's us in Year 4. Maybe it's not. What matters is that the community and the land set the pace — not a business plan, not a board, not an investor's timeline. <strong style={{ color: "white" }}>The Harvest redefines itself. That's the design.</strong></p>
+        <p>We call it Beautiful Obsolescence. Not because we walk away, but because we build something that's ready to become whatever it needs to be next.</p>
+        <p>Maybe it's us in Year 4. Maybe it's not. What matters is that the community and the land set the pace, not a business plan, not a board, not an investor's timeline. <strong style={{ color: "white" }}>The Harvest redefines itself. That's the design.</strong></p>
         <p>Every system we build is ready to be handed over. Every role is documented so someone local can step in. Every decision is written down so it can be questioned, changed, or thrown out entirely.</p>
-        <p>A Curious Tractor is exactly that — a tractor. A PTO shaft that transfers power, not holds it. We don't drive. We prepare the ground and let what grows, grow.</p>
+        <p>A Curious Tractor is exactly that: a tractor. A PTO shaft that transfers power, not holds it. We don't drive. We prepare the ground and let what grows, grow.</p>
         <p style={{ color: "rgba(217,169,78,0.8)", fontStyle: "italic", fontFamily: "'Playfair Display', serif", fontSize: 20, lineHeight: 1.6 }}>
-          The Harvest belongs to Witta. Not as an exit strategy — as a living thing that sheds its skin, season after season, and becomes what the land and its people ask it to be.
+          The Harvest belongs to Witta. Not as an exit strategy, as a living thing that sheds its skin, season after season, and becomes what the land and its people ask it to be.
         </p>
       </CompendiumSection>
 
@@ -1064,7 +1064,7 @@ export default function Compendium() {
                   textDecoration: "none",
                   textAlign: "center",
                 }}>
-                  FIRST GATHERING
+                  OUR FIRST DAY WAS 20 JUNE 2026
                 </Link>
               </div>
 

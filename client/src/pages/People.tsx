@@ -37,7 +37,7 @@ export default function People() {
               Who is on the land
             </h1>
             <p className="text-lg text-stone-600 leading-relaxed">
-              Storytellers, growers, makers — the people whose hands and voices shape The Harvest.
+              Storytellers, growers, makers: the people whose hands and voices shape The Harvest.
             </p>
           </motion.div>
         </div>
@@ -119,7 +119,7 @@ export default function People() {
                           <span>· {s.transcriptCount} {s.transcriptCount === 1 ? "recording" : "recordings"}</span>
                         )}
                         {s.publishedArticleCount === 0 && s.publishedStoryCount === 0 && s.transcriptCount === 0 && (
-                          <span className="text-stone-400">Profile only — content coming</span>
+                          <span className="text-stone-400">Profile only for now</span>
                         )}
                       </div>
                       <ArrowRight className="h-4 w-4 text-stone-400 transition group-hover:translate-x-1 group-hover:text-amber-600" />

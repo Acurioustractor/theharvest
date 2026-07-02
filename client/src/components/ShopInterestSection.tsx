@@ -22,7 +22,7 @@ export function ShopInterestSection({
   id = "shop-interest",
   eyebrow = "Shop interest",
   title = "Put something real on the first shelf.",
-  body = "The Shop starts small: produce, made goods, food, useful objects, and people who want to help test the shape before it becomes too polished.",
+  body = "The Shop starts small: real names on the shelf, and short opening windows once the first shelves are ready. Telling us what you grow or make starts a proper conversation about whether it fits.",
 }: ShopInterestSectionProps) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");

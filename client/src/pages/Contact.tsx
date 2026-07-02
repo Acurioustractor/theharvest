@@ -103,7 +103,7 @@ export default function Contact() {
             marginRight: "auto",
             lineHeight: 1.55,
           }}>
-            The Harvest is in Witta, on Jinibara Country, at the old nursery. We're not open for casual drop-ins yet. Use the form below, or one of the paths beneath it.
+            The Harvest is in Witta, on Jinibara Country, at the old nursery. You do not need to book to come and have a look while we find our feet. Use the form below, or one of the paths beneath it.
           </p>
         </motion.div>
       </section>
@@ -149,8 +149,8 @@ export default function Contact() {
               lineHeight: 1.6,
               margin: "0 0 32px",
             }}>
-              We've got your message and will get back to you soon.
-              In the meantime, feel free to explore what we're building.
+              We've got your message. We read everything. Replies can take a few
+              days while we find our feet.
             </p>
             <button
               onClick={() => setSubmitted(false)}
@@ -306,7 +306,7 @@ export default function Contact() {
               <p style={detailTextStyle}>9 Gumland Drive</p>
               <p style={detailTextStyle}>Witta QLD 4552</p>
               <p style={{ ...detailTextStyle, opacity: 0.5, fontSize: 14, marginTop: 8 }}>
-                10 minutes from Maleny, in the Sunshine Coast Hinterland
+                Near Maleny, in the Sunshine Coast Hinterland
               </p>
             </div>
           </FadeIn>
@@ -341,9 +341,17 @@ export default function Contact() {
           <FadeIn delay={0.3}>
             <div>
               <h3 style={detailLabelStyle}>VISITS</h3>
-              <p style={detailTextStyle}>Not open for casual drop-ins yet.</p>
+              <p style={detailTextStyle}>
+                You do not need to book to come and have a look while we find our feet.
+              </p>
               <p style={{ ...detailTextStyle, opacity: 0.5, fontSize: 14, marginTop: 8 }}>
-                Join the member list for community-day details, or send a message to arrange a visit.
+                Members hear about open days and events first.{" "}
+                <a
+                  href="/membership"
+                  style={{ color: colors.shed, textDecoration: "underline", textUnderlineOffset: 3 }}
+                >
+                  Membership is free
+                </a>.
               </p>
             </div>
           </FadeIn>

@@ -46,60 +46,70 @@ interface TimelineEvent {
 const timelineEvents: TimelineEvent[] = [
   {
     id: "discovery",
-    date: "Early 2025",
+    date: "Late 2025",
     title: "Discovering the Site",
     description:
-      "The old Witta Nursery site caught our eye – a neglected space with incredible potential. We began exploring what this could become for the community.",
+      "The old Green Harvest nursery site caught our eye: a neglected space with incredible potential. We began exploring what it could become for the community.",
     status: "complete",
     icon: Leaf,
     slot: "card-1",
   },
   {
     id: "consultation",
-    date: "Q1 2025",
+    date: "Early 2026",
     title: "Community Consultation",
     description:
-      "We're talking to locals, gathering ideas, and understanding what the community needs. Your input is shaping what The Harvest will become.",
-    status: "in-progress",
+      "We talked with locals, gathered ideas, and listened to what the community needed. That input shaped what The Harvest has become.",
+    status: "complete",
     icon: Users,
     slot: "card-2",
   },
   {
     id: "activation",
-    date: "Q1-Q2 2025",
-    title: "Activation Phase",
+    date: "March 2026",
+    title: "The First Gathering",
     description:
-      "Hosting early events and gatherings to bring people together while we develop the site. Testing ideas, building connections, and learning what works.",
-    status: "in-progress",
+      "The first gathering brought people onto the lawn while the site was still finding its shape. We tested ideas, built connections, and learned what worked.",
+    status: "complete",
     icon: Heart,
     slot: "card-3",
   },
   {
     id: "development",
-    date: "Q2-Q3 2025",
+    date: "Through 2026",
     title: "Site Development",
     description:
-      "Transforming the space: fitting out the kitchen, establishing garden areas, and creating gathering spaces. Volunteer work days and community build events.",
-    status: "planned",
+      "Transforming the space: establishing garden areas, creating gathering spaces, and running community work days.",
+    status: "complete",
     icon: Building,
     slot: "card-4",
   },
   {
     id: "soft-launch",
-    date: "Late 2025",
-    title: "Soft Launch",
+    date: "20 June 2026",
+    title: "First Members and Makers Day",
     description:
-      "Opening our doors more regularly with markets, workshops, and community gatherings. The beginning of something lasting.",
-    status: "planned",
+      "The Harvest opened with its first members and makers day. The beginning of something lasting.",
+    status: "complete",
     icon: Leaf,
     slot: "card-5",
+  },
+  {
+    id: "underway",
+    date: "From July 2026",
+    title: "Properly Under Way",
+    description:
+      "The Harvest is now properly under way. The garden grows through regular work days, and upcoming events land with members first. You do not need to book to come and have a look while we find our feet.",
+    status: "in-progress",
+    icon: Clock,
+    slot: "featured",
   },
   {
     id: "future",
     date: "2026+",
     title: "The Vision Ahead",
     description:
-      "A thriving community kitchen, flourishing gardens, regular workshops, and a hub where locals shape what happens. We're building this together.",
+      "Flourishing gardens, regular events and workshops, an art space shaped by artists, and one day a sublicenced kitchen. A hub where locals shape what happens. We're building this together.",
     status: "planned",
     icon: Target,
     slot: "card-6",
@@ -249,7 +259,7 @@ export default function Journey() {
             <EditableText
               page="journey"
               slot="hero-description"
-              defaultContent="We're in the early stages of transforming an old Witta nursery into a community gathering place. Right now we're consulting with locals and hosting activation events – and you're invited to be part of the story."
+              defaultContent="The Harvest is a community garden and creative gathering place in Witta, on Jinibara Country. We opened with our first members and makers day on Saturday 20 June 2026, and from July we are properly under way. You do not need to book to come and have a look while we find our feet."
               as="p"
               className="text-xl text-stone-600 mb-8 leading-relaxed"
               multiline
@@ -313,8 +323,8 @@ export default function Journey() {
               The Transformation in Pictures
             </h2>
             <p className="text-lg text-stone-600 max-w-2xl mx-auto">
-              From overgrown nursery to emerging community hub - browse photos
-              documenting our journey and the hands that are building it.
+              From overgrown nursery to a garden, events and art space: browse
+              photos documenting the journey and the hands that built it.
             </p>
           </motion.div>
 

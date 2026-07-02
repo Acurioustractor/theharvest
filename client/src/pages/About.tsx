@@ -25,11 +25,12 @@ export default function About() {
               About
             </span>
             <h1 className="text-5xl md:text-6xl font-serif font-bold text-stone-800 mt-3 mb-6">
-              An old nursery becoming a gathering place
+              An old nursery, now a gathering place
             </h1>
             <p className="text-xl text-stone-600 leading-relaxed">
               Rammed earth walls and good soil on Jinibara Country.
-              We're turning it into somewhere people can eat, learn, make, and belong.
+              A community garden and creative gathering place in Witta:
+              somewhere to grow, make and gather.
             </p>
           </motion.div>
         </div>
@@ -50,17 +51,18 @@ export default function About() {
               </h2>
               <div className="prose prose-lg text-stone-600">
                 <p>
-                  Witta sits 10 minutes from Maleny in the Sunshine Coast Hinterland.
-                  2,000 cars pass through every weekend. There's nowhere to stop.
+                  Witta sits in the Sunshine Coast Hinterland, a short drive from Maleny,
+                  on Jinibara Country.
                 </p>
                 <p>
-                  The Harvest is a 5-acre site — an old nursery with a beautiful rammed earth
-                  building, established gardens, and land that's been cared for decades.
+                  The Harvest is an old nursery with a beautiful rammed earth
+                  building, established gardens, and land that's been cared for over decades.
                 </p>
                 <p>
-                  We're not building a finished product. We're building something that grows
-                  with the people who use it. Pop-up kitchens before a permanent restaurant.
-                  Market mornings before a retail fit-out. Community first, always.
+                  We opened with a first members and makers day on Saturday 20 June 2026,
+                  and from July the place is properly under way. We're not building a
+                  finished product. We're building something that grows with the people
+                  who use it. Still unfinished, on purpose. Community first, always.
                 </p>
               </div>
             </motion.div>
@@ -94,7 +96,7 @@ export default function About() {
             className="max-w-3xl mx-auto text-center"
           >
             <h2 className="text-3xl md:text-4xl font-serif font-bold text-white mb-6">
-              We're building this for...
+              This place is for...
             </h2>
             <p className="text-xl text-stone-300 leading-relaxed mb-4">
               The early risers who love a good market morning. The gardeners with dirt under their
@@ -104,6 +106,45 @@ export default function About() {
             <p className="text-xl font-serif font-bold text-amber-400">
               If that sounds like you, come be part of the story.
             </p>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Come and See It */}
+      <section className="py-20 bg-white">
+        <div className="container">
+          <motion.div
+            {...fadeInUp}
+            className="max-w-3xl mx-auto text-center"
+          >
+            <h2 className="text-3xl md:text-4xl font-serif font-bold text-stone-800 mb-6">
+              Come and see it
+            </h2>
+            <p className="text-lg text-stone-600 leading-relaxed mb-8">
+              You do not need to book to come and have a look while we find our feet.
+              Membership is free, and members hear first, every time.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button
+                className="bg-amber-600 hover:bg-amber-700 text-white"
+                asChild
+              >
+                <Link href="/membership">
+                  Become a member
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
+              </Button>
+              <Button
+                variant="outline"
+                className="border-amber-300 text-amber-700 hover:bg-amber-50"
+                asChild
+              >
+                <Link href="/whats-on">
+                  What's on
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
+              </Button>
+            </div>
           </motion.div>
         </div>
       </section>
@@ -135,8 +176,8 @@ export default function About() {
                   Explore the Site
                 </h3>
                 <p className="text-stone-600 leading-relaxed mb-6 flex-1">
-                  Interactive floor plans, site maps, the 3-year timeline, and what's
-                  already in motion. See the space and the plan.
+                  Interactive floor plans, site maps, and what's
+                  already in motion. See the space, what's here now, and what's next.
                 </p>
                 <Button
                   variant="outline"

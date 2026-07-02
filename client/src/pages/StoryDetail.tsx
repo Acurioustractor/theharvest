@@ -42,11 +42,11 @@ export default function StoryDetail({ storyId }: { storyId: string }) {
         <div className="container mx-auto max-w-3xl text-center">
           <h1 className="text-3xl font-serif font-bold text-stone-800">No story here.</h1>
           <p className="mt-4 text-stone-600">
-            This story might be a draft, or it might not be on The Harvest project.
+            We couldn't find that story. It may have moved, or it hasn't been published yet.
           </p>
-          <Link href="/people">
+          <Link href="/stories">
             <a className="mt-6 inline-flex items-center gap-2 text-amber-700 hover:text-amber-800">
-              <ArrowLeft className="h-4 w-4" /> Back to people
+              <ArrowLeft className="h-4 w-4" /> Back to stories
             </a>
           </Link>
         </div>

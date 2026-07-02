@@ -37,7 +37,7 @@ export default function Shop() {
       document.head.appendChild(meta);
     }
     meta.content =
-      "Witta hasn't had a shop in a generation. The Harvest is putting one back: a shared shelf for the growers and makers who already live around Witta and Maleny.";
+      "Witta hasn't had a shop in a generation. The Harvest is putting one back: the first shelves are being shaped with the growers and makers who already live around Witta and Maleny.";
   }, []);
 
   return (
@@ -55,8 +55,10 @@ export default function Shop() {
           <p className="mt-7 max-w-2xl text-xl leading-relaxed text-white/80 md:text-2xl">
             Around 1,300 people live here, with nowhere to buy a loaf of bread or the thing
             your neighbour grew. The Shop is a small, slow attempt to put one back: a shared
-            shelf for the growers and makers who already live around Witta and Maleny. Not a
-            supermarket, not a boutique. A shelf with honest signage, kept simple on purpose.
+            shelf for the growers and makers who already live around Witta and Maleny. The
+            first shelves are being shaped now, and Susie and Joey steward the place day to
+            day. Not a supermarket, not a boutique. A shelf with honest signage, kept simple
+            on purpose.
           </p>
           <div className="mt-9 flex flex-wrap items-center gap-4">
             <a href="#shop-interest" className={harvestButtonClasses.primary}>
@@ -87,8 +89,10 @@ export default function Shop() {
             ))}
           </div>
           <p className="mt-8 max-w-2xl leading-relaxed text-stone-600">
-            We read every one. The form below asks for almost nothing on purpose. If there is a
-            fit, we will be in touch to talk through the detail.
+            An expression of interest starts a proper conversation, not a contract. The form
+            below asks for almost nothing on purpose. If there is a fit, we will be in touch to
+            talk through the detail. You keep ownership of what you bring, and we will work
+            out the money side together before anything goes on a shelf.
           </p>
         </div>
       </section>

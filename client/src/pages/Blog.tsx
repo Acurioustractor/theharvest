@@ -69,7 +69,7 @@ export default function Blog() {
             </h1>
             <p className="text-lg text-stone-600 leading-relaxed">
               Start with What is The Harvest, then follow the people, work, and
-              notes coming out of the garden, kitchen, and art space.
+              notes coming out of the garden, events, and art space.
             </p>
             <div className="mt-6">
               <Link
@@ -141,8 +141,8 @@ export default function Blog() {
                       What is The Harvest?
                     </h3>
                     <p className="mb-4 leading-relaxed text-stone-300">
-                      The old Witta nursery, the three rooms, and the first public
-                      member list as the place takes shape.
+                      The old Witta nursery, the three rooms, and how to be part
+                      of the place now that it is open.
                     </p>
                     <p className="inline-flex items-center gap-2 text-sm font-medium text-amber-500 transition-colors group-hover:text-amber-400">
                       Read the story <ArrowRight className="h-4 w-4" />

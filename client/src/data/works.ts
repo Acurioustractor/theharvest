@@ -195,7 +195,7 @@ export const works: Work[] = [
     hands: [
       { name: "Wednesday Maintenance Crew", role: "Weekly stewards" },
       { name: "Sophie", role: "Garden volunteer", href: "https://sophiesseedlings.com/" },
-      { name: "Susie & Joey", role: "Community Stewards (from July 2026)" },
+      { name: "Susie & Joey", role: "Community Stewards" },
     ],
     storyLinks: [
       {
@@ -313,7 +313,7 @@ export const works: Work[] = [
     subtitle: "Reclaiming the village shop that Witta hasn't had in a generation",
     lifecycleTags: ["concept", "planned"],
     materials: "Local makers · shared shelf test · low overhead · honesty more than ornament",
-    year: "Proposed June 2026",
+    year: "First shelf taking shape, 2026",
     heroImage: "/images/optimized/local-produce-760.webp",
     heroAlt: "Local produce gathered for The Harvest shop test",
     blurb:

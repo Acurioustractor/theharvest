@@ -180,8 +180,9 @@ export default function WhatsOn() {
               What's On
             </h1>
             <p className="text-xl text-stone-600 leading-relaxed mb-8">
-              Markets, workshops, community gatherings, and more. As we build The Harvest,
-              we're hosting events that bring the community together.
+              Markets, workshops, work days and gatherings at The Harvest, a community garden
+              and creative gathering place in Witta, on Jinibara Country. New dates land on the
+              members page first.
             </p>
             <EventSubmissionDialog onEventSubmitted={() => refetch()} />
           </motion.div>
@@ -225,9 +226,13 @@ export default function WhatsOn() {
               {upcomingEvents.length === 0 ? (
                 <div className="text-center py-16">
                   <Calendar className="h-16 w-16 text-stone-300 mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold text-stone-600 mb-2">No upcoming events</h3>
+                  <h3 className="text-xl font-semibold text-stone-600 mb-2">Nothing listed just yet</h3>
                   <p className="text-stone-500 mb-6">
-                    Check back soon or submit your own community event!
+                    New dates land on the{" "}
+                    <a href="/membership" className="text-amber-600 underline hover:text-amber-700">
+                      members page
+                    </a>{" "}
+                    first. You can also submit your own community event.
                   </p>
                   <EventSubmissionDialog onEventSubmitted={() => refetch()} />
                 </div>
@@ -365,7 +370,7 @@ export default function WhatsOn() {
             </h2>
             <p className="text-stone-300 mb-8">
               Whether it's a workshop you want to run, a community gathering, or a skill you want to
-              teach – we'd love to hear from you. We're building The Harvest with the community, for the
+              teach, we'd love to hear from you. The Harvest is made with the community, for the
               community.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">

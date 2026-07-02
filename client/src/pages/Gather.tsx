@@ -171,7 +171,11 @@ export default function Gather() {
               >
                 Flight Bar Witta
               </a>
-              , and an open question: what would you build here? More gatherings are coming.
+              , and an open question: what would you build here? In June 2026 The Harvest opened with a first members and makers day, and more gatherings will follow. New dates land with{" "}
+              <Link href="/membership" style={{ color: colors.shed, fontWeight: 600, textDecoration: "none", borderBottom: `1px solid rgba(0,0,0,0.3)` }}>
+                members
+              </Link>{" "}
+              first.
             </p>
           </FadeIn>
         </div>
@@ -327,7 +331,7 @@ export default function Gather() {
               opacity: 0.75,
               margin: 0,
             }}>
-              He brings his harvest to share at our gatherings.
+              He has brought his harvest to share at our gatherings.
             </p>
           </FadeIn>
         </div>
@@ -349,7 +353,7 @@ export default function Gather() {
               margin: "0 0 64px",
               textAlign: "center",
             }}>
-              DETAILS
+              THE FIRST GATHERING
             </h2>
           </FadeIn>
 
@@ -367,10 +371,9 @@ export default function Gather() {
                   letterSpacing: "0.15em",
                   margin: "0 0 12px",
                   opacity: 0.5,
-                }}>WHEN</h3>
-                <p style={{ fontFamily: fonts.body, fontSize: 17, lineHeight: 1.8, margin: "0 0 4px" }}>Saturday 7 March</p>
-                <p style={{ fontFamily: fonts.body, fontSize: 17, lineHeight: 1.8, margin: "0 0 4px" }}>11am - 4pm</p>
-                <p style={{ fontFamily: fonts.body, fontSize: 14, lineHeight: 1.8, opacity: 0.5, margin: 0 }}>Come for an hour or stay for the day</p>
+                }}>WHEN IT WAS</h3>
+                <p style={{ fontFamily: fonts.body, fontSize: 17, lineHeight: 1.8, margin: "0 0 4px" }}>Saturday 7 March 2026</p>
+                <p style={{ fontFamily: fonts.body, fontSize: 14, lineHeight: 1.8, opacity: 0.5, margin: 0 }}>An open afternoon on the lawn</p>
               </div>
             </FadeIn>
 
@@ -414,7 +417,7 @@ export default function Gather() {
                   letterSpacing: "0.15em",
                   margin: "0 0 12px",
                   opacity: 0.5,
-                }}>BRING</h3>
+                }}>WHAT PEOPLE BROUGHT</h3>
                 <p style={{ fontFamily: fonts.body, fontSize: 17, lineHeight: 1.8, margin: "0 0 4px" }}>A chair or blanket.</p>
                 <p style={{ fontFamily: fonts.body, fontSize: 17, lineHeight: 1.8, margin: 0 }}>A story, a skill, a question. Or nothing at all.</p>
               </div>
@@ -429,9 +432,9 @@ export default function Gather() {
                   letterSpacing: "0.15em",
                   margin: "0 0 12px",
                   opacity: 0.5,
-                }}>PROVIDING</h3>
+                }}>ON THE TABLE</h3>
                 <p style={{ fontFamily: fonts.body, fontSize: 17, lineHeight: 1.8, margin: "0 0 4px" }}>
-                  Oysters from Moreton Bay. Drinks by{" "}
+                  Simple food and drinks, with local friends like{" "}
                   <a
                     href="https://flightbarwitta.com.au/"
                     target="_blank"
@@ -443,6 +446,13 @@ export default function Gather() {
                   .
                 </p>
                 <p style={{ fontFamily: fonts.body, fontSize: 17, lineHeight: 1.8, margin: 0 }}>Coffee. Water. Music. Good light. The lawn.</p>
+                <p style={{ fontFamily: fonts.body, fontSize: 14, lineHeight: 1.8, opacity: 0.5, margin: "8px 0 0" }}>
+                  The next dates land with{" "}
+                  <Link href="/membership" style={{ color: colors.shed, fontWeight: 600, textDecoration: "none", borderBottom: "1px solid rgba(0,0,0,0.3)" }}>
+                    members
+                  </Link>{" "}
+                  first. Membership is free.
+                </p>
               </div>
             </FadeIn>
           </div>
@@ -465,7 +475,7 @@ export default function Gather() {
               textAlign: "center",
               margin: "0 0 16px",
             }}>
-              WHAT TO EXPECT
+              WHAT GATHERINGS ARE LIKE
             </h2>
             <p style={{
               fontFamily: fonts.body,
@@ -475,7 +485,11 @@ export default function Gather() {
               opacity: 0.6,
               margin: "0 0 48px",
             }}>
-              Saturday 7 March, 11am. 9 Gumland Drive, Witta
+              9 Gumland Drive, Witta. New dates land with{" "}
+              <Link href="/membership" style={{ color: colors.shed, fontWeight: 600, textDecoration: "none", borderBottom: "1px solid rgba(0,0,0,0.3)" }}>
+                members
+              </Link>{" "}
+              first.
             </p>
           </FadeIn>
 
@@ -494,10 +508,10 @@ export default function Gather() {
                   color: colors.goldenHour,
                   margin: "0 0 12px",
                 }}>
-                  THE VIBE
+                  THE FEEL
                 </h3>
                 <p style={{ fontFamily: fonts.body, fontSize: 15, lineHeight: 1.7, margin: 0, opacity: 0.8 }}>
-                  This is a relaxed, open-air gathering on the property. Come hear about the vision for the garden and The Harvest, meet your neighbours, and see the space taking shape. No tickets, no schedule. Just show up.
+                  Relaxed, open-air, on the property. You hear what is happening in the garden and at The Harvest, meet your neighbours, and see the place for yourself. No tickets, no schedule.
                 </p>
               </div>
             </FadeIn>
@@ -515,7 +529,7 @@ export default function Gather() {
                   FOOD & DRINK
                 </h3>
                 <p style={{ fontFamily: fonts.body, fontSize: 15, lineHeight: 1.7, margin: 0, opacity: 0.8 }}>
-                  Fresh oysters shucked on the spot. BYO drinks and something to share if you'd like. A plate, a bottle, whatever feels right.
+                  Food is shared. Bring something along if you'd like: a plate, a bottle, whatever feels right.
                 </p>
               </div>
             </FadeIn>

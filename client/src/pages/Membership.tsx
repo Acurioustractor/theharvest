@@ -24,8 +24,8 @@ const lanes = [
   {
     slug: "grow",
     title: "Grow.",
-    tagline: "Letters and updates while the garden gets made.",
-    body: "A monthly Harvest Note from Ben or Nic. What changed in the beds. What's coming next. One honest question. One small ask. Same shape every time so you know what to expect.",
+    tagline: "Letters and updates as the garden grows.",
+    body: "A Harvest Note when there is something worth saying. What changed in the beds. What's coming next. One honest question. One small ask. Same shape every time so you know what to expect.",
   },
   {
     slug: "make",
@@ -37,7 +37,7 @@ const lanes = [
     slug: "gather",
     title: "Gather.",
     tagline: "First call for community days and meals.",
-    body: "Members hear about the next community day, work days, workshops and shared meals before they go public. The late June 2026 community day lands here first.",
+    body: "Upcoming events land with members first. Work days, workshops and shared meals reach the member list before they go public, with a way to RSVP and to message us directly.",
   },
 ];
 
@@ -54,7 +54,7 @@ type HeardAbout = "friend-or-neighbour" | "social-media" | "in-witta" | "other" 
 const HEARD_ABOUT_OPTIONS: { value: Exclude<HeardAbout, "">; label: string }[] = [
   { value: "friend-or-neighbour", label: "A friend or neighbour told me" },
   { value: "social-media", label: "Social media (Facebook or Instagram)" },
-  { value: "in-witta", label: "In Witta — sign, poster, or saw the place" },
+  { value: "in-witta", label: "In Witta: a sign, a poster, or saw the place" },
   { value: "other", label: "Something else" },
 ];
 
@@ -210,7 +210,7 @@ export default function Membership() {
               <EditableText
                 page="membership"
                 slot="hero-body"
-                defaultContent="For now, membership means this: your name is on the Harvest list. You get the letters, invitations, first calls, and early opportunities while the place is being made. Use the comments box for ideas, and we’ll invite public profiles later by email."
+                defaultContent="Membership is free, and it means this: your name is on the Harvest list. You get the letters, invitations, first calls, and early opportunities as the place finds its feet. Use the comments box for ideas, and we’ll invite public profiles later by email."
                 as="p"
                 className="mt-7 max-w-2xl text-xl leading-relaxed text-white/80 md:text-2xl"
                 multiline
@@ -229,7 +229,7 @@ export default function Membership() {
               <EditableText
                 page="membership"
                 slot="hero-note-body"
-                defaultContent="This is the front gate list for people who want to stay close, turn up, and help shape the first version. If you have produce or made goods, use the shop form below."
+                defaultContent="This is the front gate list for people who want to stay close, turn up, and help shape what The Harvest becomes. If you have produce or made goods, use the shop form below."
                 as="p"
                 className="mt-3 leading-relaxed text-white/66"
                 multiline
@@ -437,7 +437,7 @@ export default function Membership() {
             <EditableText
               page="membership"
               slot="questions-body"
-              defaultContent="Sometimes you want to know something before you sign anything up. Ben or Nic will reply within 48 hours, sometimes faster."
+              defaultContent="Sometimes you want to know something before you sign anything up. Ben or Nic will reply, though replies can take a few days while we find our feet."
               as="p"
               className="mt-6 max-w-xl text-lg leading-relaxed text-stone-700"
               multiline

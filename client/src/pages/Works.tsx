@@ -22,7 +22,7 @@ export default function Works() {
 
   useEffect(() => {
     document.title = "The Collection · The Harvest";
-    const desc = "The works of The Harvest — a living collection on Jinibara Country, Witta. Each piece carries a thread back to the history of the place.";
+    const desc = "The works of The Harvest: a living collection on Jinibara Country, Witta. Each piece carries a thread back to the history of the place.";
     let meta = document.querySelector('meta[name="description"]') as HTMLMetaElement | null;
     if (!meta) {
       meta = document.createElement("meta");
@@ -177,7 +177,7 @@ export default function Works() {
               The next pieces will be made with you.
             </h2>
             <p className="text-lg text-stone-300 leading-relaxed mb-10">
-              Each season brings a new work — sometimes a structure, sometimes a
+              Each season brings a new work: sometimes a structure, sometimes a
               practice, sometimes a partnership. Add a memory, share a skill, or
               come and help build one.
             </p>

@@ -6,7 +6,6 @@ import {
   Calendar,
   Clock,
   Car,
-  Coffee,
   Utensils,
   CheckCircle,
   ArrowRight,
@@ -32,35 +31,26 @@ const staggerContainer = {
 
 const spaces = [
   {
-    name: "The Main Hall",
-    capacity: "Up to 80 seated / 120 standing",
+    name: "Indoor spaces",
+    capacity: "Taking shape",
     description:
-      "Our largest space is taking shape with exposed timber beams, natural light, and flexible seating. Perfect for workshops, markets, and celebrations.",
-    features: ["Natural lighting", "Flexible layout", "Kitchen access coming", "Sound system planned"],
-    ideal: ["Workshops", "Markets", "Private events", "Community gatherings"],
+      "Rooms with timber character and natural light, suited to workshops, meetings and gatherings while the fit-out continues. Tell us what you're planning and we'll talk through what works now.",
+    features: ["Natural lighting", "Flexible layout", "Fit-out continuing"],
+    ideal: ["Workshops", "Meetings", "Community gatherings", "Team days"],
   },
   {
-    name: "The Garden Pavilion",
-    capacity: "Up to 40 seated",
+    name: "Garden and outdoor spaces",
+    capacity: "Taking shape",
     description:
-      "A covered outdoor space we're developing surrounded by native gardens. Ideal for intimate gatherings, small workshops, or casual dining events.",
-    features: ["Covered outdoor", "Garden views", "Power outlets", "BBQ access planned"],
-    ideal: ["Small workshops", "Garden parties", "Pop-up dining", "Meetings"],
-  },
-  {
-    name: "The Kitchen",
-    capacity: "Up to 12 participants",
-    description:
-      "We're fitting out a commercial kitchen for cooking classes, food prep, and catering support for larger events.",
-    features: ["Commercial appliances", "Prep stations", "Storage", "Dishwashing"],
-    ideal: ["Cooking classes", "Food prep", "Catering base", "Preserving workshops"],
+      "Outdoor areas among the gardens, suited to small gatherings, work days and casual get-togethers as the garden grows.",
+    features: ["Garden setting", "Open air", "Power access"],
+    ideal: ["Small workshops", "Garden gatherings", "Meetings", "Team days"],
   },
 ];
 
 const amenities = [
   { icon: Car, label: "Free Parking" },
-  { icon: Coffee, label: "Tea & Coffee" },
-  { icon: Utensils, label: "Kitchen Access" },
+  { icon: Utensils, label: "Local Caterer Connections" },
   { icon: Users, label: "Accessible Entry" },
 ];
 
@@ -113,9 +103,9 @@ export default function VenueHire() {
               Venue Hire
             </h1>
             <p className="text-xl text-stone-600 leading-relaxed">
-              We're developing flexible spaces for workshops, celebrations, community events,
-              and more — surrounded by the beauty of the hinterland. Get in touch to discuss
-              what's possible.
+              The Harvest is open and finding its feet: a community garden and creative
+              gathering place in Witta, on Jinibara Country. Our spaces can host workshops,
+              gatherings and team days. Tell us what you need and we'll work it out together.
             </p>
           </motion.div>
         </div>
@@ -138,7 +128,7 @@ export default function VenueHire() {
               Our Spaces
             </motion.h2>
             <motion.p variants={fadeInUp} className="text-lg text-stone-600 max-w-2xl mx-auto">
-              Each space has its own character — choose the one that fits your vision.
+              Each space has its own character. Tell us what you're planning and we'll find the right fit.
             </motion.p>
           </motion.div>
 
@@ -270,14 +260,14 @@ export default function VenueHire() {
                     Make an Enquiry
                   </h2>
                   <p className="text-stone-600 mb-6">
-                    Tell us about your event and we'll get back to you with availability and pricing.
+                    Tell us about your event and we'll get back to you to work out what's possible.
                   </p>
 
                   {status === "success" ? (
                     <div className="text-center py-12 space-y-4">
                       <CheckCircle className="h-12 w-12 text-amber-500 mx-auto" />
                       <h3 className="font-serif text-xl text-stone-800">Thanks for your enquiry</h3>
-                      <p className="text-stone-600">We'll get back to you within 2 business days.</p>
+                      <p className="text-stone-600">We'll get back to you within a few days.</p>
                       <button
                         onClick={() => { setStatus("idle"); setFormData({}); }}
                         className="mt-4 px-6 py-2 rounded-lg bg-stone-800 text-stone-200 text-sm font-medium hover:bg-stone-700 transition-colors"
@@ -361,7 +351,6 @@ export default function VenueHire() {
                           <input
                             type="number"
                             min="1"
-                            max="150"
                             placeholder="e.g. 30"
                             value={formData.guests || ""}
                             onChange={(e) => updateField("guests", e.target.value)}
@@ -433,16 +422,16 @@ export default function VenueHire() {
                     <div>
                       <strong className="text-stone-800">Beautiful setting</strong>
                       <p className="text-stone-600">
-                        Surrounded by native gardens and hinterland views — a world away from the everyday.
+                        Native gardens and hinterland views in Witta, on Jinibara Country.
                       </p>
                     </div>
                   </li>
                   <li className="flex items-start gap-3">
                     <CheckCircle className="h-5 w-5 text-amber-500 mt-1 flex-shrink-0" />
                     <div>
-                      <strong className="text-stone-800">Community rates</strong>
+                      <strong className="text-stone-800">Community first</strong>
                       <p className="text-stone-600">
-                        Discounted rates for local community groups and non-profits.
+                        We want local community groups and non-profits here. Talk to us about what's workable.
                       </p>
                     </div>
                   </li>
@@ -451,7 +440,8 @@ export default function VenueHire() {
                     <div>
                       <strong className="text-stone-800">Catering options</strong>
                       <p className="text-stone-600">
-                        We can connect you with local caterers or you can use our kitchen facilities.
+                        We can connect you with local caterers. A kitchen is planned as a future
+                        sublicenced operation, so it's not part of hire for now.
                       </p>
                     </div>
                   </li>
@@ -487,8 +477,8 @@ export default function VenueHire() {
                     <div>
                       <h4 className="font-semibold text-stone-800 mb-2">Booking Timeline</h4>
                       <p className="text-stone-600 text-sm">
-                        We recommend booking at least 4 weeks in advance for larger events. For
-                        smaller gatherings, we can often accommodate shorter notice — just ask.
+                        We're still finding our rhythm, so the earlier you get in touch the more
+                        we can do. For smaller gatherings, just ask.
                       </p>
                     </div>
                   </div>
@@ -502,8 +492,8 @@ export default function VenueHire() {
                     <div>
                       <h4 className="font-semibold text-stone-800 mb-2">Still Taking Shape</h4>
                       <p className="text-stone-600 text-sm">
-                        Some spaces are still being developed. We're happy to discuss what's available
-                        now and what's coming — get in touch and we'll work something out.
+                        We're open and finding our feet, and some spaces are still being developed.
+                        Get in touch, tell us what you need, and we'll work something out together.
                       </p>
                     </div>
                   </div>

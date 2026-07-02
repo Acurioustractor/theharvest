@@ -776,7 +776,7 @@ function WorkVideoSection({
                 ) : (
                   <iframe
                     src={embed.src}
-                    title={`${work.title} — video`}
+                    title={`${work.title} video`}
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     allowFullScreen
                     className="w-full h-full border-0"
@@ -1052,7 +1052,7 @@ function InlineFeatureImage({
             slot={slot}
             defaultWorkSlug={work.slug}
             src={work.heroImage}
-            alt={`${work.title} — feature image`}
+            alt={`${work.title} feature image`}
             className="aspect-[16/9] overflow-hidden rounded-sm shadow-md bg-stone-200"
             imgClassName="w-full h-full object-cover"
           />
@@ -1089,7 +1089,7 @@ function InlineSpreadImages({ work }: { work: import("@/data/works").Work }) {
             slot={`${work.slug}-spread-left`}
             defaultWorkSlug={work.slug}
             src={work.heroImage}
-            alt={`${work.title} — spread, left`}
+            alt={`${work.title} spread, left`}
             className="aspect-[4/3] overflow-hidden rounded-sm shadow-md bg-stone-200"
             imgClassName="w-full h-full object-cover"
           />
@@ -1098,7 +1098,7 @@ function InlineSpreadImages({ work }: { work: import("@/data/works").Work }) {
             slot={`${work.slug}-spread-right`}
             defaultWorkSlug={work.slug}
             src={work.heroImage}
-            alt={`${work.title} — spread, right`}
+            alt={`${work.title} spread, right`}
             className="aspect-[4/3] overflow-hidden rounded-sm shadow-md bg-stone-200"
             imgClassName="w-full h-full object-cover"
           />

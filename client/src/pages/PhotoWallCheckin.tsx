@@ -8,7 +8,7 @@ export default function PhotoWallCheckin() {
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
-    document.title = "Photo Wall Check-in — The Harvest";
+    document.title = "Photo Wall Check-in | The Harvest";
     const params = new URLSearchParams(window.location.search);
     setContactId(params.get("id"));
   }, []);

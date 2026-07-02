@@ -6,59 +6,12 @@ import FadeIn from "@/components/FadeIn";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { rootStyle, colors, fonts, formLabelStyle, formInputStyle } from "@/styles/brand";
 import { trpc } from "@/lib/trpc";
-
-const ADMIN_KEY = "photo-wall-admin";
-const ADMIN_PASSWORD = "harvest2026";
-
-function useAdmin() {
-  const [isAdmin, setIsAdmin] = useState(() => {
-    return localStorage.getItem(ADMIN_KEY) === "true";
-  });
-
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get("admin") === ADMIN_PASSWORD) {
-      localStorage.setItem(ADMIN_KEY, "true");
-      setIsAdmin(true);
-      window.history.replaceState({}, "", window.location.pathname);
-    }
-    if (params.get("admin") === "logout") {
-      localStorage.removeItem(ADMIN_KEY);
-      setIsAdmin(false);
-      window.history.replaceState({}, "", window.location.pathname);
-    }
-  }, []);
-
-  const toggle = () => {
-    const next = !isAdmin;
-    if (next) {
-      localStorage.setItem(ADMIN_KEY, "true");
-    } else {
-      localStorage.removeItem(ADMIN_KEY);
-    }
-    setIsAdmin(next);
-    toast(next ? "Admin mode on" : "Admin mode off");
-  };
-
-  return { isAdmin, toggle };
-}
+import { useAuth } from "@/_core/hooks/useAuth";
 
 export default function PhotoWall() {
   const isMobile = useMediaQuery("(max-width: 768px)");
-  const { isAdmin, toggle: toggleAdmin } = useAdmin();
-  const tapCount = useRef(0);
-  const tapTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-
-  const handleLogoTap = () => {
-    tapCount.current++;
-    clearTimeout(tapTimer.current);
-    if (tapCount.current >= 3) {
-      tapCount.current = 0;
-      toggleAdmin();
-    } else {
-      tapTimer.current = setTimeout(() => { tapCount.current = 0; }, 600);
-    }
-  };
+  const { user, isAuthenticated } = useAuth();
+  const isAdmin = isAuthenticated && user?.role === "admin";
   const [formData, setFormData] = useState({
     firstName: "",
     email: "",
@@ -71,7 +24,7 @@ export default function PhotoWall() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    document.title = "Photo Wall — The Harvest";
+    document.title = "Photo Wall | The Harvest";
   }, []);
 
   const galleryQuery = trpc.photoWall.gallery.useQuery();
@@ -177,7 +130,6 @@ export default function PhotoWall() {
           <img
             src="/images/the-harvest-witta-logo.png"
             alt="The Harvest"
-            onClick={handleLogoTap}
             style={{
               width: isMobile ? 100 : 120,
               height: "auto",
@@ -186,7 +138,6 @@ export default function PhotoWall() {
               display: "block",
               marginLeft: "auto",
               marginRight: "auto",
-              cursor: "pointer",
             }}
           />
           <h1 style={{
@@ -209,8 +160,8 @@ export default function PhotoWall() {
             lineHeight: 1.6,
           }}>
             {photos.length > 0
-              ? "Browse, download and share photos from The Harvest."
-              : "Leave your details and we'll send you a portrait next time we gather."}
+              ? "Photos from days at The Harvest. Browse, download, and add your own from a visit."
+              : "Photos from days at The Harvest will land here. Got some from a visit? Add them below."}
           </p>
         </motion.div>
       </section>
@@ -353,7 +304,7 @@ export default function PhotoWall() {
             color: colors.milk,
             opacity: 0.4,
           }}>
-            Photos coming soon.
+            No photos on the wall yet.
           </p>
         </section>
       )}
@@ -411,7 +362,7 @@ export default function PhotoWall() {
               margin: 0,
               lineHeight: 1.5,
             }}>
-              Got photos from The Harvest? Tap to add them to the wall.
+              Got photos from a visit to The Harvest? Tap to add them to the wall.
             </p>
           </div>
         </div>
@@ -437,7 +388,7 @@ export default function PhotoWall() {
             textAlign: "center",
             margin: "0 0 8px",
           }}>
-            GET YOUR PORTRAIT
+            LOOKING FOR YOUR PORTRAIT?
           </h2>
           <p style={{
             fontFamily: fonts.body,
@@ -448,7 +399,7 @@ export default function PhotoWall() {
             margin: "0 0 28px",
             lineHeight: 1.6,
           }}>
-            Leave your details and we'll send you your portrait.
+            Had your portrait taken at The Harvest? Leave your details and we'll track it down for you.
           </p>
 
           {submitted ? (
@@ -466,7 +417,7 @@ export default function PhotoWall() {
                 color: colors.milk,
                 margin: "0 0 16px",
               }}>
-                YOU'RE IN
+                GOT IT
               </h3>
               <p style={{
                 fontFamily: fonts.body,
@@ -476,17 +427,7 @@ export default function PhotoWall() {
                 lineHeight: 1.6,
                 margin: "0 0 12px",
               }}>
-                We'll send your portrait soon.
-              </p>
-              <p style={{
-                fontFamily: fonts.body,
-                fontSize: isMobile ? 14 : 15,
-                color: colors.goldenHour,
-                opacity: 0.8,
-                lineHeight: 1.5,
-                margin: 0,
-              }}>
-                Now go enjoy the day.
+                We have your details and will be in touch about your portrait.
               </p>
             </motion.div>
           ) : (
@@ -571,7 +512,7 @@ export default function PhotoWall() {
                     opacity: isSubmitting ? 0.6 : 1,
                   }}
                 >
-                  {isSubmitting ? "SAVING..." : "TAKE MY PHOTO"}
+                  {isSubmitting ? "SAVING..." : "FIND MY PORTRAIT"}
                 </button>
               </form>
             </FadeIn>

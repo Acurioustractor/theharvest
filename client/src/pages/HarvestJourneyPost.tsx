@@ -26,9 +26,9 @@ const rooms = [
     icon: Hammer,
   },
   {
-    name: "Kitchen and table",
+    name: "Events",
     verb: "Gather",
-    body: "The Milk Crate Pavilion, the long table, work days, open days, music, markets, and the room where neighbours actually meet.",
+    body: "The Milk Crate Pavilion, the long table, work days, open days, music, markets, and the moments where neighbours actually meet.",
     image: "/images/optimized/community-gathering-1000.webp",
     icon: Users,
   },
@@ -86,14 +86,14 @@ export default function HarvestJourneyPost() {
                 Witta, Jinibara Country
               </p>
               <h2 className="mt-3 text-4xl font-black leading-[0.98] md:text-5xl">
-                A garden becoming a place to gather.
+                A garden that is now a place to gather.
               </h2>
             </aside>
 
             <div className="space-y-8 text-lg leading-relaxed text-stone-800">
               <p>
-                The Harvest is a community garden and creative gathering place taking
-                shape in Witta on Jinibara Country.
+                The Harvest is a community garden and creative gathering place in
+                Witta, on Jinibara Country. It is open, and it is still being made.
               </p>
               <p>
                 Before it was The Harvest, this was Green Harvest: a nursery and seed
@@ -104,8 +104,8 @@ export default function HarvestJourneyPost() {
                 Grow. Make. Gather.
               </h3>
               <p>
-                <strong>Grow is the garden.</strong> Paths, beds, seedlings, working
-                bees, compost, kids, and food in the ground. It is the part of the
+                <strong>Grow is the garden.</strong> Paths, beds, seedlings, work
+                days, compost, kids, and food in the ground. It is the part of the
                 place that tells the truth fastest. Either something is growing or it
                 is not.
               </p>
@@ -116,7 +116,7 @@ export default function HarvestJourneyPost() {
               </p>
               <p>
                 <strong>Gather is the table.</strong> The Milk Crate Pavilion, the long
-                table, working bees, music, markets, open days, and the moments that
+                table, work days, music, markets, open days, and the moments that
                 bring neighbours and visitors through the gate.
               </p>
               <p>
@@ -125,15 +125,16 @@ export default function HarvestJourneyPost() {
                 a table people can sit at before any formal co-op structure is claimed.
               </p>
               <p>
-                We're working toward the first public day around the end of June. A community
-                celebration and working open day, not a polished venue reveal. Date being
-                confirmed. Members hear first.
+                The Harvest opened with a first members and makers day on Saturday
+                20 June 2026, and from July it is properly under way. You do not need
+                to book to come and have a look while we find our feet. Members hear
+                first, every time.
               </p>
               <p>
                 That is what the member list is for. People on the list get the letters, the
                 first invitations, the work day calls, the early opportunities, and the
-                next questions while the place is still being made. No paid tier. No app.
-                One list. You are welcome on it.
+                next questions while the place is still being made. Membership is free.
+                No app. One list. You are welcome on it.
               </p>
             </div>
           </div>
