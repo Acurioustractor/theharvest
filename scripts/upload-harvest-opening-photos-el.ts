@@ -4,8 +4,8 @@
  * Cloned from upload-harvest-may-photos-el.ts (the 98-photo May run) with three changes:
  *  1. Batches map from SUBFOLDER names, not camera frame numbers, so phone photos work.
  *  2. iPhone .heic files are converted to jpeg via macOS `sips` before upload.
- *  3. Video files (.mp4/.mov) are listed but NOT uploaded (EL galleries render images;
- *     video stays in the repo until the EL video pipeline is a real build item).
+ *  3. Video files (.mp4/.mov/.webm) upload as media_type "video" with the same batch
+ *     tags (EL supports video assets; mp4 and webm are in its supported media types).
  *
  * Source folder layout (any subset of these subfolders; loose files = opening-day):
  *   ~/Pictures/Manual Library/Harvest Opening 2026-06/
@@ -16,7 +16,7 @@
  *     pavilion/      milk crate pavilion           -> milk-crate-pavilion, make
  *     shop/          shelves, produce, signage     -> the-shop (tag may need creating), make
  *     people/        portraits and hands           -> during, consent review required
- *     video/         parked, reported only
+ *     video/         videos of the day             -> opening-day tags, media_type video
  *
  * Dry run by default. --check verifies EL tags + duplicates. --apply uploads.
  *   npx tsx scripts/upload-harvest-opening-photos-el.ts
@@ -71,7 +71,7 @@ const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 const imageExts = new Set([".jpg", ".jpeg", ".png", ".webp"]);
 const heicExts = new Set([".heic", ".heif"]);
-const videoExts = new Set([".mp4", ".mov", ".m4v"]);
+const videoExts = new Set([".mp4", ".mov", ".m4v", ".webm"]);
 const CONVERTED_DIR = "_converted";
 
 const batches: Record<BatchKey, BatchMapping> = {
@@ -133,6 +133,7 @@ type SourceFile = {
   originalPath: string;
   batch: BatchMapping;
   index: number;
+  isVideo: boolean;
 };
 
 function batchForSubfolder(name: string): BatchMapping {
@@ -153,13 +154,12 @@ function convertHeic(filePath: string): string {
   return outPath;
 }
 
-function collectFiles(): { files: SourceFile[]; videos: string[]; ignored: string[] } {
+function collectFiles(): { files: SourceFile[]; ignored: string[] } {
   if (!existsSync(sourceDir)) {
     console.error(`Source folder does not exist yet: ${sourceDir}`);
     console.error("Create it (subfolders optional), drop the photos in, and re-run.");
     process.exit(1);
   }
-  const videos: string[] = [];
   const ignored: string[] = [];
   const files: SourceFile[] = [];
   let index = 0;
@@ -168,15 +168,15 @@ function collectFiles(): { files: SourceFile[]; videos: string[]; ignored: strin
   const addFile = (fullPath: string, batch: BatchMapping) => {
     const ext = extname(fullPath).toLowerCase();
     if (videoExts.has(ext)) {
-      videos.push(fullPath);
+      files.push({ uploadPath: fullPath, originalPath: fullPath, batch, index: index++, isVideo: true });
       return;
     }
     if (heicExts.has(ext)) {
-      files.push({ uploadPath: apply || check ? convertHeic(fullPath) : fullPath, originalPath: fullPath, batch, index: index++ });
+      files.push({ uploadPath: apply || check ? convertHeic(fullPath) : fullPath, originalPath: fullPath, batch, index: index++, isVideo: false });
       return;
     }
     if (imageExts.has(ext)) {
-      files.push({ uploadPath: fullPath, originalPath: fullPath, batch, index: index++ });
+      files.push({ uploadPath: fullPath, originalPath: fullPath, batch, index: index++, isVideo: false });
       return;
     }
     ignored.push(fullPath);
@@ -190,13 +190,6 @@ function collectFiles(): { files: SourceFile[]; videos: string[]; ignored: strin
       addFile(fullPath, batches["opening-day"]);
     } else if (stat.isDirectory()) {
       if (entry === CONVERTED_DIR) continue;
-      if (entry.toLowerCase() === "video") {
-        for (const sub of readdirSync(fullPath).sort()) {
-          const p = resolve(fullPath, sub);
-          if (statSync(p).isFile() && !sub.startsWith(".")) videos.push(p);
-        }
-        continue;
-      }
       const batch = batchForSubfolder(entry);
       for (const sub of readdirSync(fullPath).sort()) {
         const p = resolve(fullPath, sub);
@@ -204,7 +197,7 @@ function collectFiles(): { files: SourceFile[]; videos: string[]; ignored: strin
       }
     }
   }
-  return { files, videos, ignored };
+  return { files, ignored };
 }
 
 function mimeFromExt(ext: string): string {
@@ -216,6 +209,13 @@ function mimeFromExt(ext: string): string {
       return "image/png";
     case ".webp":
       return "image/webp";
+    case ".mp4":
+    case ".m4v":
+      return "video/mp4";
+    case ".mov":
+      return "video/quicktime";
+    case ".webm":
+      return "video/webm";
     default:
       return "application/octet-stream";
   }
@@ -253,16 +253,13 @@ function errorMessage(error: unknown): string {
 }
 
 async function main() {
-  const { files: allFiles, videos, ignored } = collectFiles();
+  const { files: allFiles, ignored } = collectFiles();
   const files = limit ? allFiles.slice(0, limit) : allFiles;
+  const videoCount = files.filter((f) => f.isVideo).length;
 
-  console.log(`${apply ? "APPLY" : check ? "CHECK" : "LOCAL DRY RUN"} Harvest opening photo upload to Empathy Ledger`);
+  console.log(`${apply ? "APPLY" : check ? "CHECK" : "LOCAL DRY RUN"} Harvest opening media upload to Empathy Ledger`);
   console.log(`Source: ${sourceDir}`);
-  console.log(`Photos: ${files.length}${limit ? ` of ${allFiles.length}` : ""}`);
-  if (videos.length) {
-    console.log(`Videos (parked, NOT uploaded, keep local or plan the EL video build):`);
-    for (const v of videos) console.log(`  - ${relative(sourceDir, v)}`);
-  }
+  console.log(`Files: ${files.length}${limit ? ` of ${allFiles.length}` : ""} (${files.length - videoCount} photos, ${videoCount} videos)`);
   if (ignored.length) console.log(`Ignored (unsupported type): ${ignored.map((f) => relative(sourceDir, f)).join(", ")}`);
 
   const counts = new Map<BatchKey, number>();
@@ -435,7 +432,7 @@ async function main() {
           file_size: size,
           file_type: mimeFromExt(ext),
           mime_type: mimeFromExt(ext),
-          media_type: "image",
+          media_type: file.isVideo ? "video" : "image",
           storage_bucket: STORAGE_BUCKET,
           storage_path: storagePath,
           cdn_url: publicUrl,
