@@ -2,6 +2,9 @@ const GHL_API_BASE = "https://services.leadconnectorhq.com";
 const GHL_API_VERSION = "2021-07-28";
 const DEFAULT_HARVEST_INBOX_PIPELINE_ID = "ggQw10DuH0XRji6keimS";
 const DEFAULT_HARVEST_INBOX_NEW_STAGE_ID = "2eded979-7439-407d-89b6-762499b56658";
+// The existing "Message" custom field (contact.message). Populated so the ACT
+// notification workflow email can render the submitter's message via {{ contact.message }}.
+const DEFAULT_CONTACT_MESSAGE_FIELD_ID = "ceJz9FUf8dE4fmvnPDKd";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -26,7 +29,7 @@ async function upsertHarvestInboxOpportunity(input: {
   const pipelineId = Deno.env.get("GHL_HARVEST_INBOX_PIPELINE_ID") || DEFAULT_HARVEST_INBOX_PIPELINE_ID;
   const pipelineStageId = Deno.env.get("GHL_HARVEST_INBOX_NEW_STAGE_ID") || DEFAULT_HARVEST_INBOX_NEW_STAGE_ID;
 
-  await fetch(`${GHL_API_BASE}/opportunities/upsert`, {
+  const response = await fetch(`${GHL_API_BASE}/opportunities/upsert`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -45,6 +48,11 @@ async function upsertHarvestInboxOpportunity(input: {
       source: input.source,
     }),
   });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`GHL opportunity upsert failed with status ${response.status}: ${errorText}`);
+  }
 }
 
 Deno.serve(async req => {
@@ -82,9 +90,17 @@ Deno.serve(async req => {
     "harvest-website",
     "harvest-inbox",
     "act-inquiry", // ACT-wide inquiry marker the shared notification workflow triggers on
-    "project-harvest", // stable project key; the workflow maps this to the Project Designation label
-    ...(subscribe ? ["newsletter", "harvest-newsletter"] : []),
+    "project:act-hv",
+    ...(subscribe ? ["comms:harvest-newsletter"] : []),
   ];
+
+  // Fold the subject into the message so the single "Message" field carries the
+  // full context the notification email needs.
+  const messageFieldValue = subject
+    ? `Subject: ${subject}\n\n${message}`
+    : String(message);
+  const messageFieldId =
+    Deno.env.get("GHL_CONTACT_MESSAGE_FIELD_ID") || DEFAULT_CONTACT_MESSAGE_FIELD_ID;
 
   // Create/update contact in GHL
   const contactResponse = await fetch(`${GHL_API_BASE}/contacts/upsert`, {
@@ -101,6 +117,9 @@ Deno.serve(async req => {
       lastName,
       locationId,
       source: "Harvest | Contact",
+      // Populate contact.message so the ACT notification workflow email can show
+      // what the person actually wrote (via {{ contact.message }}), not just their address.
+      customFields: [{ id: messageFieldId, value: messageFieldValue }],
     }),
   });
 
@@ -117,6 +136,8 @@ Deno.serve(async req => {
 
   const contactData = await contactResponse.json();
   const contactId = contactData?.contact?.id;
+  let opportunityCreated = false;
+  let opportunityError: string | undefined;
 
   if (contactId) {
     try {
@@ -156,7 +177,9 @@ Deno.serve(async req => {
         name: `${String(name).trim()} - Contact form`,
         source: "Harvest | Contact",
       });
+      opportunityCreated = true;
     } catch (error) {
+      opportunityError = error instanceof Error ? error.message : "GHL opportunity upsert failed";
       console.error("GHL contact opportunity upsert failed:", error);
     }
   }
@@ -197,7 +220,9 @@ Deno.serve(async req => {
   return jsonResponse({
     success: true,
     contactId,
+    opportunityCreated,
     workflowTriggered,
+    ...(opportunityError ? { opportunityError } : {}),
     ...(workflowError ? { workflowError } : {}),
   });
 });
