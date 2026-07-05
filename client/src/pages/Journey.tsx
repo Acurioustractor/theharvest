@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
+import { SiteFooter, SiteNav } from "./HarvestReviewTest";
 import {
   Milestone,
   Building,
@@ -234,8 +235,9 @@ function TimelineItem({
 export default function Journey() {
   return (
     <div className="min-h-screen bg-stone-50">
+      <SiteNav />
       {/* Hero Section */}
-      <section className="relative py-24 bg-gradient-to-b from-stone-100 to-white overflow-hidden">
+      <section className="relative pt-36 pb-24 bg-gradient-to-b from-stone-100 to-white overflow-hidden">
         <div className="container">
           <motion.div
             initial={{ opacity: 0, y: 40 }}
@@ -372,6 +374,7 @@ export default function Journey() {
           </motion.div>
         </div>
       </section>
+      <SiteFooter />
     </div>
   );
 }

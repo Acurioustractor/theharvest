@@ -7,7 +7,6 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import { SeasonalProvider } from "./contexts/SeasonalContext";
 import BauhausHome from "./pages/BauhausHome";
 import Gather from "./pages/Gather";
-import About from "./pages/About";
 import Account from "./pages/Account";
 import BauhausZone from "./pages/BauhausZone";
 import CommunityPulse from "./pages/CommunityPulse";
@@ -83,7 +82,7 @@ function Router() {
   // All pages are standalone (no PublicLayout)
   if (location === "/") return <BauhausHome />;
   if (location === "/gather") return <Gather />;
-  if (location === "/about") return <About />;
+  if (location === "/about") return <Redirect to="/what-is-the-harvest" />;
   if (location === "/contact") return <Contact />;
   if (location === "/compendium") return <Compendium />;
   if (location === "/brand-guide") return <BrandGuide />;

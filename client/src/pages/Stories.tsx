@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { PenLine, ArrowDown } from "lucide-react";
 import { Link } from "wouter";
+import { SiteFooter, SiteNav } from "./HarvestReviewTest";
 
 const barryPhotos = [
   { src: "/images/compendium/barry/IMG_5764.jpg", caption: "Barry at golden hour" },
@@ -65,8 +66,9 @@ export default function Stories() {
 
   return (
     <div className="min-h-screen bg-stone-900">
+      <SiteNav />
       {/* Hero */}
-      <section className="relative py-32 flex items-center justify-center">
+      <section className="relative pt-40 pb-32 flex items-center justify-center">
         <div className="container">
           <motion.div
             initial={{ opacity: 0, y: 40 }}
@@ -386,6 +388,7 @@ export default function Stories() {
           </motion.div>
         </div>
       </section>
+      <SiteFooter />
     </div>
   );
 }

@@ -3,6 +3,7 @@ import { Link } from "wouter";
 import { Ear, Hammer, UtensilsCrossed } from "lucide-react";
 import BauhausFooter from "@/components/BauhausFooter";
 import FadeIn from "@/components/FadeIn";
+import { SiteNav } from "./HarvestReviewTest";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { rootStyle, colors, fonts } from "@/styles/brand";
 
@@ -33,6 +34,7 @@ export default function Gather() {
 
   return (
     <div style={rootStyle}>
+      <SiteNav />
 
       {/* --- 1. HERO --- */}
       <section style={{

@@ -10,6 +10,7 @@ import staticEventsData from "@/data/events.json";
 import { EventSubmissionDialog } from "@/components/EventSubmissionDialog";
 import BusinessRegistrationDialog from "@/components/BusinessRegistrationDialog";
 import { listApprovedEvents } from "@/lib/api";
+import { SiteFooter, SiteNav } from "./HarvestReviewTest";
 import { useQuery } from "@tanstack/react-query";
 
 // Category images mapping
@@ -82,8 +83,9 @@ export default function LocalEnterprises() {
 
   return (
     <>
+      <SiteNav />
       {/* Hero Section */}
-      <section className="relative h-[50vh] min-h-[400px] flex items-center justify-center overflow-hidden pt-16 md:pt-0">
+      <section className="relative h-[50vh] min-h-[400px] flex items-center justify-center overflow-hidden pt-24 md:pt-20">
         <div className="absolute inset-0 z-0">
           <LazyImage
             src="/images/enterprises-hero.jpg"
@@ -319,6 +321,7 @@ export default function LocalEnterprises() {
           />
         </div>
       </section>
+      <SiteFooter />
     </>
   );
 }
