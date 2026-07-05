@@ -194,7 +194,7 @@ export const works: Work[] = [
     ],
     hands: [
       { name: "Wednesday Maintenance Crew", role: "Weekly stewards" },
-      { name: "Sophie", role: "Garden volunteer", href: "https://sophiesseedlings.com/" },
+      { name: "Sophie from Sophie's Seedlings", role: "Garden volunteer", href: "https://sophiesseedlings.com/" },
       { name: "Susie & Joey", role: "Community Stewards (from July 2026)" },
     ],
     storyLinks: [
