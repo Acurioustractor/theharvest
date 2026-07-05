@@ -91,8 +91,8 @@ const workUpdates: WorkUpdate[] = [
     status: "in progress",
     title: "The Garden",
     room: "garden",
-    image: "/images/optimized/sophie-garden-1000.webp",
-    alt: "Sophie working in the garden at The Harvest",
+    image: "/images/optimized/hero-aerial-1400.webp",
+    alt: "Aerial view of the garden taking shape at The Harvest, Witta",
     body: "Beds, seedlings, mulch, compost and paths, with hands in the soil at regular work days.",
     ask: "Seedlings, mulch, gloves, or two spare hours.",
   },
@@ -554,8 +554,8 @@ function PlacePhotoTwo() {
     <HarvestImage
       page="new-look-test"
       slot="place-second"
-      src="/images/optimized/sophie-garden-1000.webp"
-      alt="Hands at work in the garden at The Harvest, Witta"
+      src="/images/optimized/member-welcome-crates-1200.webp"
+      alt="The milk crate pavilion taking shape at The Harvest, Witta"
       size="hero"
       className="h-[50vh] w-full"
       imgClassName="h-full w-full object-cover"

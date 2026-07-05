@@ -15,7 +15,7 @@ const rooms = [
     name: "Garden",
     verb: "Grow",
     body: "Beds, paths, nursery life, soil, work days, and kids with dirt on their hands.",
-    image: "/images/optimized/sophie-garden-1000.webp",
+    image: "/images/optimized/hero-aerial-1400.webp",
     icon: Sprout,
   },
   {

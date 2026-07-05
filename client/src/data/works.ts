@@ -162,8 +162,8 @@ export const works: Work[] = [
     lifecycleTags: ["planted", "growing"],
     materials: "Red volcanic soil · seasonal beds · local hands",
     year: "Established 2025, planting ongoing",
-    heroImage: "/images/optimized/sophie-garden-1000.webp",
-    heroAlt: "Sophie working in the garden at The Harvest",
+    heroImage: "/images/optimized/hero-aerial-1400.webp",
+    heroAlt: "The garden taking shape at The Harvest, Witta",
     blurb:
       "The reason anything grows here is Jurassic. Volcanic red soil, two metres of rain a year, mist from the coast that gets pushed up the range. The garden is half landscape, half practice.",
     whatItIs:
@@ -194,7 +194,7 @@ export const works: Work[] = [
     ],
     hands: [
       { name: "Wednesday Maintenance Crew", role: "Weekly stewards" },
-      { name: "Sophie", role: "Garden volunteer", href: "https://sophiesseedlings.com/" },
+      { name: "Sophie from Sophie's Seedlings", role: "Garden volunteer", href: "https://sophiesseedlings.com/" },
       { name: "Susie & Joey", role: "Community Stewards" },
     ],
     storyLinks: [
