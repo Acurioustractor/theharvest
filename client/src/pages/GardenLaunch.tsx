@@ -502,7 +502,7 @@ export default function GardenLaunch() {
                 Membership
               </Link>
               <a
-                href="https://www.instagram.com/the.harvest.witta/"
+                href="https://www.instagram.com/theharvestwitta/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-stone-300 text-stone-700 hover:bg-stone-100 transition-colors"
@@ -510,7 +510,7 @@ export default function GardenLaunch() {
                 Instagram
               </a>
               <a
-                href="https://www.facebook.com/theharvestwitta"
+                href="https://www.facebook.com/profile.php?id=61587776558599"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-stone-300 text-stone-700 hover:bg-stone-100 transition-colors"

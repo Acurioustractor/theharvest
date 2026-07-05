@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { listApprovedEvents } from "@/lib/api";
 import { EventSubmissionDialog } from "@/components/EventSubmissionDialog";
+import { SiteFooter, SiteNav } from "./HarvestReviewTest";
 import eventsData from "@/data/events.json";
 import { useQuery } from "@tanstack/react-query";
 
@@ -155,8 +156,9 @@ export default function WhatsOn() {
 
   return (
     <div className="min-h-screen bg-background">
+      <SiteNav />
       {/* Hero Section */}
-      <section className="relative py-24 bg-gradient-to-b from-amber-50 to-white overflow-hidden">
+      <section className="relative pt-36 pb-24 bg-gradient-to-b from-amber-50 to-white overflow-hidden">
         <div className="absolute inset-0 opacity-5">
           <div
             className="absolute inset-0"
@@ -190,7 +192,7 @@ export default function WhatsOn() {
       </section>
 
       {/* Filter Section */}
-      <section className="py-8 bg-white border-b border-stone-200 sticky top-0 z-40">
+      <section className="py-8 bg-white border-b border-stone-200 sticky top-[76px] z-40">
         <div className="container">
           <div className="flex items-center gap-4 overflow-x-auto pb-2">
             <Filter className="h-5 w-5 text-stone-400 flex-shrink-0" />
@@ -389,6 +391,7 @@ export default function WhatsOn() {
           </div>
         </div>
       </section>
+      <SiteFooter />
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { useEffect } from "react";
-import { useLocation } from "wouter";
+import { Redirect, useLocation } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { SeasonalProvider } from "./contexts/SeasonalContext";
@@ -10,6 +10,7 @@ import Gather from "./pages/Gather";
 import About from "./pages/About";
 import Account from "./pages/Account";
 import BauhausZone from "./pages/BauhausZone";
+import CommunityPulse from "./pages/CommunityPulse";
 import Contact from "./pages/Contact";
 import Compendium from "./pages/Compendium";
 import ComponentShowcase from "./pages/ComponentShowcase";
@@ -21,6 +22,7 @@ import LocalEnterprises from "./pages/LocalEnterprises";
 import PartnerPortal from "./pages/PartnerPortal";
 import Proposal from "./pages/Proposal";
 import LeaseDraft from "./pages/LeaseDraft";
+import Social from "./pages/Social";
 import SocialPlanner from "./pages/SocialPlanner";
 import LogoStory from "./pages/LogoStory";
 import PhotoWall from "./pages/PhotoWall";
@@ -42,7 +44,6 @@ import Person from "./pages/Person";
 import StoryDetail from "./pages/StoryDetail";
 import GardenLaunch from "./pages/GardenLaunch";
 import LaunchRedesign from "./pages/LaunchRedesign";
-import HarvestReviewTest from "./pages/HarvestReviewTest";
 import HarvestControlRoom from "./pages/HarvestControlRoom";
 import Privacy from "./pages/Privacy";
 import AdminDashboard from "./pages/AdminDashboard";
@@ -87,7 +88,7 @@ function Router() {
   if (location === "/compendium") return <Compendium />;
   if (location === "/brand-guide") return <BrandGuide />;
   if (location === "/brand-development") return <BrandDevelopmentWorkbench />;
-  if (location === "/bauhaus" || location === "/bauhaus/") return <BauhausHome />;
+  if (location === "/bauhaus" || location === "/bauhaus/") return <Redirect to="/" />;
   if (location.startsWith("/bauhaus/")) {
     const zoneId = location.slice("/bauhaus/".length).split("/")[0];
     return zoneId ? <BauhausZone zoneId={zoneId} /> : <BauhausHome />;
@@ -96,7 +97,9 @@ function Router() {
   if (location === "/venue-hire") return <VenueHire />;
   if (location === "/enterprises") return <LocalEnterprises />;
   if (location === "/site-plan") return <SitePlan />;
+  if (location === "/social") return <Social />;
   if (location === "/social-planner") return <SocialPlanner />;
+  if (location === "/pulse") return <CommunityPulse />;
   if (location === "/logo-story") return <LogoStory />;
   if (location === "/photo-wall") return <PhotoWall />;
   if (location.startsWith("/photo-wall/checkin")) return <PhotoWallCheckin />;
@@ -144,7 +147,7 @@ function Router() {
   if (location === "/garden-launch" || location === "/june-20") return <GardenLaunch />;
   if (location === "/privacy") return <Privacy />;
   if (location === "/launch-redesign") return <LaunchRedesign />;
-  if (location === "/new-look-test" || location === "/review-test") return <HarvestReviewTest />;
+  if (location === "/new-look-test" || location === "/review-test") return <Redirect to="/" />;
   if (location.startsWith("/feedback")) {
     const eventId = location.split("/feedback/")[1];
     return <EventFeedback eventId={eventId} />;

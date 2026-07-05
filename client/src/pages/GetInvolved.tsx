@@ -1,6 +1,7 @@
 import { useState, FormEvent } from "react";
 import { communitySubmit } from "@/lib/api";
 import { cn } from "@/lib/utils";
+import { SiteFooter, SiteNav } from "./HarvestReviewTest";
 import {
   Palette,
   Building2,
@@ -184,8 +185,9 @@ export default function GetInvolved() {
 
   return (
     <div className="min-h-screen">
+      <SiteNav />
       {/* Hero */}
-      <section className="bg-stone-900 pt-28 pb-16 px-4">
+      <section className="bg-stone-900 pt-36 pb-16 px-4">
         <div className="container max-w-3xl text-center">
           <h1 className="font-serif text-3xl sm:text-4xl text-amber-400 mb-4">Get Involved</h1>
           <p className="text-stone-400 text-lg leading-relaxed max-w-xl mx-auto">
@@ -329,6 +331,7 @@ export default function GetInvolved() {
           </p>
         </div>
       </section>
+      <SiteFooter />
     </div>
   );
 }

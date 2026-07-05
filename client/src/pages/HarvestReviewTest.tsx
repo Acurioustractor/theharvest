@@ -228,18 +228,23 @@ const ideaGroups: IdeaGroup[] = [
 
 const pageNavLinks = [
   { label: "About", href: "/what-is-the-harvest" },
+  { label: "What's On", href: "/whats-on" },
   { label: "Works", href: "/works" },
   { label: "Shop", href: "/shop" },
   { label: "Blog", href: "/blog" },
+  { label: "Get Involved", href: "/get-involved" },
   { label: "Contact", href: "/contact" },
 ];
 
 const footerLinks = [
   { label: "About", href: "/what-is-the-harvest" },
+  { label: "What's On", href: "/whats-on" },
   { label: "Works", href: "/works" },
   { label: "Shop", href: "/shop" },
   { label: "Blog", href: "/blog" },
   { label: "Membership", href: "/membership" },
+  { label: "Get Involved", href: "/get-involved" },
+  { label: "Venue Hire", href: "/venue-hire" },
   { label: "Witta", href: "/witta" },
   { label: "People", href: "/people" },
   { label: "Contact", href: "/contact" },

@@ -14,6 +14,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { communitySubmit } from "@/lib/api";
+import { SiteFooter, SiteNav } from "./HarvestReviewTest";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
@@ -87,8 +88,9 @@ export default function VenueHire() {
 
   return (
     <div className="min-h-screen bg-stone-50">
+      <SiteNav />
       {/* Hero Section */}
-      <section className="relative py-24 bg-stone-100 overflow-hidden">
+      <section className="relative pt-36 pb-24 bg-stone-100 overflow-hidden">
         <div className="container">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -503,6 +505,7 @@ export default function VenueHire() {
           </div>
         </div>
       </section>
+      <SiteFooter />
     </div>
   );
 }
