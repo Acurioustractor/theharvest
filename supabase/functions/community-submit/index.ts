@@ -70,10 +70,6 @@ Deno.serve(async (req) => {
   const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
   const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
 
-  if (!apiKey || !locationId) {
-    return jsonResponse({ success: false, error: "Service not configured." }, 500);
-  }
-
   const payload = await req.json();
   const { type, email, name, ...fields } = payload;
 
@@ -81,180 +77,177 @@ Deno.serve(async (req) => {
     return jsonResponse({ success: false, error: "Type, name and email are required." }, 400);
   }
 
-  const tags = [...(TYPE_TAGS[type] ?? ["harvest-website"]), "harvest-inbox"];
-  if (fields.residencyType) tags.push(`residency-${fields.residencyType}`);
-  if (fields.ideaType) tags.push(`idea-${fields.ideaType}`);
-  if (fields.interestType) tags.push(`biz-${fields.interestType}`);
-
-  // Parse name
-  const nameParts = String(name).trim().split(/\s+/).filter(Boolean);
-  const firstName = nameParts[0] || undefined;
-  const lastName = nameParts.slice(1).join(" ") || undefined;
-
-  // 1. Upsert contact in GHL
-  let ghlContactId: string | null = null;
-  try {
-    const ghlRes = await fetch(`${GHL_API_BASE}/contacts/upsert`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${apiKey}`,
-        Version: GHL_API_VERSION,
-      },
-      body: JSON.stringify({
-        email,
-        firstName,
-        lastName,
-        phone: fields.phone ?? undefined,
-        locationId,
-        source: `Harvest | ${type}`,
-      }),
-    });
-    if (ghlRes.ok) {
-      const ghlData = await ghlRes.json();
-      ghlContactId = ghlData?.contact?.id ?? null;
-    }
-  } catch {
-    // GHL failure shouldn't block the submission
-  }
-
-  // 2. Add a note to the GHL contact
-  if (ghlContactId) {
-    try {
-      await fetch(`${GHL_API_BASE}/contacts/${ghlContactId}/tags`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-          Authorization: `Bearer ${apiKey}`,
-          Version: GHL_API_VERSION,
-        },
-        body: JSON.stringify({ tags }),
-      });
-    } catch {
-      // Non-critical
-    }
-
-    const noteLines = [`**${type.toUpperCase()} submission from website**`];
-    if (fields.title) noteLines.push(`**Title:** ${fields.title}`);
-    if (fields.description) noteLines.push(`**Description:** ${fields.description}`);
-    if (fields.message) noteLines.push(`**Message:** ${fields.message}`);
-    if (fields.businessName) noteLines.push(`**Business:** ${fields.businessName}`);
-    if (fields.portfolioUrl) noteLines.push(`**Portfolio:** ${fields.portfolioUrl}`);
-    if (fields.durationWeeks) noteLines.push(`**Duration:** ${fields.durationWeeks} weeks`);
-
-    try {
-      await fetch(`${GHL_API_BASE}/contacts/${ghlContactId}/notes`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-          Authorization: `Bearer ${apiKey}`,
-          Version: GHL_API_VERSION,
-        },
-        body: JSON.stringify({ body: noteLines.join("\n\n") }),
-      });
-    } catch {
-      // Non-critical
-    }
-
-    try {
-      await upsertHarvestInboxOpportunity({
-        apiKey,
-        locationId,
-        contactId: ghlContactId,
-        name: `${String(name).trim()} - ${type}`,
-        source: `Harvest | ${type}`,
-      });
-    } catch {
-      // Non-critical
-    }
-  }
-
-  // 3. Store in Supabase
+  // 1. Store in Supabase FIRST so a GHL outage can never lose the message.
+  // One table for every submission type; type-specific fields live in payload jsonb.
+  let submissionId: string | null = null;
   if (supabaseUrl && supabaseKey) {
     try {
-      const table =
-        type === "idea" || type === "workshop-suggestion"
-          ? "community_ideas"
-          : type === "residency"
-          ? "residency_applications"
-          : type === "business-interest"
-          ? "business_interest"
-          : null;
+      const dbRes = await fetch(`${supabaseUrl}/rest/v1/community_submissions`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          apikey: supabaseKey,
+          Authorization: `Bearer ${supabaseKey}`,
+          Prefer: "return=representation",
+        },
+        body: JSON.stringify({
+          type,
+          name,
+          email,
+          phone: fields.phone ?? null,
+          payload: fields,
+        }),
+      });
+      if (dbRes.ok) {
+        const rows = await dbRes.json();
+        submissionId = rows?.[0]?.id ?? null;
+      } else {
+        console.error("community-submit: DB insert failed", dbRes.status, await dbRes.text());
+      }
+    } catch (err) {
+      console.error("community-submit: DB insert threw", err);
+    }
+  }
 
-      if (table) {
-        let row: Record<string, unknown> = {};
+  // 2. Upsert contact in GHL
+  let ghlContactId: string | null = null;
+  if (apiKey && locationId) {
+    const tags = [...(TYPE_TAGS[type] ?? ["harvest-website"]), "harvest-inbox"];
+    if (fields.residencyType) tags.push(`residency-${fields.residencyType}`);
+    if (fields.ideaType) tags.push(`idea-${fields.ideaType}`);
+    if (fields.interestType) tags.push(`biz-${fields.interestType}`);
 
-        if (table === "community_ideas") {
-          row = {
-            name,
-            email,
-            idea_type: fields.ideaType ?? (type === "workshop-suggestion" ? "workshop" : "general"),
-            title: fields.title ?? `${type} submission`,
-            description: fields.description ?? fields.message ?? "",
-            ghl_contact_id: ghlContactId,
-          };
-        } else if (table === "residency_applications") {
-          row = {
-            applicant_name: name,
-            email,
-            phone: fields.phone,
-            location: fields.location,
-            residency_type: fields.residencyType ?? "other",
-            title: fields.title ?? "Residency application",
-            description: fields.description ?? "",
-            portfolio_url: fields.portfolioUrl,
-            duration_weeks: fields.durationWeeks ? parseInt(fields.durationWeeks) : null,
-            preferred_dates: fields.preferredDates,
-            ghl_contact_id: ghlContactId,
-          };
-        } else if (table === "business_interest") {
-          row = {
-            business_name: fields.businessName ?? name,
-            contact_name: name,
-            email,
-            phone: fields.phone,
-            interest_type: fields.interestType ?? "expression-of-interest",
-            message: fields.message,
-            ghl_contact_id: ghlContactId,
-          };
-        }
+    const nameParts = String(name).trim().split(/\s+/).filter(Boolean);
+    const firstName = nameParts[0] || undefined;
+    const lastName = nameParts.slice(1).join(" ") || undefined;
 
-        await fetch(`${supabaseUrl}/rest/v1/${table}`, {
+    try {
+      const ghlRes = await fetch(`${GHL_API_BASE}/contacts/upsert`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: `Bearer ${apiKey}`,
+          Version: GHL_API_VERSION,
+        },
+        body: JSON.stringify({
+          email,
+          firstName,
+          lastName,
+          phone: fields.phone ?? undefined,
+          locationId,
+          source: `Harvest | ${type}`,
+        }),
+      });
+      if (ghlRes.ok) {
+        const ghlData = await ghlRes.json();
+        ghlContactId = ghlData?.contact?.id ?? null;
+      } else {
+        console.error("community-submit: GHL upsert failed", ghlRes.status, await ghlRes.text());
+      }
+    } catch (err) {
+      console.error("community-submit: GHL upsert threw", err);
+    }
+
+    if (ghlContactId) {
+      try {
+        await fetch(`${GHL_API_BASE}/contacts/${ghlContactId}/tags`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            apikey: supabaseKey,
-            Authorization: `Bearer ${supabaseKey}`,
-            Prefer: "return=minimal",
+            Accept: "application/json",
+            Authorization: `Bearer ${apiKey}`,
+            Version: GHL_API_VERSION,
           },
-          body: JSON.stringify(row),
+          body: JSON.stringify({ tags }),
         });
+      } catch {
+        // Non-critical
       }
-    } catch {
-      // DB failure shouldn't block response
+
+      const noteLines = [`**${type.toUpperCase()} submission from website**`];
+      if (fields.title) noteLines.push(`**Title:** ${fields.title}`);
+      if (fields.description) noteLines.push(`**Description:** ${fields.description}`);
+      if (fields.message) noteLines.push(`**Message:** ${fields.message}`);
+      if (fields.businessName) noteLines.push(`**Business:** ${fields.businessName}`);
+      if (fields.portfolioUrl) noteLines.push(`**Portfolio:** ${fields.portfolioUrl}`);
+      if (fields.durationWeeks) noteLines.push(`**Duration:** ${fields.durationWeeks} weeks`);
+
+      try {
+        await fetch(`${GHL_API_BASE}/contacts/${ghlContactId}/notes`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            Authorization: `Bearer ${apiKey}`,
+            Version: GHL_API_VERSION,
+          },
+          body: JSON.stringify({ body: noteLines.join("\n\n") }),
+        });
+      } catch {
+        // Non-critical
+      }
+
+      try {
+        await upsertHarvestInboxOpportunity({
+          apiKey,
+          locationId,
+          contactId: ghlContactId,
+          name: `${String(name).trim()} - ${type}`,
+          source: `Harvest | ${type}`,
+        });
+      } catch {
+        // Non-critical
+      }
+
+      const workflowId = Deno.env.get("GHL_COMMUNITY_SUBMIT_WORKFLOW_ID");
+      if (workflowId) {
+        try {
+          await fetch(`${GHL_API_BASE}/contacts/${ghlContactId}/workflow/${workflowId}`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json",
+              "Authorization": `Bearer ${apiKey}`,
+              "Version": GHL_API_VERSION,
+            },
+          });
+        } catch {
+          // Non-critical
+        }
+      }
     }
   }
 
-  // Trigger GHL workflow for community submission
-  const workflowId = Deno.env.get("GHL_COMMUNITY_SUBMIT_WORKFLOW_ID");
-  if (workflowId && ghlContactId) {
+  // 3. Mark the stored row as synced once GHL has the contact.
+  if (submissionId && ghlContactId && supabaseUrl && supabaseKey) {
     try {
-      await fetch(`${GHL_API_BASE}/contacts/${ghlContactId}/workflow/${workflowId}`, {
-        method: "POST",
+      await fetch(`${supabaseUrl}/rest/v1/community_submissions?id=eq.${submissionId}`, {
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
-          "Accept": "application/json",
-          "Authorization": `Bearer ${apiKey}`,
-          "Version": GHL_API_VERSION,
+          apikey: supabaseKey,
+          Authorization: `Bearer ${supabaseKey}`,
+          Prefer: "return=minimal",
         },
+        body: JSON.stringify({ ghl_contact_id: ghlContactId, ghl_synced: true }),
       });
     } catch {
-      // Workflow failure shouldn't block the response
+      // Non-critical: the row exists, the sync flag is best-effort
     }
   }
 
-  return jsonResponse({ success: true, contactId: ghlContactId });
+  // 4. Honest result: success only if the message is actually stored somewhere.
+  if (!submissionId && !ghlContactId) {
+    return jsonResponse(
+      {
+        success: false,
+        error:
+          "We could not save your message just now. Please try again, or email hello@theharvestwitta.com.au.",
+      },
+      502,
+    );
+  }
+
+  return jsonResponse({ success: true, contactId: ghlContactId, submissionId });
 });
