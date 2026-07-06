@@ -54,6 +54,52 @@ Decide and do one of these, both work with Part 1:
 - Nothing waits more than 2 days. The daily 7am check-in on the Notion
   dashboard lists who is waiting each morning.
 
+## Part 4: staff users in GHL (so replies are attributed)
+
+Settings, My Staff, add each person as a user on the ACT location with the
+Harvest team: Nic first, then Dennis and the stewards as the desk widens.
+What this buys:
+
+- Every reply sent from GHL Conversations is stamped with the user who sent
+  it. "Who replied" stops being a mystery.
+- Opportunities (pipeline cards) get an owner via Assigned to. The owner is
+  the person who owes the reply.
+- The LeadConnector phone app gives each person the desk in their pocket.
+
+Rule of thumb: a card with no owner is nobody's job. The first triage act is
+always assign it to a person.
+
+## Part 5: the triage flow, end to end
+
+1. Message arrives (form, question, EOI). Notification lands at hi@act.place;
+   a card appears in the Harvest Inbox pipeline stage New.
+2. Whoever is on the desk (daily, 15 minutes): open the card, identify what
+   it is, ASSIGN it to a person, move it to In progress.
+3. The owner replies from GHL Conversations (or hi@), then moves the card to
+   Waiting on them or Resolved.
+4. Shop EOIs follow the same shape on the Shop pipeline: New interest means
+   nobody has spoken to them yet.
+
+## Part 6: seeing the triage, and getting better at it
+
+The GHL webhook already mirrors every pipeline card into Supabase
+(ghl_opportunities: pipeline, stage, assigned_to, timestamps), so triage
+health is measurable without opening GHL. Baseline on 2026-07-06:
+
+- Harvest Inbox: 11 cards in New, 21 in In progress (untouched since 16 Jun),
+  13 Resolved. 32 open cards, none with a named owner.
+- Shop pipeline: 29 in New interest, 5 in conversation.
+
+The daily 7am check-in on the Notion dashboard now reports these counts every
+morning: cards in New, cards open with no owner, and how long the oldest has
+waited. The number to drive down is "cards in New older than 2 days"; the
+habit that drives it down is the 15-minute daily desk. Review the trend at
+the Monday check-in and adjust.
+
+Contact-list health rides the same rhythm: the monthly hygiene pass (dupes,
+no-name rows, test contacts, tag drift) is action-listed in Notion, and the
+mirror makes the list auditable with SQL at any time.
+
 ## What this does NOT change
 
 - hi@act.place stays the sending identity for newsletters and receipts.
