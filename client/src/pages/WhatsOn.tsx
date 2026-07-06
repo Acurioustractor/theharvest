@@ -20,6 +20,11 @@ import { listApprovedEvents } from "@/lib/api";
 import { EventSubmissionDialog } from "@/components/EventSubmissionDialog";
 import { SiteFooter, SiteNav } from "./HarvestReviewTest";
 import { trpc } from "@/lib/trpc";
+import { EditableText } from "@/components/EditableText";
+
+// The members page (Mighty). Events and this week's dates land there first;
+// every RSVP surface points people at it so the members space keeps growing.
+const MEMBERS_PAGE_URL = "https://harvest-the-network.mn.co/share/OZleJHyrST2m3PyK?utm_source=website";
 import eventsData from "@/data/events.json";
 import { useQuery } from "@tanstack/react-query";
 
@@ -88,6 +93,73 @@ interface DBEvent {
   description: string | null;
 }
 
+function RegularSessions() {
+  const sessions = [
+    { slot: "session-friday", title: "Friday", detail: "DIY pizza and community movie night, 3pm to 8pm" },
+    { slot: "session-saturday", title: "Saturday", detail: "DIY pizza making, 12pm to 8pm" },
+    { slot: "session-sunday", title: "Sunday", detail: "DIY pizza making, 12pm to 6pm. An easier pace, good for families" },
+  ];
+
+  return (
+    <section className="py-12 bg-white border-b border-stone-200">
+      <div className="container max-w-4xl">
+        <p className="text-amber-600 font-medium tracking-wide uppercase text-sm mb-2">
+          The regular rhythm
+        </p>
+        <EditableText
+          page="whats-on"
+          slot="sessions-heading"
+          defaultContent="Open most weekends for DIY pizza"
+          as="h2"
+          className="text-3xl md:text-4xl font-serif font-bold text-stone-800 mb-3"
+        />
+        <EditableText
+          page="whats-on"
+          slot="sessions-intro"
+          defaultContent="Stretch dough, top it your way, fire it in the oven, and enjoy the garden while it bakes. Our resident pizza teacher Dennis is in the house. All welcome, no experience needed."
+          as="p"
+          className="text-stone-600 mb-8 max-w-2xl"
+          multiline
+        />
+        <div className="grid gap-4 sm:grid-cols-3 mb-8">
+          {sessions.map((s) => (
+            <div key={s.slot} className="rounded-lg border border-stone-200 bg-stone-50 p-5">
+              <EditableText
+                page="whats-on"
+                slot={`${s.slot}-title`}
+                defaultContent={s.title}
+                as="h3"
+                className="text-lg font-serif font-bold text-stone-800 mb-1"
+              />
+              <EditableText
+                page="whats-on"
+                slot={`${s.slot}-detail`}
+                defaultContent={s.detail}
+                as="p"
+                className="text-stone-600 text-sm leading-relaxed"
+                multiline
+              />
+            </div>
+          ))}
+        </div>
+        <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+          <a
+            href={MEMBERS_PAGE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center bg-amber-500 hover:bg-amber-600 text-black font-semibold px-8 py-3 rounded-md transition-colors"
+          >
+            See this week's dates on the members page
+          </a>
+          <p className="text-sm text-stone-500">
+            Weeks can vary. The members page has this week's dates first, and membership is free.
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function PizzaRsvpBlock() {
   const [form, setForm] = useState({ name: "", email: "", day: "", people: "2" });
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
@@ -116,17 +188,37 @@ function PizzaRsvpBlock() {
     <section className="py-12 bg-amber-50 border-y border-amber-200">
       <div className="container max-w-3xl">
         <h2 className="text-2xl md:text-3xl font-serif font-bold text-stone-800 mb-2">
-          Coming to a pizza weekend?
+          Coming along? Let us know
         </h2>
-        <p className="text-stone-600 mb-6">
-          DIY pizza weekends are running at The Harvest. Let us know you're coming and we
-          can plan for numbers. New dates land on the members page first.
+        <p className="text-stone-600 mb-4">
+          The best place to RSVP is the members page. You can see this week's dates,
+          message us directly, and hear about new dates first. Membership is free.
+        </p>
+        <a
+          href={MEMBERS_PAGE_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center justify-center bg-stone-800 hover:bg-stone-900 text-white font-semibold px-8 py-3 rounded-md transition-colors mb-6"
+        >
+          RSVP on the members page
+        </a>
+        <p className="text-stone-500 text-sm mb-6">
+          Or leave your details here and we'll count you in.
         </p>
         {status === "success" ? (
           <div className="bg-white border border-amber-300 rounded-lg p-6">
             <p className="font-semibold text-stone-800">You're on the list.</p>
             <p className="text-stone-600 mt-1">
-              We'll plan for you. If anything changes, just message us on the members page.
+              We'll plan for you. For this week's dates and anything else,{" "}
+              <a
+                href={MEMBERS_PAGE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-amber-700 underline hover:text-amber-800"
+              >
+                join us on the members page
+              </a>
+              .
             </p>
           </div>
         ) : (
@@ -152,10 +244,10 @@ function PizzaRsvpBlock() {
               onChange={(e) => setForm((f) => ({ ...f, day: e.target.value }))}
               className="rounded-md border border-stone-300 bg-white px-4 py-3 text-stone-800"
             >
-              <option value="">Which day suits?</option>
-              <option value="Friday">Friday</option>
-              <option value="Saturday">Saturday</option>
-              <option value="Sunday">Sunday</option>
+              <option value="">Which session suits?</option>
+              <option value="Friday evening (pizza + movie)">Friday evening (pizza + movie)</option>
+              <option value="Saturday (12-8pm)">Saturday</option>
+              <option value="Sunday (12-6pm)">Sunday</option>
               <option value="Not sure yet">Not sure yet</option>
             </select>
             <input
@@ -290,6 +382,8 @@ export default function WhatsOn() {
         </div>
       </section>
 
+      <RegularSessions />
+
       <PizzaRsvpBlock />
 
       {/* Filter Section */}
@@ -331,8 +425,13 @@ export default function WhatsOn() {
                   <Calendar className="h-16 w-16 text-stone-300 mx-auto mb-4" />
                   <h3 className="text-xl font-semibold text-stone-600 mb-2">Nothing listed just yet</h3>
                   <p className="text-stone-500 mb-6">
-                    New dates land on the{" "}
-                    <a href="/membership" className="text-amber-600 underline hover:text-amber-700">
+                    The pizza weekend rhythm above runs most weeks. New dates land on the{" "}
+                    <a
+                      href={MEMBERS_PAGE_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-amber-600 underline hover:text-amber-700"
+                    >
                       members page
                     </a>{" "}
                     first. You can also submit your own community event.
