@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Mail, Newspaper, Search } from "lucide-react";
 import { Link } from "wouter";
 import { SiteFooter, SiteNav } from "./HarvestReviewTest";
+import { VisitStrip } from "@/components/VisitStrip";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 20 },
@@ -241,6 +242,7 @@ export default function Blog() {
         </div>
       </section>
 
+      <VisitStrip />
       <SiteFooter />
     </div>
   );

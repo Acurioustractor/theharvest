@@ -3,6 +3,7 @@ import { Link } from "wouter";
 import { Ear, Hammer, UtensilsCrossed } from "lucide-react";
 import BauhausFooter from "@/components/BauhausFooter";
 import FadeIn from "@/components/FadeIn";
+import { VisitStrip } from "@/components/VisitStrip";
 import { SiteNav } from "./HarvestReviewTest";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { rootStyle, colors, fonts } from "@/styles/brand";
@@ -640,6 +641,8 @@ export default function Gather() {
           </FadeIn>
         </div>
       </section>
+
+      <VisitStrip />
 
       {/* --- FOOTER --- */}
       <BauhausFooter isMobile={isMobile} />

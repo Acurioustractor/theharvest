@@ -235,6 +235,7 @@ const pageNavLinks = [
   { label: "Shop", href: "/shop" },
   { label: "Blog", href: "/blog" },
   { label: "Get Involved", href: "/get-involved" },
+  { label: "Membership", href: "/membership" },
   { label: "Contact", href: "/contact" },
 ];
 
@@ -247,6 +248,9 @@ const footerLinks = [
   { label: "Membership", href: "/membership" },
   { label: "Get Involved", href: "/get-involved" },
   { label: "Venue Hire", href: "/venue-hire" },
+  { label: "Now and Next", href: "/story" },
+  { label: "Stories", href: "/stories" },
+  { label: "Photo Wall", href: "/photo-wall" },
   { label: "Witta", href: "/witta" },
   { label: "People", href: "/people" },
   { label: "Contact", href: "/contact" },
@@ -319,27 +323,32 @@ function ThisWeekStrip() {
           <EditableText
             page="home"
             slot="this-week-detail"
-            defaultContent="Friday pizza and movie night 3pm to 8pm. Saturday 12pm to 8pm. Sunday 12pm to 6pm. Weeks can vary, dates land with members first."
+            defaultContent="Friday pizza and movie night 3pm to 8pm. Saturday 12pm to 8pm. Sunday 12pm to 6pm. Turn up, no booking needed. Dennis, our resident pizza teacher, shows you how. Weeks can vary, dates land with members first."
             as="p"
             className="mt-1 text-sm leading-relaxed text-[#1C1917]/80"
             multiline
           />
         </div>
-        <div className="flex shrink-0 flex-wrap gap-3">
-          <Link
-            href="/whats-on"
-            className="inline-flex min-h-11 items-center justify-center bg-[#1C1917] px-5 py-2 text-sm font-bold text-[#F5F0E8] transition hover:bg-stone-700"
-          >
-            See What's On
-          </Link>
-          <a
-            href={MEMBERS_PAGE_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex min-h-11 items-center justify-center border-2 border-[#1C1917] px-5 py-2 text-sm font-bold text-[#1C1917] transition hover:bg-[#1C1917] hover:text-[#F5F0E8]"
-          >
-            This week's dates
-          </a>
+        <div className="shrink-0">
+          <div className="flex flex-wrap gap-3">
+            <Link
+              href="/whats-on"
+              className="inline-flex min-h-11 items-center justify-center bg-[#1C1917] px-5 py-2 text-sm font-bold text-[#F5F0E8] transition hover:bg-stone-700"
+            >
+              See What's On
+            </Link>
+            <a
+              href={MEMBERS_PAGE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex min-h-11 items-center justify-center border-2 border-[#1C1917] px-5 py-2 text-sm font-bold text-[#1C1917] transition hover:bg-[#1C1917] hover:text-[#F5F0E8]"
+            >
+              Dates on the members page
+            </a>
+          </div>
+          <p className="mt-2 text-xs text-[#1C1917]/70">
+            The members page is free to join.
+          </p>
         </div>
       </div>
     </section>
@@ -695,6 +704,16 @@ function WorkNotes() {
           <div className="max-w-2xl md:justify-self-end">
             <p className="text-lg leading-relaxed text-stone-700">
               The garden leads the public work: beds, paths, pavilion, kids area, the first shop shelves and the Milk Man at the gate.
+            </p>
+            <p className="mt-3 text-lg leading-relaxed text-stone-700">
+              Grow, make, or have two spare hours?{" "}
+              <Link
+                href="/get-involved"
+                className="font-semibold text-[#8B4A2A] underline underline-offset-4 hover:text-[#1C1917]"
+              >
+                Tell us on the Get Involved page
+              </Link>
+              .
             </p>
             <Link
               href="/works"

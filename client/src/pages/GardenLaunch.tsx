@@ -15,6 +15,7 @@ import {
   Hammer,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { VisitStrip } from "@/components/VisitStrip";
 
 const SUPPLY_URL = "/shop"; // shop EOI: interest:markets + role:supplier
 const IDEA_URL = "/get-involved?form=idea"; // deep-links straight to the idea form
@@ -536,6 +537,8 @@ export default function GardenLaunch() {
           </div>
         </div>
       </section>
+
+      <VisitStrip />
     </div>
   );
 }

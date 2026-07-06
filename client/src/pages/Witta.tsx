@@ -21,6 +21,7 @@ import {
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import { harvestButtonClasses, SiteFooter, SiteNav } from "./HarvestReviewTest";
+import { VisitStrip } from "@/components/VisitStrip";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
@@ -762,6 +763,7 @@ export default function Witta() {
           </motion.div>
         </div>
       </section>
+      <VisitStrip />
       <SiteFooter />
     </div>
   );

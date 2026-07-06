@@ -1,4 +1,5 @@
 import { useState, FormEvent } from "react";
+import { VisitStrip } from "@/components/VisitStrip";
 import { communitySubmit } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import { SiteFooter, SiteNav } from "./HarvestReviewTest";
@@ -331,6 +332,7 @@ export default function GetInvolved() {
           </p>
         </div>
       </section>
+      <VisitStrip />
       <SiteFooter />
     </div>
   );

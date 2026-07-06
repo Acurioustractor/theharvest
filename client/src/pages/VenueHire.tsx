@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { communitySubmit } from "@/lib/api";
 import { SiteFooter, SiteNav } from "./HarvestReviewTest";
+import { VisitStrip } from "@/components/VisitStrip";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
@@ -505,6 +506,7 @@ export default function VenueHire() {
           </div>
         </div>
       </section>
+      <VisitStrip />
       <SiteFooter />
     </div>
   );

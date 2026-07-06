@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { PenLine, ArrowDown } from "lucide-react";
 import { Link } from "wouter";
 import { SiteFooter, SiteNav } from "./HarvestReviewTest";
+import { VisitStrip } from "@/components/VisitStrip";
 
 const barryPhotos = [
   { src: "/images/compendium/barry/IMG_5764.jpg", caption: "Barry at golden hour" },
@@ -388,6 +389,7 @@ export default function Stories() {
           </motion.div>
         </div>
       </section>
+      <VisitStrip />
       <SiteFooter />
     </div>
   );

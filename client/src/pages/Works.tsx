@@ -7,6 +7,7 @@ import { EditableText } from "@/components/EditableText";
 import { HarvestImage } from "@/components/HarvestImage";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { harvestButtonClasses, SiteFooter, SiteNav } from "./HarvestReviewTest";
+import { VisitStrip } from "@/components/VisitStrip";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
@@ -193,6 +194,7 @@ export default function Works() {
           </motion.div>
         </div>
       </section>
+      <VisitStrip />
       <SiteFooter />
     </div>
   );

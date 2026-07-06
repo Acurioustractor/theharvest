@@ -20,6 +20,7 @@ import { optimize } from "@/lib/imageOptimize";
 import { MEMBERS_PAGE_URL } from "@/lib/links";
 import { trpc } from "@/lib/trpc";
 import { harvestButtonClasses, SiteFooter, SiteNav } from "./HarvestReviewTest";
+import { VisitStrip } from "@/components/VisitStrip";
 
 const lanes = [
   {
@@ -547,6 +548,7 @@ export default function Membership() {
           </div>
         </div>
       </section>
+      <VisitStrip />
       <SiteFooter />
     </main>
   );

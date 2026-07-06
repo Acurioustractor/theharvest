@@ -13,6 +13,7 @@ import { optimize } from "@/lib/imageOptimize";
 import { HarvestPhotoPicker } from "@/components/HarvestPhotoPicker";
 import { toast } from "sonner";
 import { SiteFooter, SiteNav } from "./HarvestReviewTest";
+import { VisitStrip } from "@/components/VisitStrip";
 
 const SITE_URL = "https://www.theharvestwitta.com.au";
 
@@ -525,6 +526,7 @@ export default function WorkDetail({ slug }: { slug: string }) {
           </div>
         </div>
       </section>
+      <VisitStrip />
       <SiteFooter />
     </div>
   );

@@ -3,6 +3,7 @@ import { Link } from "wouter";
 import { ArrowRight } from "lucide-react";
 import { ShopInterestSection } from "@/components/ShopInterestSection";
 import { SiteNav, SiteFooter, harvestButtonClasses } from "./HarvestReviewTest";
+import { VisitStrip } from "@/components/VisitStrip";
 
 const shelfWays = [
   {
@@ -115,6 +116,7 @@ export default function Shop() {
         </div>
       </section>
 
+      <VisitStrip />
       <SiteFooter />
     </main>
   );

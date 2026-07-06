@@ -2,7 +2,7 @@ import { useState, useEffect, type CSSProperties } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
-import BauhausFooter from "@/components/BauhausFooter";
+import { SiteFooter, SiteNav } from "./HarvestReviewTest";
 
 /* ─────────────────────────────────────
    DESIGN TOKENS
@@ -629,9 +629,10 @@ export default function CommunityPulse() {
       minHeight: "100vh",
       fontFamily: "'Inter', sans-serif",
     }}>
+      <SiteNav />
       {/* Hero */}
       <section style={{
-        padding: isMobile ? "60px 20px 40px" : "80px 40px 60px",
+        padding: isMobile ? "110px 20px 40px" : "140px 40px 60px",
         textAlign: "center",
         background: `radial-gradient(ellipse at 50% 30%, rgba(217,169,78,0.06), transparent 70%)`,
       }}>
@@ -768,7 +769,7 @@ export default function CommunityPulse() {
         )}
       </section>
 
-      <BauhausFooter isMobile={isMobile} />
+      <SiteFooter />
     </div>
   );
 }

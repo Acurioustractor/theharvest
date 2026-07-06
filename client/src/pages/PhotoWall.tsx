@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
-import BauhausFooter from "@/components/BauhausFooter";
+import { SiteFooter, SiteNav } from "./HarvestReviewTest";
 import FadeIn from "@/components/FadeIn";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { rootStyle, colors, fonts, formLabelStyle, formInputStyle } from "@/styles/brand";
@@ -115,11 +115,12 @@ export default function PhotoWall() {
 
   return (
     <div style={rootStyle}>
+      <SiteNav />
 
       {/* ─── HERO ─── */}
       <section style={{
         backgroundColor: colors.shed,
-        padding: isMobile ? "80px 28px 48px" : "120px 40px 64px",
+        padding: isMobile ? "110px 28px 48px" : "140px 40px 64px",
         textAlign: "center",
       }}>
         <motion.div
@@ -520,7 +521,7 @@ export default function PhotoWall() {
         </div>
       </section>
 
-      <BauhausFooter isMobile={isMobile} />
+      <SiteFooter />
     </div>
   );
 }
