@@ -95,6 +95,23 @@ export default function Shop() {
             talk through the detail. You keep ownership of what you bring, and we will work
             out the money side together before anything goes on a shelf.
           </p>
+          <p className="mt-4 max-w-2xl text-sm leading-relaxed text-stone-600">
+            Not selling, just want to shop here? Opening dates land with members first, and{" "}
+            <Link
+              href="/membership"
+              className="font-semibold text-[#8B4A2A] underline underline-offset-4 hover:text-[#1C1917]"
+            >
+              membership is free
+            </Link>
+            . Workshops and the art space have their own doors:{" "}
+            <Link
+              href="/get-involved"
+              className="font-semibold text-[#8B4A2A] underline underline-offset-4 hover:text-[#1C1917]"
+            >
+              start at Get Involved
+            </Link>
+            .
+          </p>
         </div>
       </section>
 

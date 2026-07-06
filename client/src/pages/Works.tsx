@@ -151,6 +151,18 @@ export default function Works() {
                         className="mt-5 text-stone-600 leading-relaxed"
                         multiline
                       />
+                      {work.slug === "the-shop" && (
+                        <p className="mt-4 text-sm text-stone-600">
+                          Make or grow something?{" "}
+                          <Link
+                            href="/shop"
+                            className="font-medium text-amber-700 underline underline-offset-4 hover:text-amber-800"
+                          >
+                            An expression of interest starts a real conversation
+                          </Link>
+                          .
+                        </p>
+                      )}
                       <Link
                         href={`/works/${work.slug}`}
                         className="mt-4 inline-flex items-center gap-1.5 text-amber-700 font-medium text-sm group-hover:gap-2.5 transition-all"
@@ -179,15 +191,15 @@ export default function Works() {
             </h2>
             <p className="text-lg text-stone-300 leading-relaxed mb-10">
               Each season brings a new work: sometimes a structure, sometimes a
-              practice, sometimes a partnership. Add a memory, share a skill, or
-              come and help build one.
+              practice, sometimes a partnership. If you want to help make one,
+              tell us what you would bring.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex justify-center">
               <Link
-                href="/witta"
+                href="/get-involved"
                 className={harvestButtonClasses.primary}
               >
-                Add to Witta history
+                Share a skill or an idea
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </div>

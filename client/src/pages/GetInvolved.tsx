@@ -1,5 +1,6 @@
 import { useState, FormEvent } from "react";
 import { VisitStrip } from "@/components/VisitStrip";
+import { MEMBERS_PAGE_URL } from "@/lib/links";
 import { communitySubmit } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import { SiteFooter, SiteNav } from "./HarvestReviewTest";
@@ -95,7 +96,7 @@ const FORMS: FormConfig[] = [
     id: "business-interest",
     label: "Local Businesses",
     icon: Store,
-    tagline: "Run a local business? Let's find ways to work together.",
+    tagline: "Make, grow or run something local? The first shelves are being shaped with local makers and growers. An expression of interest starts a real conversation.",
     fields: [
       { name: "name", label: "Your name", type: "text", required: true },
       { name: "email", label: "Email", type: "email", required: true },
@@ -107,6 +108,7 @@ const FORMS: FormConfig[] = [
         type: "select",
         required: true,
         options: [
+          { value: "shop-shelf", label: "Selling on the shop shelves" },
           { value: "info-session", label: "Attending an info session" },
           { value: "expression-of-interest", label: "Expression of interest" },
           { value: "partnership", label: "Partnership opportunity" },
@@ -138,7 +140,7 @@ const FORMS: FormConfig[] = [
       { name: "name", label: "Your name", type: "text", required: true },
       { name: "email", label: "Email", type: "email", required: true },
       { name: "title", label: "What's your story about?", type: "text", required: true, placeholder: "A sentence or two" },
-      { name: "description", label: "Tell us more", type: "textarea", required: true, placeholder: "What would you like to share? Your connection to Witta, your craft, your journey?" },
+      { name: "description", label: "Tell us more", type: "textarea", required: true, placeholder: "What would you like to share? Your connection to Witta, your craft, how you got here?" },
       { name: "portfolioUrl", label: "Website or social link", type: "text", placeholder: "https://..." },
     ],
   },
@@ -201,7 +203,16 @@ export default function GetInvolved() {
             <a href="/membership" className="text-amber-400 underline hover:text-amber-300">
               free membership
             </a>
-            . Members hear first, every time.
+            . Work day dates land on the{" "}
+            <a
+              href={MEMBERS_PAGE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-amber-400 underline hover:text-amber-300"
+            >
+              members page
+            </a>{" "}
+            first, and no experience is needed. Members hear first, every time.
           </p>
         </div>
       </section>

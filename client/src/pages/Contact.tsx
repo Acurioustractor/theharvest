@@ -106,6 +106,19 @@ export default function Contact() {
           }}>
             The Harvest is in Witta, on Jinibara Country, at the old nursery. You do not need to book to come and have a look while we find our feet. Use the form below, or one of the paths beneath it.
           </p>
+          <p style={{
+            fontFamily: fonts.body,
+            fontSize: 15,
+            opacity: 0.55,
+            margin: "12px 0 0",
+            maxWidth: 540,
+            marginLeft: "auto",
+            marginRight: "auto",
+            lineHeight: 1.55,
+          }}>
+            Good things to write to us about: selling or making something for the shop
+            shelves, running a workshop, joining a work day, or an idea for the place.
+          </p>
         </motion.div>
       </section>
 
@@ -153,21 +166,40 @@ export default function Contact() {
               We've got your message. We read everything. Replies can take a few
               days while we find our feet.
             </p>
+            <p style={{
+              fontFamily: fonts.body,
+              fontSize: isMobile ? 15 : 16,
+              color: colors.milk,
+              opacity: 0.7,
+              lineHeight: 1.6,
+              margin: "0 0 32px",
+            }}>
+              While you wait: membership is free, and members hear about open days
+              and events first.{" "}
+              <a
+                href="/membership"
+                style={{ color: colors.goldenHour, textDecoration: "underline", textUnderlineOffset: 3 }}
+              >
+                Become a member
+              </a>
+              .
+            </p>
             <button
               onClick={() => setSubmitted(false)}
               style={{
-                fontFamily: fonts.display,
-                fontWeight: 700,
-                fontSize: 13,
-                letterSpacing: "0.1em",
-                color: colors.shed,
-                backgroundColor: colors.goldenHour,
+                fontFamily: fonts.body,
+                fontSize: 14,
+                letterSpacing: "0.06em",
+                color: colors.milk,
+                background: "none",
                 border: "none",
-                padding: "14px 32px",
+                textDecoration: "underline",
+                textUnderlineOffset: 3,
+                opacity: 0.7,
                 cursor: "pointer",
               }}
             >
-              SEND ANOTHER MESSAGE
+              Send another message
             </button>
           </motion.div>
         ) : (
@@ -344,6 +376,9 @@ export default function Contact() {
               <h3 style={detailLabelStyle}>VISITS</h3>
               <p style={detailTextStyle}>
                 You do not need to book to come and have a look while we find our feet.
+                Most weekends the pizza oven is on: Friday 3pm to 8pm with a community
+                movie night, Saturday 12pm to 8pm, Sunday 12pm to 6pm. Weeks can vary,
+                and dates land with members first.
               </p>
               <p style={{ ...detailTextStyle, opacity: 0.5, fontSize: 14, marginTop: 8 }}>
                 Members hear about open days and events first.{" "}

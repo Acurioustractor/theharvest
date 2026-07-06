@@ -452,6 +452,17 @@ export default function WorkDetail({ slug }: { slug: string }) {
               </div>
             )}
 
+            <p className="mt-10 border-t border-stone-200 pt-6 text-stone-600">
+              Want to help make this one? Hands, materials, skills and local
+              knowledge all count.{" "}
+              <Link
+                href="/get-involved"
+                className="font-medium text-amber-700 underline underline-offset-4 hover:text-amber-800"
+              >
+                Tell us on the Get Involved page
+              </Link>
+              .
+            </p>
           </div>
         </div>
       </section>

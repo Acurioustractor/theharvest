@@ -2,11 +2,8 @@ import { useState, FormEvent } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import {
-  Users,
   Calendar,
   Clock,
-  Car,
-  Utensils,
   CheckCircle,
   ArrowRight,
   Mail,
@@ -16,45 +13,6 @@ import {
 import { communitySubmit } from "@/lib/api";
 import { SiteFooter, SiteNav } from "./HarvestReviewTest";
 import { VisitStrip } from "@/components/VisitStrip";
-
-const fadeInUp = {
-  initial: { opacity: 0, y: 30 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.6 },
-};
-
-const staggerContainer = {
-  animate: {
-    transition: {
-      staggerChildren: 0.1,
-    },
-  },
-};
-
-const spaces = [
-  {
-    name: "Indoor spaces",
-    capacity: "Taking shape",
-    description:
-      "Rooms with timber character and natural light, suited to workshops, meetings and gatherings while the fit-out continues. Tell us what you're planning and we'll talk through what works now.",
-    features: ["Natural lighting", "Flexible layout", "Fit-out continuing"],
-    ideal: ["Workshops", "Meetings", "Community gatherings", "Team days"],
-  },
-  {
-    name: "Garden and outdoor spaces",
-    capacity: "Taking shape",
-    description:
-      "Outdoor areas among the gardens, suited to small gatherings, work days and casual get-togethers as the garden grows.",
-    features: ["Garden setting", "Open air", "Power access"],
-    ideal: ["Small workshops", "Garden gatherings", "Meetings", "Team days"],
-  },
-];
-
-const amenities = [
-  { icon: Car, label: "Free Parking" },
-  { icon: Utensils, label: "Local Caterer Connections" },
-  { icon: Users, label: "Accessible Entry" },
-];
 
 export default function VenueHire() {
   const [formData, setFormData] = useState<Record<string, string>>({});
@@ -114,134 +72,24 @@ export default function VenueHire() {
         </div>
       </section>
 
-      {/* Spaces Section */}
+      {/* The spaces, honestly: an enquiry door, not a brochure */}
       <section className="py-16 bg-white">
         <div className="container">
           <motion.div
-            initial="initial"
-            whileInView="animate"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            variants={staggerContainer}
-            className="text-center mb-12"
+            transition={{ duration: 0.6 }}
+            className="max-w-2xl mx-auto text-center"
           >
-            <motion.h2
-              variants={fadeInUp}
-              className="text-3xl md:text-4xl font-serif font-bold text-stone-800 mb-4"
-            >
-              Our Spaces
-            </motion.h2>
-            <motion.p variants={fadeInUp} className="text-lg text-stone-600 max-w-2xl mx-auto">
-              Each space has its own character. Tell us what you're planning and we'll find the right fit.
-            </motion.p>
-          </motion.div>
-
-          <motion.div
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true }}
-            variants={staggerContainer}
-            className="space-y-8"
-          >
-            {spaces.map((space, index) => (
-              <motion.div key={space.name} variants={fadeInUp}>
-                <Card className="overflow-hidden border-0 shadow-lg">
-                  <CardContent className="p-0">
-                    <div
-                      className={`grid lg:grid-cols-2 ${index % 2 === 1 ? "lg:flex-row-reverse" : ""}`}
-                    >
-                      {/* Image placeholder */}
-                      <div
-                        className={`h-64 lg:h-auto bg-stone-200 ${index % 2 === 1 ? "lg:order-2" : ""}`}
-                      >
-                        <div className="w-full h-full bg-gradient-to-br from-stone-100 to-amber-50 flex items-center justify-center">
-                          <div className="text-center p-8">
-                            <Users className="h-16 w-16 text-amber-600 mx-auto mb-4" />
-                            <p className="text-stone-600 font-medium">{space.capacity}</p>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Content */}
-                      <div className="p-8 lg:p-12">
-                        <h3 className="text-2xl font-serif font-bold text-stone-800 mb-2">
-                          {space.name}
-                        </h3>
-                        <p className="text-amber-600 font-medium mb-4">{space.capacity}</p>
-                        <p className="text-stone-600 mb-6">{space.description}</p>
-
-                        <div className="grid sm:grid-cols-2 gap-6">
-                          <div>
-                            <h4 className="font-semibold text-stone-800 mb-3">Features</h4>
-                            <ul className="space-y-2">
-                              {space.features.map((feature) => (
-                                <li key={feature} className="flex items-center gap-2 text-stone-600">
-                                  <CheckCircle className="h-4 w-4 text-amber-500" />
-                                  {feature}
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                          <div>
-                            <h4 className="font-semibold text-stone-800 mb-3">Ideal For</h4>
-                            <div className="flex flex-wrap gap-2">
-                              {space.ideal.map((use) => (
-                                <span
-                                  key={use}
-                                  className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border border-amber-300 text-amber-700 bg-amber-50"
-                                >
-                                  {use}
-                                </span>
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Amenities Section */}
-      <section className="py-16 bg-stone-100">
-        <div className="container">
-          <motion.div
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true }}
-            variants={staggerContainer}
-            className="text-center mb-12"
-          >
-            <motion.h2
-              variants={fadeInUp}
-              className="text-3xl md:text-4xl font-serif font-bold text-stone-800 mb-4"
-            >
-              What's Included
-            </motion.h2>
-          </motion.div>
-
-          <motion.div
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true }}
-            variants={staggerContainer}
-            className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-2xl mx-auto"
-          >
-            {amenities.map((amenity) => (
-              <motion.div key={amenity.label} variants={fadeInUp}>
-                <Card className="h-full border-0 shadow-sm bg-white text-center">
-                  <CardContent className="p-6">
-                    <div className="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center mx-auto mb-3">
-                      <amenity.icon className="h-6 w-6 text-amber-600" />
-                    </div>
-                    <p className="font-medium text-stone-700">{amenity.label}</p>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
+            <h2 className="text-3xl md:text-4xl font-serif font-bold text-stone-800 mb-4">
+              The spaces, honestly
+            </h2>
+            <p className="text-lg text-stone-600 leading-relaxed">
+              The site has indoor rooms and garden areas, all still taking shape.
+              Nothing is named or priced yet, on purpose. Tell us what you are
+              planning and we will talk through what works right now.
+            </p>
           </motion.div>
         </div>
       </section>
@@ -416,16 +264,17 @@ export default function VenueHire() {
                     <div>
                       <strong className="text-stone-800">Flexible spaces</strong>
                       <p className="text-stone-600">
-                        From intimate workshops to larger gatherings, we can accommodate your needs.
+                        From small workshops to garden gatherings, tell us the shape and we
+                        will see what works.
                       </p>
                     </div>
                   </li>
                   <li className="flex items-start gap-3">
                     <CheckCircle className="h-5 w-5 text-amber-500 mt-1 flex-shrink-0" />
                     <div>
-                      <strong className="text-stone-800">Beautiful setting</strong>
+                      <strong className="text-stone-800">A working garden setting</strong>
                       <p className="text-stone-600">
-                        Native gardens and hinterland views in Witta, on Jinibara Country.
+                        Gardens and hinterland views in Witta, on Jinibara Country.
                       </p>
                     </div>
                   </li>
