@@ -90,10 +90,10 @@ export default function Blog() {
           <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             <div>
               <p className="font-mono text-xs uppercase tracking-[0.18em] text-stone-400">
-                Empathy Ledger
+                Field notes
               </p>
               <p className="mt-1 text-sm text-stone-600">
-                Published stories syndicated to The Harvest.
+                Stories from the garden, events and art space.
               </p>
             </div>
             <div className="relative w-full md:w-80">
@@ -193,8 +193,8 @@ export default function Blog() {
               </h3>
               <p className="text-stone-500 mb-6">
                 {searchQuery
-                  ? "Try adjusting your search or filters"
-                  : "Check back soon for new stories from The Harvest"}
+                  ? "Try a different search"
+                  : "The first field notes are on the way. Meanwhile, the place itself is open most weekends. Visiting details below."}
               </p>
               {searchQuery && (
                 <Button
@@ -229,14 +229,8 @@ export default function Blog() {
                 ))}
               </div>
 
-              {/* Pagination hint */}
-              {data?.pagination?.hasMore && (
-                <div className="text-center mt-12">
-                  <Button variant="outline" size="lg">
-                    Load more articles
-                  </Button>
-                </div>
-              )}
+              {/* Pagination not built yet: no dead Load-more button. When more
+                  articles exist than one page shows, wire real pagination here. */}
             </motion.div>
           )}
         </div>

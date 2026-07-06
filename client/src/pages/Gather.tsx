@@ -178,7 +178,11 @@ export default function Gather() {
               <Link href="/membership" style={{ color: colors.shed, fontWeight: 600, textDecoration: "none", borderBottom: `1px solid rgba(0,0,0,0.3)` }}>
                 members
               </Link>{" "}
-              first.
+              first. Got an answer to the question?{" "}
+              <Link href="/get-involved?form=idea" style={{ color: colors.shed, fontWeight: 600, textDecoration: "none", borderBottom: `1px solid rgba(0,0,0,0.3)` }}>
+                Tell us
+              </Link>
+              .
             </p>
           </FadeIn>
         </div>

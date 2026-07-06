@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { SiteFooter, SiteNav } from "./HarvestReviewTest";
+import { MEMBERS_PAGE_URL } from "@/lib/links";
 import FadeIn from "@/components/FadeIn";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { rootStyle, colors, fonts, formLabelStyle, formInputStyle } from "@/styles/brand";
@@ -16,10 +17,12 @@ export default function PhotoWall() {
     firstName: "",
     email: "",
     phone: "",
-    response: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [ideaData, setIdeaData] = useState({ firstName: "", email: "", response: "" });
+  const [ideaSubmitting, setIdeaSubmitting] = useState(false);
+  const [ideaSubmitted, setIdeaSubmitted] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -43,7 +46,6 @@ export default function PhotoWall() {
         firstName: formData.firstName,
         email: formData.email,
         phone: formData.phone || undefined,
-        response: formData.response,
       });
 
       if (!result.success) {
@@ -57,6 +59,28 @@ export default function PhotoWall() {
       });
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleIdeaSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIdeaSubmitting(true);
+    try {
+      const result = await photoWallMutation.mutateAsync({
+        firstName: ideaData.firstName,
+        email: ideaData.email,
+        response: ideaData.response,
+      });
+      if (!result.success) {
+        throw new Error(result.error || "Something went wrong");
+      }
+      setIdeaSubmitted(true);
+    } catch (error) {
+      toast.error("That didn't send", {
+        description: error instanceof Error ? error.message : "Please try again.",
+      });
+    } finally {
+      setIdeaSubmitting(false);
     }
   };
 
@@ -303,9 +327,24 @@ export default function PhotoWall() {
             fontFamily: fonts.body,
             fontSize: 15,
             color: colors.milk,
-            opacity: 0.4,
+            opacity: 0.6,
+            maxWidth: 520,
+            margin: "0 auto",
+            lineHeight: 1.7,
           }}>
-            No photos on the wall yet.
+            No photos on the wall yet. Come make the first ones: we're open most
+            weekends for DIY pizza, Friday 3pm to 8pm with a community movie
+            night, Saturday 12pm to 8pm, Sunday 12pm to 6pm. Weeks can vary, and
+            dates land on the{" "}
+            <a
+              href={MEMBERS_PAGE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: colors.goldenHour, textDecoration: "underline", textUnderlineOffset: 3 }}
+            >
+              members page
+            </a>{" "}
+            first.
           </p>
         </section>
       )}
@@ -366,6 +405,143 @@ export default function PhotoWall() {
               Got photos from a visit to The Harvest? Tap to add them to the wall.
             </p>
           </div>
+          <p style={{
+            fontFamily: fonts.body,
+            fontSize: 12,
+            color: colors.milk,
+            opacity: 0.45,
+            margin: "16px 0 0",
+            lineHeight: 1.6,
+          }}>
+            Only share photos you took, and check the people in them are happy to
+            be on the wall. Spot a photo of you that you'd like taken down?{" "}
+            <a
+              href="/contact"
+              style={{ color: colors.goldenHour, textDecoration: "underline", textUnderlineOffset: 3 }}
+            >
+              Tell us
+            </a>{" "}
+            and we will.
+          </p>
+        </div>
+      </section>
+
+      {/* ─── IDEA CAPTURE ─── */}
+      <section style={{
+        backgroundColor: colors.shed,
+        padding: isMobile ? "0 28px 48px" : "0 40px 64px",
+      }}>
+        <div style={{
+          maxWidth: 480,
+          margin: "0 auto",
+          borderTop: `1px solid rgba(245,240,232,0.1)`,
+          paddingTop: 40,
+        }}>
+          <h2 style={{
+            fontFamily: fonts.display,
+            fontWeight: 900,
+            fontSize: isMobile ? 18 : 22,
+            letterSpacing: "0.08em",
+            color: colors.goldenHour,
+            textAlign: "center",
+            margin: "0 0 8px",
+          }}>
+            WHAT WOULD YOU LOVE TO SEE GROW HERE?
+          </h2>
+          <p style={{
+            fontFamily: fonts.body,
+            fontSize: isMobile ? 14 : 15,
+            color: colors.milk,
+            opacity: 0.5,
+            textAlign: "center",
+            margin: "0 0 28px",
+            lineHeight: 1.6,
+          }}>
+            Leave a thought and your email. A human reads every one.
+          </p>
+
+          {ideaSubmitted ? (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              style={{ textAlign: "center", padding: "10px 0" }}
+            >
+              <p style={{
+                fontFamily: fonts.body,
+                fontSize: isMobile ? 16 : 18,
+                color: colors.milk,
+                opacity: 0.7,
+                lineHeight: 1.6,
+                margin: 0,
+              }}>
+                Got it. A human reads every one, and if you left your email we
+                can get back to you.
+              </p>
+            </motion.div>
+          ) : (
+            <form onSubmit={handleIdeaSubmit}>
+              <div style={{ marginBottom: 20 }}>
+                <label style={formLabelStyle} htmlFor="idea-response">YOUR THOUGHT</label>
+                <textarea
+                  id="idea-response"
+                  placeholder="A thought, a dream, a single word..."
+                  value={ideaData.response}
+                  onChange={(e) => setIdeaData((prev) => ({ ...prev, response: e.target.value }))}
+                  required
+                  rows={3}
+                  style={{
+                    ...formInputStyle,
+                    resize: "vertical",
+                    minHeight: 80,
+                  }}
+                />
+              </div>
+              <div style={{ marginBottom: 20 }}>
+                <label style={formLabelStyle} htmlFor="idea-name">YOUR NAME</label>
+                <input
+                  id="idea-name"
+                  type="text"
+                  placeholder="First name"
+                  value={ideaData.firstName}
+                  onChange={(e) => setIdeaData((prev) => ({ ...prev, firstName: e.target.value }))}
+                  required
+                  style={formInputStyle}
+                />
+              </div>
+              <div style={{ marginBottom: 28 }}>
+                <label style={formLabelStyle} htmlFor="idea-email">EMAIL</label>
+                <input
+                  id="idea-email"
+                  type="email"
+                  placeholder="So we can reply"
+                  value={ideaData.email}
+                  onChange={(e) => setIdeaData((prev) => ({ ...prev, email: e.target.value }))}
+                  required
+                  style={formInputStyle}
+                />
+              </div>
+              <button
+                type="submit"
+                disabled={ideaSubmitting}
+                style={{
+                  fontFamily: fonts.display,
+                  fontWeight: 700,
+                  fontSize: 14,
+                  letterSpacing: "0.1em",
+                  color: colors.shed,
+                  backgroundColor: colors.goldenHour,
+                  border: "none",
+                  padding: "16px 0",
+                  width: "100%",
+                  cursor: ideaSubmitting ? "not-allowed" : "pointer",
+                  opacity: ideaSubmitting ? 0.6 : 1,
+                }}
+              >
+                {ideaSubmitting ? "SENDING..." : "SEND IT"}
+              </button>
+            </form>
+          )}
         </div>
       </section>
 
@@ -469,30 +645,6 @@ export default function PhotoWall() {
                     value={formData.phone}
                     onChange={(e) => setFormData((prev) => ({ ...prev, phone: e.target.value }))}
                     style={formInputStyle}
-                  />
-                </div>
-
-                <div style={{ marginBottom: 28 }}>
-                  <label style={{
-                    ...formLabelStyle,
-                    fontSize: 12,
-                    opacity: 0.8,
-                    color: colors.goldenHour,
-                    marginBottom: 10,
-                  }} htmlFor="response">
-                    WHAT WOULD YOU LOVE TO SEE GROW HERE?
-                  </label>
-                  <textarea
-                    id="response"
-                    placeholder="A thought, a dream, a single word..."
-                    value={formData.response}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, response: e.target.value }))}
-                    rows={3}
-                    style={{
-                      ...formInputStyle,
-                      resize: "vertical",
-                      minHeight: 80,
-                    }}
                   />
                 </div>
 

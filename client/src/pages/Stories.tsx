@@ -116,10 +116,10 @@ export default function Stories() {
                 transition={{ delay: index * 0.1 }}
               >
                 <Card
-                  className={`overflow-hidden border-0 bg-stone-800 group cursor-pointer transition-all duration-300 ${
+                  className={`overflow-hidden border-0 bg-stone-800 group transition-all duration-300 ${
                     story.available
-                      ? "hover:ring-2 hover:ring-amber-500/50 hover:shadow-2xl hover:shadow-amber-500/10"
-                      : "opacity-60"
+                      ? "cursor-pointer hover:ring-2 hover:ring-amber-500/50 hover:shadow-2xl hover:shadow-amber-500/10"
+                      : "opacity-60 cursor-default"
                   }`}
                   onClick={() => story.available && scrollToStory(story.id)}
                 >
@@ -169,7 +169,6 @@ export default function Stories() {
             transition={{ duration: 0.8 }}
             className="mb-16"
           >
-            <p className="text-stone-500 font-mono text-sm mb-4">Section II: The Shed</p>
             <h2 className="text-3xl md:text-5xl font-serif font-bold text-white leading-tight">
               Barry has been on this land for decades.{" "}
               <span className="text-amber-400">

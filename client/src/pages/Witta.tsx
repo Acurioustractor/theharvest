@@ -494,8 +494,9 @@ export default function Witta() {
                 Maleny Dairies survived by building their own processing and bottling plant;
                 Great Grandfather Hopper had purchased the land in 1948. They're still going.
                 The old Witta nursery site, where The Harvest now stands, found its second
-                life in horticulture, growing seedlings and serving local gardeners through the
-                1970s and beyond.
+                life in horticulture: it traded as The Green Harvest, growing seedlings and
+                serving local gardeners through the 1970s and beyond. The Harvest carries
+                that name forward.
               </p>
             </div>
           </motion.div>
@@ -584,7 +585,7 @@ export default function Witta() {
               <p>
                 The Harvest is a new layer in this story: not erasing what came before, but
                 building on every layer of it. Jinibara Country first. Then
-                cedar. Then Teutoburg. Then dairy. Then nursery. Now this. The land remembers
+                cedar. Then Teutoburg. Then dairy. Then The Green Harvest nursery. Now this. The land remembers
                 what was here before, and so should we.
               </p>
             </div>
@@ -932,7 +933,7 @@ function ContributeMemoryForm() {
                         id="memory-name"
                         value={authorName}
                         onChange={(e) => setAuthorName(e.target.value)}
-                        placeholder="e.g. Barry Rodgerig"
+                        placeholder="Your name"
                         required
                         maxLength={255}
                       />

@@ -216,7 +216,7 @@ export default function GardenLaunch() {
       <section className="py-12 md:py-16 bg-stone-100 border-b border-stone-200">
         <div className="container">
           <div className="max-w-4xl mx-auto grid sm:grid-cols-3 gap-6 text-center">
-            <Fact icon={Calendar} label="Date" value={EVENT.date} />
+            <Fact icon={Calendar} label="When" value={`Opened ${EVENT.date}`} />
             <Fact icon={Users} label="What" value={EVENT.what} />
             <Fact icon={MapPin} label="Place" value={EVENT.shortAddress} />
           </div>
@@ -494,9 +494,9 @@ export default function GardenLaunch() {
               Hear about the next one first.
             </h2>
             <p className="text-stone-600 mb-8 leading-relaxed">
-              The members page is where upcoming events land first. The
-              newsletter stays quiet: an occasional note, nothing more. Or
-              follow along where the photos and work-in-progress go.
+              The members page is where upcoming events land first, and
+              membership is free. Or follow along where the photos and
+              work-in-progress go.
             </p>
             <div className="flex flex-wrap gap-3 justify-center">
               <Link

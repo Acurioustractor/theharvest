@@ -351,7 +351,7 @@ function Step1({ data, update, isMobile }: {
       </div>
 
       <div>
-        <QuestionLabel>What's missing — what do you wish existed here?</QuestionLabel>
+        <QuestionLabel>What's missing? What do you wish existed here?</QuestionLabel>
         <TextArea
           value={data.whatsMissing}
           onChange={v => update({ whatsMissing: v })}
@@ -379,12 +379,12 @@ function Step2({ data, update, isMobile }: {
       }}>THE HARVEST</p>
 
       <div style={{ marginBottom: 36 }}>
-        <QuestionLabel>Have you heard of The Harvest?</QuestionLabel>
+        <QuestionLabel>Have you visited The Harvest yet?</QuestionLabel>
         <RadioGroup
           options={[
             { value: "yes", label: "Yes" },
-            { value: "no", label: "No" },
-            { value: "not-sure", label: "Not sure" },
+            { value: "no", label: "Not yet" },
+            { value: "not-sure", label: "Didn't know it was open" },
           ]}
           value={data.heardOfHarvest}
           onChange={v => update({ heardOfHarvest: v })}
@@ -555,13 +555,26 @@ function ThankYou({ isMobile }: { isMobile: boolean }) {
         color: C.creamDim,
         lineHeight: 1.6,
         maxWidth: 480,
+        margin: "0 auto 20px",
+      }}>
+        A human reads every response. If you left your email, we will get back
+        to you.
+      </p>
+      <p style={{
+        fontFamily: "'Inter', sans-serif",
+        fontSize: 15,
+        color: C.creamDim,
+        lineHeight: 1.6,
+        maxWidth: 480,
         margin: "0 auto 40px",
       }}>
-        Your voice matters. We're building The Harvest around what this community
-        actually wants — and you just helped shape that.
+        Come see the place for yourself. Most weekends we fire the pizza oven:
+        Friday 3pm to 8pm with a community movie night, Saturday 12pm to 8pm,
+        Sunday 12pm to 6pm. No booking needed. Weeks can vary, and members hear
+        the dates first.
       </p>
       <a
-        href="/"
+        href="/membership"
         style={{
           display: "inline-block",
           fontFamily: "'Montserrat', sans-serif",
@@ -575,7 +588,7 @@ function ThankYou({ isMobile }: { isMobile: boolean }) {
           textDecoration: "none",
         }}
       >
-        VISIT THE HARVEST
+        BECOME A MEMBER (IT'S FREE)
       </a>
     </motion.div>
   );
@@ -612,6 +625,7 @@ export default function CommunityPulse() {
       setSubmitted(true);
     } catch (err) {
       console.error("Failed to submit pulse survey:", err);
+      toast.error("That didn't send. Try again, or reach us via the contact page.");
     } finally {
       setSubmitting(false);
     }
