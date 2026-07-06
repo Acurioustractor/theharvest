@@ -39,7 +39,7 @@ const lanes = [
     slug: "gather",
     title: "Gather.",
     tagline: "First call for community days and meals.",
-    body: "Upcoming events land with members first. Work days, workshops and shared meals reach the member list before they go public, with a way to RSVP and to message us directly.",
+    body: "Upcoming events land with members first. Most weekends the pizza oven runs: Friday 3pm to 8pm with a community movie night, Saturday 12pm to 8pm, Sunday 12pm to 6pm. Weeks can vary, and dates reach the member list before they go public, with a way to RSVP and message us directly.",
   },
 ];
 
@@ -212,7 +212,7 @@ export default function Membership() {
               <EditableText
                 page="membership"
                 slot="hero-body"
-                defaultContent="Membership is free, and it means this: your name is on the Harvest list. You get the letters, invitations, first calls, and early opportunities as the place finds its feet. Use the comments box for ideas, and we’ll invite public profiles later by email."
+                defaultContent="Membership is free, and it means this: your name is on the Harvest list. You get the letters, invitations, first calls, and early opportunities as the place finds its feet. Use the comments box for ideas."
                 as="p"
                 className="mt-7 max-w-2xl text-xl leading-relaxed text-white/80 md:text-2xl"
                 multiline
@@ -224,7 +224,7 @@ export default function Membership() {
               <EditableText
                 page="membership"
                 slot="hero-note-title"
-                defaultContent="The legal structure comes later."
+                defaultContent="What this list is."
                 as="p"
                 className="mt-5 text-xl font-semibold"
               />
@@ -236,6 +236,17 @@ export default function Membership() {
                 className="mt-3 leading-relaxed text-white/66"
                 multiline
               />
+              <p className="mt-4 text-sm leading-relaxed text-white/60">
+                Just want to have a look first? No booking needed while we find
+                our feet.{" "}
+                <Link
+                  href="/whats-on"
+                  className="text-[#C4922A] underline underline-offset-4 hover:text-white"
+                >
+                  Come by on a pizza weekend
+                </Link>{" "}
+                and say hello.
+              </p>
             </div>
           </div>
         </div>

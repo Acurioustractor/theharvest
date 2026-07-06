@@ -51,7 +51,7 @@ const timelineEvents: TimelineEvent[] = [
     date: "Late 2025",
     title: "Discovering the Site",
     description:
-      "The old Green Harvest nursery site caught our eye: a neglected space with incredible potential. We began exploring what it could become for the community.",
+      "The old Green Harvest nursery site caught our eye. Overgrown and quiet, but the bones were good. We began exploring what it could become for the community.",
     status: "complete",
     icon: Leaf,
     slot: "card-1",
@@ -78,10 +78,10 @@ const timelineEvents: TimelineEvent[] = [
   },
   {
     id: "development",
-    date: "Through 2026",
+    date: "January to June 2026",
     title: "Site Development",
     description:
-      "Transforming the space: establishing garden areas, creating gathering spaces, and running community work days.",
+      "The first big push on the space: establishing garden areas, creating gathering spaces, and running community work days. The work continues.",
     status: "complete",
     icon: Building,
     slot: "card-4",
@@ -134,7 +134,7 @@ const roadmapAreas: RoadmapArea[] = [
   {
     id: "gatherings",
     title: "Gatherings",
-    now: "Gatherings and shared meals are how the place works. DIY pizza runs most weekends, and new dates land on the members page first.",
+    now: "Gatherings and shared meals are how the place works. DIY pizza runs most weekends: Friday 3pm to 8pm with a community movie night, Saturday 12pm to 8pm, Sunday 12pm to 6pm. Weeks can vary, and new dates land on the members page first.",
     next: "More work days, more shared meals, and a rhythm that settles as we find our feet.",
     doorLabel: "See what's on",
     doorHref: "/whats-on",
@@ -363,7 +363,7 @@ export default function Journey() {
             <EditableText
               page="journey"
               slot="hero-description"
-              defaultContent="The Harvest is a community garden and creative gathering place in Witta, on Jinibara Country. The gate opened on Saturday 20 June 2026, and the place is not arriving finished. That is the point. Here is where each part stands, what comes next, and how we got here."
+              defaultContent="The Harvest is a community garden and creative gathering place in Witta, on Jinibara Country. The gate opened on Saturday 20 June 2026, and the place is not arriving finished. That is the point. You do not need to book to come and have a look while we find our feet. Here is where each part stands, what comes next, and how we got here."
               as="p"
               className="text-xl text-stone-600 mb-8 leading-relaxed"
               multiline
@@ -524,13 +524,13 @@ export default function Journey() {
             className="max-w-3xl mx-auto text-center"
           >
             <h2 className="text-4xl md:text-5xl font-serif font-bold mb-6">
-              Be Part of the Next Chapter
+              Come be part of it
             </h2>
             <p className="text-xl text-stone-300 mb-10 leading-relaxed">
-              The Harvest is growing through community support. Whether you visit,
-              volunteer, or join our mailing list, you're helping write the story.
+              Membership is free, and members hear what is coming first. The rest
+              grows from whoever turns up.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex justify-center">
               <Button
                 size="lg"
                 className="bg-amber-500 hover:bg-amber-600 text-black font-semibold"
@@ -541,15 +541,24 @@ export default function Journey() {
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="border-white/30 text-white hover:bg-white/10"
-                asChild
-              >
-                <Link href="/contact">Plan Your Visit</Link>
-              </Button>
             </div>
+            <p className="mt-8 text-sm text-stone-400">
+              Planning a visit?{" "}
+              <Link
+                href="/whats-on"
+                className="text-amber-400 underline underline-offset-4 hover:text-amber-300"
+              >
+                See What's On
+              </Link>
+              . Got an idea for the place?{" "}
+              <Link
+                href="/contact"
+                className="text-amber-400 underline underline-offset-4 hover:text-amber-300"
+              >
+                Tell us
+              </Link>
+              .
+            </p>
           </motion.div>
         </div>
       </section>

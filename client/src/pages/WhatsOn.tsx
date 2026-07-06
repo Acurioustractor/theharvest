@@ -153,6 +153,9 @@ function RegularSessions() {
             Weeks can vary. The members page has this week's dates first, and membership is free.
           </p>
         </div>
+        <p className="mt-6 text-sm text-stone-500">
+          Find us at 9 Gumland Drive, Witta, on Jinibara Country.
+        </p>
       </div>
     </section>
   );
@@ -222,6 +225,18 @@ function WhatToExpect() {
             </div>
           ))}
         </div>
+        <p className="mt-6 text-sm text-stone-500">
+          Work day dates land on the{" "}
+          <a
+            href={MEMBERS_PAGE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-amber-700 underline underline-offset-4 hover:text-amber-800"
+          >
+            members page
+          </a>{" "}
+          first, and membership is free.
+        </p>
       </div>
     </section>
   );
@@ -342,9 +357,9 @@ function PizzaRsvpBlock() {
               className="rounded-md border border-stone-300 bg-white px-4 py-3 text-stone-800"
             >
               <option value="">Which session suits?</option>
-              <option value="Friday evening (pizza + movie)">Friday evening (pizza + movie)</option>
-              <option value="Saturday (12-8pm)">Saturday</option>
-              <option value="Sunday (12-6pm)">Sunday</option>
+              <option value="Friday evening (pizza + movie)">Friday, pizza and movie, 3pm to 8pm</option>
+              <option value="Saturday (12-8pm)">Saturday, 12pm to 8pm</option>
+              <option value="Sunday (12-6pm)">Sunday, 12pm to 6pm</option>
               <option value="Not sure yet">Not sure yet</option>
             </select>
             <input
@@ -470,9 +485,9 @@ export default function WhatsOn() {
               What's On
             </h1>
             <p className="text-xl text-stone-600 leading-relaxed mb-8">
-              Markets, workshops, work days and gatherings at The Harvest, a community garden
-              and creative gathering place in Witta, on Jinibara Country. New dates land on the
-              members page first.
+              Weekend pizza sessions, work days and gatherings at The Harvest, a community
+              garden and creative gathering place in Witta, on Jinibara Country. New dates land
+              on the members page first.
             </p>
             <EventSubmissionDialog onEventSubmitted={() => refetch()} />
           </motion.div>
@@ -485,29 +500,31 @@ export default function WhatsOn() {
 
       <PizzaRsvpBlock />
 
-      {/* Filter Section */}
-      <section className="py-8 bg-white border-b border-stone-200 sticky top-[76px] z-40">
-        <div className="container">
-          <div className="flex items-center gap-4 overflow-x-auto pb-2">
-            <Filter className="h-5 w-5 text-stone-400 flex-shrink-0" />
-            {categories.map((cat) => (
-              <Button
-                key={cat.value}
-                variant={selectedCategory === cat.value ? "default" : "outline"}
-                size="sm"
-                onClick={() => setSelectedCategory(cat.value)}
-                className={
-                  selectedCategory === cat.value
-                    ? "bg-amber-500 hover:bg-amber-600 text-black"
-                    : "border-stone-300"
-                }
-              >
-                {cat.label}
-              </Button>
-            ))}
+      {/* Filter Section: only worth showing once there are events to filter */}
+      {allEvents.length > 1 && (
+        <section className="py-8 bg-white border-b border-stone-200 sticky top-[76px] z-40">
+          <div className="container">
+            <div className="flex items-center gap-4 overflow-x-auto pb-2">
+              <Filter className="h-5 w-5 text-stone-400 flex-shrink-0" />
+              {categories.map((cat) => (
+                <Button
+                  key={cat.value}
+                  variant={selectedCategory === cat.value ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setSelectedCategory(cat.value)}
+                  className={
+                    selectedCategory === cat.value
+                      ? "bg-amber-500 hover:bg-amber-600 text-black"
+                      : "border-stone-300"
+                  }
+                >
+                  {cat.label}
+                </Button>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Events Content */}
       <section className="py-16 bg-white">
@@ -676,19 +693,19 @@ export default function WhatsOn() {
               teach, we'd love to hear from you. The Harvest is made with the community, for the
               community.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex justify-center">
               <EventSubmissionDialog onEventSubmitted={() => refetch()} />
-              <Button
-                variant="outline"
-                className="border-white/30 text-white hover:bg-white/10"
-                asChild
-              >
-                <a href="/venue-hire">
-                  <Users className="mr-2 h-5 w-5" />
-                  Enquire About Venue Hire
-                </a>
-              </Button>
             </div>
+            <p className="mt-6 text-sm text-stone-400">
+              Planning something bigger?{" "}
+              <Link
+                href="/venue-hire"
+                className="text-amber-400 underline underline-offset-4 hover:text-amber-300"
+              >
+                Ask about using the space
+              </Link>
+              .
+            </p>
           </div>
         </div>
       </section>
