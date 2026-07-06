@@ -19,6 +19,7 @@ import {
 import { listApprovedEvents } from "@/lib/api";
 import { EventSubmissionDialog } from "@/components/EventSubmissionDialog";
 import { SiteFooter, SiteNav } from "./HarvestReviewTest";
+import { trpc } from "@/lib/trpc";
 import eventsData from "@/data/events.json";
 import { useQuery } from "@tanstack/react-query";
 
@@ -85,6 +86,104 @@ interface DBEvent {
   location: string;
   category: string;
   description: string | null;
+}
+
+function PizzaRsvpBlock() {
+  const [form, setForm] = useState({ name: "", email: "", day: "", people: "2" });
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [errorMsg, setErrorMsg] = useState("");
+  const submitRsvp = trpc.eoi.submit.useMutation();
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setStatus("loading");
+    try {
+      await submitRsvp.mutateAsync({
+        name: form.name,
+        email: form.email,
+        day: form.day || undefined,
+        people: form.people ? Number(form.people) : undefined,
+        source: "whats-on",
+      });
+      setStatus("success");
+    } catch (err) {
+      setErrorMsg(err instanceof Error ? err.message : "Something went wrong. Please try again.");
+      setStatus("error");
+    }
+  }
+
+  return (
+    <section className="py-12 bg-amber-50 border-y border-amber-200">
+      <div className="container max-w-3xl">
+        <h2 className="text-2xl md:text-3xl font-serif font-bold text-stone-800 mb-2">
+          Coming to a pizza weekend?
+        </h2>
+        <p className="text-stone-600 mb-6">
+          DIY pizza weekends are running at The Harvest. Let us know you're coming and we
+          can plan for numbers. New dates land on the members page first.
+        </p>
+        {status === "success" ? (
+          <div className="bg-white border border-amber-300 rounded-lg p-6">
+            <p className="font-semibold text-stone-800">You're on the list.</p>
+            <p className="text-stone-600 mt-1">
+              We'll plan for you. If anything changes, just message us on the members page.
+            </p>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="grid gap-4 sm:grid-cols-2">
+            <input
+              type="text"
+              required
+              placeholder="Your name"
+              value={form.name}
+              onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
+              className="rounded-md border border-stone-300 bg-white px-4 py-3 text-stone-800"
+            />
+            <input
+              type="email"
+              required
+              placeholder="Email"
+              value={form.email}
+              onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
+              className="rounded-md border border-stone-300 bg-white px-4 py-3 text-stone-800"
+            />
+            <select
+              value={form.day}
+              onChange={(e) => setForm((f) => ({ ...f, day: e.target.value }))}
+              className="rounded-md border border-stone-300 bg-white px-4 py-3 text-stone-800"
+            >
+              <option value="">Which day suits?</option>
+              <option value="Friday">Friday</option>
+              <option value="Saturday">Saturday</option>
+              <option value="Sunday">Sunday</option>
+              <option value="Not sure yet">Not sure yet</option>
+            </select>
+            <input
+              type="number"
+              min={1}
+              max={30}
+              placeholder="How many people?"
+              value={form.people}
+              onChange={(e) => setForm((f) => ({ ...f, people: e.target.value }))}
+              className="rounded-md border border-stone-300 bg-white px-4 py-3 text-stone-800"
+            />
+            {status === "error" && (
+              <p className="sm:col-span-2 text-sm text-red-700">{errorMsg}</p>
+            )}
+            <div className="sm:col-span-2">
+              <Button
+                type="submit"
+                disabled={status === "loading"}
+                className="bg-amber-500 hover:bg-amber-600 text-black font-semibold px-8"
+              >
+                {status === "loading" ? "Sending..." : "Count us in"}
+              </Button>
+            </div>
+          </form>
+        )}
+      </div>
+    </section>
+  );
 }
 
 export default function WhatsOn() {
@@ -190,6 +289,8 @@ export default function WhatsOn() {
           </motion.div>
         </div>
       </section>
+
+      <PizzaRsvpBlock />
 
       {/* Filter Section */}
       <section className="py-8 bg-white border-b border-stone-200 sticky top-[76px] z-40">

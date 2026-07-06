@@ -1,6 +1,6 @@
 import { systemRouter } from "./_core/systemRouter.js";
 import { publicProcedure, protectedProcedure, router } from "./_core/trpc.js";
-import { createEvent, getApprovedEvents, getPendingEvents, updateEventStatus, createBusiness, getApprovedBusinesses, getPendingBusinesses, updateBusinessStatus, getBusinessByUserId, getBusinessById, claimBusiness, updateBusinessProfile, getUnclaimedApprovedBusinesses, createMemberWallEntry, getPublicMemberWallEntries, getProgressImages, createProgressImage, updateProgressImage, deleteProgressImage, promoteUserToAdmin, getAllUsers, getContent, getContentForPage, upsertContent, getAnnotationsForPoint, createAnnotation, deleteAnnotation, createPulseResponse, getPulseResults, createEventFeedbackEntry, getEventFeedbackByEventId, getAllEventFeedback, createWittaContribution, getApprovedWittaContributions, getPendingWittaContributions, updateWittaContributionStatus, getImageOverride, setImageOverride, clearImageOverride, listImageOverrides } from "./db.js";
+import { createEvent, getApprovedEvents, getPendingEvents, updateEventStatus, createBusiness, getApprovedBusinesses, getPendingBusinesses, updateBusinessStatus, getBusinessByUserId, getBusinessById, claimBusiness, updateBusinessProfile, getUnclaimedApprovedBusinesses, createMemberWallEntry, getPublicMemberWallEntries, getProgressImages, createProgressImage, updateProgressImage, deleteProgressImage, promoteUserToAdmin, getAllUsers, getContent, getContentForPage, upsertContent, getAnnotationsForPoint, createAnnotation, deleteAnnotation, createPulseResponse, getPulseResults, createCommunitySubmission, createEventFeedbackEntry, getEventFeedbackByEventId, getAllEventFeedback, createWittaContribution, getApprovedWittaContributions, getPendingWittaContributions, updateWittaContributionStatus, getImageOverride, setImageOverride, clearImageOverride, listImageOverrides } from "./db.js";
 import { storagePut } from "./storage.js";
 import { getDb } from "./db.js";
 import { pulseResponses } from "../drizzle/schema.js";
@@ -504,55 +504,87 @@ export const appRouter = router({
   }),
 
   eoi: router({
+    // RSVP for the current event rhythm (pizza weekends). Configurable via
+    // HARVEST_CURRENT_EVENT_LABEL / HARVEST_CURRENT_EVENT_TAG so the next
+    // event does not need a code change. DB row is written BEFORE the GHL
+    // call so a CRM outage can never lose an RSVP.
     submit: publicProcedure
       .input(z.object({
         name: z.string().min(1),
         email: z.string().email().nullish(),
         phone: z.string().nullish(),
-        excitement: z.string().optional(),
+        day: z.string().max(40).optional(),
+        people: z.number().int().min(1).max(30).optional(),
+        message: z.string().max(2000).optional(),
         source: z.string().optional(),
       }))
       .mutation(async ({ input }) => {
         if (!input.email && !input.phone) {
           throw new Error("Email or phone is required");
         }
-        const { firstName, lastName } = splitPersonName(input.name);
+        const eventLabel = process.env.HARVEST_CURRENT_EVENT_LABEL || "Pizza Weekend";
+        const eventTag = process.env.HARVEST_CURRENT_EVENT_TAG || "rsvp-pizza-dinner";
 
+        const submission = await createCommunitySubmission({
+          type: "rsvp",
+          name: input.name.trim(),
+          email: input.email || "",
+          phone: input.phone || null,
+          payload: {
+            event: eventLabel,
+            day: input.day || null,
+            people: input.people ?? null,
+            message: input.message || null,
+            source: input.source || "whats-on",
+          },
+        });
+
+        const { firstName, lastName } = splitPersonName(input.name);
         const result = await upsertGHLContact({
           email: input.email || undefined,
           firstName,
           lastName,
           phone: input.phone || undefined,
-          source: `Harvest | RSVP ${CURRENT_GATHERING_DATE}`,
+          source: `Harvest | RSVP ${eventLabel}`,
           tags: [
-            CURRENT_GATHERING_TAG,
-            "rsvp-pizza-dinner",
+            eventTag,
             "harvest-event-attendee",
             "harvest-website",
-            "harvest-inbox",
-            ...CURRENT_GATHERING_SWITCHBOARD_TAGS,
           ],
         });
 
-        if (result.contactId && input.excitement) {
-          await addGHLContactNote(result.contactId,
-            `**RSVP - Witta Gathering ${CURRENT_GATHERING_DATE}**\n\n**What brings them through the gate:** ${input.excitement}\n**Source:** ${input.source || "Not specified"}`
-          );
-        }
-
         if (result.contactId) {
-          await upsertGHLHarvestInboxOpportunity({
-            contactId: result.contactId,
-            name: formatHarvestInboxOpportunityName(input.name, `RSVP ${CURRENT_GATHERING_DATE}`),
-            source: `Harvest | RSVP ${CURRENT_GATHERING_DATE}`,
-          });
+          const noteLines = [`**RSVP - ${eventLabel}**`];
+          if (input.day) noteLines.push(`**Day:** ${input.day}`);
+          if (input.people) noteLines.push(`**People:** ${input.people}`);
+          if (input.message) noteLines.push(`**Message:** ${input.message}`);
+          noteLines.push(`**Source:** ${input.source || "whats-on"}`);
+          await addGHLContactNote(result.contactId, noteLines.join("\n\n"));
 
-          const workflowId = process.env.GHL_GATHERING_RSVP_WORKFLOW_ID;
+          // Only route to the reply desk when there is something to reply to.
+          if (input.message) {
+            await upsertGHLHarvestInboxOpportunity({
+              contactId: result.contactId,
+              name: formatHarvestInboxOpportunityName(input.name, `RSVP ${eventLabel}`),
+              source: `Harvest | RSVP ${eventLabel}`,
+            });
+          }
+
+          // Receipt workflow: set GHL_PIZZA_RSVP_WORKFLOW_ID once the
+          // "Harvest - RSVP Pizza Dinner (tag)" workflow is published in the
+          // GHL UI (it is DRAFT as of 2026-07-06). Skipped silently until then.
+          const workflowId = process.env.GHL_PIZZA_RSVP_WORKFLOW_ID;
           if (workflowId) {
             triggerGHLWorkflow(workflowId, result.contactId).catch(err =>
-              console.error("GHL workflow trigger failed (gathering rsvp):", err)
+              console.error("GHL workflow trigger failed (pizza rsvp):", err)
             );
           }
+        }
+
+        if (!submission && !result.contactId) {
+          throw new Error(
+            "We could not save your RSVP just now. Please try again, or message us on the members page.",
+          );
         }
 
         return { success: true };

@@ -33,6 +33,9 @@ import {
   imageOverrides,
   InsertImageOverride,
   ImageOverride,
+  communitySubmissions,
+  InsertCommunitySubmission,
+  CommunitySubmission,
 } from "../drizzle/schema.js";
 // Blog posts are now fetched from Empathy Ledger Content Hub API
 // See server/empathyLedgerClient.ts for the integration
@@ -858,6 +861,26 @@ export async function deleteAnnotation(id: number): Promise<boolean> {
   } catch (error) {
     console.error("[Database] Failed to delete annotation:", error);
     return false;
+  }
+}
+
+// Community submissions (durable capture store; also written by the
+// community-submit edge function). Used for RSVPs from the tRPC server.
+export async function createCommunitySubmission(
+  submission: InsertCommunitySubmission,
+): Promise<CommunitySubmission | undefined> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot create community submission: database not available");
+    return undefined;
+  }
+
+  try {
+    const result = await db.insert(communitySubmissions).values(submission).returning();
+    return result[0];
+  } catch (error) {
+    console.error("[Database] Failed to create community submission:", error);
+    return undefined;
   }
 }
 
