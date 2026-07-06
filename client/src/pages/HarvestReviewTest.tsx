@@ -18,6 +18,7 @@ import {
   X,
 } from "lucide-react";
 import { HarvestImage } from "@/components/HarvestImage";
+import { EditableText } from "@/components/EditableText";
 
 type Thread = {
   title: string;
@@ -289,6 +290,7 @@ export default function HarvestReviewTest() {
     <main className="min-h-screen bg-[#F5F0E8] text-[#1C1917]">
       <SiteNav />
       <Hero />
+      <ThisWeekStrip />
       <WhatThisIs />
       <PlacePhotoTwo />
       <Threads />
@@ -297,6 +299,48 @@ export default function HarvestReviewTest() {
       <Closing />
       <SiteFooter />
     </main>
+  );
+}
+
+function ThisWeekStrip() {
+  return (
+    <section className="border-b border-stone-900/10 bg-[#C4922A] text-[#1C1917]">
+      <div className="mx-auto flex max-w-7xl flex-col gap-3 px-5 py-5 md:flex-row md:items-center md:justify-between md:px-8">
+        <div>
+          <EditableText
+            page="home"
+            slot="this-week-title"
+            defaultContent="Open most weekends for DIY pizza"
+            as="p"
+            className="text-lg font-black leading-tight md:text-xl"
+          />
+          <EditableText
+            page="home"
+            slot="this-week-detail"
+            defaultContent="Friday pizza and movie night 3pm to 8pm. Saturday 12pm to 8pm. Sunday 12pm to 6pm. Weeks can vary, dates land with members first."
+            as="p"
+            className="mt-1 text-sm leading-relaxed text-[#1C1917]/80"
+            multiline
+          />
+        </div>
+        <div className="flex shrink-0 flex-wrap gap-3">
+          <Link
+            href="/whats-on"
+            className="inline-flex min-h-11 items-center justify-center bg-[#1C1917] px-5 py-2 text-sm font-bold text-[#F5F0E8] transition hover:bg-stone-700"
+          >
+            See What's On
+          </Link>
+          <a
+            href={MEMBERS_PAGE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex min-h-11 items-center justify-center border-2 border-[#1C1917] px-5 py-2 text-sm font-bold text-[#1C1917] transition hover:bg-[#1C1917] hover:text-[#F5F0E8]"
+          >
+            This week's dates
+          </a>
+        </div>
+      </div>
+    </section>
   );
 }
 
