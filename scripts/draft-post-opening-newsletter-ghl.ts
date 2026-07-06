@@ -1,12 +1,15 @@
 import dotenv from "dotenv";
 import { createGHLEmailTemplate } from "../server/gohighlevel.js";
 import { LOGO_URL } from "./harvest-brand.js";
+import { MEMBERS_PAGE_URL } from "../client/src/lib/links.js";
 
 dotenv.config({ path: ".env.local", override: true });
 dotenv.config({ path: ".env", override: false });
 
 const MEMBERSHIP_URL = "https://www.theharvestwitta.com.au/membership";
 const SHOP_URL = "https://www.theharvestwitta.com.au/shop";
+// Door #1 in the comms map. Same shared link as the site, email attribution.
+const MEMBERS_PAGE_EMAIL_URL = MEMBERS_PAGE_URL.replace("utm_source=website", "utm_source=email");
 const GHL_API_BASE = "https://services.leadconnectorhq.com";
 const GHL_API_VERSION = "2021-07-28";
 
@@ -23,7 +26,7 @@ const bodyParagraphs = [
   "What you can do there now",
   "You do not need to book to come and have a look while we find our feet.",
   "If you want to be part of it, three doors are open.",
-  "Join the members page. Upcoming events land there first, you can RSVP there, and you can message us directly.",
+  `<a href="${MEMBERS_PAGE_EMAIL_URL}" style="font-weight:700;">Join the members page</a>. Upcoming events land there first, you can RSVP there, and you can message us directly.`,
   "Come to a work day. The garden grows through regular work days, and an extra pair of hands changes what a day can do. Reply to this email and we will tell you when the next one is.",
   "Put your hand up for the shop. The first shelves are being shaped with local makers and growers. If you make or grow something, tell us and we will have a proper conversation.",
   "What comes next",
@@ -85,7 +88,8 @@ const html = `<!doctype html>
             </tr>
             <tr>
               <td align="left" style="padding:8px 28px 26px 28px;">
-                <a href="${MEMBERSHIP_URL}" style="display:inline-block;background:#C4922A;color:#1C1917;text-decoration:none;font-weight:800;font-size:17px;line-height:1;padding:16px 22px;border:2px solid #1C1917;margin:0 12px 12px 0;">Become a member</a>
+                <a href="${MEMBERS_PAGE_EMAIL_URL}" style="display:inline-block;background:#C4922A;color:#1C1917;text-decoration:none;font-weight:800;font-size:17px;line-height:1;padding:16px 22px;border:2px solid #1C1917;margin:0 12px 12px 0;">Join the members page</a>
+                <a href="${MEMBERSHIP_URL}" style="display:inline-block;background:#FFFDF8;color:#1C1917;text-decoration:none;font-weight:800;font-size:17px;line-height:1;padding:16px 22px;border:2px solid #1C1917;margin:0 12px 12px 0;">Become a member</a>
                 <a href="${SHOP_URL}" style="display:inline-block;background:#FFFDF8;color:#1C1917;text-decoration:none;font-weight:800;font-size:17px;line-height:1;padding:16px 22px;border:2px solid #1C1917;margin:0 0 12px 0;">The shop</a>
               </td>
             </tr>
@@ -159,7 +163,7 @@ async function main() {
         name: template.name,
         subject: template.subject,
         preheader: template.preheader,
-        cta: [MEMBERSHIP_URL, SHOP_URL],
+        cta: [MEMBERS_PAGE_EMAIL_URL, MEMBERSHIP_URL, SHOP_URL],
       },
       html,
       next: "Run `npx tsx scripts/draft-post-opening-newsletter-ghl.ts --apply` to create the GHL email template.",
@@ -176,7 +180,7 @@ async function main() {
       name: template.name,
       subject: template.subject,
       preheader: template.preheader,
-      cta: [MEMBERSHIP_URL, SHOP_URL],
+      cta: [MEMBERS_PAGE_EMAIL_URL, MEMBERSHIP_URL, SHOP_URL],
     },
     result,
     note: "This creates an email template only. It does not choose an audience, send, or schedule a campaign.",
