@@ -328,7 +328,7 @@ export const appRouter = router({
               source: "Harvest | Event",
             });
 
-            addGHLInboundFormMessage({
+            await addGHLInboundFormMessage({
               contactId: result.contactId,
               fromEmail: input.contactEmail,
               subject: `Event submission: ${input.title}`,
@@ -422,7 +422,7 @@ export const appRouter = router({
               source: "Harvest | Business",
             });
 
-            addGHLInboundFormMessage({
+            await addGHLInboundFormMessage({
               contactId: result.contactId,
               fromEmail: input.submitterEmail,
               subject: `Business registration: ${input.name}`,
@@ -577,7 +577,7 @@ export const appRouter = router({
           noteLines.push(`**Source:** ${input.source || "whats-on"}`);
           await addGHLContactNote(result.contactId, noteLines.join("\n\n"));
 
-          addGHLInboundFormMessage({
+          await addGHLInboundFormMessage({
             contactId: result.contactId,
             fromEmail: input.email || undefined,
             subject: `RSVP: ${input.name.trim()} for ${eventLabel}${input.day ? ` (${input.day})` : ""}`,
@@ -973,7 +973,7 @@ export const appRouter = router({
             source: input.source || "Harvest | Member Question",
           });
 
-          addGHLInboundFormMessage({
+          await addGHLInboundFormMessage({
             contactId: result.contactId,
             fromEmail: input.email,
             subject: `Member question from ${input.name.trim()}`,
@@ -1051,7 +1051,7 @@ export const appRouter = router({
             throw new Error(noteResult.error || "Failed to save shop interest note");
           }
 
-          addGHLInboundFormMessage({
+          await addGHLInboundFormMessage({
             contactId: result.contactId,
             fromEmail: input.email,
             subject: `Shop interest from ${input.name.trim()} (${input.offerType})`,
