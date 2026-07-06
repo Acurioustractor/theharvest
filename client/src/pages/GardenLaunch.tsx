@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
+import { MEMBERS_PAGE_URL } from "@/lib/links";
 import {
   ArrowRight,
   Calendar,
@@ -70,9 +71,9 @@ const nextSteps = [
     icon: Users,
     title: "Join the members page",
     body: "Membership is free. It is where upcoming events land first, where you RSVP, and where you can message us directly. Members hear first, every time.",
-    cta: "Become a member",
-    href: "/membership",
-    external: false,
+    cta: "Join the members page",
+    href: MEMBERS_PAGE_URL,
+    external: true,
   },
   {
     icon: Sprout,
@@ -187,13 +188,15 @@ export default function GardenLaunch() {
               week by week.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-              <Link
-                href="/membership"
+              <a
+                href={MEMBERS_PAGE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full bg-amber-500 text-stone-900 font-semibold hover:bg-amber-400 transition-colors"
               >
                 Join the members page
                 <ArrowRight className="h-4 w-4" />
-              </Link>
+              </a>
               <a
                 href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(EVENT.address)}`}
                 target="_blank"

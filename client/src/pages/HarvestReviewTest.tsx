@@ -1,5 +1,6 @@
 import { useEffect, useState, type KeyboardEvent, type MouseEvent, type ReactNode } from "react";
 import { Link, useLocation } from "wouter";
+import { MEMBERS_PAGE_URL } from "@/lib/links";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
@@ -776,7 +777,16 @@ function EventCallout() {
             Become a member for the longer build, and whatever happens next.
           </h2>
           <p className="mt-6 max-w-xl text-lg leading-relaxed text-white/76">
-            Membership is free. It gives you updates, event invites, first-access opportunities and a simple way to ask questions. Upcoming events land on the members page first, and you can RSVP and message us directly there. Members hear first, every time.
+            Membership is free. It gives you updates, event invites, first-access opportunities and a simple way to ask questions. Upcoming events land on the{" "}
+            <a
+              href={MEMBERS_PAGE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline decoration-[#C4922A] underline-offset-4 hover:text-white"
+            >
+              members page
+            </a>{" "}
+            first, and you can RSVP and message us directly there. Members hear first, every time.
           </p>
         </motion.div>
 

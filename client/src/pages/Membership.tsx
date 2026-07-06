@@ -17,6 +17,7 @@ import { HarvestImage } from "@/components/HarvestImage";
 import { HarvestPhotoPicker, type PickedPhoto } from "@/components/HarvestPhotoPicker";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { optimize } from "@/lib/imageOptimize";
+import { MEMBERS_PAGE_URL } from "@/lib/links";
 import { trpc } from "@/lib/trpc";
 import { harvestButtonClasses, SiteFooter, SiteNav } from "./HarvestReviewTest";
 
@@ -627,13 +628,21 @@ function MemberWelcomeOverlay({
             </p>
 
             <div className="mt-10 flex flex-col gap-3 sm:flex-row">
+              <a
+                href={MEMBERS_PAGE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex min-h-12 items-center justify-center gap-2 bg-[#C4922A] px-6 py-3 font-semibold text-[#1C1917] transition hover:bg-[#E0AD43]"
+              >
+                Go to the members page
+                <ArrowRight className="h-4 w-4" />
+              </a>
               <Link
                 href="/works"
                 onClick={onClose}
-                className="inline-flex min-h-12 items-center justify-center gap-2 bg-[#C4922A] px-6 py-3 font-semibold text-[#1C1917] transition hover:bg-[#E0AD43]"
+                className="inline-flex min-h-12 items-center justify-center border border-white/24 px-6 py-3 font-semibold text-white transition hover:bg-white hover:text-[#1C1917]"
               >
                 See the works
-                <ArrowRight className="h-4 w-4" />
               </Link>
               <button
                 type="button"
