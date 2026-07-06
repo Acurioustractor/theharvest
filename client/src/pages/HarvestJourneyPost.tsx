@@ -8,6 +8,7 @@ import {
   Users,
 } from "lucide-react";
 import { HarvestImage } from "@/components/HarvestImage";
+import { EditableText } from "@/components/EditableText";
 import { harvestButtonClasses, SiteFooter, SiteNav } from "./HarvestReviewTest";
 
 const rooms = [
@@ -100,9 +101,6 @@ export default function HarvestJourneyPost() {
                 place where gardeners from around the region came for plants, seeds,
                 advice, and growing knowledge.
               </p>
-              <h3 className="pt-2 text-3xl font-black leading-tight text-[#8B4A2A] md:text-4xl">
-                Grow. Make. Gather.
-              </h3>
               <p>
                 <strong>Grow is the garden.</strong> Paths, beds, seedlings, work
                 days, compost, kids, and food in the ground. It is the part of the
@@ -119,16 +117,32 @@ export default function HarvestJourneyPost() {
                 table, work days, music, markets, open days, and the moments that
                 bring neighbours and visitors through the gate.
               </p>
-              <p>
-                The first story thread is timber, dairy, and co-operatives. Timber in
-                the shed. Milk crates in the pavilion. Shared tools, open books, and
-                a table people can sit at before any formal co-op structure is claimed.
-              </p>
+              <EditableText
+                page="what-is-the-harvest"
+                slot="story-thread"
+                defaultContent="Timber in the shed, milk crates in the pavilion, shared tools, and a table anyone can sit at."
+                as="p"
+                multiline
+              />
               <p>
                 The Harvest opened with a first members and makers day on Saturday
-                20 June 2026, and from July it is properly under way. You do not need
+                20 June 2026, and is now properly under way. You do not need
                 to book to come and have a look while we find our feet. Members hear
                 first, every time.
+              </p>
+              <EditableText
+                page="what-is-the-harvest"
+                slot="visiting-basics"
+                defaultContent="Most weekends we fire the pizza oven: Friday 3 to 8pm with a community movie night, Saturday 12 to 8pm, Sunday 12 to 6pm. Weeks can vary, so dates land on the members page first. Dennis, our resident pizza teacher, will show you how to stretch a base. No booking needed."
+                as="p"
+                multiline
+              />
+              <p>
+                Full session times and the work day calendar live on{" "}
+                <Link href="/whats-on" className="underline decoration-[#8B4A2A]/40 underline-offset-4 hover:decoration-[#8B4A2A]">
+                  What's On
+                </Link>
+                .
               </p>
               <p>
                 That is what the member list is for. People on the list get the letters, the
@@ -195,6 +209,13 @@ export default function HarvestJourneyPost() {
                 You will get regular Harvest notes, community-day invites, calls for help,
                 and first notice when there are workshops, meals, residencies, materials,
                 or paid opportunities to share.
+              </p>
+              <p className="mt-4 max-w-2xl text-base leading-relaxed text-white/60">
+                If you grow, make, or have an idea for the place,{" "}
+                <Link href="/contact" className="underline decoration-white/40 underline-offset-4 hover:decoration-white">
+                  get in touch through the contact page
+                </Link>
+                . A person reads every message.
               </p>
             </div>
             <div className="border border-white/14 bg-white/5 p-6">
