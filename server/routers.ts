@@ -165,7 +165,9 @@ const SHOP_INTEREST_TAGS: Record<ShopInterestOfferType, string> = {
   "made-goods": "shop-maker",
   food: "shop-food",
   consignment: "shop-consignment",
-  "help-shape": "shop-follow-up",
+  // Distinct offer tag: shop-follow-up is the always-on EOI marker below, so
+  // reusing it here made the help-shape segment unrecoverable (TODOS cleanup 1).
+  "help-shape": "shop-help-shape",
 };
 
 function splitPersonName(name: string) {
@@ -1627,7 +1629,12 @@ export const appRouter = router({
 
         // Only sync to GHL when we have both email and a real name.
         if (cleanEmail && cleanName) {
-          const interestTags = (input.wouldUse || []).flatMap(u => withFlatAlias(`interest:${slugifyTagPart(u)}`));
+          // Constrain minted interest tags to the canonical set so free-text
+          // answers cannot create non-canonical tags (TODOS cleanup 3).
+          const canonicalInterests = new Set<string>(Object.values(NEWSLETTER_INTEREST_TAGS));
+          const interestTags = (input.wouldUse || [])
+            .flatMap(u => withFlatAlias(`interest:${slugifyTagPart(u)}`))
+            .filter(t => canonicalInterests.has(t));
           const pulseResult = await upsertGHLContact({
             email: cleanEmail,
             firstName: cleanName.split(" ")[0],

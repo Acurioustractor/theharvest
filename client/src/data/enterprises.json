@@ -56,7 +56,7 @@
         "facebook": "https://www.facebook.com/JackyLowryArtist/",
         "instagram": "https://www.instagram.com/jacobalowry/?hl=en"
       },
-      "image": "https://images.squarespace-cdn.com/content/v1/5e8f8f8f8f8f8f8f8f8f8f8f/1607999027897-Y8Y8Y8Y8Y8Y8Y8Y8/Jacky+Lowry+Artist+Printmaker.jpg?format=1500w"
+      "image": ""
     },
     {
       "id": "krysalis-eco-dyeing",
@@ -77,7 +77,7 @@
       "id": "lm-marsh-pet-portraits",
       "name": "LM Marsh Pet Portraits",
       "category": "Local Business",
-      "description": "LM Marsh Pet Portraits and Animal Paintings is a Queensland based pet portrait and animal portrait artist located in the beautiful Sunshine Coast Hinterland town of Maleny. The artist is experienced and started working initially producing pet portraits for family and friends but more recently has taken commissions from clients across Australia and beyond. The pet portraits are of dogs, cats, horses, geese, parrots and drawn or painted from client\u2019s photographs and are reproduced in acrylic, water colour or graphite/pencil.",
+      "description": "LM Marsh Pet Portraits and Animal Paintings is a Queensland based pet portrait and animal portrait artist located in the beautiful Sunshine Coast Hinterland town of Maleny. The artist is experienced and started working initially producing pet portraits for family and friends but more recently has taken commissions from clients across Australia and beyond. The pet portraits are of dogs, cats, horses, geese, parrots and drawn or painted from client’s photographs and are reproduced in acrylic, water colour or graphite/pencil.",
       "address": "42 Sternberg Road, Witta, Queensland 4552",
       "contact": {
         "phone": "0428 148 678",
@@ -135,7 +135,7 @@
       "id": "nest-in-witta",
       "name": "Nest in Witta",
       "category": "Local Business",
-      "description": "For the past three years, Sue and Trevor Young have turned Nest in Witta Caf\u00e9 into more than just a place for coffee. With sweeping views down the range, a welcoming atmosphere and strong community ties, it has become a hub for locals and a destination for visitors. They aim to provide a space where people can gather, relax, and feel at home. It's a community hub with beautiful views, easy parking, and picnic areas. Their popular menu items include their coffee, house-made carrot cake, gluten-free apple yoghurt slice, and sausage rolls. They prioritize supporting local suppliers by using products from Maleny Dairies, Walter\u2019s Artisan Bread, and Maleny Butcher.",
+      "description": "For the past three years, Sue and Trevor Young have turned Nest in Witta Café into more than just a place for coffee. With sweeping views down the range, a welcoming atmosphere and strong community ties, it has become a hub for locals and a destination for visitors. They aim to provide a space where people can gather, relax, and feel at home. It's a community hub with beautiful views, easy parking, and picnic areas. Their popular menu items include their coffee, house-made carrot cake, gluten-free apple yoghurt slice, and sausage rolls. They prioritize supporting local suppliers by using products from Maleny Dairies, Walter’s Artisan Bread, and Maleny Butcher.",
       "address": "Gumland Drive, Witta QLD 4552",
       "contact": {
         "phone": "07 5435 8765",
@@ -234,7 +234,7 @@
       "id": "witta-general-store-and-cafe",
       "name": "Witta General Store and Cafe",
       "category": "Markets & Retail",
-      "description": "Established in 2004, Witta General Store Licensed Caf\u00e9 and Functions is a must-visit in the Maleny region. Located in the township of Witta, this caf\u00e9 is an ideal place for visitors to stop in for a tasty meal en route to the Sunshine Coast\u2019s Blackall Ranges. Sit back, relax and soak up a tranquil country atmosphere on the verandah, or be seated indoors with elbows resting on a thick, blue gum timber table. Offering Modern Australian, fusion cuisine, choose from a menu of tapas-inspired dishes created to share, like the Peking duck spring rolls with hoisin sauce or perhaps rare roasted beef with caramelised onion marmalade and French mustard; or a chicken, onion and aioli taco, asking the knowledgeable staff for recommendations on local and imported wines to match any dish. The general store also provides day-to-day staples and local produce, including takeaway food, local organic coffee, newspapers, bread, eggs, milk, and butter. It is open 7 days a week from 6:30 am to 8:00 pm.",
+      "description": "Established in 2004, Witta General Store Licensed Café and Functions is a must-visit in the Maleny region. Located in the township of Witta, this café is an ideal place for visitors to stop in for a tasty meal en route to the Sunshine Coast’s Blackall Ranges. Sit back, relax and soak up a tranquil country atmosphere on the verandah, or be seated indoors with elbows resting on a thick, blue gum timber table. Offering Modern Australian, fusion cuisine, choose from a menu of tapas-inspired dishes created to share, like the Peking duck spring rolls with hoisin sauce or perhaps rare roasted beef with caramelised onion marmalade and French mustard; or a chicken, onion and aioli taco, asking the knowledgeable staff for recommendations on local and imported wines to match any dish. The general store also provides day-to-day staples and local produce, including takeaway food, local organic coffee, newspapers, bread, eggs, milk, and butter. It is open 7 days a week from 6:30 am to 8:00 pm.",
       "address": "466 Maleny-Kenilworth Rd, Witta QLD 4552",
       "contact": {
         "phone": "07 5494 4411",
@@ -263,7 +263,7 @@
       "id": "witta-recreational-club",
       "name": "Witta Recreational Club",
       "category": "Community & Sports",
-      "description": "The WRC is established to \u201cpossess, improve and maintain the Witta Sports Ground and facilities and any other business beneficial to the district approved by the members\u201d. Our grounds are part of the community and as such are used for varied events such as Sport, Fundraisers, Private Parties and other types of functions.",
+      "description": "The WRC is established to “possess, improve and maintain the Witta Sports Ground and facilities and any other business beneficial to the district approved by the members”. Our grounds are part of the community and as such are used for varied events such as Sport, Fundraisers, Private Parties and other types of functions.",
       "address": "351 Witta Rd, Witta QLD 4552",
       "contact": {
         "phone": "0409 266 507",
@@ -271,7 +271,7 @@
         "website": null,
         "facebook": "https://www.facebook.com/wittarecclub/"
       },
-      "image": "https://scontent-sin11-2.xx.fbcdn.net/v/t39.30808-6/476823959_1112689010892551_7581693109928641046_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=cc71e4&_nc_ohc=ZBUpcnXPqFEQ7kNvwFL8XMg&_nc_oc=AdlYr5RVd9RxcJc3m5BlzsZm8AQsInY0gbFq6OYgp18Kaq-9z0ssoV8wTT8yKyxFxvw&_nc_zt=23&_nc_ht=scontent-sin11-2.xx&_nc_gid=AZfjXXboezKr-to3c2a_yA&oh=00_AflL4tBUs9sdHwYUpN8zmpOAxRI9KZbVu8_oX9gIl7KAqg&oe=694E7B84"
+      "image": ""
     },
     {
       "id": "witta-tennis-club",

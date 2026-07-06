@@ -52,16 +52,18 @@ function engagementSnapshot(post: Record<string, unknown>): Record<string, unkno
 async function main(): Promise<void> {
   const rawFailed = process.argv.includes("--raw-failed");
   const withEngagement = process.argv.includes("--engagement");
+  // allCreators: staff create posts in the GHL UI under their own users; the
+  // review must see those (and their failed statuses), not just API-created posts.
   const [accountMap, result] = await Promise.all([
     getGHLAccountMap(),
-    getGHLSocialPosts(),
+    getGHLSocialPosts(undefined, { allCreators: true }),
   ]);
   const accountToPlatform = new Map<string, string>();
   for (const [platform, ids] of accountMap.entries()) {
     for (const id of ids) accountToPlatform.set(id, platform);
   }
 
-  const posts = (result.posts || []).slice(0, 60).map((raw) => {
+  const posts = (result.posts || []).slice(0, 120).map((raw) => {
     const post = raw as Record<string, unknown>;
     const accountIds = Array.isArray(post.accountIds) ? post.accountIds.map(String) : [];
     const platforms = accountIds.length

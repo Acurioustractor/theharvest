@@ -7,6 +7,28 @@ Canonical source: `docs/strategy/the-harvest-strategic-plan-notion.md` + `though
 
 ---
 
+## GHL Tag Code Cleanups (post-launch) — 4 of 5 DONE 2026-07-06
+
+**Priority:** P3
+**Owner:** Ben
+**Deadline:** After the 20 June 2026 launch (do NOT change live form-tagging behaviour during the launch run-up)
+
+**What:** Five small tag-hygiene fixes surfaced by the 2026-05-29 code↔doc reconciliation (`docs/strategy/harvest-ghl-tag-and-automation-map.md` is now synced to code; these are the code-side changes held back from the launch window).
+
+1. ~~**`shop-follow-up` double duty**~~ DONE 2026-07-06: `help-shape` offer now mints `shop-help-shape`; `shop-follow-up` remains the always-on EOI marker.
+2. ~~**`interest-membership` auto-pair**~~ ALREADY RESOLVED by the 2026-06-02 alignment: `buildNewsletterTags` is colon-canonical (`tier:member` + `interest:membership`) and `withFlatAlias` no longer emits hyphen twins.
+3. ~~**Pulse interest minting**~~ DONE 2026-07-06: minted tags are filtered to the canonical `NEWSLETTER_INTEREST_TAGS` values; free text can no longer create tags.
+4. ~~**Dead code**~~ DONE 2026-07-06: local source archived to `_archive/2026-07-06-newsletter-subscribe-edge-fn/` (see its RESTORE.md). The deployed copy in Supabase is still live but uncalled; delete via dashboard on the next hygiene pass.
+5. **Stale tag** — `biz-expression-of-interest` exists in live GHL but matches no current code (the code emits `biz-<interestType>` like `biz-stall`). Retire it in GHL (UI, day shift). STILL OPEN.
+
+**Why:** None block the launch or the newsletter send (the tags are logical and code-backed as-is). These are clarity/segmentation improvements that are safer to make once the launch sends are done.
+
+**Context:** Full reconciliation findings are in the session of 2026-05-29; the doc was synced the same day. Tags confirmed clean: members 56 real, paired 1:1, no mis-tags.
+
+**Depends on / blocked by:** 20 June launch done; a `tsc --noEmit` pass after each code change.
+
+---
+
 ## Community Governance Formation
 
 **Priority:** P2
