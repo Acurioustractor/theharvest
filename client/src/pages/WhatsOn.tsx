@@ -24,7 +24,7 @@ import { EditableText } from "@/components/EditableText";
 
 // The members page (Mighty). Events and this week's dates land there first;
 // every RSVP surface points people at it so the members space keeps growing.
-const MEMBERS_PAGE_URL = "https://harvest-the-network.mn.co/share/OZleJHyrST2m3PyK?utm_source=website";
+const MEMBERS_PAGE_URL = "https://harvest-the-network.mn.co/share/aOwgIoYF3oOGUcfr?utm_source=website";
 import eventsData from "@/data/events.json";
 import { useQuery } from "@tanstack/react-query";
 
