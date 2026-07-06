@@ -31,17 +31,34 @@ docs/strategy/ghl-workflow-build-specs.md) should use hi@ + benjamin@ as the
 notification recipients from day one. Same for the pizza RSVP workflow when
 the draft (c03f016c) is published.
 
-## Part 2: who reads hi@act.place
+## Part 2: the GHL inbox is the desk (decided, Ben 2026-07-06)
 
-Decide and do one of these, both work with Part 1:
+The GHL Conversations inbox is where triage happens. hi@act.place is only a
+notification ping that says "open the inbox". Every two-way channel routes
+into Conversations:
 
-1. **Mailbox access.** hi@act.place is an act.place Google Workspace address.
-   Add Nic (and later a steward) as a delegate or group member so the inbox is
-   readable on their phones. Fastest to stand up.
-2. **GHL Conversations.** Connect hi@act.place as the location's email in GHL
-   so inbound lands in Conversations, next to the contact record and pipeline
-   card. Staff use the LeadConnector app. Better long term, slightly more
-   setup.
+1. **Email into Conversations.** In GHL: Settings, Email Services, find the
+   location's inbound forwarding address (an @...msgsndr.com style address).
+   In Google Workspace, set hi@act.place to auto-forward a copy of inbound
+   mail to that address. From then on, any email a person sends to hi@
+   appears in Conversations threaded to their contact record, and replies
+   from GHL go out on the same thread.
+2. **Facebook and Instagram DMs.** The same reconnect that fixes Social
+   Planner publishing (Settings, Integrations, Facebook) also lets DMs flow
+   into Conversations. One fix, two wins.
+3. **SMS and calls.** The GHL number +61 468 052 660 already threads into
+   Conversations.
+4. **Website forms.** These create the pipeline card (triage object) plus the
+   hi@ ping. To take the conversation two-way, open the contact from the
+   card and reply from their Conversations tab; the exchange threads there
+   from that point on.
+5. **Optional, later: GHL chat widget on the website.** One script tag puts a
+   "message us" bubble on the site whose messages land straight in
+   Conversations. Say the word and it can be added to the site in one pass.
+
+Who reads what: staff open the GHL inbox (LeadConnector app on phones), work
+Unread top to bottom, assign, reply, move the pipeline card. Nobody works out
+of the hi@ mailbox itself.
 
 ## Part 3: the reply rule
 
