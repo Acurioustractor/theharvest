@@ -250,6 +250,7 @@ const footerLinks = [
   { label: "Witta", href: "/witta" },
   { label: "People", href: "/people" },
   { label: "Contact", href: "/contact" },
+  { label: "Feedback", href: "/pulse" },
   { label: "Privacy", href: "/privacy" },
 ];
 
@@ -296,6 +297,7 @@ export default function HarvestReviewTest() {
       <Threads />
       <WorkNotes />
       <EventCallout />
+      <FeedbackStrip />
       <Closing />
       <SiteFooter />
     </main>
@@ -862,6 +864,41 @@ function EventCallout() {
   );
 }
 
+function FeedbackStrip() {
+  return (
+    <section id="feedback" className="scroll-mt-24 bg-[#F5F0E8] py-16 md:py-20">
+      <div className="mx-auto max-w-7xl px-5 md:px-8">
+        <motion.div {...fadeInUp} className="max-w-3xl">
+          <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#8B4A2A]">
+            feedback
+          </p>
+          <EditableText
+            page="home"
+            slot="feedback-heading"
+            defaultContent="How is it going so far?"
+            as="h2"
+            className="mt-3 text-4xl font-black leading-[0.96] md:text-5xl"
+          />
+          <EditableText
+            page="home"
+            slot="feedback-intro"
+            defaultContent="The Harvest is being made with the people who turn up. If you have come through the gate, or you live nearby and have thoughts, the pulse survey feeds straight into what happens next. It takes a few minutes."
+            as="p"
+            className="mt-5 max-w-2xl text-lg leading-relaxed text-stone-700"
+            multiline
+          />
+          <div className="mt-8">
+            <Link href="/pulse" className={harvestButtonClasses.dark}>
+              Take the pulse survey
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
 function Closing() {
   return (
     <section className="relative overflow-hidden bg-[#1C1917] py-16 text-[#F5F0E8] md:py-24">
@@ -882,12 +919,19 @@ function Closing() {
           <p className="mt-6 max-w-2xl text-lg leading-relaxed text-white/78">
             We opened with a first members and makers day on Saturday 20 June, and from July The Harvest is properly under way. You do not need to book to come and have a look while we find our feet. The garden grows through regular work days, the first shop shelves are being shaped with local makers and growers, and the art space is taking form. Members hear about events first.
           </p>
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-6">
             <Link
               href="/works"
               className={harvestButtonClasses.primary}
             >
               See the works
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Link
+              href="/story"
+              className="inline-flex items-center gap-2 text-sm font-bold text-[#C4922A] underline-offset-4 transition hover:text-white hover:underline"
+            >
+              See what is coming
               <ArrowRight className="h-4 w-4" />
             </Link>
           </div>

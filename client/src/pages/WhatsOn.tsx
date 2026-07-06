@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -152,6 +153,105 @@ function RegularSessions() {
             Weeks can vary. The members page has this week's dates first, and membership is free.
           </p>
         </div>
+      </div>
+    </section>
+  );
+}
+
+function WhatToExpect() {
+  // Every claim here traces to already-shipped copy or the comms map
+  // (docs/communications/now-open-communications-map-2026-07.md). No prices,
+  // hours, or dates that are not locked in.
+  const activities = [
+    {
+      slot: "visit-pizza",
+      title: "DIY pizza sessions",
+      body: "You get dough, a bench of toppings and the oven. Stretch it, top it your way, and Dennis, our resident pizza teacher, helps you fire it. While it cooks there is a garden to wander. No experience needed, and Sunday runs at an easier pace, good for families.",
+    },
+    {
+      slot: "visit-movie",
+      title: "Friday movie night",
+      body: "Fridays pair DIY pizza with a community movie night, 3pm to 8pm. Make your pizza first, then settle in for the film.",
+    },
+    {
+      slot: "visit-workday",
+      title: "Work days",
+      body: "The garden grows through regular work days: beds, mulch, compost and paths. There is a job for every pace and no experience needed. Message us on the members page and we will say when the next one is.",
+    },
+  ];
+
+  return (
+    <section className="py-12 bg-stone-50 border-b border-stone-200">
+      <div className="container max-w-4xl">
+        <p className="text-amber-600 font-medium tracking-wide uppercase text-sm mb-2">
+          What a visit is like
+        </p>
+        <EditableText
+          page="whats-on"
+          slot="visit-heading"
+          defaultContent="No booking needed, just come and have a look"
+          as="h2"
+          className="text-3xl md:text-4xl font-serif font-bold text-stone-800 mb-3"
+        />
+        <EditableText
+          page="whats-on"
+          slot="visit-intro"
+          defaultContent="The Harvest is open while we find our feet, so a visit is unpolished on purpose. Here is what actually happens on site."
+          as="p"
+          className="text-stone-600 mb-8 max-w-2xl"
+          multiline
+        />
+        <div className="grid gap-4 sm:grid-cols-3">
+          {activities.map((a) => (
+            <div key={a.slot} className="rounded-lg border border-stone-200 bg-white p-5">
+              <EditableText
+                page="whats-on"
+                slot={`${a.slot}-title`}
+                defaultContent={a.title}
+                as="h3"
+                className="text-lg font-serif font-bold text-stone-800 mb-2"
+              />
+              <EditableText
+                page="whats-on"
+                slot={`${a.slot}-body`}
+                defaultContent={a.body}
+                as="p"
+                className="text-stone-600 text-sm leading-relaxed"
+                multiline
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function FeedbackBand() {
+  return (
+    <section className="py-12 bg-stone-50 border-t border-stone-200">
+      <div className="container max-w-3xl text-center">
+        <EditableText
+          page="whats-on"
+          slot="feedback-heading"
+          defaultContent="Been along? Tell us how it went"
+          as="h2"
+          className="text-2xl md:text-3xl font-serif font-bold text-stone-800 mb-3"
+        />
+        <EditableText
+          page="whats-on"
+          slot="feedback-intro"
+          defaultContent="The Harvest is being shaped by the people who turn up. The pulse survey takes a few minutes and feeds straight into what happens next."
+          as="p"
+          className="text-stone-600 mb-6 max-w-xl mx-auto"
+          multiline
+        />
+        <Link
+          href="/pulse"
+          className="inline-flex items-center justify-center bg-amber-500 hover:bg-amber-600 text-black font-semibold px-8 py-3 rounded-md transition-colors"
+        >
+          Take the pulse survey
+        </Link>
       </div>
     </section>
   );
@@ -381,6 +481,8 @@ export default function WhatsOn() {
 
       <RegularSessions />
 
+      <WhatToExpect />
+
       <PizzaRsvpBlock />
 
       {/* Filter Section */}
@@ -559,6 +661,8 @@ export default function WhatsOn() {
           </Tabs>
         </div>
       </section>
+
+      <FeedbackBand />
 
       {/* CTA Section */}
       <section className="py-16 bg-stone-800 text-white">
