@@ -1,19 +1,13 @@
-import { useEffect, useState, type KeyboardEvent, type MouseEvent, type ReactNode } from "react";
+import { useEffect, useState, type KeyboardEvent, type MouseEvent } from "react";
 import { Link, useLocation } from "wouter";
 import { MEMBERS_PAGE_URL } from "@/lib/links";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
-  BookOpen,
-  ClipboardList,
   Hammer,
-  Map,
   Menu,
   Milk,
-  Music,
-  Store,
   Table2,
-  TreePine,
   Users,
   X,
 } from "lucide-react";
@@ -27,7 +21,7 @@ type Thread = {
   alt: string;
   note: string;
   body: string;
-  ideas: string[];
+  link: { label: string; href: string };
   icon: typeof Hammer;
   color: string;
 };
@@ -44,11 +38,6 @@ type WorkUpdate = {
   ask: string;
 };
 
-type IdeaGroup = {
-  title: string;
-  icon: typeof ClipboardList;
-  ideas: string[];
-};
 
 const threads: Thread[] = [
   {
@@ -58,7 +47,7 @@ const threads: Thread[] = [
     alt: "Barry beside old machinery at The Harvest",
     note: "Tracing the St Mary's and Witta timber source trail.",
     body: "The walkway timber carries a St Mary's Cathedral story we are still tracing. The working question is whether part of that timber began in the Witta region before it travelled south and came back as paths.",
-    ideas: [],
+    link: { label: "Follow the timber story", href: "/witta" },
     icon: Hammer,
     color: "#8B4A2A",
   },
@@ -69,7 +58,7 @@ const threads: Thread[] = [
     alt: "Historical cheese making at Teutoburg, Blackall Range, circa 1899",
     note: "Historical image: Teutoburg, Blackall Range, circa 1899.",
     body: "The milk crate is a working object. Stacked, carried, borrowed, returned. The first pavilion turns it into structure, seating and a frame for community days and gathering.",
-    ideas: [],
+    link: { label: "More Witta history", href: "/witta" },
     icon: Milk,
     color: "#C4922A",
   },
@@ -80,7 +69,7 @@ const threads: Thread[] = [
     alt: "Community gathering at The Harvest Witta",
     note: "A working interest, not a legal claim yet.",
     body: "A local produce shelf, shared tools, open books and a table people can sit at. The co-op interest starts with useful things, not a formal structure.",
-    ideas: [],
+    link: { label: "See where the shop is heading", href: "/story" },
     icon: Table2,
     color: "#3B5563",
   },
@@ -155,78 +144,6 @@ const workUpdates: WorkUpdate[] = [
   },
 ];
 
-const ideaGroups: IdeaGroup[] = [
-  {
-    title: "progress notes",
-    icon: Map,
-    ideas: [
-      "What changed in the garden this week.",
-      "What is ready to show at the next community day.",
-      "Which jobs need hands, materials or local knowledge.",
-      "Photos from the beds, paths, pavilion and shop table.",
-    ],
-  },
-  {
-    title: "timber coming home",
-    icon: Hammer,
-    ideas: [
-      "The St Mary's timber story as it is verified.",
-      "Where each walkway section lands in the garden.",
-      "Old tools and local making memory.",
-      "Calls for timber hands, labels and source leads.",
-    ],
-  },
-  {
-    title: "dairy and crates",
-    icon: BookOpen,
-    ideas: [
-      "How the milk crate pavilion is being made.",
-      "Dairy family memories, photos and local food history.",
-      "Ideas for a future kitchen, sublicenced one day.",
-      "Ways to lend crates, hands, shade ideas or music.",
-    ],
-  },
-  {
-    title: "community day stories",
-    icon: Music,
-    ideas: [
-      "Who came through the gate.",
-      "What people noticed first.",
-      "What locals brought to the shelf or the build.",
-      "What the next work day needs.",
-    ],
-  },
-  {
-    title: "co-op shop test",
-    icon: Store,
-    ideas: [
-      "What locals already grow, cook, make or repair.",
-      "What could go on the first shelf.",
-      "How prices, payments, stock and trust might work.",
-      "How the garden can support the shop over time.",
-    ],
-  },
-  {
-    title: "garden to table",
-    icon: TreePine,
-    ideas: [
-      "What is growing now.",
-      "What can realistically feed the future kitchen.",
-      "Compost, preserving, herbs, seedlings and seasonal limits.",
-      "The long path from garden bed to plate.",
-    ],
-  },
-  {
-    title: "kids and play",
-    icon: Users,
-    ideas: [
-      "Kids marking what they want to climb, hide in, build or change.",
-      "Safe materials, shade, seating and logs.",
-      "Parents and builders helping without taking over.",
-      "Updates on what the kids choose next.",
-    ],
-  },
-];
 
 const pageNavLinks = [
   { label: "About", href: "/what-is-the-harvest" },
@@ -328,6 +245,16 @@ function ThisWeekStrip() {
             className="mt-1 text-sm leading-relaxed text-[#1C1917]/80"
             multiline
           />
+          <p className="mt-2 text-xs text-[#1C1917]/70">
+            <a
+              href="https://www.google.com/maps/search/?api=1&query=9+Gumland+Drive+Witta+QLD+4552"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold underline underline-offset-4 hover:text-[#1C1917]"
+            >
+              9 Gumland Drive, Witta · directions
+            </a>
+          </p>
         </div>
         <div className="shrink-0">
           <div className="flex flex-wrap gap-3">
@@ -596,20 +523,6 @@ function WhatThisIs() {
   );
 }
 
-function PlacePhoto() {
-  return (
-    <HarvestImage
-      page="new-look-test"
-      slot="place-main"
-      src="/images/optimized/gathering-recap-crowd-1200.webp"
-      alt="Milk crate pavilion build at The Harvest, Witta"
-      size="hero"
-      className="h-[50vh] w-full"
-      imgClassName="h-full w-full object-cover"
-    />
-  );
-}
-
 function PlacePhotoTwo() {
   return (
     <HarvestImage
@@ -672,6 +585,13 @@ function Threads() {
                   </div>
                   <h3 className="mt-5 text-3xl font-black">{thread.title}</h3>
                   <p className="mt-3 flex-1 leading-relaxed text-white/74">{thread.body}</p>
+                  <Link
+                    href={thread.link.href}
+                    className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-[#C4922A] underline-offset-4 transition hover:text-white hover:underline"
+                  >
+                    {thread.link.label}
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
                 </div>
               </motion.article>
             );
@@ -783,51 +703,6 @@ function WorkNotes() {
 
 function isInteractiveTarget(target: EventTarget | null) {
   return target instanceof HTMLElement && Boolean(target.closest("a,button,input,textarea,select,[role='button']"));
-}
-
-function IdeaWall() {
-  return (
-    <section id="stories" className="scroll-mt-24 bg-[#B58B70] py-16 md:py-24">
-      <div className="mx-auto max-w-7xl px-5 md:px-8">
-        <motion.div {...fadeInUp} className="mb-10 max-w-3xl">
-          <p className="font-mono text-xs uppercase tracking-[0.2em] text-stone-950/64">
-            stories as we go
-          </p>
-          <h2 className="mt-3 text-4xl font-black leading-[0.96] text-stone-950 md:text-6xl">
-            The stories become a living collection for Witta.
-          </h2>
-          <p className="mt-5 max-w-2xl text-lg leading-relaxed text-stone-950/72">
-            Not noise. Progress photos, short notes, useful asks and the local stories that belong here.
-          </p>
-        </motion.div>
-
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {ideaGroups.map((group) => {
-            const Icon = group.icon;
-            return (
-              <motion.article
-                key={group.title}
-                {...fadeInUp}
-                className="border border-stone-950/20 bg-[#F5F0E8] p-6"
-              >
-                <div className="flex items-center justify-between">
-                  <h3 className="text-2xl font-black">{group.title}</h3>
-                  <Icon className="h-5 w-5 text-[#8B4A2A]" />
-                </div>
-                <ul className="mt-5 space-y-3 text-sm leading-relaxed text-stone-700">
-                  {group.ideas.map((idea) => (
-                    <li key={idea} className="border-t border-stone-300 pt-3">
-                      {idea}
-                    </li>
-                  ))}
-                </ul>
-              </motion.article>
-            );
-          })}
-        </div>
-      </div>
-    </section>
-  );
 }
 
 function EventCallout() {
@@ -957,13 +832,5 @@ function Closing() {
         </motion.div>
       </div>
     </section>
-  );
-}
-
-function SourceNote({ children }: { children: ReactNode }) {
-  return (
-    <p className="mt-4 font-mono text-[10px] uppercase tracking-[0.14em] text-white/42">
-      {children}
-    </p>
   );
 }
