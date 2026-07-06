@@ -340,6 +340,87 @@ export async function addGHLContactTag(contactId: string, tag: string): Promise<
 /**
  * Add a note to a contact in Go High Level
  */
+// Conversations API uses an older version header than the rest of the v2 API.
+const GHL_CONVERSATIONS_API_VERSION = "2021-04-15";
+const GHL_INBOX_EMAIL = "hi@act.place";
+
+/**
+ * Push a website form submission into the contact's GHL Conversations thread
+ * as an inbound email-type message, so the GHL inbox is the triage desk of
+ * record (decided 2026-07-06). Finds or creates the conversation first.
+ * Fire-and-forget from callers: failures log but never block the submission.
+ */
+export async function addGHLInboundFormMessage(input: {
+  contactId: string;
+  subject: string;
+  html: string;
+  fromEmail?: string | null;
+}): Promise<{ success: boolean; error?: string }> {
+  const apiKey = process.env.GHL_API_KEY;
+  const locationId = process.env.GHL_LOCATION_ID;
+  if (!apiKey || !locationId) {
+    return { success: false, error: "GHL credentials not configured." };
+  }
+
+  const headers = {
+    "Content-Type": "application/json",
+    Accept: "application/json",
+    Authorization: `Bearer ${apiKey}`,
+    Version: GHL_CONVERSATIONS_API_VERSION,
+  };
+
+  try {
+    // 1. Find (or create) the contact's conversation
+    let conversationId: string | undefined;
+    const searchRes = await fetch(
+      `${GHL_API_BASE}/conversations/search?locationId=${locationId}&contactId=${input.contactId}`,
+      { headers },
+    );
+    if (searchRes.ok) {
+      const data = await searchRes.json() as { conversations?: { id: string }[] };
+      conversationId = data.conversations?.[0]?.id;
+    }
+    if (!conversationId) {
+      const createRes = await fetch(`${GHL_API_BASE}/conversations/`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify({ locationId, contactId: input.contactId }),
+      });
+      if (createRes.ok) {
+        const created = await createRes.json() as { conversation?: { id: string }; id?: string };
+        conversationId = created.conversation?.id ?? created.id;
+      }
+    }
+    if (!conversationId) {
+      console.error("GHL inbox message: could not find or create conversation for", input.contactId);
+      return { success: false, error: "No conversation available." };
+    }
+
+    // 2. Inject the form message as an inbound email
+    const msgRes = await fetch(`${GHL_API_BASE}/conversations/messages/inbound`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify({
+        type: "Email",
+        conversationId,
+        emailTo: GHL_INBOX_EMAIL,
+        emailFrom: input.fromEmail || GHL_INBOX_EMAIL,
+        subject: input.subject,
+        html: input.html,
+      }),
+    });
+    if (!msgRes.ok) {
+      const errorData = await msgRes.json().catch(() => ({})) as GHLErrorResponse;
+      console.error("GHL inbox message failed:", msgRes.status, errorData);
+      return { success: false, error: errorData.message || "Failed to add inbox message." };
+    }
+    return { success: true };
+  } catch (error) {
+    console.error("GHL inbox message request failed:", error);
+    return { success: false, error: "Unable to add inbox message." };
+  }
+}
+
 export async function addGHLContactNote(contactId: string, noteBody: string): Promise<{ success: boolean; error?: string }> {
   const apiKey = process.env.GHL_API_KEY;
 

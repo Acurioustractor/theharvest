@@ -47,6 +47,66 @@ async function upsertHarvestInboxOpportunity(input: {
   });
 }
 
+// Conversations API uses an older version header. Pushes the form message into
+// the contact's GHL Conversations thread so the GHL inbox is the triage desk.
+const GHL_CONVERSATIONS_API_VERSION = "2021-04-15";
+const GHL_INBOX_EMAIL = "hi@act.place";
+
+async function addInboundFormMessage(input: {
+  apiKey: string;
+  locationId: string;
+  contactId: string;
+  fromEmail?: string;
+  subject: string;
+  html: string;
+}) {
+  const headers = {
+    "Content-Type": "application/json",
+    Accept: "application/json",
+    Authorization: `Bearer ${input.apiKey}`,
+    Version: GHL_CONVERSATIONS_API_VERSION,
+  };
+  let conversationId: string | undefined;
+  const searchRes = await fetch(
+    `${GHL_API_BASE}/conversations/search?locationId=${input.locationId}&contactId=${input.contactId}`,
+    { headers },
+  );
+  if (searchRes.ok) {
+    const data = await searchRes.json();
+    conversationId = data?.conversations?.[0]?.id;
+  }
+  if (!conversationId) {
+    const createRes = await fetch(`${GHL_API_BASE}/conversations/`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify({ locationId: input.locationId, contactId: input.contactId }),
+    });
+    if (createRes.ok) {
+      const created = await createRes.json();
+      conversationId = created?.conversation?.id ?? created?.id;
+    }
+  }
+  if (!conversationId) {
+    console.error("inbox message: no conversation for", input.contactId);
+    return;
+  }
+  const msgRes = await fetch(`${GHL_API_BASE}/conversations/messages/inbound`, {
+    method: "POST",
+    headers,
+    body: JSON.stringify({
+      type: "Email",
+      conversationId,
+      emailTo: GHL_INBOX_EMAIL,
+      emailFrom: input.fromEmail || GHL_INBOX_EMAIL,
+      subject: input.subject,
+      html: input.html,
+    }),
+  });
+  if (!msgRes.ok) {
+    console.error("inbox message failed:", msgRes.status, await msgRes.text());
+  }
+}
+
 // Tag mappings for each submission type
 const TYPE_TAGS: Record<string, string[]> = {
   idea: ["community-idea", "harvest-website"],
@@ -198,6 +258,26 @@ Deno.serve(async (req) => {
         });
       } catch {
         // Non-critical
+      }
+
+      try {
+        await addInboundFormMessage({
+          apiKey,
+          locationId,
+          contactId: ghlContactId,
+          fromEmail: String(email),
+          subject: `${type} submission from ${String(name).trim()}`,
+          html: [
+            `<p><strong>${type.toUpperCase()} submission (website)</strong></p>`,
+            fields.title ? `<p>Title: ${fields.title}</p>` : "",
+            fields.businessName ? `<p>Business: ${fields.businessName}</p>` : "",
+            fields.description ? `<p>${String(fields.description).replace(/\n/g, "<br>")}</p>` : "",
+            fields.message ? `<p>${String(fields.message).replace(/\n/g, "<br>")}</p>` : "",
+            fields.portfolioUrl ? `<p>Portfolio: ${fields.portfolioUrl}</p>` : "",
+          ].join(""),
+        });
+      } catch (err) {
+        console.error("inbox message failed (community submit):", err);
       }
 
       const workflowId = Deno.env.get("GHL_COMMUNITY_SUBMIT_WORKFLOW_ID");

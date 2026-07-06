@@ -5,7 +5,7 @@ import { storagePut } from "./storage.js";
 import { getDb } from "./db.js";
 import { pulseResponses } from "../drizzle/schema.js";
 import { eq } from "drizzle-orm";
-import { upsertGHLContact, upsertGHLHarvestInboxOpportunity, addGHLContactNote, addGHLContactTag, getGHLContact, triggerGHLWorkflow, getGHLContactCountByTag, getGHLSocialAccounts, createGHLSocialPost, getGHLSocialPosts, searchGHLContactsByTag, batchTriggerWorkflow, createGHLEmailTemplate } from "./gohighlevel.js";
+import { upsertGHLContact, upsertGHLHarvestInboxOpportunity, addGHLContactNote, addGHLContactTag, addGHLInboundFormMessage, getGHLContact, triggerGHLWorkflow, getGHLContactCountByTag, getGHLSocialAccounts, createGHLSocialPost, getGHLSocialPosts, searchGHLContactsByTag, batchTriggerWorkflow, createGHLEmailTemplate } from "./gohighlevel.js";
 import { getGalleryPhotos, addGalleryPhoto, removeGalleryPhoto } from "./photoWallGallery.js";
 import { empathyLedgerClient } from "./empathyLedgerClient.js";
 import {
@@ -328,6 +328,13 @@ export const appRouter = router({
               source: "Harvest | Event",
             });
 
+            addGHLInboundFormMessage({
+              contactId: result.contactId,
+              fromEmail: input.contactEmail,
+              subject: `Event submission: ${input.title}`,
+              html: `<p><strong>Community event submission (website)</strong></p><p>${input.title}, ${input.date} ${input.time}, ${input.location} (${input.category})</p><p>${input.description}</p>`,
+            }).catch(err => console.error("GHL inbox message failed (event submit):", err));
+
             const workflowId = process.env.GHL_EVENT_SUBMIT_WORKFLOW_ID;
             if (workflowId) {
               triggerGHLWorkflow(workflowId, result.contactId).catch(err =>
@@ -414,6 +421,13 @@ export const appRouter = router({
               name: formatHarvestInboxOpportunityName(input.submittedBy, "Business registration"),
               source: "Harvest | Business",
             });
+
+            addGHLInboundFormMessage({
+              contactId: result.contactId,
+              fromEmail: input.submitterEmail,
+              subject: `Business registration: ${input.name}`,
+              html: `<p><strong>Business registration (website)</strong></p><p>${input.name} (${input.category})</p><p>${input.description}</p>`,
+            }).catch(err => console.error("GHL inbox message failed (business reg):", err));
 
             const workflowId = process.env.GHL_BUSINESS_REG_WORKFLOW_ID;
             if (workflowId) {
@@ -562,6 +576,18 @@ export const appRouter = router({
           if (input.message) noteLines.push(`**Message:** ${input.message}`);
           noteLines.push(`**Source:** ${input.source || "whats-on"}`);
           await addGHLContactNote(result.contactId, noteLines.join("\n\n"));
+
+          addGHLInboundFormMessage({
+            contactId: result.contactId,
+            fromEmail: input.email || undefined,
+            subject: `RSVP: ${input.name.trim()} for ${eventLabel}${input.day ? ` (${input.day})` : ""}`,
+            html: [
+              `<p><strong>RSVP for ${eventLabel} (website)</strong></p>`,
+              input.day ? `<p>Day: ${input.day}</p>` : "",
+              input.people ? `<p>People: ${input.people}</p>` : "",
+              input.message ? `<p>${input.message}</p>` : "",
+            ].join(""),
+          }).catch(err => console.error("GHL inbox message failed (rsvp):", err));
 
           // Only route to the reply desk when there is something to reply to.
           if (input.message) {
@@ -947,6 +973,13 @@ export const appRouter = router({
             source: input.source || "Harvest | Member Question",
           });
 
+          addGHLInboundFormMessage({
+            contactId: result.contactId,
+            fromEmail: input.email,
+            subject: `Member question from ${input.name.trim()}`,
+            html: `<p><strong>Member question (website)</strong></p><p>${input.question}</p>`,
+          }).catch(err => console.error("GHL inbox message failed (member question):", err));
+
           const workflowId = process.env.GHL_MEMBER_QUESTION_WORKFLOW_ID || process.env.GHL_CONTACT_FORM_WORKFLOW_ID;
           if (workflowId) {
             const workflowResult = await triggerGHLWorkflow(workflowId, result.contactId);
@@ -1017,6 +1050,19 @@ export const appRouter = router({
           if (!noteResult.success) {
             throw new Error(noteResult.error || "Failed to save shop interest note");
           }
+
+          addGHLInboundFormMessage({
+            contactId: result.contactId,
+            fromEmail: input.email,
+            subject: `Shop interest from ${input.name.trim()} (${input.offerType})`,
+            html: [
+              "<p><strong>Shop expression of interest (website)</strong></p>",
+              `<p>Offer type: ${input.offerType}</p>`,
+              input.location ? `<p>Location: ${input.location}</p>` : "",
+              input.readiness ? `<p>Readiness: ${input.readiness}</p>` : "",
+              input.description ? `<p>${input.description}</p>` : "",
+            ].join(""),
+          }).catch(err => console.error("GHL inbox message failed (shop interest):", err));
 
           // Route into the dedicated Shop pipeline once it exists in GHL. Both env vars
           // must be set together (a stage ID only belongs to its own pipeline); until then

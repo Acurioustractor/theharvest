@@ -55,6 +55,66 @@ async function upsertHarvestInboxOpportunity(input: {
   }
 }
 
+// Conversations API uses an older version header. Pushes the form message into
+// the contact's GHL Conversations thread so the GHL inbox is the triage desk.
+const GHL_CONVERSATIONS_API_VERSION = "2021-04-15";
+const GHL_INBOX_EMAIL = "hi@act.place";
+
+async function addInboundFormMessage(input: {
+  apiKey: string;
+  locationId: string;
+  contactId: string;
+  fromEmail?: string;
+  subject: string;
+  html: string;
+}) {
+  const headers = {
+    "Content-Type": "application/json",
+    Accept: "application/json",
+    Authorization: `Bearer ${input.apiKey}`,
+    Version: GHL_CONVERSATIONS_API_VERSION,
+  };
+  let conversationId: string | undefined;
+  const searchRes = await fetch(
+    `${GHL_API_BASE}/conversations/search?locationId=${input.locationId}&contactId=${input.contactId}`,
+    { headers },
+  );
+  if (searchRes.ok) {
+    const data = await searchRes.json();
+    conversationId = data?.conversations?.[0]?.id;
+  }
+  if (!conversationId) {
+    const createRes = await fetch(`${GHL_API_BASE}/conversations/`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify({ locationId: input.locationId, contactId: input.contactId }),
+    });
+    if (createRes.ok) {
+      const created = await createRes.json();
+      conversationId = created?.conversation?.id ?? created?.id;
+    }
+  }
+  if (!conversationId) {
+    console.error("inbox message: no conversation for", input.contactId);
+    return;
+  }
+  const msgRes = await fetch(`${GHL_API_BASE}/conversations/messages/inbound`, {
+    method: "POST",
+    headers,
+    body: JSON.stringify({
+      type: "Email",
+      conversationId,
+      emailTo: GHL_INBOX_EMAIL,
+      emailFrom: input.fromEmail || GHL_INBOX_EMAIL,
+      subject: input.subject,
+      html: input.html,
+    }),
+  });
+  if (!msgRes.ok) {
+    console.error("inbox message failed:", msgRes.status, await msgRes.text());
+  }
+}
+
 Deno.serve(async req => {
   // Handle CORS preflight
   if (req.method === "OPTIONS") {
@@ -168,6 +228,19 @@ Deno.serve(async req => {
         body: `**Website Contact Form**\n\n**Subject:** ${subject || "No subject"}\n\n**Message:**\n${message}`,
       }),
     });
+
+    try {
+      await addInboundFormMessage({
+        apiKey,
+        locationId,
+        contactId,
+        fromEmail: String(email),
+        subject: subject ? `Contact form: ${subject}` : `Contact form message from ${String(name).trim()}`,
+        html: `<p><strong>Website contact form</strong></p><p>${String(message).replace(/\n/g, "<br>")}</p>`,
+      });
+    } catch (error) {
+      console.error("inbox message failed (contact form):", error);
+    }
 
     try {
       await upsertHarvestInboxOpportunity({
