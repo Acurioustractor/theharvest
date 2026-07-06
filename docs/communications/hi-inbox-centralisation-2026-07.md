@@ -48,10 +48,12 @@ into Conversations:
    into Conversations. One fix, two wins.
 3. **SMS and calls.** The GHL number +61 468 052 660 already threads into
    Conversations.
-4. **Website forms.** These create the pipeline card (triage object) plus the
-   hi@ ping. To take the conversation two-way, open the contact from the
-   card and reply from their Conversations tab; the exchange threads there
-   from that point on.
+4. **Website forms: WIRED, live 2026-07-06.** Every form submission (contact
+   form, venue hire, all five get-involved forms, member questions, shop
+   EOIs, pizza RSVPs, event submissions, business registrations) is injected
+   into the visitor's conversation as an unread inbox message, alongside the
+   pipeline card and the hi@ ping. Triage happens in Conversations Unread;
+   reply on the same thread and it emails the person.
 5. **Optional, later: GHL chat widget on the website.** One script tag puts a
    "message us" bubble on the site whose messages land straight in
    Conversations. Say the word and it can be added to the site in one pass.
