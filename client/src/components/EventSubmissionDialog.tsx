@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "wouter";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -124,6 +125,14 @@ export function EventSubmissionDialog({ onEventSubmitted }: { onEventSubmitted?:
             <Label htmlFor="submittedBy">Your Name</Label>
             <Input id="submittedBy" name="submittedBy" placeholder="Your name or organization" required />
           </div>
+
+          <p className="text-xs text-stone-500">
+            Used only to review and get in touch about this event. See our{" "}
+            <Link href="/privacy" className="underline hover:text-stone-700">
+              privacy page
+            </Link>{" "}
+            for details.
+          </p>
 
           <DialogFooter>
             <Button type="submit" disabled={isSubmitting || !category} className="w-full bg-[#2c4c3b] hover:bg-[#1a3326]">

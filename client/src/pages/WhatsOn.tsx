@@ -314,8 +314,15 @@ function PizzaRsvpBlock() {
         >
           RSVP on the members page
         </a>
-        <p className="text-stone-500 text-sm mb-6">
+        <p className="text-stone-500 text-sm mb-2">
           Or leave your details here and we'll count you in.
+        </p>
+        <p className="text-stone-500 text-xs mb-6">
+          Used only to plan numbers and get in touch about this RSVP. See our{" "}
+          <Link href="/privacy" className="underline hover:text-stone-700">
+            privacy page
+          </Link>{" "}
+          for details.
         </p>
         {status === "success" ? (
           <div className="bg-white border border-amber-300 rounded-lg p-6">
