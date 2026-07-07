@@ -560,35 +560,41 @@ export default function WhatsOn() {
     <div className="min-h-screen bg-background">
       <SiteNav />
       {/* Hero Section */}
-      <section className="relative pt-36 pb-24 bg-gradient-to-b from-amber-50 to-white overflow-hidden">
-        <div className="absolute inset-0 opacity-5">
-          <div
-            className="absolute inset-0"
-            style={{
-              backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-            }}
-          />
-        </div>
+      <section className="relative overflow-hidden bg-stone-900 pt-36 pb-24">
+        <HarvestImage
+          page="whats-on"
+          slot="hero-photo"
+          src="/images/optimized/gathering-recap-crowd-1600.webp"
+          alt="Making pizza together at The Harvest, Witta"
+          size="hero"
+          priority
+          controlsPosition="corner"
+          className="absolute inset-0 h-full w-full"
+          imgClassName="h-full w-full object-cover"
+        />
+        <div className="pointer-events-none absolute inset-0 bg-stone-900/70" />
 
         <div className="container relative">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="max-w-3xl"
+            className="mx-auto max-w-3xl text-center"
           >
-            <span className="text-amber-600 font-medium tracking-wide uppercase text-sm">
+            <span className="text-amber-400 font-medium tracking-wide uppercase text-sm">
               Events & Gatherings
             </span>
-            <h1 className="text-5xl md:text-6xl font-serif font-bold text-stone-800 mt-3 mb-6">
+            <h1 className="text-5xl md:text-6xl font-serif font-bold text-white mt-3 mb-6">
               What's On
             </h1>
-            <p className="text-xl text-stone-600 leading-relaxed mb-8">
+            <p className="text-xl text-white/80 leading-relaxed mb-8">
               Weekend pizza sessions, work days and gatherings at The Harvest, a community
               garden and creative gathering place in Witta, on Jinibara Country. New dates land
               on the members page first.
             </p>
-            <EventSubmissionDialog onEventSubmitted={() => refetch()} />
+            <div className="flex justify-center">
+              <EventSubmissionDialog onEventSubmitted={() => refetch()} />
+            </div>
           </motion.div>
         </div>
       </section>

@@ -47,6 +47,7 @@ import HarvestControlRoom from "./pages/HarvestControlRoom";
 import Privacy from "./pages/Privacy";
 import AdminDashboard from "./pages/AdminDashboard";
 import MediaLibraryAdmin from "./pages/admin/MediaLibraryAdmin";
+import RsvpAdmin from "./pages/admin/RsvpAdmin";
 import Login from "./pages/Login";
 import StrategicAnalysis from "./pages/StrategicAnalysis";
 import VenueHire from "./pages/VenueHire";
@@ -109,6 +110,7 @@ function Router() {
   if (location === "/admin") return <AdminDashboard />;
   if (location === "/admin/control-room") return <HarvestControlRoom />;
   if (location === "/admin/media-library") return <MediaLibraryAdmin />;
+  if (location === "/admin/rsvps") return <RsvpAdmin />;
   if (location === "/components") return <ComponentShowcase />;
   if (location === "/strategic-analysis") return <StrategicAnalysis />;
   if (location === "/proposal") return <Proposal />;

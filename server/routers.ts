@@ -1,6 +1,6 @@
 import { systemRouter } from "./_core/systemRouter.js";
 import { publicProcedure, protectedProcedure, router } from "./_core/trpc.js";
-import { createEvent, getApprovedEvents, getPendingEvents, updateEventStatus, createBusiness, getApprovedBusinesses, getPendingBusinesses, updateBusinessStatus, getBusinessByUserId, getBusinessById, claimBusiness, updateBusinessProfile, getUnclaimedApprovedBusinesses, createMemberWallEntry, getPublicMemberWallEntries, getProgressImages, createProgressImage, updateProgressImage, deleteProgressImage, promoteUserToAdmin, getAllUsers, getContent, getContentForPage, upsertContent, getAnnotationsForPoint, createAnnotation, deleteAnnotation, createPulseResponse, getPulseResults, createCommunitySubmission, createEventFeedbackEntry, getEventFeedbackByEventId, getAllEventFeedback, createWittaContribution, getApprovedWittaContributions, getPendingWittaContributions, updateWittaContributionStatus, getImageOverride, setImageOverride, clearImageOverride, listImageOverrides } from "./db.js";
+import { createEvent, getApprovedEvents, getPendingEvents, updateEventStatus, createBusiness, getApprovedBusinesses, getPendingBusinesses, updateBusinessStatus, getBusinessByUserId, getBusinessById, claimBusiness, updateBusinessProfile, getUnclaimedApprovedBusinesses, createMemberWallEntry, getPublicMemberWallEntries, getProgressImages, createProgressImage, updateProgressImage, deleteProgressImage, promoteUserToAdmin, getAllUsers, getContent, getContentForPage, upsertContent, getAnnotationsForPoint, createAnnotation, deleteAnnotation, createPulseResponse, getPulseResults, createCommunitySubmission, listRsvpSubmissions, createEventFeedbackEntry, getEventFeedbackByEventId, getAllEventFeedback, createWittaContribution, getApprovedWittaContributions, getPendingWittaContributions, updateWittaContributionStatus, getImageOverride, setImageOverride, clearImageOverride, listImageOverrides } from "./db.js";
 import { storagePut } from "./storage.js";
 import { getDb } from "./db.js";
 import { pulseResponses } from "../drizzle/schema.js";
@@ -621,6 +621,13 @@ export const appRouter = router({
     count: publicProcedure.query(async () => {
       const count = await getGHLContactCountByTag(CURRENT_GATHERING_TAG);
       return { count };
+    }),
+
+    // Admin "who's coming" list — the RSVP form's write path also tags a GHL
+    // contact, but this is the simple, no-CRM-navigation-needed way to check.
+    list: protectedProcedure.query(async ({ ctx }) => {
+      if (ctx.user.role !== "admin") throw new Error("Unauthorized");
+      return listRsvpSubmissions();
     }),
   }),
 

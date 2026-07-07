@@ -884,6 +884,27 @@ export async function createCommunitySubmission(
   }
 }
 
+// RSVP list for the admin "who's coming" view — newest first, most recent 200.
+export async function listRsvpSubmissions(): Promise<CommunitySubmission[]> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot list RSVP submissions: database not available");
+    return [];
+  }
+
+  try {
+    return await db
+      .select()
+      .from(communitySubmissions)
+      .where(eq(communitySubmissions.type, "rsvp"))
+      .orderBy(desc(communitySubmissions.createdAt))
+      .limit(200);
+  } catch (error) {
+    console.error("[Database] Failed to list RSVP submissions:", error);
+    return [];
+  }
+}
+
 // Pulse Survey queries
 export async function createPulseResponse(response: InsertPulseResponse): Promise<PulseResponse | undefined> {
   const db = await getDb();
