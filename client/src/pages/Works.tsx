@@ -56,15 +56,6 @@ export default function Works() {
               Some are growing. Some are still forthcoming. Each one carries a
               thread back to the history of this place.
             </p>
-            <div className="mt-10">
-              <Link
-                href="/witta"
-                className="inline-flex items-center gap-2 text-stone-700 hover:text-stone-900 underline underline-offset-4 decoration-amber-500 decoration-2"
-              >
-                Read the Witta history first
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-            </div>
           </motion.div>
         </div>
       </section>

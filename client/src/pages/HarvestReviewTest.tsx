@@ -163,11 +163,6 @@ const footerLinks = [
   { label: "Membership", href: "/membership" },
   { label: "Get Involved", href: "/get-involved" },
   { label: "Venue Hire", href: "/venue-hire" },
-  { label: "Now and Next", href: "/story" },
-  { label: "Stories", href: "/stories" },
-  { label: "Photo Wall", href: "/photo-wall" },
-  { label: "Witta", href: "/witta" },
-  { label: "People", href: "/people" },
   { label: "Contact", href: "/contact" },
   { label: "Feedback", href: "/pulse" },
   { label: "Privacy", href: "/privacy" },
@@ -924,7 +919,7 @@ function Closing() {
               <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
-              href="/story"
+              href="/whats-on"
               className="inline-flex items-center gap-2 text-sm font-bold text-[#C4922A] underline-offset-4 transition hover:text-white hover:underline"
             >
               See what is coming

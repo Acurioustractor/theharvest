@@ -334,6 +334,70 @@ function MembershipInvite() {
   );
 }
 
+function RoadmapStrip() {
+  const areas = [
+    {
+      slot: "roadmap-garden",
+      title: "The Garden",
+      body: "Growing through regular work days: beds, seedlings, mulch, compost and paths.",
+      href: "/get-involved",
+      linkLabel: "Lend a hand",
+    },
+    {
+      slot: "roadmap-shop",
+      title: "The Shop",
+      body: "The first shelves are being shaped with local makers and growers.",
+      href: "/shop",
+      linkLabel: "See the shop",
+    },
+    {
+      slot: "roadmap-art-space",
+      title: "The Art Space",
+      body: "Finding its shape, and artists are the ones shaping it.",
+      href: "/works",
+      linkLabel: "See the works",
+    },
+  ];
+
+  return (
+    <section className="py-12 bg-stone-50 border-t border-stone-200">
+      <div className="container max-w-4xl">
+        <p className="text-amber-600 font-medium tracking-wide uppercase text-sm mb-2">
+          Elsewhere on site
+        </p>
+        <EditableText
+          page="whats-on"
+          slot="roadmap-heading"
+          defaultContent="Where the rest of the place stands"
+          as="h2"
+          className="text-2xl md:text-3xl font-serif font-bold text-stone-800 mb-8"
+        />
+        <div className="grid gap-4 sm:grid-cols-3">
+          {areas.map((area) => (
+            <div key={area.slot} className="rounded-lg border border-stone-200 bg-white p-5">
+              <h3 className="text-lg font-serif font-bold text-stone-800 mb-2">{area.title}</h3>
+              <EditableText
+                page="whats-on"
+                slot={`${area.slot}-body`}
+                defaultContent={area.body}
+                as="p"
+                className="text-stone-600 text-sm leading-relaxed mb-3"
+                multiline
+              />
+              <Link
+                href={area.href}
+                className="text-sm font-semibold text-amber-700 underline underline-offset-4 hover:text-amber-800"
+              >
+                {area.linkLabel}
+              </Link>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function FeedbackBand() {
   return (
     <section className="py-12 bg-stone-50 border-t border-stone-200">
@@ -604,6 +668,8 @@ export default function WhatsOn() {
       <PizzaGallery />
 
       <MembershipInvite />
+
+      <RoadmapStrip />
 
       <PizzaRsvpBlock />
 
