@@ -20,6 +20,7 @@ import {
 import { listApprovedEvents } from "@/lib/api";
 import { EventSubmissionDialog } from "@/components/EventSubmissionDialog";
 import { SiteFooter, SiteNav } from "./HarvestReviewTest";
+import { HarvestImage } from "@/components/HarvestImage";
 import { trpc } from "@/lib/trpc";
 import { EditableText } from "@/components/EditableText";
 import { MEMBERS_PAGE_URL } from "@/lib/links";
@@ -147,7 +148,7 @@ function RegularSessions() {
             rel="noopener noreferrer"
             className="inline-flex items-center justify-center bg-amber-500 hover:bg-amber-600 text-black font-semibold px-8 py-3 rounded-md transition-colors"
           >
-            See this week's dates on the members page
+            Become a member
           </a>
           <p className="text-sm text-stone-500">
             Weeks can vary. The members page has this week's dates first, and membership is free.
@@ -161,63 +162,158 @@ function RegularSessions() {
   );
 }
 
-function WhatToExpect() {
-  // Every claim here traces to already-shipped copy or the comms map
-  // (docs/communications/now-open-communications-map-2026-07.md). No prices,
-  // hours, or dates that are not locked in.
-  const activities = [
+function PizzaGallery() {
+  const photos = [
+    { slot: "pizza-gallery-1", src: "/images/optimized/community-gathering-1000.webp", alt: "Neighbours sharing pizza at The Harvest" },
+    { slot: "pizza-gallery-2", src: "/images/optimized/gathering-recap-crowd-1200.webp", alt: "A pizza night crowd at The Harvest" },
+    { slot: "pizza-gallery-3", src: "/images/optimized/member-welcome-crates-1200.webp", alt: "Pizza dough and toppings ready to go at The Harvest" },
+    { slot: "pizza-gallery-4", src: "/images/optimized/community-gathering-1200.webp", alt: "Fresh pizza out of the oven at The Harvest" },
+  ];
+
+  return (
+    <section className="py-16 bg-white border-b border-stone-200">
+      <div className="container max-w-5xl">
+        <p className="text-amber-600 font-medium tracking-wide uppercase text-sm mb-2">
+          How it works
+        </p>
+        <EditableText
+          page="whats-on"
+          slot="pizza-gallery-heading"
+          defaultContent="Build your own pizza, fire it yourself."
+          as="h2"
+          className="text-3xl md:text-4xl font-serif font-bold text-stone-800 mb-6"
+        />
+        <div className="grid gap-6 mb-10 sm:grid-cols-3 max-w-3xl">
+          <div>
+            <EditableText
+              page="whats-on"
+              slot="pizza-gallery-pizza-title"
+              defaultContent="Your pizza"
+              as="h3"
+              className="text-lg font-serif font-bold text-stone-800 mb-2"
+            />
+            <EditableText
+              page="whats-on"
+              slot="pizza-gallery-pizza-body"
+              defaultContent="Stretch your own base, then choose your toppings from a bench of cheeses, meats and vegetables. Dennis, our resident pizza teacher, shows you how to fire it in the oven. $30 each."
+              as="p"
+              className="text-stone-600 text-sm leading-relaxed"
+              multiline
+            />
+          </div>
+          <div>
+            <EditableText
+              page="whats-on"
+              slot="pizza-gallery-dessert-title"
+              defaultContent="Not full yet?"
+              as="h3"
+              className="text-lg font-serif font-bold text-stone-800 mb-2"
+            />
+            <EditableText
+              page="whats-on"
+              slot="pizza-gallery-dessert-body"
+              defaultContent="There's a Nutella dessert pizza, topped with whipped cream, strawberries, caramel sauce or marshmallows. $10 each, or included free with an order of 3 pizzas."
+              as="p"
+              className="text-stone-600 text-sm leading-relaxed"
+              multiline
+            />
+          </div>
+          <div>
+            <EditableText
+              page="whats-on"
+              slot="pizza-gallery-drinks-title"
+              defaultContent="To drink"
+              as="h3"
+              className="text-lg font-serif font-bold text-stone-800 mb-2"
+            />
+            <EditableText
+              page="whats-on"
+              slot="pizza-gallery-drinks-body"
+              defaultContent="A range of soft drinks, from $5 to $6.50."
+              as="p"
+              className="text-stone-600 text-sm leading-relaxed"
+              multiline
+            />
+          </div>
+        </div>
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4">
+          {photos.map((photo) => (
+            <HarvestImage
+              key={photo.slot}
+              page="whats-on"
+              slot={photo.slot}
+              src={photo.src}
+              alt={photo.alt}
+              size="card"
+              className="aspect-square overflow-hidden rounded-lg bg-stone-100"
+              imgClassName="h-full w-full object-cover"
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function MembershipInvite() {
+  const perks = [
     {
-      slot: "visit-pizza",
-      title: "DIY pizza sessions",
-      body: "You get dough, a bench of toppings and the oven. Stretch it, top it your way, and Dennis, our resident pizza teacher, helps you fire it. While it cooks there is a garden to wander. No experience needed, and Sunday runs at an easier pace, good for families.",
+      slot: "member-perk-days",
+      title: "Member days",
+      body: "First notice of community and makers days, like the one we opened with on 20 June.",
     },
     {
-      slot: "visit-movie",
-      title: "Friday movie night",
-      body: "Fridays pair DIY pizza with a community movie night, 3pm to 8pm. Make your pizza first, then settle in for the film.",
+      slot: "member-perk-garden",
+      title: "Garden sessions",
+      body: "Work day dates land on the members page first, before anywhere else.",
     },
     {
-      slot: "visit-workday",
-      title: "Work days",
-      body: "The garden grows through regular work days: beds, mulch, compost and paths. There is a job for every pace and no experience needed. Message us on the members page and we will say when the next one is.",
+      slot: "member-perk-events",
+      title: "Upcoming events",
+      body: "New dates land on the members page first.",
+    },
+    {
+      slot: "member-perk-ideas",
+      title: "Share your ideas",
+      body: "Message us directly with what you think The Harvest should become for the community.",
     },
   ];
 
   return (
-    <section className="py-12 bg-stone-50 border-b border-stone-200">
+    <section className="py-16 bg-amber-50 border-y border-amber-200">
       <div className="container max-w-4xl">
-        <p className="text-amber-600 font-medium tracking-wide uppercase text-sm mb-2">
-          What a visit is like
+        <p className="text-amber-700 font-medium tracking-wide uppercase text-sm mb-2">
+          Membership
         </p>
         <EditableText
           page="whats-on"
-          slot="visit-heading"
-          defaultContent="No booking needed, just come and have a look"
+          slot="membership-heading"
+          defaultContent="Become a member, see it all first."
           as="h2"
           className="text-3xl md:text-4xl font-serif font-bold text-stone-800 mb-3"
         />
         <EditableText
           page="whats-on"
-          slot="visit-intro"
-          defaultContent="The Harvest is open while we find our feet, so a visit is unpolished on purpose. Here is what actually happens on site."
+          slot="membership-intro"
+          defaultContent="Membership is free. It's the simplest way to stay close to The Harvest while it's still being made."
           as="p"
           className="text-stone-600 mb-8 max-w-2xl"
           multiline
         />
-        <div className="grid gap-4 sm:grid-cols-3">
-          {activities.map((a) => (
-            <div key={a.slot} className="rounded-lg border border-stone-200 bg-white p-5">
+        <div className="grid gap-4 sm:grid-cols-2 mb-8">
+          {perks.map((perk) => (
+            <div key={perk.slot} className="rounded-lg border border-amber-200 bg-white p-5">
               <EditableText
                 page="whats-on"
-                slot={`${a.slot}-title`}
-                defaultContent={a.title}
+                slot={`${perk.slot}-title`}
+                defaultContent={perk.title}
                 as="h3"
                 className="text-lg font-serif font-bold text-stone-800 mb-2"
               />
               <EditableText
                 page="whats-on"
-                slot={`${a.slot}-body`}
-                defaultContent={a.body}
+                slot={`${perk.slot}-body`}
+                defaultContent={perk.body}
                 as="p"
                 className="text-stone-600 text-sm leading-relaxed"
                 multiline
@@ -225,18 +321,14 @@ function WhatToExpect() {
             </div>
           ))}
         </div>
-        <p className="mt-6 text-sm text-stone-500">
-          Work day dates land on the{" "}
-          <a
-            href={MEMBERS_PAGE_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-amber-700 underline underline-offset-4 hover:text-amber-800"
-          >
-            members page
-          </a>{" "}
-          first, and membership is free.
-        </p>
+        <a
+          href={MEMBERS_PAGE_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center justify-center bg-amber-500 hover:bg-amber-600 text-black font-semibold px-8 py-3 rounded-md transition-colors"
+        >
+          Become a member
+        </a>
       </div>
     </section>
   );
@@ -503,7 +595,9 @@ export default function WhatsOn() {
 
       <RegularSessions />
 
-      <WhatToExpect />
+      <PizzaGallery />
+
+      <MembershipInvite />
 
       <PizzaRsvpBlock />
 

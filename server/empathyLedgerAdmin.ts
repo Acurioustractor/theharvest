@@ -158,6 +158,7 @@ async function getOrCreateTag(
   supabase: any,
   slug: string,
   category: string,
+  tenantId: string,
 ): Promise<string> {
   const { data: existing, error: findError } = await supabase
     .from("tags")
@@ -177,6 +178,7 @@ async function getOrCreateTag(
       category,
       description: `Harvest ${category.replace("harvest-", "")} tag for ${tagName(slug)}`,
       cultural_sensitivity_level: "public",
+      tenant_id: tenantId,
     })
     .select("id")
     .single();
@@ -252,8 +254,8 @@ function tagEntriesForRecipe(recipe: HarvestUploadRecipe): HarvestExtraTag[] {
   });
 }
 
-async function tagIdsForRecipe(supabase: any, recipe: HarvestUploadRecipe): Promise<string[]> {
-  return Promise.all(tagEntriesForRecipe(recipe).map((tag) => getOrCreateTag(supabase, tag.slug, tag.category)));
+async function tagIdsForRecipe(supabase: any, recipe: HarvestUploadRecipe, tenantId: string): Promise<string[]> {
+  return Promise.all(tagEntriesForRecipe(recipe).map((tag) => getOrCreateTag(supabase, tag.slug, tag.category, tenantId)));
 }
 
 async function clearHarvestSpineTags(supabase: any, mediaIds: string[]) {
@@ -283,13 +285,14 @@ async function applyRecipeTags(input: {
   mediaIds: string[];
   recipe: HarvestUploadRecipe;
   addedBy: string;
+  tenantId: string;
   mode?: TagMode;
 }) {
   if (input.mode === "replace") {
     await clearHarvestSpineTags(input.supabase, input.mediaIds);
   }
 
-  const tagIds = await tagIdsForRecipe(input.supabase, input.recipe);
+  const tagIds = await tagIdsForRecipe(input.supabase, input.recipe, input.tenantId);
   const tagRows = input.mediaIds.flatMap((mediaId) =>
     tagIds.map((tagId) => ({
       media_asset_id: mediaId,
@@ -326,7 +329,7 @@ async function uploadHarvestMediaSourcesToEmpathyLedger(input: {
 }): Promise<{ uploaded: UploadResult[]; failed: Array<{ fileName: string; error: string }> }> {
   const { supabase, gallery, tenantId } = await createElAdminContext();
   const projectId = await getProjectIdForRecipe(supabase, input.recipe);
-  const tagIds = await tagIdsForRecipe(supabase, input.recipe);
+  const tagIds = await tagIdsForRecipe(supabase, input.recipe, tenantId);
 
   const { data: existingSort } = await supabase
     .from("gallery_media_associations")
@@ -466,7 +469,7 @@ export async function tagHarvestMediaInEmpathyLedger(input: {
   recipe: HarvestUploadRecipe;
   mode?: TagMode;
 }): Promise<{ updated: number }> {
-  const { supabase, gallery } = await createElAdminContext();
+  const { supabase, gallery, tenantId } = await createElAdminContext();
   const projectId = await getProjectIdForRecipe(supabase, input.recipe);
 
   await applyRecipeTags({
@@ -474,6 +477,7 @@ export async function tagHarvestMediaInEmpathyLedger(input: {
     mediaIds: input.mediaIds,
     recipe: input.recipe,
     addedBy: gallery.created_by,
+    tenantId,
     mode: input.mode ?? "merge",
   });
 
@@ -492,8 +496,8 @@ export async function addHarvestWorkTagToMedia(input: {
   work: string;
 }): Promise<{ updated: number }> {
   if (input.mediaIds.length === 0) return { updated: 0 };
-  const { supabase, gallery } = await createElAdminContext();
-  const tagId = await getOrCreateTag(supabase, normalizeTagSlug(input.work), "harvest-work");
+  const { supabase, gallery, tenantId } = await createElAdminContext();
+  const tagId = await getOrCreateTag(supabase, normalizeTagSlug(input.work), "harvest-work", tenantId);
 
   const { data: rows, error: rowsError } = await supabase
     .from("media_assets")

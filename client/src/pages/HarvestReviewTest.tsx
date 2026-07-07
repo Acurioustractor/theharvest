@@ -256,19 +256,13 @@ function ThisWeekStrip() {
         </div>
         <div className="shrink-0">
           <div className="flex flex-wrap gap-3">
-            <Link
-              href="/whats-on"
-              className="inline-flex min-h-11 items-center justify-center bg-[#1C1917] px-5 py-2 text-sm font-bold text-[#F5F0E8] transition hover:bg-stone-700"
-            >
-              See What's On
-            </Link>
             <a
               href={MEMBERS_PAGE_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex min-h-11 items-center justify-center border-2 border-[#1C1917] px-5 py-2 text-sm font-bold text-[#1C1917] transition hover:bg-[#1C1917] hover:text-[#F5F0E8]"
             >
-              Dates on the members page
+              Become a member
             </a>
           </div>
           <p className="mt-2 text-xs text-[#1C1917]/70">
@@ -436,7 +430,7 @@ export function SiteFooter() {
 function Hero() {
   return (
     <section id="top" className="bg-[#1C1917] text-[#F5F0E8]">
-      <div className="grid md:min-h-[82vh] md:grid-cols-[1.05fr_1fr] md:items-stretch">
+      <div className="grid md:min-h-[64vh] md:grid-cols-[1.05fr_1fr] md:items-stretch">
         <div className="flex flex-col justify-center px-6 pb-20 pt-32 md:pl-14 md:pr-10 md:pb-16 md:pt-36 lg:pl-20 lg:pr-14">
           <motion.div
             initial={{ opacity: 0, y: 28 }}
@@ -473,13 +467,19 @@ function Hero() {
               multiline
             />
 
-            <div className="mt-12 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+            <div className="mt-12 flex flex-col items-start gap-4 sm:flex-row sm:flex-wrap sm:items-center">
               <Link
-                href="/what-is-the-harvest"
+                href="/whats-on"
                 className={harvestButtonClasses.primary}
               >
-                Learn about The Harvest
+                See what's on this week
                 <ArrowRight className="h-4 w-4" />
+              </Link>
+              <Link
+                href="/what-is-the-harvest"
+                className="text-sm font-bold text-white/70 underline-offset-4 transition hover:text-white hover:underline"
+              >
+                Learn about The Harvest
               </Link>
             </div>
           </motion.div>
@@ -503,46 +503,43 @@ function Hero() {
 function WhatThisIs() {
   return (
     <section className="bg-[#F5F0E8] px-5 py-14 md:px-8 md:py-20">
-      <div className="mx-auto max-w-7xl">
-        <div className="grid gap-10 md:grid-cols-[1fr_1.2fr] md:gap-20">
-          <div />
-          <div className="space-y-5 text-lg leading-relaxed text-stone-700">
-            <EditableText
-              page="home"
-              slot="what-this-is-p1"
-              defaultContent="The Harvest sits on Jinibara Country, on land with a long Indigenous history before any industry arrived. The more recent story of this ridge runs through dairy, timber, co-operatives, and the hands that worked them."
-              as="p"
-              multiline
-            />
-            <EditableText
-              page="home"
-              slot="what-this-is-p2"
-              defaultContent="The site was known as Green Harvest, a nursery remembered by local gardeners and seed buyers. The works being made here now carry that growing history forward: a garden in the spirit of the farms and orchards that once held this ground, a milk crate pavilion that nods to the dairy industry, paths that hold the timber story, and a shop that begins with the co-op spirit still in the room."
-              as="p"
-              multiline
-            />
-            <EditableText
-              page="home"
-              slot="what-this-is-p3"
-              defaultContent="Art sits at the centre, not as decoration, but as how a place understands itself. The works represent this moment in Witta history."
-              as="p"
-              multiline
-            />
-            <EditableText
-              page="home"
-              slot="what-this-is-p4"
-              defaultContent="The hope is that The Harvest becomes a place where the Witta community and visitors come to grow, make, and gather: to celebrate together what has been made."
-              as="p"
-              multiline
-            />
-            <Link
-              href="/what-is-the-harvest"
-              className={harvestButtonClasses.secondary}
-            >
-              Learn about The Harvest
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
+      <div className="mx-auto max-w-3xl text-center">
+        <div className="space-y-5 text-lg leading-relaxed text-stone-700">
+          <EditableText
+            page="home"
+            slot="what-this-is-p1"
+            defaultContent="The Harvest sits on Jinibara Country, on land with a long Indigenous history before any industry arrived. The more recent story of this ridge runs through dairy, timber, co-operatives, and the hands that worked them."
+            as="p"
+            multiline
+          />
+          <EditableText
+            page="home"
+            slot="what-this-is-p2"
+            defaultContent="The site was known as Green Harvest, a nursery remembered by local gardeners and seed buyers. The works being made here now carry that growing history forward: a garden in the spirit of the farms and orchards that once held this ground, a milk crate pavilion that nods to the dairy industry, paths that hold the timber story, and a shop that begins with the co-op spirit still in the room."
+            as="p"
+            multiline
+          />
+          <EditableText
+            page="home"
+            slot="what-this-is-p3"
+            defaultContent="Art sits at the centre, not as decoration, but as how a place understands itself. The works represent this moment in Witta history."
+            as="p"
+            multiline
+          />
+          <EditableText
+            page="home"
+            slot="what-this-is-p4"
+            defaultContent="The hope is that The Harvest becomes a place where the Witta community and visitors come to grow, make, and gather: to celebrate together what has been made."
+            as="p"
+            multiline
+          />
+          <Link
+            href="/what-is-the-harvest"
+            className={harvestButtonClasses.secondary}
+          >
+            Learn about The Harvest
+            <ArrowRight className="h-4 w-4" />
+          </Link>
         </div>
       </div>
     </section>
@@ -662,14 +659,14 @@ function WorkNotes() {
             <EditableText
               page="home"
               slot="work-notes-eyebrow"
-              defaultContent="works in progress"
+              defaultContent="in progress right now"
               as="p"
               className="font-mono text-xs uppercase tracking-[0.2em] text-[#8B4A2A]"
             />
             <EditableText
               page="home"
               slot="work-notes-heading"
-              defaultContent="See the works as they move."
+              defaultContent="What's taking shape, right now."
               as="h2"
               className="mt-3 max-w-2xl text-4xl font-black leading-[0.96] md:text-6xl"
             />
@@ -683,6 +680,16 @@ function WorkNotes() {
               className="text-lg leading-relaxed text-stone-700"
               multiline
             />
+            <p className="mt-3 text-lg leading-relaxed text-stone-700">
+              Most of it is easiest to see in person, on a Friday, Saturday or Sunday pizza session.{" "}
+              <Link
+                href="/whats-on"
+                className="font-semibold text-[#8B4A2A] underline underline-offset-4 hover:text-[#1C1917]"
+              >
+                See what's on
+              </Link>
+              .
+            </p>
             <p className="mt-3 text-lg leading-relaxed text-stone-700">
               Grow, make, or have two spare hours?{" "}
               <Link
