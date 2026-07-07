@@ -150,7 +150,6 @@ const pageNavLinks = [
   { label: "What's On", href: "/whats-on" },
   { label: "Works", href: "/works" },
   { label: "Shop", href: "/shop" },
-  { label: "Blog", href: "/blog" },
   { label: "Get Involved", href: "/get-involved" },
   { label: "Membership", href: "/membership" },
   { label: "Contact", href: "/contact" },
@@ -161,7 +160,6 @@ const footerLinks = [
   { label: "What's On", href: "/whats-on" },
   { label: "Works", href: "/works" },
   { label: "Shop", href: "/shop" },
-  { label: "Blog", href: "/blog" },
   { label: "Membership", href: "/membership" },
   { label: "Get Involved", href: "/get-involved" },
   { label: "Venue Hire", href: "/venue-hire" },
@@ -437,43 +435,66 @@ export function SiteFooter() {
 
 function Hero() {
   return (
-    <section id="top" className="relative min-h-[78svh] overflow-hidden bg-[#1C1917] text-[#F5F0E8] md:min-h-[94vh]">
-      <img
-        src="/images/optimized/seed-house-front-1600.webp"
-        alt="The Harvest building in Witta"
-        className="absolute inset-0 h-full w-full object-cover object-[58%_62%] opacity-[0.62] md:object-center"
-      />
-      <div className="absolute inset-0 bg-[#1C1917]/68" />
+    <section id="top" className="bg-[#1C1917] text-[#F5F0E8]">
+      <div className="grid md:min-h-[82vh] md:grid-cols-[1.05fr_1fr] md:items-stretch">
+        <div className="flex flex-col justify-center px-6 pb-20 pt-32 md:pl-14 md:pr-10 md:pb-16 md:pt-36 lg:pl-20 lg:pr-14">
+          <motion.div
+            initial={{ opacity: 0, y: 28 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.72 }}
+          >
+            <EditableText
+              page="home"
+              slot="hero-eyebrow"
+              defaultContent="Witta · Jinibara Country · Open since 20 June"
+              as="p"
+              className="font-mono text-xs uppercase tracking-[0.24em] text-[#C4922A]"
+            />
+            <EditableText
+              page="home"
+              slot="hero-title"
+              defaultContent="The Harvest"
+              as="h1"
+              className="mt-6 text-6xl font-black leading-[0.92] tracking-normal md:text-7xl lg:text-8xl"
+            />
+            <EditableText
+              page="home"
+              slot="hero-tagline"
+              defaultContent="Grow. Make. Gather."
+              as="h2"
+              className="mt-6 text-2xl font-semibold tracking-wide text-[#C4922A] md:text-3xl"
+            />
+            <EditableText
+              page="home"
+              slot="hero-subhead"
+              defaultContent="A community garden and creative gathering place in Witta."
+              as="h3"
+              className="mt-8 max-w-lg text-xl font-normal leading-relaxed text-white/85 md:text-2xl"
+              multiline
+            />
 
-      <div className="relative z-10 mx-auto flex min-h-[78svh] max-w-5xl flex-col justify-center px-5 pb-10 pt-28 md:min-h-[94vh] md:justify-end md:px-8 md:pb-24">
-        <motion.div
-          initial={{ opacity: 0, y: 28 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.72 }}
-        >
-          <p className="font-mono text-xs uppercase tracking-[0.24em] text-[#C4922A]">
-            Witta · Jinibara Country · Open since 20 June
-          </p>
-          <h1 className="mt-6 text-6xl font-black leading-[0.92] tracking-normal md:text-8xl lg:text-[8.5rem]">
-            The Harvest
-          </h1>
-          <h2 className="mt-6 text-2xl font-semibold tracking-wide text-[#C4922A] md:text-3xl">
-            Grow. Make. Gather.
-          </h2>
-          <h3 className="mt-8 max-w-3xl text-xl font-normal leading-relaxed text-white/85 md:text-2xl">
-            A community garden and creative gathering place in Witta.
-          </h3>
+            <div className="mt-12 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+              <Link
+                href="/what-is-the-harvest"
+                className={harvestButtonClasses.primary}
+              >
+                Learn about The Harvest
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+          </motion.div>
+        </div>
 
-          <div className="mt-12 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-            <Link
-              href="/what-is-the-harvest"
-              className={harvestButtonClasses.primary}
-            >
-              Learn about The Harvest
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
-        </motion.div>
+        <HarvestImage
+          page="home"
+          slot="hero-photo"
+          src="/images/optimized/seed-house-front-1600.webp"
+          alt="The Harvest building in Witta"
+          size="hero"
+          priority
+          className="min-h-[46vh] w-full md:min-h-0"
+          imgClassName="h-full w-full object-cover"
+        />
       </div>
     </section>
   );
@@ -486,29 +507,34 @@ function WhatThisIs() {
         <div className="grid gap-10 md:grid-cols-[1fr_1.2fr] md:gap-20">
           <div />
           <div className="space-y-5 text-lg leading-relaxed text-stone-700">
-            <p>
-              The Harvest sits on Jinibara Country, on land with a long
-              Indigenous history before any industry arrived. The more recent story
-              of this ridge runs through dairy, timber, co-operatives, and the hands
-              that worked them.
-            </p>
-            <p>
-              The site was known as Green Harvest, a nursery remembered by local
-              gardeners and seed buyers. The works being made here now carry that
-              growing history forward: a garden in the spirit of the farms and
-              orchards that once held this ground, a milk crate pavilion that nods to
-              the dairy industry, paths that hold the timber story, and a shop that
-              begins with the co-op spirit still in the room.
-            </p>
-            <p>
-              Art sits at the centre, not as decoration, but as how a place
-              understands itself. The works represent this moment in Witta history.
-            </p>
-            <p>
-              The hope is that The Harvest becomes a place where the Witta
-              community and visitors come to grow, make, and gather: to celebrate
-              together what has been made.
-            </p>
+            <EditableText
+              page="home"
+              slot="what-this-is-p1"
+              defaultContent="The Harvest sits on Jinibara Country, on land with a long Indigenous history before any industry arrived. The more recent story of this ridge runs through dairy, timber, co-operatives, and the hands that worked them."
+              as="p"
+              multiline
+            />
+            <EditableText
+              page="home"
+              slot="what-this-is-p2"
+              defaultContent="The site was known as Green Harvest, a nursery remembered by local gardeners and seed buyers. The works being made here now carry that growing history forward: a garden in the spirit of the farms and orchards that once held this ground, a milk crate pavilion that nods to the dairy industry, paths that hold the timber story, and a shop that begins with the co-op spirit still in the room."
+              as="p"
+              multiline
+            />
+            <EditableText
+              page="home"
+              slot="what-this-is-p3"
+              defaultContent="Art sits at the centre, not as decoration, but as how a place understands itself. The works represent this moment in Witta history."
+              as="p"
+              multiline
+            />
+            <EditableText
+              page="home"
+              slot="what-this-is-p4"
+              defaultContent="The hope is that The Harvest becomes a place where the Witta community and visitors come to grow, make, and gather: to celebrate together what has been made."
+              as="p"
+              multiline
+            />
             <Link
               href="/what-is-the-harvest"
               className={harvestButtonClasses.secondary}
@@ -542,15 +568,27 @@ function Threads() {
     <section id="threads" className="scroll-mt-24 bg-[#1C1917] py-16 text-[#F5F0E8] md:py-24">
       <div className="mx-auto max-w-7xl px-5 md:px-8">
         <motion.div {...fadeInUp} className="mb-10 max-w-3xl">
-          <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#C4922A]">
-            local industry threads
-          </p>
-          <h2 className="mt-3 text-4xl font-black leading-[0.96] md:text-6xl">
-            The place has a history. The works carry it forward.
-          </h2>
-          <p className="mt-5 max-w-2xl text-lg leading-relaxed text-white/70">
-            Dairy, timber, co-operatives. Not themes on a wall.
-          </p>
+          <EditableText
+            page="home"
+            slot="threads-eyebrow"
+            defaultContent="local industry threads"
+            as="p"
+            className="font-mono text-xs uppercase tracking-[0.2em] text-[#C4922A]"
+          />
+          <EditableText
+            page="home"
+            slot="threads-heading"
+            defaultContent="The place has a history. The works carry it forward."
+            as="h2"
+            className="mt-3 text-4xl font-black leading-[0.96] md:text-6xl"
+          />
+          <EditableText
+            page="home"
+            slot="threads-subhead"
+            defaultContent="Dairy, timber, co-operatives. Not themes on a wall."
+            as="p"
+            className="mt-5 max-w-2xl text-lg leading-relaxed text-white/70"
+          />
         </motion.div>
 
         <div className="grid gap-5 lg:grid-cols-3">
@@ -584,7 +622,14 @@ function Threads() {
                     </p>
                   </div>
                   <h3 className="mt-5 text-3xl font-black">{thread.title}</h3>
-                  <p className="mt-3 flex-1 leading-relaxed text-white/74">{thread.body}</p>
+                  <EditableText
+                    page="home"
+                    slot={`thread-${thread.title.toLowerCase()}-body`}
+                    defaultContent={thread.body}
+                    as="p"
+                    className="mt-3 flex-1 leading-relaxed text-white/74"
+                    multiline
+                  />
                   <Link
                     href={thread.link.href}
                     className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-[#C4922A] underline-offset-4 transition hover:text-white hover:underline"
@@ -614,17 +659,30 @@ function WorkNotes() {
       <div className="mx-auto max-w-7xl px-5 md:px-8">
         <motion.div {...fadeInUp} className="mb-10 grid gap-6 md:grid-cols-[0.88fr_1fr] md:items-end">
           <div>
-            <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#8B4A2A]">
-              works in progress
-            </p>
-            <h2 className="mt-3 max-w-2xl text-4xl font-black leading-[0.96] md:text-6xl">
-              See the works as they move.
-            </h2>
+            <EditableText
+              page="home"
+              slot="work-notes-eyebrow"
+              defaultContent="works in progress"
+              as="p"
+              className="font-mono text-xs uppercase tracking-[0.2em] text-[#8B4A2A]"
+            />
+            <EditableText
+              page="home"
+              slot="work-notes-heading"
+              defaultContent="See the works as they move."
+              as="h2"
+              className="mt-3 max-w-2xl text-4xl font-black leading-[0.96] md:text-6xl"
+            />
           </div>
           <div className="max-w-2xl md:justify-self-end">
-            <p className="text-lg leading-relaxed text-stone-700">
-              The garden leads the public work: beds, paths, pavilion, kids area, the first shop shelves and the Milk Man at the gate.
-            </p>
+            <EditableText
+              page="home"
+              slot="work-notes-intro"
+              defaultContent="The garden leads the public work: beds, paths, pavilion, kids area, the first shop shelves and the Milk Man at the gate."
+              as="p"
+              className="text-lg leading-relaxed text-stone-700"
+              multiline
+            />
             <p className="mt-3 text-lg leading-relaxed text-stone-700">
               Grow, make, or have two spare hours?{" "}
               <Link
@@ -679,12 +737,23 @@ function WorkNotes() {
                     {item.status}
                   </span>
                   <h3 className="mt-4 text-3xl font-black leading-tight">{item.title}</h3>
-                  <p className="mt-4 leading-relaxed text-stone-700">{item.body}</p>
+                  <EditableText
+                    page="home"
+                    slot={`${item.slot}-body`}
+                    defaultContent={item.body}
+                    as="p"
+                    className="mt-4 leading-relaxed text-stone-700"
+                    multiline
+                  />
                 </div>
                 <div className="mt-6 border-t border-stone-200 pt-4">
-                  <p className="text-sm font-semibold leading-relaxed text-[#4A6741]">
-                    {item.ask}
-                  </p>
+                  <EditableText
+                    page="home"
+                    slot={`${item.slot}-ask`}
+                    defaultContent={item.ask}
+                    as="p"
+                    className="text-sm font-semibold leading-relaxed text-[#4A6741]"
+                  />
                   {item.workSlug && (
                     <span className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-[#8B4A2A]">
                       See this work
@@ -702,7 +771,7 @@ function WorkNotes() {
 }
 
 function isInteractiveTarget(target: EventTarget | null) {
-  return target instanceof HTMLElement && Boolean(target.closest("a,button,input,textarea,select,[role='button']"));
+  return target instanceof HTMLElement && Boolean(target.closest("a,button,input,textarea,select,[role='button'],[data-editable-text]"));
 }
 
 function EventCallout() {
@@ -710,12 +779,20 @@ function EventCallout() {
     <section id="updates" className="scroll-mt-24 bg-[#3B5563] py-16 text-white md:py-24">
       <div className="mx-auto grid max-w-7xl gap-10 px-5 md:grid-cols-[0.86fr_1.14fr] md:px-8">
         <motion.div {...fadeInUp}>
-          <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#C4922A]">
-            Membership updates · events
-          </p>
-          <h2 className="mt-3 max-w-xl text-4xl font-black leading-[0.96] md:text-6xl">
-            Become a member for the longer build, and whatever happens next.
-          </h2>
+          <EditableText
+            page="home"
+            slot="event-callout-eyebrow"
+            defaultContent="Membership updates · events"
+            as="p"
+            className="font-mono text-xs uppercase tracking-[0.2em] text-[#C4922A]"
+          />
+          <EditableText
+            page="home"
+            slot="event-callout-heading"
+            defaultContent="Become a member for the longer build, and whatever happens next."
+            as="h2"
+            className="mt-3 max-w-xl text-4xl font-black leading-[0.96] md:text-6xl"
+          />
           <p className="mt-6 max-w-xl text-lg leading-relaxed text-white/76">
             Membership is free. It gives you updates, event invites, first-access opportunities and a simple way to ask questions. Upcoming events land on the{" "}
             <a
@@ -796,23 +873,41 @@ function FeedbackStrip() {
 function Closing() {
   return (
     <section className="relative overflow-hidden bg-[#1C1917] py-16 text-[#F5F0E8] md:py-24">
-      <img
+      <HarvestImage
+        page="home"
+        slot="closing-photo"
         src="/images/optimized/hero-aerial-1400.webp"
         alt="Aerial view of The Harvest site in Witta"
-        className="absolute inset-0 h-full w-full object-cover opacity-[0.24]"
+        size="hero"
+        controlsPosition="corner"
+        className="absolute inset-0 h-full w-full"
+        imgClassName="h-full w-full object-cover opacity-[0.24]"
       />
-      <div className="absolute inset-0 bg-[#1C1917]/72" />
+      <div className="pointer-events-none absolute inset-0 bg-[#1C1917]/72" />
       <div className="relative mx-auto max-w-7xl px-5 md:px-8">
         <motion.div {...fadeInUp} className="max-w-3xl">
-          <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#C4922A]">
-            We are open
-          </p>
-          <h2 className="mt-3 text-4xl font-black leading-[0.96] md:text-6xl">
-            Come through the gate and see what is being made.
-          </h2>
-          <p className="mt-6 max-w-2xl text-lg leading-relaxed text-white/78">
-            We opened with a first members and makers day on Saturday 20 June, and from July The Harvest is properly under way. You do not need to book to come and have a look while we find our feet. The garden grows through regular work days, the first shop shelves are being shaped with local makers and growers, and the art space is taking form. Members hear about events first.
-          </p>
+          <EditableText
+            page="home"
+            slot="closing-eyebrow"
+            defaultContent="We are open"
+            as="p"
+            className="font-mono text-xs uppercase tracking-[0.2em] text-[#C4922A]"
+          />
+          <EditableText
+            page="home"
+            slot="closing-heading"
+            defaultContent="Come through the gate and see what is being made."
+            as="h2"
+            className="mt-3 text-4xl font-black leading-[0.96] md:text-6xl"
+          />
+          <EditableText
+            page="home"
+            slot="closing-body"
+            defaultContent="We opened with a first members and makers day on Saturday 20 June, and are now properly under way. You do not need to book to come and have a look while we find our feet. The garden grows through regular work days, the first shop shelves are being shaped with local makers and growers, and the art space is taking form. Members hear about events first."
+            as="p"
+            className="mt-6 max-w-2xl text-lg leading-relaxed text-white/78"
+            multiline
+          />
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-6">
             <Link
               href="/works"

@@ -26,6 +26,7 @@ export function HarvestImage({
   defaultWorkSlug,
   size = "feature",
   priority = false,
+  controlsPosition = "center",
 }: {
   /** Logical page id, e.g. "works" */
   page: string;
@@ -43,6 +44,10 @@ export function HarvestImage({
   size?: ImageSize;
   /** Above-the-fold image — sets eager loading + high fetchpriority */
   priority?: boolean;
+  /** Where the admin swap/revert controls sit. Use "corner" for full-bleed
+   * heroes with text overlaid on top of the image, so the controls don't
+   * land underneath the (higher z-index) heading and become unclickable. */
+  controlsPosition?: "center" | "corner";
 }) {
   const { user } = useAuth();
   const isAdmin = user?.role === "admin";
@@ -129,7 +134,13 @@ export function HarvestImage({
           {/* Hover-only admin overlay */}
           <div className="pointer-events-none absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-200" />
 
-          <div className="pointer-events-none absolute inset-0 flex items-center justify-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+          <div
+            className={`pointer-events-none absolute inset-0 flex gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200 ${
+              controlsPosition === "corner"
+                ? "items-start justify-end p-4 pt-11"
+                : "items-center justify-center"
+            }`}
+          >
             <button
               type="button"
               onClick={() => setPickerOpen(true)}

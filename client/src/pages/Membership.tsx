@@ -187,10 +187,11 @@ export default function Membership() {
           alt="The front of The Harvest building in Witta"
           size="hero"
           priority
+          controlsPosition="corner"
           className="absolute inset-0 h-full w-full"
           imgClassName="h-full w-full object-cover opacity-[0.38]"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#1C1917] via-[#1C1917]/82 to-[#1C1917]/40" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#1C1917] via-[#1C1917]/82 to-[#1C1917]/40" />
 
         <div className="relative z-10 mx-auto flex min-h-[78vh] max-w-6xl flex-col justify-end px-5 pb-6 pt-28 md:px-8">
           <div className="grid gap-10 pb-10 md:grid-cols-[1fr_0.78fr] md:items-end md:pb-14">

@@ -61,10 +61,11 @@ export default function HarvestJourneyPost() {
             alt="Aerial view of The Harvest site in Witta"
             size="hero"
             priority
+            controlsPosition="corner"
             className="absolute inset-0 h-full w-full"
             imgClassName="h-full w-full object-cover opacity-60"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-stone-950/86 via-stone-950/54 to-stone-950/16" />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-stone-950/86 via-stone-950/54 to-stone-950/16" />
           <div className="relative z-10 mx-auto flex min-h-[86vh] max-w-6xl flex-col justify-end px-5 pb-10 pt-28 md:px-8 md:pb-14">
             <div className="max-w-4xl pb-10 md:pb-14">
               <p className="mb-5 font-mono text-xs uppercase tracking-[0.24em] text-[#C4922A]">

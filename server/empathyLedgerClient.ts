@@ -141,6 +141,30 @@ class EmpathyLedgerClient {
     this.apiKey = apiKey || API_KEY;
   }
 
+  /**
+   * The content-hub/media endpoint returns internal `/api/media/:id/file`
+   * links that redirect to the underlying storage URL. Browsers block
+   * loading those cross-origin (the EL server sends
+   * Cross-Origin-Resource-Policy: same-origin), so resolve to the final
+   * storage URL here, server-side, before handing it to the client. This
+   * also keeps saved image overrides portable — they end up pointing at the
+   * permanent storage URL rather than a local EL dev-server port.
+   */
+  private async resolveMediaFileUrl(url: string): Promise<string> {
+    if (!/^https?:\/\/[^/]+\/api\/media\//.test(url)) return url;
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 4000);
+      const response = await fetch(url, { redirect: "manual", signal: controller.signal });
+      clearTimeout(timeout);
+      const location = response.headers.get("location");
+      return location || url;
+    } catch (error) {
+      console.error(`[EmpathyLedger] Failed to resolve media URL ${url}:`, error);
+      return url;
+    }
+  }
+
   private async fetch<T>(endpoint: string, options?: RequestInit): Promise<T> {
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
@@ -479,9 +503,21 @@ class EmpathyLedgerClient {
     // Map the broader content-hub schema onto the gallery schema the website
     // consumes. Untagged photos get empty arrays so the UI keeps working.
     const sliced = collected.slice(0, requestedLimit);
+
+    // Resolve each item's proxy link to its real storage URL, in
+    // concurrency-limited batches so we don't fire hundreds of requests at
+    // the EL server at once.
+    const resolvedSrcs: string[] = [];
+    const RESOLVE_BATCH_SIZE = 20;
+    for (let i = 0; i < sliced.length; i += RESOLVE_BATCH_SIZE) {
+      const batch = sliced.slice(i, i + RESOLVE_BATCH_SIZE);
+      const batchSrcs = await Promise.all(batch.map((item) => this.resolveMediaFileUrl(item.url)));
+      resolvedSrcs.push(...batchSrcs);
+    }
+
     const media: ELMediaAsset[] = sliced.map((item, index) => ({
       id: item.id,
-      src: item.url,
+      src: resolvedSrcs[index],
       title: item.title || item.altText || "Untitled",
       description: item.description,
       altText: item.altText,
