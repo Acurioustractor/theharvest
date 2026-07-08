@@ -2,6 +2,7 @@ import { useState, useEffect, type CSSProperties } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
+import { setPageSeo } from "@/lib/seo";
 import { SiteFooter, SiteNav } from "./HarvestReviewTest";
 
 /* ─────────────────────────────────────
@@ -614,6 +615,15 @@ export default function CommunityPulse() {
   const [submitting, setSubmitting] = useState(false);
 
   const submitMutation = trpc.pulse.submit.useMutation();
+
+  useEffect(() => {
+    setPageSeo({
+      title: "Harvest Pulse · The Harvest Witta",
+      description:
+        "Tell The Harvest what is working, what is missing and what would help the community garden and gathering place take shape in Witta.",
+      path: "/pulse",
+    });
+  }, []);
 
   const update = (patch: Partial<SurveyData>) => {
     setData(prev => ({ ...prev, ...patch }));

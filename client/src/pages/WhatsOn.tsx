@@ -1,5 +1,5 @@
-import { useState, useMemo } from "react";
-import { Link } from "wouter";
+import { useState, useMemo, useEffect } from "react";
+import { Link, useLocation } from "wouter";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -24,6 +24,7 @@ import { HarvestImage } from "@/components/HarvestImage";
 import { trpc } from "@/lib/trpc";
 import { EditableText } from "@/components/EditableText";
 import { MEMBERS_PAGE_URL } from "@/lib/links";
+import { setJsonLd, setPageSeo } from "@/lib/seo";
 import eventsData from "@/data/events.json";
 import { useQuery } from "@tanstack/react-query";
 
@@ -249,6 +250,44 @@ function PizzaGallery() {
               imgClassName="h-full w-full object-cover"
             />
           ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function PizzaSearchBlock() {
+  return (
+    <section className="border-b border-stone-200 bg-stone-50 py-12">
+      <div className="container max-w-4xl">
+        <p className="mb-2 text-sm font-medium uppercase tracking-wide text-amber-600">
+          Pizza in Witta
+        </p>
+        <h2 className="mb-4 font-serif text-3xl font-bold text-stone-800 md:text-4xl">
+          DIY pizza at 9 Gumland Drive.
+        </h2>
+        <div className="grid gap-6 md:grid-cols-[1.3fr_0.7fr]">
+          <div className="space-y-4 text-stone-600">
+            <p>
+              The pizza oven is the easiest way to see The Harvest in person.
+              Come to Witta, make your own pizza, sit in the garden, and see
+              what is taking shape around the shed.
+            </p>
+            <p>
+              Most weeks the rhythm is Friday 3pm to 8pm with a community movie
+              night, Saturday 12pm to 8pm, and Sunday 12pm to 6pm. Weeks can
+              vary, so the members page carries this week's dates first.
+            </p>
+          </div>
+          <div className="rounded-lg border border-stone-200 bg-white p-5 text-sm text-stone-600">
+            <p className="mb-2 font-semibold text-stone-800">What to know</p>
+            <p>DIY pizza: $30 each.</p>
+            <p>Dessert pizza: $10 each.</p>
+            <p>Soft drinks: $5 to $6.50.</p>
+            <p className="mt-3">
+              The Harvest, 9 Gumland Drive, Witta QLD 4552.
+            </p>
+          </div>
         </div>
       </div>
     </section>
@@ -555,6 +594,59 @@ function PizzaRsvpBlock() {
 
 export default function WhatsOn() {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [location] = useLocation();
+  const isPizzaPage = location === "/witta-pizza";
+
+  useEffect(() => {
+    setPageSeo({
+      title: isPizzaPage ? "DIY Pizza in Witta · The Harvest" : "What's On · The Harvest Witta",
+      description: isPizzaPage
+        ? "Make your own pizza at The Harvest, 9 Gumland Drive, Witta. Weekend DIY pizza sessions most Fridays, Saturdays and Sundays, with dates confirmed on the members page."
+        : "DIY pizza weekends, community days, work days and events at The Harvest, 9 Gumland Drive, Witta on Jinibara Country.",
+      path: isPizzaPage ? "/witta-pizza" : "/whats-on",
+      image: "/images/optimized/community-gathering-1000.webp",
+      imageAlt: "Neighbours gathered at The Harvest in Witta.",
+    });
+
+    setJsonLd("whats-on-jsonld", {
+      "@context": "https://schema.org",
+      "@type": isPizzaPage ? "FoodEstablishment" : "LocalBusiness",
+      "@id": isPizzaPage
+        ? "https://www.theharvestwitta.com.au/witta-pizza#pizza"
+        : "https://www.theharvestwitta.com.au/whats-on#events",
+      name: isPizzaPage ? "DIY pizza at The Harvest" : "What's on at The Harvest",
+      url: `https://www.theharvestwitta.com.au${isPizzaPage ? "/witta-pizza" : "/whats-on"}`,
+      image: "https://www.theharvestwitta.com.au/images/optimized/community-gathering-1000.webp",
+      description: isPizzaPage
+        ? "DIY pizza sessions at The Harvest, 9 Gumland Drive, Witta. Make your own pizza and sit in the garden while it bakes."
+        : "Weekend pizza sessions, community days, work days and gatherings at The Harvest in Witta.",
+      parentOrganization: {
+        "@id": "https://www.theharvestwitta.com.au/#organization",
+      },
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: "9 Gumland Drive",
+        addressLocality: "Witta",
+        addressRegion: "QLD",
+        postalCode: "4552",
+        addressCountry: "AU",
+      },
+      areaServed: ["Witta", "Maleny", "Sunshine Coast Hinterland"],
+      servesCuisine: isPizzaPage ? "Pizza" : undefined,
+      telephone: "+61422883943",
+      makesOffer: isPizzaPage
+        ? {
+            "@type": "Offer",
+            itemOffered: {
+              "@type": "Service",
+              name: "DIY pizza making",
+              description:
+                "Stretch your base, choose your toppings and fire your pizza at The Harvest.",
+            },
+          }
+        : undefined,
+    });
+  }, [isPizzaPage]);
 
   // Fetch approved events from database
   const { data: dbEvents, refetch } = useQuery({
@@ -646,15 +738,15 @@ export default function WhatsOn() {
             className="mx-auto max-w-3xl text-center"
           >
             <span className="text-amber-400 font-medium tracking-wide uppercase text-sm">
-              Events & Gatherings
+              {isPizzaPage ? "Witta pizza weekends" : "Events & Gatherings"}
             </span>
             <h1 className="text-5xl md:text-6xl font-serif font-bold text-white mt-3 mb-6">
-              What's On
+              {isPizzaPage ? "DIY pizza in Witta" : "What's On"}
             </h1>
             <p className="text-xl text-white/80 leading-relaxed mb-8">
-              Weekend pizza sessions, work days and gatherings at The Harvest, a community
-              garden and creative gathering place in Witta, on Jinibara Country. New dates land
-              on the members page first.
+              {isPizzaPage
+                ? "Make your own pizza at The Harvest, 9 Gumland Drive, Witta. Most weekends the oven is on Friday, Saturday and Sunday. Weeks can vary, and new dates land on the members page first."
+                : "Weekend pizza sessions, work days and gatherings at The Harvest, a community garden and creative gathering place in Witta, on Jinibara Country. New dates land on the members page first."}
             </p>
             <div className="flex justify-center">
               <EventSubmissionDialog onEventSubmitted={() => refetch()} />
@@ -666,6 +758,8 @@ export default function WhatsOn() {
       <RegularSessions />
 
       <PizzaGallery />
+
+      <PizzaSearchBlock />
 
       <MembershipInvite />
 

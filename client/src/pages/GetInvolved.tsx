@@ -1,8 +1,9 @@
-import { useState, FormEvent } from "react";
+import { useEffect, useState, FormEvent } from "react";
 import { VisitStrip } from "@/components/VisitStrip";
 import { MEMBERS_PAGE_URL } from "@/lib/links";
 import { communitySubmit } from "@/lib/api";
 import { cn } from "@/lib/utils";
+import { setPageSeo } from "@/lib/seo";
 import { SiteFooter, SiteNav } from "./HarvestReviewTest";
 import {
   Palette,
@@ -157,6 +158,15 @@ export default function GetInvolved() {
   const [errorMsg, setErrorMsg] = useState("");
 
   const config = FORMS.find((f) => f.id === activeForm)!;
+
+  useEffect(() => {
+    setPageSeo({
+      title: "Get Involved · The Harvest Witta",
+      description:
+        "Start where you are: work days, workshops, residencies, local business ideas and stories at The Harvest in Witta.",
+      path: "/get-involved",
+    });
+  }, []);
 
   function updateField(name: string, value: string) {
     setFormData((prev) => ({ ...prev, [name]: value }));

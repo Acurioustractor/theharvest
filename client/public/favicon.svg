@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="The Harvest">
+  <rect width="64" height="64" fill="#1C1917"/>
+  <path d="M18 15h6v13h16V15h6v34h-6V34H24v15h-6V15Z" fill="#F5F0E8"/>
+  <path d="M24 49c0 4-2 6-6 8m14-8c0 5-3 8-8 10m16-10c0 4 2 7 6 9" fill="none" stroke="#C4922A" stroke-width="3" stroke-linecap="round"/>
+</svg>

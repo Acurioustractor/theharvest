@@ -18,6 +18,7 @@ import { HarvestPhotoPicker, type PickedPhoto } from "@/components/HarvestPhotoP
 import { useAuth } from "@/_core/hooks/useAuth";
 import { optimize } from "@/lib/imageOptimize";
 import { MEMBERS_PAGE_URL } from "@/lib/links";
+import { setPageSeo } from "@/lib/seo";
 import { trpc } from "@/lib/trpc";
 import { harvestButtonClasses, SiteFooter, SiteNav } from "./HarvestReviewTest";
 import { VisitStrip } from "@/components/VisitStrip";
@@ -74,16 +75,12 @@ export default function Membership() {
   const [showMemberWelcome, setShowMemberWelcome] = useState(false);
 
   useEffect(() => {
-    document.title = "Become a Harvest member";
-
-    let meta = document.querySelector('meta[name="description"]') as HTMLMetaElement | null;
-    if (!meta) {
-      meta = document.createElement("meta");
-      meta.name = "description";
-      document.head.appendChild(meta);
-    }
-    meta.content =
-      "Join the Harvest member list for regular notes, community-day invitations, work day calls, and early opportunities.";
+    setPageSeo({
+      title: "Become a Harvest member · The Harvest Witta",
+      description:
+        "Join the free Harvest member list for regular notes, community-day invitations, work day calls and first notice of events in Witta.",
+      path: "/membership",
+    });
 
     if (import.meta.env.DEV) {
       const params = new URLSearchParams(window.location.search);

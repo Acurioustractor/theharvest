@@ -84,6 +84,8 @@ function Router() {
     return zoneId ? <BauhausZone zoneId={zoneId} /> : <BauhausHome />;
   }
   if (location === "/whats-on") return <WhatsOn />;
+  if (location === "/witta-pizza") return <WhatsOn />;
+  if (location === "/pizza") return <Redirect to="/witta-pizza" />;
   if (location === "/venue-hire") return <VenueHire />;
   if (location === "/enterprises") return <LocalEnterprises />;
   if (location === "/site-plan") return <SitePlan />;
