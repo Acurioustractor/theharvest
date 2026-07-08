@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "wouter";
 import { ArrowRight } from "lucide-react";
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
@@ -148,6 +149,14 @@ export function ShopInterestSection({
                   placeholder="Optional: a line on what you grow, make, cook, stock, or want to help test. We'll ask for the detail when we talk."
                 />
               </label>
+
+              <p className="text-xs text-stone-500">
+                Used only to follow up about the shop. See our{" "}
+                <Link href="/privacy" className="underline hover:text-stone-700">
+                  privacy page
+                </Link>{" "}
+                for details.
+              </p>
 
               <button
                 type="submit"

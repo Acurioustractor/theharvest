@@ -52,7 +52,10 @@ export function HarvestImage({
   const { user } = useAuth();
   const isAdmin = user?.role === "admin";
 
-  const overrideQuery = trpc.imageOverrides.get.useQuery({ page, slot });
+  const overrideQuery = trpc.imageOverrides.get.useQuery(
+    { page, slot },
+    { staleTime: 5 * 60 * 1000 },
+  );
   const utils = trpc.useUtils();
   const setMutation = trpc.imageOverrides.set.useMutation({
     onSuccess: () => {
@@ -104,20 +107,21 @@ export function HarvestImage({
     await clearMutation.mutateAsync({ page, slot });
   };
 
-  // Hold the skeleton until the override query has settled — otherwise the
-  // browser flashes the bundled fallback first and then re-fetches the EL
-  // override. With this gate, we render the img exactly once, with the right
-  // src.
+  // Wait for the override lookup before rendering, so the real photo is the
+  // only thing that ever appears — no flash of the bundled default swapping
+  // to the chosen photo a moment later. This used to stack into a slow-feeling
+  // load when the query itself was slow; that's fixed at the source now (DB
+  // pool + localized photos), so the wait here is brief and worth it.
   const isResolving = overrideQuery.isPending;
   const showSkeleton = isResolving || !loaded;
 
   return (
-    <div className={`${hasExplicitPosition ? "" : "relative"} group ${className ?? ""} ${showSkeleton ? "bg-stone-200 animate-pulse" : ""}`}>
+    <div className={`${hasExplicitPosition ? "" : "relative"} group ${className ?? ""} ${showSkeleton ? "bg-stone-200" : ""}`}>
       {!isResolving && src && (
         <img
           src={src}
           alt={alt}
-          className={`${imgClassName ?? ""} ${loaded ? "" : "opacity-0"} transition-opacity duration-300`}
+          className={`${imgClassName ?? ""} ${loaded ? "" : "opacity-0"}`}
           loading={priority ? "eager" : "lazy"}
           decoding={priority ? "sync" : "async"}
           fetchPriority={priority ? "high" : undefined}

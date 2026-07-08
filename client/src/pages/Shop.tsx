@@ -38,7 +38,7 @@ export default function Shop() {
       document.head.appendChild(meta);
     }
     meta.content =
-      "Witta hasn't had a shop in a generation. The Harvest is putting one back: the first shelves are being shaped with the growers and makers who already live around Witta and Maleny.";
+      "Witta hasn't had a shop in a long while. The Harvest is putting one back: the first shelves are being shaped with the growers and makers who already live around Witta and Maleny.";
   }, []);
 
   return (
@@ -51,7 +51,7 @@ export default function Shop() {
             The Shop
           </p>
           <h1 className="mt-5 max-w-3xl text-5xl font-black leading-[0.94] md:text-7xl">
-            Witta hasn't had a shop in a generation.
+            Witta hasn't had a shop in a long while.
           </h1>
           <p className="mt-7 max-w-2xl text-xl leading-relaxed text-white/80 md:text-2xl">
             Around 1,300 people live here, with nowhere to buy a loaf of bread or the thing

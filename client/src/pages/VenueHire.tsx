@@ -228,6 +228,14 @@ export default function VenueHire() {
                         <p className="text-red-600 text-sm">{errorMsg}</p>
                       )}
 
+                      <p className="text-xs text-stone-500">
+                        Used only to follow up about your enquiry. See our{" "}
+                        <a href="/privacy" className="underline hover:text-stone-700">
+                          privacy page
+                        </a>{" "}
+                        for details.
+                      </p>
+
                       <button
                         type="submit"
                         disabled={status === "loading"}

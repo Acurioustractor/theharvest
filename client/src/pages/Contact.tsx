@@ -294,6 +294,24 @@ export default function Contact() {
                 </label>
               </div>
 
+              <p style={{
+                fontFamily: fonts.body,
+                fontSize: 13,
+                color: colors.milk,
+                opacity: 0.55,
+                lineHeight: 1.5,
+                margin: "0 0 16px",
+              }}>
+                Used only to reply to you (and for updates, if you tick the box above). See our{" "}
+                <a
+                  href="/privacy"
+                  style={{ color: colors.goldenHour, textDecoration: "underline", textUnderlineOffset: 3 }}
+                >
+                  privacy page
+                </a>{" "}
+                for details.
+              </p>
+
               <button
                 type="submit"
                 disabled={isSubmitting}

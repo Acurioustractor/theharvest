@@ -197,12 +197,6 @@ export const works: Work[] = [
       { name: "Sophie from Sophie's Seedlings", role: "Garden volunteer", href: "https://sophiesseedlings.com/" },
       { name: "Susie & Joey", role: "Community Stewards" },
     ],
-    storyLinks: [
-      {
-        label: "Read the full Sophie garden story",
-        href: "/blog/from-clearing-to-care-sophie-harvest-garden",
-      },
-    ],
     related: ["milk-crate-pavilion", "the-shop"],
   },
   {

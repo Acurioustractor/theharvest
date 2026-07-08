@@ -412,6 +412,14 @@ export default function Membership() {
                 />
               </div>
 
+              <p className="text-xs text-stone-500">
+                Used only for Harvest updates and to reply if you write in. See our{" "}
+                <Link href="/privacy" className="underline hover:text-stone-700">
+                  privacy page
+                </Link>{" "}
+                for details.
+              </p>
+
               <Button
                 type="submit"
                 disabled={joinMutation.isPending}
@@ -517,6 +525,14 @@ export default function Membership() {
                   maxLength={2000}
                 />
               </div>
+
+              <p className="text-xs text-stone-500">
+                Used only to answer this question. See our{" "}
+                <Link href="/privacy" className="underline hover:text-stone-700">
+                  privacy page
+                </Link>{" "}
+                for details.
+              </p>
 
               <Button
                 type="submit"

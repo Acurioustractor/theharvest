@@ -493,6 +493,14 @@ function Step3({ data, update, isMobile }: {
             placeholder="Your email"
             type="email"
           />
+          <p style={{ fontSize: 12, color: C.creamFaint, lineHeight: 1.5 }}>
+            If you add your name and email, your answers are linked to you so we can follow
+            up. Leave both blank to answer anonymously. See our{" "}
+            <a href="/privacy" style={{ color: C.creamFaint, textDecoration: "underline" }}>
+              privacy page
+            </a>{" "}
+            for details.
+          </p>
         </div>
       </div>
     </div>

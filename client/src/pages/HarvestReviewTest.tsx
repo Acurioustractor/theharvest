@@ -47,7 +47,7 @@ const threads: Thread[] = [
     alt: "Barry beside old machinery at The Harvest",
     note: "Tracing the St Mary's and Witta timber source trail.",
     body: "The walkway timber carries a St Mary's Cathedral story we are still tracing. The working question is whether part of that timber began in the Witta region before it travelled south and came back as paths.",
-    link: { label: "Follow the timber story", href: "/witta" },
+    link: { label: "Read the fuller story", href: "/what-is-the-harvest" },
     icon: Hammer,
     color: "#8B4A2A",
   },
@@ -58,7 +58,7 @@ const threads: Thread[] = [
     alt: "Historical cheese making at Teutoburg, Blackall Range, circa 1899",
     note: "Historical image: Teutoburg, Blackall Range, circa 1899.",
     body: "The milk crate is a working object. Stacked, carried, borrowed, returned. The first pavilion turns it into structure, seating and a frame for community days and gathering.",
-    link: { label: "More Witta history", href: "/witta" },
+    link: { label: "Read the fuller story", href: "/what-is-the-harvest" },
     icon: Milk,
     color: "#C4922A",
   },
@@ -69,7 +69,7 @@ const threads: Thread[] = [
     alt: "Community gathering at The Harvest Witta",
     note: "A working interest, not a legal claim yet.",
     body: "A local produce shelf, shared tools, open books and a table people can sit at. The co-op interest starts with useful things, not a formal structure.",
-    link: { label: "See where the shop is heading", href: "/story" },
+    link: { label: "See where the shop is heading", href: "/whats-on" },
     icon: Table2,
     color: "#3B5563",
   },
@@ -469,12 +469,6 @@ function Hero() {
               >
                 See what's on this week
                 <ArrowRight className="h-4 w-4" />
-              </Link>
-              <Link
-                href="/what-is-the-harvest"
-                className="text-sm font-bold text-white/70 underline-offset-4 transition hover:text-white hover:underline"
-              >
-                Learn about The Harvest
               </Link>
             </div>
           </motion.div>
