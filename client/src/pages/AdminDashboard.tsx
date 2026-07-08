@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Textarea } from "@/components/ui/textarea";
-import { Calendar, Clock, MapPin, Mail, User, CheckCircle, XCircle, Loader2, ShieldAlert, LogIn, Building2, Phone, Globe, Facebook, Instagram, Sparkles, ClipboardCheck, Users } from "lucide-react";
+import { Calendar, Clock, MapPin, Mail, User, CheckCircle, XCircle, Loader2, ShieldAlert, LogIn, Building2, Phone, Globe, Facebook, Instagram, Sparkles, ClipboardCheck, Users, MessageSquareText, Star } from "lucide-react";
 import { listPendingEvents, listPendingBusinesses, updateEventStatus, updateBusinessStatus } from "@/lib/api";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { getLoginUrl } from "@/const";
@@ -226,6 +226,20 @@ export default function AdminDashboard() {
             >
               <Users className="h-4 w-4" />
               Who's coming
+            </a>
+            <a
+              href="/admin/pulse"
+              className="inline-flex items-center gap-2 rounded-full border border-white/20 px-3 py-1.5 text-white transition hover:bg-white/10"
+            >
+              <MessageSquareText className="h-4 w-4" />
+              Pulse results
+            </a>
+            <a
+              href="/admin/feedback"
+              className="inline-flex items-center gap-2 rounded-full border border-white/20 px-3 py-1.5 text-white transition hover:bg-white/10"
+            >
+              <Star className="h-4 w-4" />
+              Event feedback
             </a>
           </div>
         </div>
