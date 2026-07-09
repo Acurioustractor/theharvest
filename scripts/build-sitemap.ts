@@ -31,6 +31,7 @@ const STATIC_ROUTES: Entry[] = [
   { loc: "/", priority: "1.0", changefreq: "weekly" },
   { loc: "/membership", priority: "0.9", changefreq: "weekly" },
   { loc: "/whats-on", priority: "0.9", changefreq: "weekly" },
+  { loc: "/witta-pizza", priority: "0.85", changefreq: "weekly" },
   { loc: "/shop", priority: "0.8", changefreq: "weekly" },
   { loc: "/what-is-the-harvest", priority: "0.8", changefreq: "monthly" },
   { loc: "/works", priority: "0.7", changefreq: "weekly" },

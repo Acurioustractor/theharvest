@@ -111,6 +111,7 @@ temp/
 .claude/*
 
 # Other AI/IDE agent configs
+.Codex/cache/
 .agent/
 .agents/
 .junie/
@@ -176,9 +177,25 @@ docs/brand/*.pdf
 docs/brand/*.pptx
 docs/brand/screenshots/
 docs/communications/debriefs/_whatsapp-exports/
+docs/strategy/weekend-20-june-2026/launch-flyer/*.png
+
+# Generated CRM/outreach research exports. Keep local only.
+research/data/ghl-harvest-contact-audit.json
+research/data/gen-shop-targets.mjs
+research/data/harvest-member-audience-review-*.csv
+research/data/harvest-member-audience-review-*.json
+research/data/harvest-shop-outreach-messages.md
+research/data/harvest-shop-outreach-targets.md
+research/data/harvest-shop-prospects-import.csv
+research/data/harvest-shop-send-list.md
+research/data/witta-market-hitlist.md
 
 
 # Track ONLY the selling-system skill (overrides .claude/* and skills/ above; last match wins)
 !.claude/skills/
 .claude/skills/*
 !.claude/skills/harvest-selling-system/
+
+# credential backups (any form)
+.env*.bak*
+.env.local.bak*

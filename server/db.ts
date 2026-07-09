@@ -187,7 +187,13 @@ export async function getDb() {
   if (shouldSkipPostgres()) return null;
   if (!_db && process.env.DATABASE_URL) {
     try {
-      _client = postgres(process.env.DATABASE_URL, { prepare: false });
+      // Pages with many EditableText/HarvestImage slots fire a couple dozen
+      // independent content.get/imageOverrides.get queries on mount. The
+      // pooler (PgBouncer, transaction mode) multiplexes these cheaply, but
+      // postgres.js's own default max (10) was queueing them into several
+      // waves and stacking up real page-load latency. Raise it so a single
+      // page's worth of queries can actually run concurrently.
+      _client = postgres(process.env.DATABASE_URL, { prepare: false, max: 30 });
       _db = drizzle(_client);
     } catch (error) {
       console.warn("[Database] Failed to connect:", error);

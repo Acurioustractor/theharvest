@@ -62,11 +62,11 @@ No tickets. No agenda. Just the beginning of something.
 
 Kids welcome. Dogs on leads. Bring a chair or a blanket.
 
-theharvestwitta.com.au/gather
+theharvestwitta.com.au/whats-on
 
 #TheHarvestWitta #FirstGathering #Witta #Maleny #SunshineCoastHinterland #CommunityEvent`,
     editorialNote: "The big event announcement. Create Facebook Event with this image. Share in all local groups.",
-    link: "/gather",
+    link: "/whats-on",
     format: "square",
     utmContent: "post-2-first-gathering",
   },
@@ -88,11 +88,11 @@ On March 7, he's shucking fresh oysters at our first gathering in Witta. Pay wha
 
 Full circle.
 
-theharvestwitta.com.au/gather
+theharvestwitta.com.au/whats-on
 
 #TheHarvestWitta #ShaunFisher #Quandamooka #MoretonBayOysters #FirstGathering`,
     editorialNote: "Trust signal + food story. The Shaun story is the most shareable piece of content we have.",
-    link: "/gather",
+    link: "/whats-on",
     format: "square",
     utmContent: "post-3-shaun-fisher",
   },
@@ -188,11 +188,11 @@ That's the whole beginning.
 
 Saturday 7 March. Come eat with us.
 
-theharvestwitta.com.au/gather
+theharvestwitta.com.au/whats-on
 
 #TheHarvestWitta #Feed #CommunityKitchen #SharedTable #Witta #Maleny #HinterlandFood`,
     editorialNote: "Food zone intro. Links back to the gathering. Post Monday before event week.",
-    link: "/gather",
+    link: "/whats-on",
     format: "square",
     utmContent: "post-7-zone-food",
   },
@@ -213,11 +213,11 @@ Oysters. Pizza. Music. Building things together.
 
 Free. Just show up.
 
-theharvestwitta.com.au/gather
+theharvestwitta.com.au/whats-on
 
 #TheHarvestWitta #FirstGathering #7Days #Witta`,
     editorialNote: "One week out. Short, punchy. Boost this one ($20-50). Update GBP listing.",
-    link: "/gather",
+    link: "/whats-on",
     format: "square",
     utmContent: "post-8-countdown-7days",
   },
@@ -239,11 +239,11 @@ Kids can run around. Bring something to share if you want. Or just bring yoursel
 
 9 Gumland Drive. You know where it is.
 
-theharvestwitta.com.au/gather
+theharvestwitta.com.au/whats-on
 
 #Witta #LocalsDay #TheHarvestWitta #Community`,
     editorialNote: "Witta locals only. Facebook only — share in Witta & District group + Nextdoor.",
-    link: "/gather",
+    link: "/whats-on",
     format: "square",
     utmContent: "post-9-locals-day",
   },
@@ -266,11 +266,11 @@ Saturday 7 March. 11am. Free.
 
 Bring a chair. Bring the neighbours. Bring an appetite.
 
-theharvestwitta.com.au/gather
+theharvestwitta.com.au/whats-on
 
 #TheHarvestWitta #ThisSaturday #Witta #Maleny #SunshineCoastHinterland #FreeEvent`,
     editorialNote: "Final CTA. 2 days out. Boost with $30-50. Last push across all platforms.",
-    link: "/gather",
+    link: "/whats-on",
     format: "square",
     utmContent: "post-10-save-your-spot",
   },
@@ -299,8 +299,8 @@ theharvestwitta.com.au/gather
     caption: `This Saturday. Witta. You're invited.
 
 Swipe up for details.`,
-    editorialNote: "Instagram story. Add link sticker to /gather. Post Wed + Thu before event.",
-    link: "/gather",
+    editorialNote: "Instagram story. Add link sticker to /whats-on. Post Wed + Thu before event.",
+    link: "/whats-on",
     format: "story",
     utmContent: "post-12-story-invite",
   },
@@ -316,7 +316,7 @@ Swipe up for details.`,
 
 This Saturday at The Harvest, Witta.`,
     editorialNote: "Instagram story. Food provenance angle. Add link sticker. Pair with oyster-lease video if available.",
-    link: "/gather",
+    link: "/whats-on",
     format: "story",
     utmContent: "post-13-story-shaun",
   },
@@ -334,11 +334,11 @@ Oysters. Pizza. Building things together.
 
 Saturday 7 March. 11am. Witta.
 
-theharvestwitta.com.au/gather
+theharvestwitta.com.au/whats-on
 
 #TheHarvestWitta #3Days #Witta #FirstGathering`,
     editorialNote: "Three days out. Short and punchy like the 7-day post. Post to feed + story.",
-    link: "/gather",
+    link: "/whats-on",
     format: "square",
     utmContent: "post-14-countdown-3days",
   },

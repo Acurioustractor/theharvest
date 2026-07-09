@@ -63,7 +63,7 @@ the model working, not a tagging mess.
   `research/data/harvest-shop-outreach-messages.md`), the "Book a chat about the shop" calendar, the day.
 - **Path:** **The Shop pipeline. Commercial, money plumbing, a separate axis from the rings.**
   New interest → In conversation → Sampling / trial shelf → On the shelf.
-- **Carries:** `harvest-shop-interest`, `shop-call-booked`, one offer tag (`shop-produce` /
+- **Carries:** `interest:markets`, `role:supplier`, `shop-call-booked`, one offer tag (`shop-produce` /
   `shop-maker` / `shop-food` / `shop-consignment` / `shop-follow-up`), `shop-prospect` if imported.
 - **Share with them:** the maker outreach copy (one to one, small batches, never a blast), the shop
   EOI page, the shop nurture. The gift-shaped offer: **you keep 75 to 80 percent, and we name you

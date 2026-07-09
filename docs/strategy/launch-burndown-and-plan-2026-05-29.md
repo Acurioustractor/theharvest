@@ -384,7 +384,7 @@ Ideation: build one one-step workflow per calendar (trigger Customer Booked Appo
 Steps:
 1. Build workflow 1: trigger Customer Booked Appointment, filter Calendar is B1, add tags witta-gathering-2026-06-20 + rsvp-maker-morning; publish.
 2. Build workflow 2: filter Calendar is B2, add tags witta-gathering-2026-06-20 + rsvp-pizza-dinner; publish.
-3. Build workflow 3: filter Calendar is book-a-chat, add tags harvest-shop-interest + shop-call-booked; publish.
+3. Build workflow 3: filter Calendar is book-a-chat, add tags project:act-hv + interest:markets + shop-call-booked; publish.
 4. Confirm none of the three add harvest-newsletter or harvest-member.
 5. Test-book through each calendar, confirm the right tags land, then delete the test bookings.
 Done when: a test booking on each calendar applies exactly the specified tags (and never harvest-newsletter / harvest-member).
@@ -416,7 +416,7 @@ Depends on: T16.
 Risk: slips on DNS propagation or a record typo. Early sign: a record stuck unverified after a few hours. If it overruns Ben's departure without his DNS access handed over, it stalls until 15 Aug; mitigate by giving Susie/Joey DNS access before he leaves.
 
 **T18 Build the maker smart list in GHL, Susie/Joey, before the Wk4 invite (2 to 8 Jun)**
-Ideation: build a smart list of "has any of harvest-shop-interest / shop-produce / shop-maker / shop-food / shop-consignment". Those are the tags the shop EOI stamps, so the list needs no manual curation. Confirm whether the doers tag should be added for the invite audience.
+Ideation: build a smart list of "has any of interest:markets / role:supplier / shop-produce / shop-maker / shop-food / shop-consignment". Those are the tags the shop EOI stamps, so the list needs no manual curation. Confirm whether the doers tag should be added for the invite audience.
 Steps:
 1. Create a smart list named clearly (for example "Harvest - Makers").
 2. Set the filter to "has any of" the five shop tags.
@@ -430,7 +430,7 @@ Risk: slips if the doers-tag question is unresolved and the invite goes to the w
 **T57 Build the Harvest Shop Nurture workflow (spec 6) + drop the book-a-chat link into spec 6 and onto /shop, Susie/Joey (build) + Ben (link), after 20 Jun 2026**
 Ideation: build the standalone tag-triggered workflow (re-entry off, multiple opportunities off) to keep the immediate receipt clean. Needs the shop-chat link from T13.
 Steps:
-1. Build "Harvest - Shop Nurture", trigger Contact Tag added is harvest-shop-interest, re-entry off, multiple opportunities off.
+1. Build "Harvest - Shop Nurture", trigger Contact Tag added is interest:markets, re-entry off, multiple opportunities off.
 2. Add Wait 4 days, then If/Else by offer tag (order shop-produce, shop-maker, shop-food, shop-consignment, catch-all shop-follow-up).
 3. Paste the spec 6 base email with the matched branch paragraph; insert the shop-chat link at the [booking link] slot.
 4. Add tag shop-nurture-sent; publish.
@@ -988,7 +988,7 @@ Risk: costing happens after the buy instead of before, so an overspend is discov
 **T68 Name first-shelf makers + capture stage-2 detail, Susie/Joey, Sat 20 Jun 2026**
 Ideation: seed from existing shop-interest contacts now, then confirm and add stage-2 detail at the 20 Jun maker session, since the session is the natural onboarding touchpoint and not launch-gating. Do not invent maker names.
 Steps:
-1. Pull existing harvest-shop-interest contacts and the maker smart list from GHL.
+1. Pull existing `interest:markets` contacts and the maker smart list from GHL.
 2. At the 20 Jun maker session, confirm who genuinely wants to be on the first shelf.
 3. For each named maker, record on their contact: produce type, likely volume, and the right offer tag.
 4. Note food-tier flags so onboarding knows what can go on the shelf.

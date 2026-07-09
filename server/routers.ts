@@ -538,7 +538,7 @@ export const appRouter = router({
         if (!input.email && !input.phone) {
           throw new Error("Email or phone is required");
         }
-        const eventLabel = process.env.HARVEST_CURRENT_EVENT_LABEL || "Pizza Weekend";
+        const eventLabel = process.env.HARVEST_CURRENT_EVENT_LABEL || CURRENT_GATHERING_DATE;
         const eventTag = process.env.HARVEST_CURRENT_EVENT_TAG || "rsvp-pizza-dinner";
 
         const submission = await createCommunitySubmission({
@@ -563,9 +563,11 @@ export const appRouter = router({
           phone: input.phone || undefined,
           source: `Harvest | RSVP ${eventLabel}`,
           tags: [
+            CURRENT_GATHERING_TAG,
             eventTag,
             "harvest-event-attendee",
             "harvest-website",
+            "harvest-inbox",
           ],
         });
 
@@ -589,14 +591,11 @@ export const appRouter = router({
             ].join(""),
           }).catch(err => console.error("GHL inbox message failed (rsvp):", err));
 
-          // Only route to the reply desk when there is something to reply to.
-          if (input.message) {
-            await upsertGHLHarvestInboxOpportunity({
-              contactId: result.contactId,
-              name: formatHarvestInboxOpportunityName(input.name, `RSVP ${eventLabel}`),
-              source: `Harvest | RSVP ${eventLabel}`,
-            });
-          }
+          await upsertGHLHarvestInboxOpportunity({
+            contactId: result.contactId,
+            name: formatHarvestInboxOpportunityName(input.name, `RSVP ${eventLabel}`),
+            source: `Harvest | RSVP ${eventLabel}`,
+          });
 
           // Receipt workflow: set GHL_PIZZA_RSVP_WORKFLOW_ID once the
           // "Harvest - RSVP Pizza Dinner (tag)" workflow is published in the
@@ -1682,12 +1681,12 @@ export const appRouter = router({
 
         // Only sync to GHL when we have both email and a real name.
         if (cleanEmail && cleanName) {
-          // Constrain minted interest tags to the canonical set so free-text
-          // answers cannot create non-canonical tags (TODOS cleanup 3).
-          const canonicalInterests = new Set<string>(Object.values(NEWSLETTER_INTEREST_TAGS));
+          // Pulse answers are free-text-ish survey choices, not the smaller
+          // newsletter interest enum. Keep them namespaced and slugged so GHL
+          // segments stay predictable without dropping useful signal.
           const interestTags = (input.wouldUse || [])
             .flatMap(u => withFlatAlias(`interest:${slugifyTagPart(u)}`))
-            .filter(t => canonicalInterests.has(t));
+            .filter(Boolean);
           const pulseResult = await upsertGHLContact({
             email: cleanEmail,
             firstName: cleanName.split(" ")[0],

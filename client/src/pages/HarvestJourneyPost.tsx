@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { HarvestImage } from "@/components/HarvestImage";
 import { EditableText } from "@/components/EditableText";
+import { setPageSeo } from "@/lib/seo";
 import { harvestButtonClasses, SiteFooter, SiteNav } from "./HarvestReviewTest";
 
 const rooms = [
@@ -37,16 +38,14 @@ const rooms = [
 
 export default function HarvestJourneyPost() {
   useEffect(() => {
-    document.title = "What is The Harvest?";
-
-    let meta = document.querySelector('meta[name="description"]') as HTMLMetaElement | null;
-    if (!meta) {
-      meta = document.createElement("meta");
-      meta.name = "description";
-      document.head.appendChild(meta);
-    }
-    meta.content =
-      "The Harvest is a community garden and creative gathering place in Witta on Jinibara Country, for locals and visitors to grow, make, and gather.";
+    setPageSeo({
+      title: "What is The Harvest? · The Harvest Witta",
+      description:
+        "The Harvest is a community garden and creative gathering place in Witta on Jinibara Country, for locals and visitors to grow, make and gather.",
+      path: "/what-is-the-harvest",
+      image: "/images/optimized/hero-aerial-1400.webp",
+      imageAlt: "Aerial view of The Harvest site in Witta.",
+    });
   }, []);
 
   return (

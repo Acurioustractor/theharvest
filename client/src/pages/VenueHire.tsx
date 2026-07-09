@@ -1,4 +1,4 @@
-import { useState, FormEvent } from "react";
+import { useEffect, useState, FormEvent } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -11,6 +11,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { communitySubmit } from "@/lib/api";
+import { setPageSeo } from "@/lib/seo";
 import { SiteFooter, SiteNav } from "./HarvestReviewTest";
 import { VisitStrip } from "@/components/VisitStrip";
 
@@ -18,6 +19,15 @@ export default function VenueHire() {
   const [formData, setFormData] = useState<Record<string, string>>({});
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
+
+  useEffect(() => {
+    setPageSeo({
+      title: "Venue Hire · The Harvest Witta",
+      description:
+        "Ask about venue hire at The Harvest in Witta for workshops, gatherings, team days and events while the place is still taking shape.",
+      path: "/venue-hire",
+    });
+  }, []);
 
   function updateField(name: string, value: string) {
     setFormData((prev) => ({ ...prev, [name]: value }));

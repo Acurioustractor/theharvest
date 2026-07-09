@@ -1053,7 +1053,7 @@ export default function Compendium() {
                 }}>
                   GET IN TOUCH
                 </Link>
-                <Link href="/gather" style={{
+                <Link href="/whats-on" style={{
                   fontFamily: "'Montserrat', sans-serif",
                   fontWeight: 700,
                   fontSize: 14,

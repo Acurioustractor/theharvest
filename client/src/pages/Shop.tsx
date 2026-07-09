@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Link } from "wouter";
 import { ArrowRight } from "lucide-react";
 import { ShopInterestSection } from "@/components/ShopInterestSection";
+import { setPageSeo } from "@/lib/seo";
 import { SiteNav, SiteFooter, harvestButtonClasses } from "./HarvestReviewTest";
 import { VisitStrip } from "@/components/VisitStrip";
 
@@ -30,15 +31,14 @@ const shelfWays = [
 
 export default function Shop() {
   useEffect(() => {
-    document.title = "The Shop · The Harvest Witta";
-    let meta = document.querySelector('meta[name="description"]') as HTMLMetaElement | null;
-    if (!meta) {
-      meta = document.createElement("meta");
-      meta.name = "description";
-      document.head.appendChild(meta);
-    }
-    meta.content =
-      "Witta hasn't had a shop in a long while. The Harvest is putting one back: the first shelves are being shaped with the growers and makers who already live around Witta and Maleny.";
+    setPageSeo({
+      title: "The Shop · The Harvest Witta",
+      description:
+        "The Harvest shop is a small shared shelf for growers and makers around Witta and Maleny. Produce, made goods, food and simple local systems.",
+      path: "/shop",
+      image: "/images/optimized/local-produce-760.webp",
+      imageAlt: "Local produce gathered for a Harvest food story.",
+    });
   }, []);
 
   return (

@@ -103,7 +103,7 @@ Then build one calendar tag workflow per calendar:
 
 - B1 booking adds `witta-gathering-2026-06-20` and `rsvp-maker-morning`.
 - B2 booking adds `witta-gathering-2026-06-20` and `rsvp-pizza-dinner`.
-- Shop-chat booking adds `harvest-shop-interest` and `shop-call-booked`.
+- Shop-chat booking adds `project:act-hv`, `interest:markets`, and `shop-call-booked`.
 
 ### Thread 2: Harvest Note 02 (the members' invite)
 
@@ -118,14 +118,14 @@ inputs before send:
 
 ### Thread 3: Maker engine (not launch-gating, can land after 20 June)
 
-- **Shop nurture (spec 6):** tag-triggered on `harvest-shop-interest`, Wait 4 days, If/Else
+- **Shop nurture (spec 6):** tag-triggered on `interest:markets`, Wait 4 days, If/Else
   by offer tag, send, tag `shop-nurture-sent`. Full copy and branches in
   `ghl-workflow-build-specs.md`. No code, no env var.
 - **Book-a-chat link:** the calendar from thread 1, dropped into spec 6's `[booking link]`
   and onto `/shop`.
 - **Maker smart list:** GHL smart list of makers/growers for "new on the shelf" touches and
   for the Wk4 Makers' invite segment (shop EOIs + doers). Build as: has any of
-  `harvest-shop-interest` / `shop-prospect` / `shop-produce` / `shop-maker` / `shop-food` /
+  `interest:markets` / `role:supplier` / `shop-prospect` / `shop-produce` / `shop-maker` / `shop-food` /
   `shop-consignment` / `shop-follow-up`, plus known volunteer/doer contacts.
 
 ### Thread 4: 20 June readiness (the human gates)

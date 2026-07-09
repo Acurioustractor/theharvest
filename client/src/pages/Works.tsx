@@ -6,6 +6,7 @@ import { works, LIFECYCLE_VOCAB, sortLifecycleTags } from "@/data/works";
 import { EditableText } from "@/components/EditableText";
 import { HarvestImage } from "@/components/HarvestImage";
 import { useAuth } from "@/_core/hooks/useAuth";
+import { setPageSeo } from "@/lib/seo";
 import { harvestButtonClasses, SiteFooter, SiteNav } from "./HarvestReviewTest";
 import { VisitStrip } from "@/components/VisitStrip";
 
@@ -22,15 +23,14 @@ export default function Works() {
   const isAdmin = user?.role === "admin";
 
   useEffect(() => {
-    document.title = "The Collection · The Harvest";
-    const desc = "The works of The Harvest: a living collection on Jinibara Country, Witta. Each piece carries a thread back to the history of the place.";
-    let meta = document.querySelector('meta[name="description"]') as HTMLMetaElement | null;
-    if (!meta) {
-      meta = document.createElement("meta");
-      meta.name = "description";
-      document.head.appendChild(meta);
-    }
-    meta.content = desc;
+    setPageSeo({
+      title: "The Collection · The Harvest Witta",
+      description:
+        "The works of The Harvest: a living collection on Jinibara Country in Witta. Garden, pavilion, shop, kids area and art space works taking shape.",
+      path: "/works",
+      image: "/images/optimized/gathering-recap-crowd-1200.webp",
+      imageAlt: "People gathered at The Harvest in Witta.",
+    });
   }, []);
 
   return (

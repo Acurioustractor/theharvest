@@ -49,6 +49,9 @@ const HARVEST_TAGS = new Set([
   "harvest-member",
   "harvest-event-attendee",
   "harvest-shop-interest",
+  "project:act-hv",
+  "role:supplier",
+  "interest:markets",
   "witta-gathering-2026-06-20",
   "witta-soft-opening-2026-06-20",
   "photo-wall",
@@ -62,6 +65,12 @@ const HARVEST_TAGS = new Set([
   "pulse-respondent",
   "venue-enquiry",
   "workshop-booking",
+  "shop-produce",
+  "shop-maker",
+  "shop-food",
+  "shop-consignment",
+  "shop-follow-up",
+  "shop-stage-1",
   "quiz-completed",
 ]);
 

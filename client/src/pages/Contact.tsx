@@ -6,6 +6,7 @@ import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { rootStyle, colors, fonts, detailLabelStyle, detailTextStyle, formLabelStyle, formInputStyle } from "@/styles/brand";
 import { SiteFooter, SiteNav } from "./HarvestReviewTest";
 import { VisitStrip } from "@/components/VisitStrip";
+import { setPageSeo } from "@/lib/seo";
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
@@ -23,18 +24,12 @@ export default function Contact() {
   const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
-    document.title = "Contact The Harvest";
-    const meta = (name: string, content: string) => {
-      let el = document.querySelector(`meta[property="${name}"]`) as HTMLMetaElement | null;
-      if (!el) {
-        el = document.createElement("meta");
-        el.setAttribute("property", name);
-        document.head.appendChild(el);
-      }
-      el.content = content;
-    };
-    meta("og:title", "Contact The Harvest");
-    meta("og:description", "Questions, ideas, or just want to say hello.");
+    setPageSeo({
+      title: "Contact The Harvest Witta",
+      description:
+        "Contact The Harvest in Witta about the shop, workshops, work days, venue hire, local stories or an idea for the place.",
+      path: "/contact",
+    });
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {

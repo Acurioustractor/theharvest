@@ -12,6 +12,8 @@ For the 20 June 2026 launch alignment + comms cadence (added 2026-05-22):
 
 - [[../strategy/harvest-launch-alignment-2026-05-22|Harvest Launch Alignment — 20 June 2026]] (decision-forcing)
 - [[launch-countdown-comms-cadence|Launch Countdown Comms Cadence]] (week-by-week)
+- [[artworks-launch-signal-brief-2026-06-07|Artworks Launch Signal Brief]] (Milk Man, giant milk crate, public-question frame)
+- [[question-wall-2026-06-20|Question Wall Print File]] (three prompts + response cards)
 - [[find-others-playbook|Find Others Playbook]] (post-launch local channels)
 
 For brand voice, launch deck, and website design memory:

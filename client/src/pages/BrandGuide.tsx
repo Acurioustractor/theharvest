@@ -2,16 +2,20 @@ import { useState, useEffect, useRef, type CSSProperties } from "react";
 import { Link } from "wouter";
 import { rootStyle, colors, fonts } from "@/styles/brand";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { trpc } from "@/lib/trpc";
+import { optimize } from "@/lib/imageOptimize";
 
 /* ─────────────────────────────────────
    DATA
    ───────────────────────────────────── */
 
 const chapters = [
+  { id: "current", label: "Current Flow" },
+  { id: "content", label: "3-Week Content" },
   { id: "logo", label: "The Mark" },
   { id: "stance", label: "Stance" },
-  { id: "threes", label: "The Threes" },
-  { id: "rooms", label: "The Rooms" },
+  { id: "threes", label: "Grow Make Gather" },
+  { id: "rooms", label: "What It Means" },
   { id: "principles", label: "Principles" },
   { id: "writing", label: "Writing Style" },
   { id: "gallery", label: "Visual Library" },
@@ -26,67 +30,67 @@ const chapters = [
 
 const threes = [
   {
-    label: "Grow. Feed. Make.",
-    type: "Tagline (verbs)",
+    label: "Grow. Make. Gather.",
+    type: "Public tagline",
     items: [
-      { word: "Grow", desc: "What happens in the Garden. Food, seedlings, slow work, kids in the soil.", color: colors.canopy, colorName: "Canopy" },
-      { word: "Feed", desc: "What happens in the Kitchen. Shared tables, simple food, milk bar thinking, local producers.", color: colors.goldenHour, colorName: "Golden Hour" },
-      { word: "Make", desc: "What happens in the Art Space. Hands, materials, residencies, the practice of making with care.", color: colors.crane, colorName: "Crane" },
+      { word: "Grow", desc: "The garden, the old nursery, seedlings, beds, soil, and the practical work of opening the place.", color: colors.canopy, colorName: "Canopy" },
+      { word: "Make", desc: "The hands-on work: art space, repairs, timber, tools, signs, workshops, and things being shaped in public.", color: colors.crane, colorName: "Crane" },
+      { word: "Gather", desc: "The social promise: neighbours, open days, long tables, music, food, questions, and people coming through the gate.", color: colors.goldenHour, colorName: "Golden Hour" },
     ],
   },
   {
-    label: "Garden. Kitchen. Art Space.",
-    type: "The Rooms",
+    label: "Garden opening. Creative gathering place.",
+    type: "Plain explanation",
     items: [
-      { word: "Garden", desc: "Beds, paths, kids playground, food, slow work outdoors. The first version of the place.", color: colors.canopy, colorName: "Canopy" },
-      { word: "Kitchen", desc: "Shared tables, simple food, milk bar thinking, pop-ups and local producers. The feed room.", color: colors.goldenHour, colorName: "Golden Hour" },
-      { word: "Art Space", desc: "Gallery, studio, workshop. Where things get made by hand.", color: colors.crane, colorName: "Crane" },
+      { word: "Garden opening", desc: "The immediate public promise. This is what people can understand and come to.", color: colors.canopy, colorName: "Canopy" },
+      { word: "Creative", desc: "The making thread: art, repair, timber, signs, objects, workshops, and the build itself.", color: colors.crane, colorName: "Crane" },
+      { word: "Gathering place", desc: "The social thread: neighbours, food, music, tables, questions, and community days.", color: colors.goldenHour, colorName: "Golden Hour" },
     ],
   },
 ];
 
 const rooms = [
   {
-    name: "The Garden",
+    name: "Garden",
     color: colors.canopy,
     verb: "Grow",
     tagline: "Grow",
-    what: "Food garden. Beds, paths, kids playground, fire pit, outdoor gathering. The first version of the place.",
+    what: "The public opening edge. Beds, paths, seedlings, old nursery memory, kids, soil, and the practical work people can see.",
     who: "Families, homeschoolers, gardeners, neighbours, kids with ideas.",
-    spirit: "We don't build for people. We build with them. Kids build the kids area.",
+    spirit: "The garden is the first thing people understand. Let it carry the opening.",
     questions: [
-      "Communal beds or individual plots?",
-      "How does the kids playground get co-designed?",
-      "What feeds the future kitchen as it grows in?",
+      "What can be honestly shown by the end of June?",
+      "What help do we need this week?",
+      "What makes someone feel welcome at the gate?",
     ],
   },
   {
-    name: "The Kitchen",
-    color: colors.goldenHour,
-    textColor: colors.shed,
-    verb: "Feed",
-    tagline: "Feed",
-    what: "Shared tables. Simple food. Milk bar thinking. Pop-ups and local producers.",
-    who: "Neighbours, families, makers, locals, anyone who wants a place to eat and talk.",
-    spirit: "The table is where the place becomes useful.",
-    questions: [
-      "What does the first menu need to be?",
-      "How do pop-ups fit with the room as it changes?",
-      "What can the kitchen hold before it tries to do too much?",
-    ],
-  },
-  {
-    name: "The Art Space",
+    name: "Make",
     color: colors.crane,
     verb: "Make",
     tagline: "Make",
-    what: "Gallery wall. Maker workshop. Studio residencies. Exhibition space.",
-    who: "Artists, makers, kids, schools, anyone who wants to try something.",
-    spirit: "The space is always becoming. Nothing is permanent, like a gallery.",
+    what: "The creative build: timber, tools, signs, objects, repair, art, workshops, and the visible work of making the place.",
+    who: "Artists, builders, kids, practical people, workshop people, and anyone who wants to make something useful.",
+    spirit: "Make is not a program category. It is the way the place comes into being.",
     questions: [
-      "Is this a gallery, a studio, a workshop? All three over time?",
-      "How do residencies work? Open to public or private?",
-      "What's the first exhibition? Who hangs it?",
+      "What are people making now?",
+      "What object or photo proves the idea fastest?",
+      "What is useful enough to show before it is polished?",
+    ],
+  },
+  {
+    name: "Gather",
+    color: colors.goldenHour,
+    textColor: colors.shed,
+    verb: "Gather",
+    tagline: "Gather",
+    what: "The reason people come through and stay: neighbours, shared tables, food, music, open days, questions, and local stories.",
+    who: "Witta locals, families, neighbours, makers, growers, artists, and curious visitors.",
+    spirit: "Gather is the promise. Do not overcomplicate it.",
+    questions: [
+      "What is the next simple invitation?",
+      "What should people do when they arrive?",
+      "What gets remembered after they leave?",
     ],
   },
 ];
@@ -106,7 +110,99 @@ const principles = [
   },
 ];
 
+const launchContentWeeks = [
+  {
+    week: "Week 1",
+    dates: "8-14 June",
+    theme: "Make the place legible",
+    job: "People should understand the simple public frame before they are asked to do anything.",
+    proof: "front gate, garden beds, Milk Man, milk crates, one wide site photo",
+    cta: "Learn about The Harvest",
+    posts: {
+      facebook: "Photo-led explainer: Witta, Jinibara Country, garden opening end of June. Keep it plain and shareable for locals.",
+      instagram: "Carousel: Grow / Make / Gather, one real photo per word, short caption.",
+      newsletter: "Subject: The Harvest garden opens end of June. Lead with what is taking shape, then three practical updates.",
+    },
+  },
+  {
+    week: "Week 2",
+    dates: "15-21 June",
+    theme: "Invite the right kinds of help",
+    job: "Move from awareness to participation without making it feel like a marketing push.",
+    proof: "hands working, timber, signs, garden detail, question wall, useful objects",
+    cta: "Bring a question, a story, or a pair of hands",
+    posts: {
+      facebook: "Local ask: what can people bring, lend, remember, or help with before the garden opens?",
+      instagram: "Stories/reels: short clips of making, carrying, clearing, planting, marking, building.",
+      newsletter: "Subject: A few hands before the garden opens. One lead story, three asks, one reply CTA.",
+    },
+  },
+  {
+    week: "Week 3",
+    dates: "22-28 June",
+    theme: "Turn opening into memory",
+    job: "Show proof, thank people, collect stories, and point to the next useful action.",
+    proof: "best approved photos, question wall notes, people from behind or consented faces, objects left behind",
+    cta: "Share a photo, a question, or the next thing you want to help with",
+    posts: {
+      facebook: "Thank-you and recap: what happened, what people asked, what is next.",
+      instagram: "Photo wall carousel/reel: real moments, minimal words, no overclaiming.",
+      newsletter: "Subject: What we heard at The Harvest. Recap, photo wall, next callout.",
+    },
+  },
+];
+
+const launchAudienceLoops = [
+  {
+    audience: "Witta locals",
+    hook: "This is in your backyard.",
+    proof: "gate, road, familiar objects, plain local detail",
+    ask: "Come see what is taking shape. Tell us what this place should hold.",
+  },
+  {
+    audience: "Families and kids",
+    hook: "The garden should feel usable, not precious.",
+    proof: "paths, shade, kids' area materials, soil, hands",
+    ask: "Bring a question from a kid, or an idea for the garden.",
+  },
+  {
+    audience: "Makers and artists",
+    hook: "The place is being made, not decorated.",
+    proof: "timber, tools, signs, workbench, rough edges",
+    ask: "Bring a skill, a workshop idea, or a useful object.",
+  },
+  {
+    audience: "Growers and producers",
+    hook: "The local shelf and table start small.",
+    proof: "produce, crates, jars, labels, shared table",
+    ask: "Tell us what you grow, make, preserve, bake, or could put on a shelf.",
+  },
+  {
+    audience: "Supporters and funders",
+    hook: "This is early proof, not polished theatre.",
+    proof: "real turnout, questions, practical needs, before/after photos",
+    ask: "Help with one concrete gap: materials, insurance, food setup, signage, or documentation.",
+  },
+];
+
+const currentBrandAssets = [
+  { src: "/images/social/harvest-social-card.jpg", label: "Current share image - real milk crate pavilion" },
+  { src: "/images/membership/member-welcome-crates.jpg", label: "Milk crate pavilion source photo" },
+  { src: "/images/optimized/member-welcome-crates-1200.webp", label: "Milk crate pavilion crop" },
+  { src: "/images/optimized/seed-house-front-1600.webp", label: "Front building - real site proof" },
+  { src: "/images/optimized/hero-aerial-1600.webp", label: "Aerial site context" },
+  { src: "/images/optimized/hero-aerial-1400.webp", label: "Garden work" },
+  { src: "/images/optimized/team-garden-selfie-1000.webp", label: "Garden crew" },
+  { src: "/images/optimized/barry-5745-1000.webp", label: "Barry and the workbench" },
+  { src: "/images/optimized/barry-5764-1000.webp", label: "Barry at golden hour" },
+  { src: "/images/compendium/canvas-drawing-full.jpg", label: "Whole-site drawing" },
+];
+
 const imageGallery: { category: string; images: { src: string; label: string }[] }[] = [
+  {
+    category: "Current Brand Picks",
+    images: currentBrandAssets,
+  },
   {
     category: "Canvas Drawings",
     images: [
@@ -148,17 +244,6 @@ const imageGallery: { category: string; images: { src: string; label: string }[]
     ],
   },
   {
-    category: "Inspiration",
-    images: [
-      { src: "/images/site-plan/inspiration/pen-sketch-portrait.jpeg", label: "Pen sketch portrait" },
-      { src: "/images/site-plan/inspiration/crate-wall.jpeg", label: "Crate wall" },
-      { src: "/images/site-plan/inspiration/curved-pavilion.jpeg", label: "Curved pavilion" },
-      { src: "/images/site-plan/inspiration/crate-cube.jpeg", label: "Crate cube" },
-      { src: "/images/site-plan/inspiration/log-climbing-frame.jpeg", label: "Log climbing frame" },
-      { src: "/images/site-plan/inspiration/accessible-garden.jpeg", label: "Accessible garden" },
-    ],
-  },
-  {
     category: "Barry & The Shed",
     images: [
       { src: "/images/compendium/barry/IMG_5764.jpg", label: "Barry at golden hour" },
@@ -187,6 +272,73 @@ const imageGallery: { category: string; images: { src: string; label: string }[]
       { src: "/images/witta/history/bunya-pines-witta-1931.png", label: "Bunya pines, 1931" },
       { src: "/images/witta/history/witta-towards-conondale-1931.png", label: "Towards Conondale, 1931" },
     ],
+  },
+];
+
+type BrandMediaAsset = {
+  id: string;
+  src: string;
+  title: string | null;
+  description: string | null;
+  altText: string | null;
+  date: string | null;
+  tags?: string[];
+  themes?: string[];
+  works?: string[];
+};
+
+const coreMediaRules: {
+  label: string;
+  role: string;
+  rank: number;
+  status: string;
+  terms: string[];
+  ids?: string[];
+}[] = [
+  {
+    label: "Milk Man",
+    role: "Open-day object / public question",
+    rank: 1,
+    status: "Core candidate. Confirm consent before public use.",
+    ids: ["95f88438-1ea0-4b5f-adda-8cbf2eebb28d", "33556076-3356-4f01-b9ca-fedc4eb8906e"],
+    terms: ["milk man", "milkman", "1e5a4420", "1e5a4423"],
+  },
+  {
+    label: "Giant milk crate",
+    role: "Gathering object / public signal",
+    rank: 2,
+    status: "Core candidate. Use if source and brand approval are clear.",
+    ids: ["04bb3713-85d1-4b51-8dc4-cff11f4138f7"],
+    terms: ["milk crate", "milk-crate", "pavilion", "1e5a4841", "crate"],
+  },
+  {
+    label: "Site context",
+    role: "Whole-place proof",
+    rank: 3,
+    status: "Core candidate. Good for page/deck context.",
+    ids: ["1a7af0d1-17ed-4f63-9a90-054e781ea508"],
+    terms: ["dji", "aerial", "hero-aerial", "site"],
+  },
+  {
+    label: "Garden work",
+    role: "Garden first / real hands",
+    rank: 4,
+    status: "Core if people consent is clear.",
+    terms: ["sophie", "garden", "seedling", "team-garden"],
+  },
+  {
+    label: "Barry / timber",
+    role: "Timber, tools, old shed memory",
+    rank: 5,
+    status: "Core story asset. Check story consent and attribution.",
+    terms: ["barry", "5745", "5764", "shed", "timber"],
+  },
+  {
+    label: "Plans / drawings",
+    role: "Structure, rooms, proof of work",
+    rank: 6,
+    status: "Core support asset.",
+    terms: ["floor plan", "master floor", "canvas", "drawing", "plan"],
   },
 ];
 
@@ -241,6 +393,255 @@ function Collapsible({ title, defaultOpen = true, children }: {
   );
 }
 
+function isVideoAsset(src: string): boolean {
+  return /\.(mp4|mov|m4v|webm)(\?.*)?$/i.test(src);
+}
+
+function mediaHaystack(asset: BrandMediaAsset): string {
+  return [
+    asset.id,
+    asset.src,
+    asset.title,
+    asset.description,
+    asset.altText,
+    ...(asset.tags ?? []),
+    ...(asset.themes ?? []),
+    ...(asset.works ?? []),
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
+}
+
+function getCoreRule(asset: BrandMediaAsset) {
+  const haystack = mediaHaystack(asset);
+  return coreMediaRules.find((rule) => {
+    if (rule.ids?.includes(asset.id)) return true;
+    return rule.terms.some((term) => haystack.includes(term.toLowerCase()));
+  });
+}
+
+function EmpathyLedgerBrandMedia({
+  isMobile,
+  onImageClick,
+}: {
+  isMobile: boolean;
+  onImageClick: (src: string, label: string) => void;
+}) {
+  const [showAll, setShowAll] = useState(false);
+  const query = trpc.gallery.fromEL.useQuery(
+    { limit: 300 },
+    { staleTime: 5 * 60 * 1000 },
+  );
+
+  const media = ((query.data?.media ?? []) as BrandMediaAsset[]).filter((asset) => asset.src);
+  const ranked = media
+    .map((asset, index) => {
+      const rule = getCoreRule(asset);
+      return {
+        asset,
+        rule,
+        rank: rule?.rank ?? 1000 + index,
+      };
+    })
+    .sort((a, b) => a.rank - b.rank);
+
+  const core = ranked.filter((item) => item.rule);
+  const visible = showAll ? ranked : ranked.slice(0, 36);
+  const total = query.data?.pagination?.total ?? media.length;
+
+  return (
+    <div style={{
+      marginBottom: 56,
+      border: `1px solid rgba(28,25,23,0.12)`,
+      backgroundColor: "rgba(255,255,255,0.32)",
+    }}>
+      <div style={{
+        padding: isMobile ? "22px 18px" : "28px 32px",
+        borderBottom: `1px solid rgba(28,25,23,0.1)`,
+        display: "grid",
+        gridTemplateColumns: isMobile ? "1fr" : "1fr auto",
+        gap: 18,
+        alignItems: "start",
+      }}>
+        <div>
+          <span style={{ ...smallLabelStyle, color: colors.shed, opacity: 0.45 }}>
+            EMPATHY LEDGER MEDIA · LIVE LIBRARY
+          </span>
+          <h3 style={{
+            fontFamily: fonts.display,
+            fontWeight: 900,
+            fontSize: isMobile ? 22 : 30,
+            letterSpacing: "0.04em",
+            margin: "12px 0 10px",
+          }}>
+            CORE PHOTOS FIRST
+          </h3>
+          <p style={{
+            fontFamily: fonts.body,
+            fontSize: 15,
+            lineHeight: 1.7,
+            opacity: 0.68,
+            margin: 0,
+            maxWidth: 680,
+          }}>
+            Pulls from `project=the-harvest` in Empathy Ledger. Known launch and brand assets are ranked at the top; the wider EL library stays available underneath.
+          </p>
+        </div>
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(3, auto)",
+          gap: 8,
+        }}>
+          {[
+            ["EL total", query.isLoading ? "..." : String(total)],
+            ["Loaded", String(media.length)],
+            ["Core hits", String(core.length)],
+          ].map(([label, value]) => (
+            <div key={label} style={{
+              border: `1px solid rgba(28,25,23,0.12)`,
+              padding: "10px 12px",
+              minWidth: 74,
+              textAlign: "center",
+              backgroundColor: colors.milk,
+            }}>
+              <div style={{ fontFamily: fonts.display, fontWeight: 900, fontSize: 18 }}>{value}</div>
+              <div style={{ fontFamily: fonts.display, fontWeight: 700, fontSize: 9, letterSpacing: "0.1em", opacity: 0.45 }}>{label}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {query.isLoading ? (
+        <div style={{ padding: 28, fontFamily: fonts.body, opacity: 0.55 }}>
+          Loading Empathy Ledger media...
+        </div>
+      ) : query.error ? (
+        <div style={{ padding: 28, fontFamily: fonts.body, color: colors.crane }}>
+          Empathy Ledger media is not available right now. Use the local folders below.
+        </div>
+      ) : media.length === 0 ? (
+        <div style={{ padding: 28, fontFamily: fonts.body, opacity: 0.55 }}>
+          No Harvest media returned from Empathy Ledger.
+        </div>
+      ) : (
+        <>
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: isMobile ? "1fr" : "repeat(3, minmax(0, 1fr))",
+            gap: 12,
+            padding: isMobile ? 18 : 24,
+          }}>
+            {visible.map(({ asset, rule }) => {
+              const video = isVideoAsset(asset.src);
+              const title = asset.title || asset.altText || "Untitled Harvest media";
+              return (
+                <figure key={asset.id} style={{
+                  margin: 0,
+                  border: `1px solid ${rule ? "rgba(196,146,42,0.55)" : "rgba(28,25,23,0.1)"}`,
+                  backgroundColor: colors.milk,
+                }}>
+                  <button
+                    onClick={() => !video && onImageClick(asset.src, title)}
+                    style={{
+                      display: "block",
+                      width: "100%",
+                      border: "none",
+                      padding: 0,
+                      cursor: video ? "default" : "pointer",
+                      backgroundColor: "rgba(28,25,23,0.08)",
+                      position: "relative",
+                    }}
+                  >
+                    {video ? (
+                      <video src={asset.src} controls preload="metadata" style={{ width: "100%", aspectRatio: "4/3", objectFit: "cover", display: "block" }} />
+                    ) : (
+                      <img
+                        src={optimize(asset.src, "card")}
+                        alt={asset.altText || title}
+                        loading="lazy"
+                        decoding="async"
+                        style={{ width: "100%", aspectRatio: "4/3", objectFit: "cover", display: "block" }}
+                      />
+                    )}
+                    <span style={{
+                      position: "absolute",
+                      top: 8,
+                      left: 8,
+                      backgroundColor: rule ? colors.goldenHour : "rgba(28,25,23,0.75)",
+                      color: rule ? colors.shed : colors.milk,
+                      padding: "5px 7px",
+                      fontFamily: fonts.display,
+                      fontWeight: 900,
+                      fontSize: 9,
+                      letterSpacing: "0.1em",
+                    }}>
+                      {rule ? `CORE ${rule.rank}` : "EL"}
+                    </span>
+                  </button>
+                  <figcaption style={{ padding: 14 }}>
+                    <div style={{
+                      fontFamily: fonts.display,
+                      fontWeight: 900,
+                      fontSize: 12,
+                      letterSpacing: "0.04em",
+                      marginBottom: 6,
+                    }}>
+                      {rule?.label ?? title}
+                    </div>
+                    <p style={{
+                      fontFamily: fonts.body,
+                      fontSize: 12,
+                      lineHeight: 1.5,
+                      opacity: 0.68,
+                      margin: "0 0 10px",
+                    }}>
+                      {rule?.role ?? asset.description ?? asset.altText ?? "Harvest EL media asset."}
+                    </p>
+                    <div style={{
+                      display: "grid",
+                      gap: 4,
+                      fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
+                      fontSize: 10,
+                      opacity: 0.55,
+                      overflowWrap: "anywhere",
+                    }}>
+                      <span>status: {rule?.status ?? "Library asset. Review source, rights, consent, and story job before public use."}</span>
+                      <span>date: {asset.date ?? "unknown"}</span>
+                      <span>id: {asset.id}</span>
+                    </div>
+                  </figcaption>
+                </figure>
+              );
+            })}
+          </div>
+
+          {ranked.length > 36 && (
+            <div style={{ padding: "0 24px 24px", textAlign: "center" }}>
+              <button
+                onClick={() => setShowAll((current) => !current)}
+                style={{
+                  fontFamily: fonts.display,
+                  fontWeight: 900,
+                  fontSize: 12,
+                  letterSpacing: "0.08em",
+                  color: colors.shed,
+                  backgroundColor: colors.goldenHour,
+                  border: "none",
+                  padding: "12px 20px",
+                  cursor: "pointer",
+                }}
+              >
+                {showAll ? "SHOW CORE SET" : `SHOW ALL ${ranked.length} LOADED`}
+              </button>
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  );
+}
+
 /* ─────────────────────────────────────
    COMPONENT
    ───────────────────────────────────── */
@@ -252,7 +653,7 @@ export default function BrandGuide() {
 
   const isMobile = useMediaQuery("(max-width: 768px)");
   const [lightbox, setLightbox] = useState<{ src: string; label: string } | null>(null);
-  const [activeChapter, setActiveChapter] = useState("logo");
+  const [activeChapter, setActiveChapter] = useState("current");
   const navRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -362,8 +763,22 @@ export default function BrandGuide() {
           opacity: 0.5,
           margin: 0,
         }}>
-          Aligning the threes, the rooms, the language
+          Current spine, visual memory, and production rules
         </p>
+        <div style={{
+          display: "flex",
+          justifyContent: "center",
+          gap: 12,
+          flexWrap: "wrap",
+          marginTop: 24,
+        }}>
+          <Link href="/brand-development" style={heroLinkStyle}>
+            BRAND DEVELOPMENT WORKBENCH
+          </Link>
+          <Link href="/june-20" style={{ ...heroLinkStyle, backgroundColor: "transparent", color: colors.milk, border: `1px solid rgba(245,240,232,0.28)` }}>
+            JUNE 20 PAGE
+          </Link>
+        </div>
       </header>
 
       {/* Sticky chapter nav */}
@@ -375,17 +790,18 @@ export default function BrandGuide() {
           zIndex: 50,
           backgroundColor: colors.shed,
           borderBottom: "1px solid rgba(245,240,232,0.08)",
-          overflowX: "auto",
-          WebkitOverflowScrolling: "touch",
+          overflow: "visible",
         }}
       >
         <div style={{
           display: "flex",
-          gap: 0,
-          maxWidth: 1100,
+          flexWrap: "wrap",
+          justifyContent: "center",
+          alignItems: "center",
+          gap: isMobile ? "0 2px" : "0 4px",
+          maxWidth: 1600,
           margin: "0 auto",
-          padding: "0 8px",
-          whiteSpace: "nowrap",
+          padding: isMobile ? "4px 8px" : "6px 16px",
         }}>
           {chapters.map((ch) => (
             <button
@@ -401,10 +817,11 @@ export default function BrandGuide() {
                 backgroundColor: "transparent",
                 border: "none",
                 borderBottom: activeChapter === ch.id ? `2px solid ${colors.goldenHour}` : "2px solid transparent",
-                padding: isMobile ? "12px 10px" : "14px 16px",
+                padding: isMobile ? "10px 8px" : "10px 12px",
                 cursor: "pointer",
                 transition: "opacity 0.15s, border-color 0.15s",
-                flexShrink: 0,
+                flexShrink: 1,
+                whiteSpace: "nowrap",
               }}
             >
               {ch.label.toUpperCase()}
@@ -412,6 +829,143 @@ export default function BrandGuide() {
           ))}
         </div>
       </nav>
+
+      {/* ─── CURRENT FLOW ─── */}
+      <section id="current" style={{ padding: isMobile ? "60px 24px" : "80px 40px" }}>
+        <h2 style={sectionHeadingStyle}>CURRENT FLOW</h2>
+        <p style={sectionDescStyle}>
+          This is the current public-facing Harvest idea. Lead with this before any internal model, program map, or future operating system.
+        </p>
+
+        <div style={{
+          maxWidth: 1100,
+          margin: "44px auto 0",
+          display: "grid",
+          gridTemplateColumns: isMobile ? "1fr" : "1.15fr 0.85fr",
+          gap: 18,
+          alignItems: "stretch",
+        }}>
+          <div style={{
+            backgroundColor: colors.shed,
+            color: colors.milk,
+            padding: isMobile ? "28px 22px" : "36px 42px",
+            borderTop: `6px solid ${colors.goldenHour}`,
+          }}>
+            <span style={smallLabelStyle}>WITTA · JINIBARA COUNTRY · GARDEN OPENING END OF JUNE</span>
+            <h3 style={{
+              fontFamily: fonts.display,
+              fontWeight: 900,
+              fontSize: isMobile ? 46 : 72,
+              letterSpacing: "0.04em",
+              lineHeight: 0.94,
+              margin: "22px 0 16px",
+            }}>
+              THE HARVEST
+            </h3>
+            <p style={{
+              fontFamily: fonts.display,
+              fontWeight: 900,
+              fontSize: isMobile ? 22 : 34,
+              letterSpacing: "0.04em",
+              color: colors.goldenHour,
+              margin: "0 0 18px",
+            }}>
+              Grow. Make. Gather.
+            </p>
+            <p style={{
+              fontFamily: fonts.body,
+              fontSize: isMobile ? 16 : 18,
+              lineHeight: 1.75,
+              opacity: 0.82,
+              margin: 0,
+              maxWidth: 680,
+            }}>
+              A community garden and creative gathering place taking shape in Witta.
+            </p>
+            <div style={{
+              display: "grid",
+              gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)",
+              gap: 12,
+              marginTop: 28,
+            }}>
+              {[
+                ["Grow", "Garden opening", colors.canopy],
+                ["Make", "Creative build", colors.crane],
+                ["Gather", "Community place", colors.goldenHour],
+              ].map(([verb, role, color]) => (
+                <div key={verb} style={{ border: `1px solid rgba(245,240,232,0.14)`, padding: 16 }}>
+                  <div style={{ width: 32, height: 5, backgroundColor: color, marginBottom: 12 }} />
+                  <strong style={{ fontFamily: fonts.display, fontSize: 14, letterSpacing: "0.08em" }}>{verb}</strong>
+                  <p style={{ fontFamily: fonts.body, fontSize: 13, opacity: 0.62, margin: "6px 0 0" }}>{role}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div style={{
+            border: `1px solid rgba(28,25,23,0.12)`,
+            padding: isMobile ? "24px 20px" : "28px 30px",
+            backgroundColor: "rgba(255,255,255,0.35)",
+          }}>
+            <span style={{ ...smallLabelStyle, color: colors.shed, opacity: 0.45 }}>
+              HOW TO USE THIS PAGE
+            </span>
+            <div style={{ display: "grid", gap: 14, marginTop: 18 }}>
+              {[
+                ["Lead", "Start with Witta, Jinibara Country, garden opening end of June, The Harvest, Grow. Make. Gather."],
+                ["Explain", "Use one plain sentence: a community garden and creative gathering place taking shape in Witta."],
+                ["Then deepen", "Only after that, bring in photos, people, stories, timber, dairy, tables, shop, events, and the longer build."],
+              ].map(([title, body]) => (
+                <div key={title} style={{ borderBottom: `1px solid rgba(28,25,23,0.08)`, paddingBottom: 14 }}>
+                  <strong style={{ fontFamily: fonts.display, fontSize: 12, letterSpacing: "0.1em" }}>{title}</strong>
+                  <p style={{ fontFamily: fonts.body, fontSize: 14, lineHeight: 1.6, opacity: 0.68, margin: "6px 0 0" }}>{body}</p>
+                </div>
+              ))}
+            </div>
+            <Link href="/brand-development" style={{
+              display: "inline-block",
+              marginTop: 20,
+              fontFamily: fonts.display,
+              fontWeight: 900,
+              fontSize: 12,
+              letterSpacing: "0.08em",
+              color: colors.shed,
+              backgroundColor: colors.goldenHour,
+              padding: "13px 18px",
+              textDecoration: "none",
+            }}>
+              OPEN WORKBENCH →
+            </Link>
+          </div>
+        </div>
+
+        <div style={{
+          maxWidth: 1100,
+          margin: "18px auto 0",
+          display: "grid",
+          gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)",
+          gap: 12,
+        }}>
+          {[
+            ["1", "Public lockup", "Always first", "The exact words people should meet before any deeper explanation."],
+            ["2", "Photo proof", "Always second", "Real garden, real people, real work, real Witta. No fake Harvest scenes."],
+            ["3", "Next action", "Always third", "Learn about The Harvest, come through, ask a question, bring hands, or follow the next note."],
+          ].map(([n, title, timing, body]) => (
+            <div key={title} style={{
+              border: `1px solid rgba(28,25,23,0.12)`,
+              padding: 18,
+              backgroundColor: "rgba(255,255,255,0.28)",
+            }}>
+              <span style={{ fontFamily: fonts.display, fontWeight: 900, fontSize: 22, color: colors.crane }}>{n}</span>
+              <h3 style={{ fontFamily: fonts.display, fontWeight: 900, fontSize: 14, letterSpacing: "0.06em", margin: "10px 0 4px" }}>{title}</h3>
+              <p style={{ fontFamily: fonts.display, fontWeight: 700, fontSize: 10, letterSpacing: "0.1em", opacity: 0.45, margin: "0 0 10px" }}>{timing}</p>
+              <p style={{ fontFamily: fonts.body, fontSize: 13, lineHeight: 1.55, opacity: 0.68, margin: 0 }}>{body}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <LaunchContentPlan isMobile={isMobile} />
 
       {/* ─── THE MARK ─── */}
       <section id="logo" style={{ padding: isMobile ? "60px 24px" : "80px 40px" }}>
@@ -549,7 +1103,7 @@ export default function BrandGuide() {
               { label: "Minimum size", body: "Don't go below 96px wide on screen, or 32mm wide in print. Below that, the roots stop reading and the mark turns to mush." },
               { label: "Backgrounds", body: "Cream (#F5F0E8) or shed black (#1C1917). Avoid mid-tone greys, busy photos, and any other palette colour (Crane, Canopy, Golden Hour, etc.) as a background. they all fight the mark." },
               { label: "On photography", body: "Only on heavily darkened or simplified imagery. If the background has texture, drop a 60–72% shed-black scrim under the mark first." },
-              { label: "Alongside text", body: "If a lockup needs a tagline, place 'Garden. Kitchen. Art Space.' or 'Witta · Jinibara Country' to the right of the wordmark at one cap-height distance, never under the roots." },
+              { label: "Alongside text", body: "If a lockup needs a line, use 'Grow. Make. Gather.' or 'Witta · Jinibara Country'. Keep it outside the wordmark clear space." },
             ].map((rule) => (
               <div key={rule.label} style={{
                 display: "grid",
@@ -664,7 +1218,7 @@ export default function BrandGuide() {
                 "This is a place, not a brand. Soil, sheds, weather, a history older than us. On Jinibara Country, in Witta in the Sunshine Coast Hinterland.",
                 "It's being made slowly, in public, by the people who live here. Not by a developer. Not by a chain.",
                 "You're not a customer. You're a neighbour, a maker, or someone curious. Any of those is enough.",
-                "Garden first. Kitchen and art space are the longer build. We say what's actually happening this round.",
+                "Garden opening first. Grow. Make. Gather. The longer operating model comes after people understand that.",
               ],
             },
             {
@@ -684,11 +1238,11 @@ export default function BrandGuide() {
               color: colors.crane,
               sub: "The behaviour we're inviting.",
               points: [
-                "Join the member list. The front gate.",
-                "Bring hands on a work day. Specific asks, never vague ‘volunteer opportunities’.",
-                "Turn up on a community day. With kids, neighbours, food.",
-                "Send a question if they're not ready to join.",
-                "Stay around long enough to become part of the place's story.",
+                "Learn about The Harvest.",
+                "Come through when the garden opens at the end of June.",
+                "Bring a question, a story, or a pair of hands.",
+                "Follow the next note if they're not ready to turn up.",
+                "Stay around long enough to help shape what it becomes.",
               ],
             },
           ].map((col) => (
@@ -780,10 +1334,10 @@ export default function BrandGuide() {
             gap: 14,
           }}>
             {[
-              "Not a commercial entity looking to profit off community.",
-              "Not flashy. Not claiming to be perfect.",
-              "Not promising polished days and nights.",
-              "Not doing all the work. The community makes the place.",
+                "Not a commercial entity looking to profit off community.",
+                "Not flashy. Not claiming to be perfect.",
+                "Not promising polished days and nights.",
+                "Not pretending a formal cooperative exists before the governance is real.",
             ].map((line, i) => (
               <li key={i} style={{
                 fontFamily: fonts.body,
@@ -802,9 +1356,9 @@ export default function BrandGuide() {
 
       {/* ─── THE THREES ─── */}
       <section id="threes" style={{ padding: isMobile ? "60px 24px" : "80px 40px" }}>
-        <h2 style={sectionHeadingStyle}>THE THREES</h2>
+        <h2 style={sectionHeadingStyle}>GROW. MAKE. GATHER.</h2>
         <p style={sectionDescStyle}>
-          One trio, two ways of saying it. Verbs and rooms map one to one. Use the verbs in copy, the rooms when you point at the place.
+          This is the current public rhythm. It is not a department structure. It is the simplest way to understand what the place asks people to do.
         </p>
 
         <div style={{
@@ -866,7 +1420,7 @@ export default function BrandGuide() {
           padding: 28,
         }}>
           <span style={{ ...smallLabelStyle, color: colors.shed, opacity: 0.4 }}>
-            HOW THEY MAP
+            HOW IT WORKS
           </span>
           <table style={{
             width: "100%",
@@ -877,7 +1431,7 @@ export default function BrandGuide() {
           }}>
             <thead>
               <tr>
-                {["Verb", "Room", "Colour (place)"].map((h) => (
+                {["Verb", "Public meaning", "Colour"].map((h) => (
                   <th key={h} style={{
                     textAlign: "left",
                     fontFamily: fonts.display,
@@ -895,9 +1449,9 @@ export default function BrandGuide() {
             </thead>
             <tbody>
               {[
-                { verb: "Grow", room: "The Garden", color: colors.canopy, colorName: "Canopy" },
-                { verb: "Make", room: "The Art Space", color: colors.crane, colorName: "Crane" },
-                { verb: "Gather", room: "Community days", color: colors.goldenHour, colorName: "Golden Hour" },
+                { verb: "Grow", room: "Garden opening, seedlings, soil, work days, old nursery memory.", color: colors.canopy, colorName: "Canopy" },
+                { verb: "Make", room: "Creative work, timber, repair, signs, art, workshops, visible making.", color: colors.crane, colorName: "Crane" },
+                { verb: "Gather", room: "Neighbours, tables, food, music, stories, questions, community days.", color: colors.goldenHour, colorName: "Golden Hour" },
               ].map((row) => (
                 <tr key={row.verb}>
                   <td style={tableCellStyle}>{row.verb}</td>
@@ -926,20 +1480,20 @@ export default function BrandGuide() {
             marginTop: 20,
             marginBottom: 0,
           }}>
-            <strong>And the Kitchen?</strong> Not a top zone. The café and shop will be run by sublicenced operators. The kitchen is where food <em>from</em> the Garden gets served. A downstream role, delivering healthy, locally grown produce to community and visitors. Don't headline it.
+            Do not replace this with internal room language in public copy. Food, tables, and kitchen ideas sit inside Gather until the public model needs more detail.
           </p>
         </div>
       </section>
 
-      {/* ─── THE ROOMS ─── */}
+      {/* ─── WHAT IT MEANS ─── */}
       <section id="rooms" style={{
         backgroundColor: colors.shed,
         color: colors.milk,
         padding: isMobile ? "60px 24px" : "80px 40px",
       }}>
-        <h2 style={{ ...sectionHeadingStyle, color: colors.milk }}>THE ROOMS</h2>
+        <h2 style={{ ...sectionHeadingStyle, color: colors.milk }}>WHAT IT MEANS</h2>
         <p style={{ ...sectionDescStyle, color: colors.milk, opacity: 0.6 }}>
-          Three zones. Each has a name, a verb, a color, and an open question.
+          The words need jobs. This is how Grow, Make, and Gather stay useful without turning into a complicated brand diagram.
         </p>
 
         <div style={{
@@ -1233,10 +1787,15 @@ export default function BrandGuide() {
       <section id="gallery" style={{ padding: isMobile ? "60px 24px" : "80px 40px" }}>
         <h2 style={sectionHeadingStyle}>VISUAL LIBRARY</h2>
         <p style={sectionDescStyle}>
-          All sketches, drawings, plans, photos, and inspiration in one place. Click any image to view fullscreen.
+          Empathy Ledger first, local source folders second. Core launch and brand photos are ranked at the top.
         </p>
 
         <div style={{ maxWidth: 1100, margin: "40px auto 0" }}>
+          <EmpathyLedgerBrandMedia
+            isMobile={isMobile}
+            onImageClick={(src, label) => setLightbox({ src, label })}
+          />
+
           {imageGallery.map((group) => (
             <div key={group.category} style={{ marginBottom: 48 }}>
               <Collapsible title={group.category} defaultOpen={false}>
@@ -1359,7 +1918,7 @@ export default function BrandGuide() {
       }}>
         <h2 style={{ ...sectionHeadingStyle, color: colors.milk }}>SKETCH PAD</h2>
         <p style={{ ...sectionDescStyle, color: colors.milk, opacity: 0.6 }}>
-          Use Gemini to conceptualize. Describe what you're thinking and it'll draw it.
+          Concept-only sketching. AI-generated images are not Harvest brand assets and must not be used as public proof.
         </p>
 
         <SketchPad isMobile={isMobile} />
@@ -1550,7 +2109,7 @@ export default function BrandGuide() {
               lineHeight: 1.8,
               margin: "8px 0 0",
             }}>
-              Art is how we make sense of being alive. Food is how we sustain each other. Community is what happens when those two things share a table.
+              A community garden and creative gathering place taking shape in Witta.
             </p>
             <p style={{
               fontFamily: fonts.body,
@@ -1615,6 +2174,7 @@ export default function BrandGuide() {
                 ["grow", "develop"],
                 ["make", "create content"],
                 ["come along", "register now"],
+                ["come through", "attend our activation"],
                 ["the place", "the venue"],
                 ["what's forming", "our vision"],
                 ["try something", "participate"],
@@ -1623,7 +2183,7 @@ export default function BrandGuide() {
                 ["Saturday morning", "upcoming activation"],
                 ["work day", "working bee"],
                 ["a question", "an enquiry"],
-                ["join the member list", "subscribe to our newsletter"],
+                ["bring a question", "submit an enquiry"],
               ].map(([yes, no], i) => (
                 <div key={i} style={{ display: "contents" }}>
                   <div style={{ padding: "10px 16px", borderBottom: "1px solid rgba(245,240,232,0.06)", fontFamily: fonts.body, fontSize: 14, color: colors.milk }}>
@@ -1644,25 +2204,25 @@ export default function BrandGuide() {
               {
                 channel: "SOCIAL CAPTION",
                 color: colors.workshirt,
-                good: "Saturday 7 March. Oysters, pizza, music. Come as you are.\nSave your spot → theharvestwitta.com.au/gather",
+                good: "Witta · Jinibara Country · Garden opening end of June\n\nThe Harvest\nGrow. Make. Gather.\n\nA community garden and creative gathering place taking shape in Witta.",
                 bad: "Join us for our inaugural community gathering event! We're excited to announce The Harvest's first open day featuring local food, live music and more. RSVP via the link in our bio. #community #sundayvibes",
               },
               {
                 channel: "NEWSLETTER SUBJECT",
                 color: colors.goldenHour,
-                good: "Something's growing in Witta",
+                good: "The Harvest garden opens end of June",
                 bad: "The Harvest Community Hub. March Newsletter & Upcoming Events",
               },
               {
                 channel: "EVENT SIGNAGE",
                 color: colors.calendula,
-                good: "FOOD THIS WAY →\nOysters. Pizza. BYO.",
+                good: "THE HARVEST\nGrow. Make. Gather.\nGarden opening end of June.",
                 bad: "Welcome to The Harvest Community Hub First Gathering Event. Food Service Area Located Ahead",
               },
               {
                 channel: "INSTAGRAM STORY",
                 color: colors.crane,
-                good: "Shaun's shucking 200 oysters on Saturday.\nHe was the first person to say yes to this place.",
+                good: "The Milk Man is doing his job.\nNot selling milk. Starting conversations.",
                 bad: "Meet our amazing community partner @shaunfisher who will be providing fresh locally-sourced oysters at our upcoming event! 🦪✨ Don't miss out!",
               },
             ].map((ex) => (
@@ -1848,12 +2408,12 @@ export default function BrandGuide() {
             marginTop: 16,
           }}>
             {[
-              { src: "/images/compendium/barry/IMG_5764.jpg", label: "Documentary · person in place", rule: "Real person, natural light, environmental" },
-              { src: "/images/compendium/barry/IMG_5745.jpg", label: "Heritage · honest portrait", rule: "Unposed, mid-conversation, warm tone" },
-              { src: "/images/site-plan/inspiration/pen-sketch-portrait.jpeg", label: "Making · hands at work", rule: "Process over product, close crop on action" },
-              { src: "/images/harvest-eat.jpg", label: "Food · shared table", rule: "Overhead or angle, real food, real hands" },
-              { src: "/images/site-plan/inspiration/crate-wall.jpeg", label: "Materials · texture detail", rule: "Tight on material, shows character and wear" },
-              { src: "/images/compendium/canvas-drawing.jpg", label: "Art · work in progress", rule: "Unfinished is better than polished" },
+              { src: "/images/social/harvest-social-card.jpg", label: "Public signal · milk crate pavilion", rule: "Real object, current campaign, no fake crowd scene" },
+              { src: "/images/optimized/seed-house-front-1600.webp", label: "Place proof · front building", rule: "Shows where people are going" },
+              { src: "/images/optimized/hero-aerial-1400.webp", label: "Garden · real work", rule: "Process over product, hands and soil" },
+              { src: "/images/optimized/barry-5745-1000.webp", label: "Making · timber and tools", rule: "Local memory, useful work, warm tone" },
+              { src: "/images/membership/member-welcome-crates.jpg", label: "Materials · milk crates", rule: "Tight on real material, shows character and scale" },
+              { src: "/images/compendium/canvas-drawing.jpg", label: "Plan · work in progress", rule: "Unfinished is better than polished" },
             ].map((ref) => (
               <div key={ref.src} style={{ cursor: "pointer" }} onClick={() => setLightbox({ src: ref.src, label: ref.label })}>
                 <img src={ref.src} alt={ref.label} loading="lazy" style={{
@@ -1931,14 +2491,14 @@ export default function BrandGuide() {
               category: "COLOUR",
               color: colors.goldenHour,
               doList: [
-                "Use zone colours for their zone only. Canopy (green) is the Garden. Golden Hour (yellow) is the Kitchen. Crane (red) is the Art Space.",
+                "Use colour by public meaning. Canopy is Grow. Crane is Make. Golden Hour is Gather.",
                 "Shed black backgrounds with milk cream text for digital.",
                 "Milk cream backgrounds with shed text for print and light contexts.",
                 "One accent colour per composition. Don't rainbow.",
               ],
               dontList: [
                 "Mix zone colours randomly (red heading on a garden post).",
-                "Use Golden Hour as a Kitchen colour. The Kitchen is not a top zone any more.",
+                "Use Golden Hour as decoration when the surface is not carrying gathering, table, food, warmth, or invitation.",
                 "Use gradients or colour transitions.",
                 "Use colour as decoration. Every colour means something.",
                 "White backgrounds. Use cream (#F5F0E8), not #FFFFFF.",
@@ -1982,8 +2542,8 @@ export default function BrandGuide() {
               doList: [
                 "Graphite pencil on warm cream toned paper. Soft shading, hatching, atmospheric perspective.",
                 "Faithful to the real place. Real proportions. Real architectural detail.",
-                "When generating with Gemini, lead the prompt with: ‘Realistic graphite pencil drawing on warm cream toned paper.’",
-                "One illustration per composition. Don't decorate around it.",
+                "Use concept sketches for internal thinking only unless they are based on real source material and clearly approved.",
+                "One support visual per composition. Do not decorate around it.",
               ],
               dontList: [
                 "Ink line drawings. Not the Harvest style.",
@@ -1997,7 +2557,7 @@ export default function BrandGuide() {
               color: colors.calendula,
               doList: [
                 "Short sentences. Full stops. Let silence do the work.",
-                "Name real things. Saturday, oysters, Barry, Witta",
+                "Name real things. Witta, garden opening, Milk Man, crates, Barry, Jinibara Country.",
                 "Use 'we' and 'you'. first/second person",
                 "Read it aloud. If you wouldn't say it, rewrite it.",
               ],
@@ -2112,6 +2672,7 @@ export default function BrandGuide() {
                 "Could a neighbour have taken this photo? → It's on-brand.",
                 "Does it need more than one sentence to explain? → Simplify.",
                 "Are you using a word from the 'never' list? → Rewrite.",
+                "Does it help someone understand Grow, Make, or Gather? → If not, simplify.",
                 "Still not sure? → Ask: does this feel like Witta, or like a brochure?",
               ].map((rule, i) => (
                 <p key={i} style={{ fontFamily: fonts.body, fontSize: 14, lineHeight: 1.7, color: colors.milk, opacity: 0.7, margin: 0 }}>
@@ -2278,10 +2839,10 @@ function SocialTemplates({ isMobile, onImageClick }: {
   isMobile: boolean;
   onImageClick: (src: string, label: string) => void;
 }) {
-  const [activeTab, setActiveTab] = useState("generated");
+  const [activeTab, setActiveTab] = useState("current");
 
   const tabs = [
-    { id: "generated", label: "Social Examples", color: colors.goldenHour },
+    { id: "current", label: "Current Picks", color: colors.goldenHour },
     { id: "zones", label: "Zone Tiles", color: colors.goldenHour },
     { id: "principles", label: "Principles", color: colors.workshirt },
     { id: "stories", label: "Story Cards", color: colors.canopy },
@@ -2290,56 +2851,45 @@ function SocialTemplates({ isMobile, onImageClick }: {
     { id: "video", label: "Video", color: colors.crane },
   ];
 
-  const generatedAssets = [
-    { src: "/images/social/01-origin-story.png", label: "Origin Story", use: "PIN THIS FIRST. Launch post for Facebook & Instagram.", caption: "Something is forming in Witta.\n\nArt. Food. Community.\nAn old dairy property on the Blackall Range. A garden, a gallery, a kitchen. Neighbours sharing a table.\n\nMore soon → theharvestwitta.com.au" },
-    { src: "/images/social/02-event-announcement.png", label: "First Gathering", use: "Facebook Event image. Share in Maleny, Witta, Hinterland groups.", caption: "Saturday 7 March. 11am - 4pm.\nOysters from Moreton Bay. Drinks by Flight Bar Witta. Come for an hour or stay all afternoon.\nFree. 9 Gumland Drive, Witta.\n\nSave your spot → theharvestwitta.com.au/gather" },
-    { src: "/images/social/03-shaun-fisher.png", label: "Shaun Fisher", use: "Trust signal + food story. Post 3-4 days before.", caption: "From sea country to the hinterland.\n\nShaun Fisher, a Mununjali, Gorenpul Man, grows oysters from his leases in Moreton Bay on Quandamooka Country. He's bringing his harvest to share.\n\nSaturday 7 March → theharvestwitta.com.au/gather" },
-    { src: "/images/social/04-radical-scoops.png", label: "Radical Scoops", use: "Regional Arts framing. Credibility + depth. Post early in sequence.", caption: "What happens when you bring creative practice into a place shaped by generations?\n\nRadical Scoops. A 12-month residency through Regional Arts Australia. Dairy, timber, co-ops, and Jinibara Country.\n\nThe Harvest, Witta → theharvestwitta.com.au" },
-    { src: "/images/social/05-zone-garden.png", label: "Zone: Garden", use: "Garden zone intro. Ask a question to drive comments.", caption: "GARDEN.\n\nGrowing food, learning from the land, getting hands dirty. Community plots, workshops, seasonal rhythms.\n\nWhat would you grow if you had the space? ↓" },
-    { src: "/images/social/06-zone-art.png", label: "Zone: Art", use: "Art zone intro. Creative audience.", caption: "ART.\n\nA space for making. Workshops, residencies, and creative practice through the Radical Scoops fellowship.\n\nWhat would you make if you had the space?" },
-    { src: "/images/social/07-zone-food.png", label: "Zone: Food", use: "Food zone intro. Post 1/day between zones.", caption: "FOOD.\n\nShared tables, local produce, and the conversations that happen around them. Oysters from Moreton Bay, drinks from Flight Bar Witta.\n\nWhat would you bring to a shared meal?" },
-    { src: "/images/social/08-countdown-7days.png", label: "Countdown - 7 Days", use: "One week out. Urgency post. Boost this one.", caption: "7 days.\n\nSaturday 7 March. 11am - 4pm. Witta.\nOysters. Music. Neighbours. Free.\n\nSave your spot → theharvestwitta.com.au/gather" },
-    { src: "/images/social/09-locals-day.png", label: "Locals Day", use: "Witta locals only. Share in local groups and next-door apps.", caption: "The day before.\n\nLocals Day. Friday 6 March, afternoon.\nMeet the neighbours, build with milk crates, share your vision for this space. Just locals.\n\nSign up → theharvestwitta.com.au/gather" },
-    { src: "/images/social/10-save-your-spot.png", label: "Save Your Spot", use: "Final CTA. Post day before + use as paid boost.", caption: "Come see the place for yourself.\n\nSaturday 7 March. 11am - 4pm. Witta.\nOysters from Moreton Bay. Drinks by Flight Bar. Neighbours on the lawn. Free.\n\nSave your spot → theharvestwitta.com.au/gather" },
-    { src: "/images/social/11-facebook-cover.png", label: "Facebook Cover (16:9)", use: "Facebook page cover image or event cover. 16:9 landscape format.", caption: "The Harvest. Art. Food. Community.\n9 Gumland Drive, Witta. Sunshine Coast Hinterland.\ntheharvestwitta.com.au" },
-    { src: "/images/social/12-story-invite.png", label: "Story: Invite (9:16)", use: "Instagram/Facebook story. Swipe-up or link sticker to /gather.", caption: "Saturday 7 March. 11am - 4pm.\nArt. Food. Community.\nOysters. Flight Bar. Neighbours on the lawn.\n\nSave your spot → theharvestwitta.com.au/gather" },
-    { src: "/images/social/13-story-shaun.png", label: "Story: Shaun Fisher (9:16)", use: "Instagram/Facebook story. Food provenance angle. Pair with oyster-lease video.", caption: "From sea country to the hinterland.\nShaun Fisher grows oysters on Moreton Bay. He's bringing his harvest to share.\n\nSaturday 7 March → theharvestwitta.com.au/gather" },
-    { src: "/images/social/14-countdown-3days.png", label: "Countdown - 3 Days", use: "Three days out. Pair with 7-day countdown. Story + feed.", caption: "3 days.\n\nSaturday 7 March. Witta.\nArt. Food. Community. Free.\n\nSave your spot → theharvestwitta.com.au/gather" },
+  const currentAssets = [
+    { src: "/images/social/harvest-social-card.jpg", label: "Current share image", use: "Default website, Facebook event, and broad local share image.", caption: "The Harvest opens its gate this Saturday.\n\nA community garden and creative gathering place is taking shape in Witta, on Jinibara Country.\n\nCome see the garden, the milk crate pavilion, the old nursery, and the first shape of the place.\n\nRSVP so we can count people and food:\ntheharvestwitta.com.au/june-20#rsvp" },
+    { src: "/images/membership/member-welcome-crates.jpg", label: "Milk crate pavilion", use: "Best object-led post. Use when the story needs a clear visual hook.", caption: "The milk crates are not decoration.\n\nThey are becoming the first pavilion: stacked, carried, borrowed, returned, and built into the shape of the place.\n\nCome see it this Saturday.\n\ntheharvestwitta.com.au/june-20#rsvp" },
+    { src: "/images/optimized/seed-house-front-1600.webp", label: "Front building", use: "Plain wayfinding and place proof. Good for local groups.", caption: "The Harvest is the old nursery at 9 Gumland Drive, Witta.\n\nThe gate opens this Saturday from 1pm.\n\nCome after the market, walk the garden, and stay into the evening if you can.\n\ntheharvestwitta.com.au/june-20#rsvp" },
+    { src: "/images/optimized/hero-aerial-1400.webp", label: "Garden work", use: "Garden-first proof and practical help asks.", caption: "The garden is the first thing people can understand.\n\nBeds, paths, soil, shade, kids, and the first hands on the place.\n\nCome see what is taking shape." },
+    { src: "/images/optimized/barry-5745-1000.webp", label: "Timber and tools", use: "Make thread: timber, tools, repair, and local memory.", caption: "Make is not a program category.\n\nIt is the way the place comes into being: timber, tools, signs, objects, repairs, and useful work done in public." },
   ];
 
-  // Zone identity tiles. rendered as HTML compositions
+  // Public identity tiles. rendered as HTML compositions
   const zoneTiles = [
-    { verb: "GROW", zone: "The Garden", tagline: "Beds. Paths. Seedlings. Hands in the soil.", color: colors.canopy, img: "/images/harvest-grow.jpg" },
-    { verb: "MAKE", zone: "The Art Space", tagline: "Gallery. Studio. Workshop. Hands on a build.", color: colors.crane, img: "/images/harvest-make.jpg" },
-    { verb: "GATHER", zone: "Community days", tagline: "Community days. Work days. Music on the lawn.", color: colors.goldenHour, img: "/images/harvest-gather.jpg" },
+    { verb: "GROW", zone: "Garden opening", tagline: "Beds. Paths. Seedlings. Hands in the soil.", color: colors.canopy, img: "/images/optimized/hero-aerial-1400.webp" },
+    { verb: "MAKE", zone: "Creative build", tagline: "Timber. Tools. Signs. Art. Hands on the work.", color: colors.crane, img: "/images/optimized/barry-5745-1000.webp" },
+    { verb: "GATHER", zone: "Community place", tagline: "Neighbours. Food. Questions. People at the gate.", color: colors.goldenHour, img: "/images/social/harvest-social-card.jpg" },
   ];
 
   const principleTiles = [
     { principle: "Nothing is permanent.", sub: "Like a gallery. The space is always becoming.", color: colors.crane, img: "/images/compendium/canvas-drawing.jpg" },
-    { principle: "Community-built.", sub: "We don't build for people. We build with them.", color: colors.workshirt, img: "/images/site-plan/inspiration/crate-cube.jpeg" },
-    { principle: "Custodianship.", sub: "We build to hand over.", color: colors.canopy, img: "/images/compendium/barry/IMG_5764.jpg" },
+    { principle: "Community-built.", sub: "We don't build for people. We build with them.", color: colors.workshirt, img: "/images/membership/member-welcome-crates.jpg" },
+    { principle: "Custodianship.", sub: "We build to hand over.", color: colors.canopy, img: "/images/optimized/barry-5764-1000.webp" },
   ];
 
   const storyCards = [
-    { quote: "This was all timber country.", attribution: "Barry", img: "/images/compendium/barry/IMG_5745.jpg", color: colors.calendula },
-    { quote: "We used to all know each other.", attribution: "Barry", img: "/images/compendium/barry/IMG_5727.jpg", color: colors.goldenHour },
-    { quote: "The dogs know this land better than anyone.", attribution: "Barry", img: "/images/compendium/barry/IMG_5819.jpg", color: colors.canopy },
-    { quote: "Art is how we make sense of being alive.", attribution: "The Harvest", img: "/images/compendium/canvas-drawing-dark.jpg", color: colors.crane },
-    { quote: "Food is how we sustain each other.", attribution: "The Harvest", img: "/images/harvest-eat.jpg", color: colors.goldenHour },
-    { quote: "Community is what happens when those two things share a table.", attribution: "The Harvest", img: "/images/harvest-gather.jpg", color: colors.workshirt },
+    { quote: "A place being made in public.", attribution: "The Harvest", img: "/images/optimized/seed-house-front-1600.webp", color: colors.calendula },
+    { quote: "The garden is the first thing people understand.", attribution: "The Harvest", img: "/images/optimized/hero-aerial-1400.webp", color: colors.goldenHour },
+    { quote: "The old timber is not decoration.", attribution: "The Harvest", img: "/images/optimized/barry-5745-1000.webp", color: colors.canopy },
+    { quote: "The first opening is proof, not polish.", attribution: "The Harvest", img: "/images/social/harvest-social-card.jpg", color: colors.crane },
   ];
 
   const ctaTiles = [
-    { cta: "COME GROW\nWITH US", sub: "Hands in the soil. Beds, paths, seedlings.", color: colors.canopy, img: "/images/site-plan/inspiration/accessible-garden.jpeg" },
-    { cta: "COME MAKE\nWITH US", sub: "Build days, art days, residencies. The work.", color: colors.crane, img: "/images/harvest-make.jpg" },
-    { cta: "COME GATHER\nWITH US", sub: "Community days. Food, music, kids, dogs.", color: colors.goldenHour, img: "/images/harvest-gather.jpg" },
+    { cta: "COME GROW\nWITH US", sub: "Hands in the soil. Beds, paths, seedlings.", color: colors.canopy, img: "/images/optimized/hero-aerial-1400.webp" },
+    { cta: "COME MAKE\nWITH US", sub: "Build days, art days, signs, timber, objects.", color: colors.crane, img: "/images/optimized/barry-5745-1000.webp" },
+    { cta: "COME GATHER\nWITH US", sub: "Tables, crates, food, questions, stories.", color: colors.goldenHour, img: "/images/membership/member-welcome-crates.jpg" },
   ];
 
   const heritageTiles = [
-    { era: "1899", now: "2026", then: "Pit sawyers", future: "Fire cooking station", imgThen: "/images/witta/history/teutoburg-pit-sawyers-1899.png", imgNow: "/images/site-plan/inspiration/curved-pavilion.jpeg", color: colors.calendula },
-    { era: "1899", now: "2026", then: "Cheese making", future: "Community kitchen", imgThen: "/images/witta/history/teutoburg-cheese-making-1899.png", imgNow: "/images/harvest-eat.jpg", color: colors.goldenHour },
-    { era: "1899", now: "2026", then: "Farm cottage", future: "Art gallery + kitchen", imgThen: "/images/witta/history/teutoburg-nothling-cottage-1899.png", imgNow: "/images/compendium/MASTER FLOOR PLAN_5.jpeg", color: colors.crane },
-    { era: "1931", now: "2026", then: "Bunya pines", future: "Community garden", imgThen: "/images/witta/history/bunya-pines-witta-1931.png", imgNow: "/images/site-plan/inspiration/accessible-garden.jpeg", color: colors.canopy },
+    { era: "1899", now: "2026", then: "Pit sawyers", future: "Timber and tools", imgThen: "/images/witta/history/teutoburg-pit-sawyers-1899.png", imgNow: "/images/optimized/barry-5745-1000.webp", color: colors.calendula },
+    { era: "1899", now: "2026", then: "Cheese making", future: "Food starts simple", imgThen: "/images/witta/history/teutoburg-cheese-making-1899.png", imgNow: "/images/optimized/seed-house-front-1600.webp", color: colors.goldenHour },
+    { era: "1899", now: "2026", then: "Farm cottage", future: "Rooms being planned", imgThen: "/images/witta/history/teutoburg-nothling-cottage-1899.png", imgNow: "/images/compendium/MASTER FLOOR PLAN_5.jpeg", color: colors.crane },
+    { era: "1931", now: "2026", then: "Bunya pines", future: "Garden opening", imgThen: "/images/witta/history/bunya-pines-witta-1931.png", imgNow: "/images/optimized/hero-aerial-1400.webp", color: colors.canopy },
   ];
 
   const videoAssets = [
@@ -2391,12 +2941,12 @@ function SocialTemplates({ isMobile, onImageClick }: {
         ))}
       </div>
 
-      {/* ── GENERATED SOCIAL EXAMPLES ── */}
-      {activeTab === "generated" && (
+      {/* ── CURRENT SOCIAL PICKS ── */}
+      {activeTab === "current" && (
         <div>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
             <p style={{ fontFamily: fonts.body, fontSize: 13, color: colors.milk, opacity: 0.4, margin: 0 }}>
-              Ready-to-post social assets with captions. Right-click to save images. Copy captions below each one.
+              Current real-photo picks with captions. Use these before old launch tiles, concept renders, or generated-looking scene images.
             </p>
             <Link href="/social-planner" style={{
               fontFamily: fonts.display, fontWeight: 700, fontSize: 10, letterSpacing: "0.1em",
@@ -2412,9 +2962,9 @@ function SocialTemplates({ isMobile, onImageClick }: {
             border: `1px solid rgba(242,201,0,0.15)`,
             marginBottom: 24,
           }}>
-            <span style={{ fontFamily: fonts.display, fontWeight: 700, fontSize: 10, letterSpacing: "0.12em", color: colors.goldenHour }}>POSTING ORDER</span>
+            <span style={{ fontFamily: fonts.display, fontWeight: 700, fontSize: 10, letterSpacing: "0.12em", color: colors.goldenHour }}>CURRENT OPEN-DAY ORDER</span>
             <p style={{ fontFamily: fonts.body, fontSize: 13, color: colors.milk, opacity: 0.5, margin: "6px 0 0", lineHeight: 1.6 }}>
-              Origin story (pin) → Radical Scoops → Event announcement → Zone teasers (1/day for 3 days) → Shaun Fisher → Locals Day → Countdown → Save Your Spot
+              Object → response → making → invitation. Use real Harvest media only. Do not use generated images as public proof.
             </p>
           </div>
           <div style={{
@@ -2422,7 +2972,7 @@ function SocialTemplates({ isMobile, onImageClick }: {
             flexDirection: "column",
             gap: 24,
           }}>
-            {generatedAssets.map((asset) => (
+            {currentAssets.map((asset) => (
               <div key={asset.src} style={{ ...tileStyle }}>
                 <div style={{
                   display: "grid",
@@ -2517,7 +3067,7 @@ function SocialTemplates({ isMobile, onImageClick }: {
       {activeTab === "zones" && (
         <div>
           <p style={{ fontFamily: fonts.body, fontSize: 13, color: colors.milk, opacity: 0.4, margin: "0 0 8px" }}>
-            Each zone has a verb, a color, and a photo. Post the core three first (Make, Feed, Grow), then the rest.
+            Each public verb has a colour, a job, and a real image. Use Grow. Make. Gather. as the spine.
           </p>
           <div style={{
             padding: "12px 16px",
@@ -2527,7 +3077,7 @@ function SocialTemplates({ isMobile, onImageClick }: {
           }}>
             <span style={{ fontFamily: fonts.display, fontWeight: 700, fontSize: 10, letterSpacing: "0.12em", color: colors.goldenHour }}>CAPTION FORMAT</span>
             <p style={{ fontFamily: fonts.body, fontSize: 13, color: colors.milk, opacity: 0.5, margin: "6px 0 0", lineHeight: 1.6 }}>
-              [VERB].<br/>The [Zone Name]. [Tagline].<br/>Art. Food. Community. → theharvestwitta.com.au
+              [VERB].<br/>[Plain object or action]. [Tagline].<br/>The Harvest. Witta. Garden opening end of June.
             </p>
           </div>
           <div style={{
@@ -2757,9 +3307,9 @@ function SocialTemplates({ isMobile, onImageClick }: {
           }}>
             <span style={{ fontFamily: fonts.display, fontWeight: 700, fontSize: 10, letterSpacing: "0.12em", color: colors.goldenHour }}>ALWAYS ADD</span>
             <p style={{ fontFamily: fonts.body, fontSize: 13, color: colors.milk, opacity: 0.5, margin: "6px 0 0", lineHeight: 1.6 }}>
-              Saturday 7 March. 11am – 4pm. Free entry.<br/>
-              Save your spot → theharvestwitta.com.au/gather<br/>
-              Add a "link" sticker on Instagram Stories pointing to the RSVP page.
+              Garden opening end of June. Witta. Jinibara Country.<br/>
+              Learn about The Harvest → theharvestwitta.com.au<br/>
+              Add a link sticker pointing to the current public page.
             </p>
           </div>
           <div style={{
@@ -2928,7 +3478,7 @@ function SocialTemplates({ isMobile, onImageClick }: {
             <span style={{ fontFamily: fonts.display, fontWeight: 700, fontSize: 10, letterSpacing: "0.12em", color: colors.goldenHour }}>USAGE</span>
             <p style={{ fontFamily: fonts.body, fontSize: 13, color: colors.milk, opacity: 0.5, margin: "6px 0 0", lineHeight: 1.6 }}>
               Aerial: loop as Instagram Reel with text overlay + music. No voiceover needed. let the place speak.<br/>
-              Oyster lease: food story content. Pair with Shaun Fisher post for the gathering.
+              Oyster lease: archive as earlier food-story material unless it is re-approved for the current campaign.
             </p>
           </div>
           <div style={{
@@ -2974,6 +3524,267 @@ function SocialTemplates({ isMobile, onImageClick }: {
   );
 }
 
+function LaunchContentPlan({ isMobile }: { isMobile: boolean }) {
+  const [activeWeek, setActiveWeek] = useState(0);
+  const [channel, setChannel] = useState<"facebook" | "instagram" | "newsletter">("facebook");
+  const [audienceIndex, setAudienceIndex] = useState(0);
+  const [copied, setCopied] = useState(false);
+
+  const week = launchContentWeeks[activeWeek];
+  const audience = launchAudienceLoops[audienceIndex];
+  const channelLabel = channel === "facebook" ? "Facebook" : channel === "instagram" ? "Instagram" : "Newsletter";
+
+  const productionPrompt = `Build The Harvest ${channelLabel} content for ${week.week}, ${week.dates}.
+
+Current public frame:
+Witta · Jinibara Country · Garden opening end of June
+
+The Harvest
+Grow. Make. Gather.
+A community garden and creative gathering place taking shape in Witta.
+
+Week theme:
+${week.theme}
+
+Content job:
+${week.job}
+
+Channel task:
+${week.posts[channel]}
+
+Audience:
+${audience.audience}
+
+Audience hook:
+${audience.hook}
+
+Proof to use:
+${week.proof}
+${audience.proof}
+
+CTA:
+${week.cta}
+${audience.ask}
+
+Rules:
+- Use real Harvest photos from Empathy Ledger or approved local assets.
+- Check consent before using identifiable people or children.
+- Keep one clear action.
+- Do not use old room-based brand language as the public spine.
+- Do not overpromise food, timing, access, shop, or finished venue features.
+- Write like someone standing at the gate.
+
+Return:
+1. Best source photos or shot list.
+2. ${channelLabel} post/email structure.
+3. Draft copy.
+4. Alt text or image notes.
+5. CTA and link.
+6. GHL/Notion record fields.
+7. Publish risks to check before scheduling.`;
+
+  const copyPlanPrompt = async () => {
+    await navigator.clipboard.writeText(productionPrompt);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1600);
+  };
+
+  return (
+    <section id="content" style={{ padding: isMobile ? "60px 24px" : "80px 40px" }}>
+      <h2 style={sectionHeadingStyle}>3-WEEK CONTENT PLAN</h2>
+      <p style={{ ...sectionDescStyle, maxWidth: 720 }}>
+        A launch-readiness content loop for Facebook, Instagram, and newsletter. Each week has a job, proof source, audience angle, and agent prompt.
+      </p>
+
+      <div style={{
+        maxWidth: 1100,
+        margin: "44px auto 0",
+        display: "grid",
+        gridTemplateColumns: isMobile ? "1fr" : "0.85fr 1.15fr",
+        gap: 18,
+      }}>
+        <div style={{ display: "grid", gap: 12 }}>
+          {launchContentWeeks.map((item, index) => (
+            <button
+              key={item.week}
+              type="button"
+              onClick={() => setActiveWeek(index)}
+              style={{
+                textAlign: "left",
+                border: `1px solid ${activeWeek === index ? colors.goldenHour : "rgba(28,25,23,0.12)"}`,
+                backgroundColor: activeWeek === index ? colors.shed : "rgba(255,255,255,0.35)",
+                color: activeWeek === index ? colors.milk : colors.shed,
+                padding: "18px 20px",
+                cursor: "pointer",
+              }}
+            >
+              <span style={{ fontFamily: fonts.display, fontWeight: 900, fontSize: 11, letterSpacing: "0.14em", color: activeWeek === index ? colors.goldenHour : colors.crane }}>
+                {item.week.toUpperCase()} · {item.dates.toUpperCase()}
+              </span>
+              <h3 style={{ fontFamily: fonts.display, fontWeight: 900, fontSize: 20, letterSpacing: "0.04em", margin: "8px 0 8px" }}>
+                {item.theme}
+              </h3>
+              <p style={{ fontFamily: fonts.body, fontSize: 14, lineHeight: 1.55, opacity: 0.68, margin: 0 }}>
+                {item.job}
+              </p>
+            </button>
+          ))}
+        </div>
+
+        <div style={{
+          border: `1px solid rgba(28,25,23,0.12)`,
+          backgroundColor: "rgba(255,255,255,0.32)",
+          padding: isMobile ? 20 : 28,
+        }}>
+          <span style={{ ...smallLabelStyle, color: colors.shed, opacity: 0.45 }}>
+            {week.week.toUpperCase()} · {week.dates.toUpperCase()}
+          </span>
+          <h3 style={{
+            fontFamily: fonts.display,
+            fontWeight: 900,
+            fontSize: isMobile ? 28 : 40,
+            lineHeight: 1.05,
+            letterSpacing: "0.04em",
+            margin: "12px 0 12px",
+          }}>
+            {week.theme}
+          </h3>
+          <p style={{ fontFamily: fonts.body, fontSize: 16, lineHeight: 1.7, opacity: 0.72, margin: "0 0 22px" }}>
+            {week.job}
+          </p>
+
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)",
+            gap: 10,
+            marginBottom: 22,
+          }}>
+            {(["facebook", "instagram", "newsletter"] as const).map((item) => (
+              <button
+                key={item}
+                type="button"
+                onClick={() => setChannel(item)}
+                style={{
+                  border: `1px solid ${channel === item ? colors.shed : "rgba(28,25,23,0.12)"}`,
+                  backgroundColor: channel === item ? colors.goldenHour : "transparent",
+                  color: colors.shed,
+                  padding: "12px 14px",
+                  fontFamily: fonts.display,
+                  fontWeight: 900,
+                  fontSize: 11,
+                  letterSpacing: "0.12em",
+                  cursor: "pointer",
+                }}
+              >
+                {item.toUpperCase()}
+              </button>
+            ))}
+          </div>
+
+          <div style={{ display: "grid", gap: 12 }}>
+            {[
+              ["Channel job", week.posts[channel]],
+              ["Proof", week.proof],
+              ["CTA", week.cta],
+            ].map(([label, body]) => (
+              <div key={label} style={{ borderTop: `1px solid rgba(28,25,23,0.08)`, paddingTop: 12 }}>
+                <strong style={{ fontFamily: fonts.display, fontSize: 11, letterSpacing: "0.12em", opacity: 0.5 }}>{label}</strong>
+                <p style={{ fontFamily: fonts.body, fontSize: 14, lineHeight: 1.6, opacity: 0.72, margin: "5px 0 0" }}>{body}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div style={{
+        maxWidth: 1100,
+        margin: "18px auto 0",
+        display: "grid",
+        gridTemplateColumns: isMobile ? "1fr" : "0.85fr 1.15fr",
+        gap: 18,
+      }}>
+        <div style={{
+          border: `1px solid rgba(28,25,23,0.12)`,
+          padding: isMobile ? 20 : 24,
+          backgroundColor: colors.shed,
+          color: colors.milk,
+        }}>
+          <span style={{ ...smallLabelStyle, color: colors.goldenHour, opacity: 0.85 }}>AUDIENCE LOOPS</span>
+          <div style={{ display: "grid", gap: 10, marginTop: 16 }}>
+            {launchAudienceLoops.map((item, index) => (
+              <button
+                key={item.audience}
+                type="button"
+                onClick={() => setAudienceIndex(index)}
+                style={{
+                  textAlign: "left",
+                  border: `1px solid ${audienceIndex === index ? colors.goldenHour : "rgba(245,240,232,0.12)"}`,
+                  backgroundColor: audienceIndex === index ? "rgba(196,146,42,0.14)" : "rgba(245,240,232,0.04)",
+                  color: colors.milk,
+                  padding: "13px 14px",
+                  cursor: "pointer",
+                }}
+              >
+                <strong style={{ fontFamily: fonts.display, fontSize: 12, letterSpacing: "0.1em" }}>{item.audience}</strong>
+                <p style={{ fontFamily: fonts.body, fontSize: 13, lineHeight: 1.45, opacity: 0.58, margin: "5px 0 0" }}>{item.hook}</p>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div style={{
+          border: `1px solid rgba(28,25,23,0.12)`,
+          backgroundColor: "rgba(255,255,255,0.35)",
+        }}>
+          <div style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 12,
+            padding: "14px 16px",
+            borderBottom: `1px solid rgba(28,25,23,0.08)`,
+          }}>
+            <span style={{ fontFamily: fonts.display, fontWeight: 900, fontSize: 11, letterSpacing: "0.14em", color: colors.crane }}>
+              CONTENT AGENT PROMPT
+            </span>
+            <button
+              type="button"
+              onClick={copyPlanPrompt}
+              style={{
+                fontFamily: fonts.display,
+                fontWeight: 900,
+                fontSize: 10,
+                letterSpacing: "0.1em",
+                color: colors.shed,
+                backgroundColor: colors.goldenHour,
+                border: "none",
+                padding: "9px 12px",
+                cursor: "pointer",
+              }}
+            >
+              {copied ? "COPIED" : "COPY PROMPT"}
+            </button>
+          </div>
+          <pre style={{
+            margin: 0,
+            padding: "16px",
+            maxHeight: 520,
+            overflow: "auto",
+            whiteSpace: "pre-wrap",
+            fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
+            fontSize: 12,
+            lineHeight: 1.65,
+            color: colors.shed,
+            opacity: 0.72,
+          }}>
+            {productionPrompt}
+          </pre>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 /* ─────────────────────────────────────
    STYLES
    ───────────────────────────────────── */
@@ -2986,6 +3797,19 @@ const smallLabelStyle: CSSProperties = {
   color: colors.milk,
   opacity: 0.5,
   display: "block",
+};
+
+const heroLinkStyle: CSSProperties = {
+  fontFamily: fonts.display,
+  fontWeight: 900,
+  fontSize: 11,
+  letterSpacing: "0.1em",
+  color: colors.shed,
+  backgroundColor: colors.goldenHour,
+  border: `1px solid ${colors.goldenHour}`,
+  padding: "12px 18px",
+  textDecoration: "none",
+  display: "inline-block",
 };
 
 const sectionHeadingStyle: CSSProperties = {

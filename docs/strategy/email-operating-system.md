@@ -20,17 +20,19 @@ Field Notes, Harvest Notes, the Makers' invite are all **broadcasts**. The follo
 
 ## The three lists
 
+> Live GHL check 2026-06-12: current Harvest sends should use `comms:harvest-newsletter`, not the legacy `harvest-newsletter` tag. Current member records use `tier:member`, not `harvest-member`.
+
 | List | Tag (the only way in) | GHL smart list | Auto-welcome (workflow, fires once) | Broadcasts (you send) |
 | --- | --- | --- | --- | --- |
-| **Newsletter** (follow along) | `harvest-newsletter`, via the footer follow form | The Harvest / followers | Follow Welcome (live, `GHL_NEWSLETTER_WORKFLOW_ID`) | Field Notes (public story) |
-| **Members** | `harvest-member`, via the `/membership` join form only | Harvest Members | Member Welcome (live, `GHL_MEMBER_WELCOME_WORKFLOW_ID`) | Harvest Notes (members first) |
-| **Shop** | `harvest-shop-interest`, via the `/shop` form | Shop | Shop nurture (spec 6, not built yet) | shop updates |
+| **Newsletter** (follow along) | `comms:harvest-newsletter`, via the footer follow form | The Harvest / followers | Follow Welcome (live, `GHL_NEWSLETTER_WORKFLOW_ID`) | Field Notes (public story) |
+| **Members** | `tier:member` plus `interest:membership`, via the `/membership` join form only | Harvest Members | Member Welcome (live, `GHL_MEMBER_WELCOME_WORKFLOW_ID`) | Harvest Notes (members first) |
+| **Shop** | `interest:markets`, via the `/shop` form or shop-chat calendar | Shop | Shop nurture (spec 6, not built yet) | shop updates |
 
 A person can be on more than one list. The lists are tags, not folders, so someone can be a follower and a member and a shop maker at once. Send to the list that fits the message.
 
 ## The guardrails to live by
 
-- **The only door into `harvest-member` is the join form.** The footer is a follow-along now (it sets `member: false`), so followers never silently become members. Known wrinkle: the server logic also grants `harvest-member` when a form's interests include "membership" (`buildNewsletterTags`, `server/routers.ts`), so keep "membership" off the interest pick-lists on follow and contact forms. The deliberate join form is the intended door.
+- **The only door into `tier:member` is the join form.** The footer is a follow-along now (it sets `member: false`), so followers never silently become members. Known wrinkle: the server logic also treats "membership" interests as member intent (`buildNewsletterTags`, `server/routers.ts`), so keep "membership" off the interest pick-lists on follow and contact forms. The deliberate join form is the intended door.
 - **A broadcast goes to one named smart list, never "All".** Members-only content goes to the Harvest Members list only.
 - **Check the contact count before you send.** If the number looks wrong, stop and find out why before sending.
 - **Welcome workflows have re-entry off**, so nobody is welcomed twice.
@@ -69,15 +71,15 @@ or remove tags as part of the send.
 
 | Campaign | Audience | Send window | GHL template ID | Current gate |
 | --- | --- | --- | --- | --- |
-| Wk4 Field Note | `harvest-newsletter` | 2 to 8 Jun | `6a1de93fa5ab652f24f6bee8` | Test send, approved media if used |
+| Wk4 Field Note | `comms:harvest-newsletter` | 2 to 8 Jun | `6a1de93fa5ab652f24f6bee8` | Test send, approved media if used |
 | Wk4 Makers' invite | Makers/doers segment | 2 to 8 Jun | `6a1de93f6972087910787f77` | Test send and confirm existing GHL template has live B1/B2 links |
-| Harvest Note 02 | `harvest-member` | Tue 9 Jun | `6a1de9407526e35f3eb1506a` | Test send and confirm existing GHL template has live B2 link |
-| Harvest Note 03 | `harvest-member` | Fri 19 Jun | `6a1de941eae4d2744602e305` | Final practical details |
-| Thank-you plus photos | `harvest-member` | Wed 24 Jun | `6a1de9410d36220d2b79cdd6` | Event happened, photos cleared |
-| Early July Harvest Note | `harvest-member` | Early Jul | `6a1de942ce86ea75af0fe3f0` | Debrief completed |
+| Harvest Note 02 | `tier:member` | Tue 9 Jun | `6a1de9407526e35f3eb1506a` | Test send and confirm existing GHL template has live B2 link |
+| Harvest Note 03 | `tier:member` | Fri 19 Jun | `6a1de941eae4d2744602e305` | Final practical details |
+| Thank-you plus photos | `tier:member` | Wed 24 Jun | `6a1de9410d36220d2b79cdd6` | Event happened, photos cleared |
+| Early July Harvest Note | `tier:member` | Early Jul | `6a1de942ce86ea75af0fe3f0` | Debrief completed |
 
 All first-name merge fields use fallback `there`. If a public send uses the June shop story,
-it goes to `harvest-newsletter` only and does not name 20 June as a public invite.
+it goes to `comms:harvest-newsletter` only and does not name 20 June as a public invite.
 
 ## How events layer on top
 

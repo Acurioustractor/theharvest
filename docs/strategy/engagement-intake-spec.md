@@ -55,7 +55,7 @@ Croft flagged a partner form that asks "roughly what size are you thinking?" up 
 
 ### What the form asks today (verified)
 
-`client/src/components/ShopInterestSection.tsx` collects, in one step: name (required), email (required), phone (optional), **location (required)**, offer type (select), **description (required, "at least a sentence")**, **readiness (required, "roughly when you could start")**. The shop EOI route applies `harvest-shop-interest` plus offer tags and enrols `GHL_SHOP_INTEREST_WORKFLOW_ID` (see the tag map). Business registration (`server/routers.ts:346`) follows the same heavy-intake pattern.
+`client/src/components/ShopInterestSection.tsx` collects, in one step: name (required), email (required), phone (optional), **location (required)**, offer type (select), **description (required, "at least a sentence")**, **readiness (required, "roughly when you could start")**. The shop EOI route applies `project:act-hv`, `role:supplier`, `interest:markets`, `shop-follow-up`, `shop-stage-1`, plus offer tags and enrols `GHL_SHOP_INTEREST_WORKFLOW_ID` (see the tag map). Business registration (`server/routers.ts:346`) follows the same heavy-intake pattern.
 
 Three of the required fields (location, a full description, readiness) are stage-2 questions being asked at the door.
 
@@ -66,7 +66,7 @@ Two stages, gated by the person raising their hand.
 - **Stage 1 (the door, low friction):** name, email, offer type (the select), and one short line "what is it." Submit. That is the whole form.
 - **Stage 2 (after they submit):** gather location, readiness, fuller description, volume or size, and consignment terms, via a follow-up email, a stage-2 form link in the receipt, or a real conversation. The shop receipt email already promises Ben or Nic will come back, so stage 2 can be that reply.
 
-GHL: stage 1 still applies `harvest-shop-interest` plus the offer tag and `shop-follow-up`. Add a tag like `shop-stage-1` so it is clear who still needs stage-2 detail. When stage-2 detail arrives, the follow-up owner records it as a note or moves the pipeline stage.
+GHL: stage 1 still applies `interest:markets`, `role:supplier`, the offer tag, `shop-follow-up`, and `shop-stage-1` so it is clear who still needs stage-2 detail. When stage-2 detail arrives, the follow-up owner records it as a note or moves the pipeline stage.
 
 Apply the same stage-1 trim to business registration.
 
@@ -77,7 +77,7 @@ Run the short form against the current longer form and measure submission rate, 
 ### Acceptance tests
 
 - Stage-1 shop submit succeeds with only name, email, offer type, and one line. No required location or readiness.
-- The GHL contact has `harvest-shop-interest`, the offer tag, `shop-follow-up`, and `shop-stage-1`.
+- The GHL contact has `project:act-hv`, `role:supplier`, `interest:markets`, the offer tag, `shop-follow-up`, and `shop-stage-1`.
 - The receipt email invites the stage-2 detail.
 
 ## Sequencing

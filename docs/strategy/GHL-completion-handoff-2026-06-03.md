@@ -39,11 +39,11 @@ aggregate into **one dough count**:
 1. **3 calendar→tag workflows** (GHL UI → Automation → Workflows; trigger *Customer Booked Appointment*):
    - B1 → add `witta-gathering-2026-06-20` + `rsvp-maker-morning`
    - B2 → add `witta-gathering-2026-06-20` + `rsvp-pizza-dinner`
-   - shop-chat → add `harvest-shop-interest` + `shop-call-booked`
+   - shop-chat → add `project:act-hv` + `interest:markets` + `shop-call-booked`
    - Re-entry OFF. Publish. Then **test-book each**, check tags, run `npm run count:rsvps:ghl`.
 2. **"I'm coming" trigger link + workflow** → `rsvp-pizza-dinner` + `witta-gathering-2026-06-20`.
-   Build per `ghl-im-coming-trigger-link-2026-06-03.md`, then paste link into `GardenLaunch.tsx:22`
-   `IM_COMING_URL` and deploy the page.
+   Build per `ghl-im-coming-trigger-link-2026-06-03.md`, then set `VITE_GHL_IM_COMING_URL` to
+   the trigger link in local/Vercel env and deploy the page.
 3. **Email campaigns** (one-off Campaigns, never Workflows; a broadcast never adds tags):
    - **Update all 6 templates** to **gate 1pm / pizza 5pm** (the repo source in
      `content-calendar-june-2026.md` is already fixed; the GHL templates are not).
@@ -69,9 +69,9 @@ aggregate into **one dough count**:
    - Field Note, Thank-you, early-July: no time changes.
 
 ### P1 — not launch-gating, can land after 20 Jun
-4. **Shop nurture workflow** (spec 6): trigger `harvest-shop-interest` → Wait 4 days → If/Else by offer
+4. **Shop nurture workflow** (spec 6): trigger `interest:markets` → Wait 4 days → If/Else by offer
    tag → send → tag `shop-nurture-sent`. Drop the shop-chat booking link into `[booking link]` + `/shop`.
-5. **Maker smart list**: has any of `harvest-shop-interest` / `shop-prospect` / `shop-produce` /
+5. **Maker smart list**: has any of `interest:markets` / `role:supplier` / `shop-prospect` / `shop-produce` /
    `shop-maker` / `shop-food` / `shop-consignment` / `shop-follow-up` + known doers. Feeds the Makers'
    invite segment + ongoing shop touches.
 6. **5 silent receipts** (workshop, quiz, business, event, pulse) — auto-replies.
@@ -80,8 +80,8 @@ aggregate into **one dough count**:
 7. **Social Planner** — schedule the **6 public dated posts** from `docs/content/june-20-copy.md` §4
    (the date is now allowed publicly). Approved real media only, consent gate on faces. After scheduling:
    `npm run sync:social -- --pull-ghl --apply`.
-8. **Susie/Joey GHL users** — create, then move shop-chat ownership to them + connect Google Calendar
-   2-way (theirs + Ben). Until then shop-chat stays Ben/Nic.
+8. **Suzie/Joey GHL users:** **done 2026-06-29:** users created and shop-chat ownership moved
+   to them. Remaining: connect Google Calendar 2-way and test a booking.
 
 ## Decisions to settle in the GHL session
 - **Sender:** `hi@act.place` (default — does not risk the date) vs verified Harvest sending domain.
@@ -110,8 +110,8 @@ campaign test-sends render on mobile with `there` fallback; no broadcast added a
 
 ## Blockers (from 2-Jun handoff)
 - GHL workflow-builder + campaign create/update not reliable via API → all UI.
-- Susie/Joey not yet GHL users.
-- Google Calendar 2-way sync unverified in UI.
+- Fixed 2026-06-29: Suzie/Joey GHL users created and shop-chat ownership moved to them.
+- Google Calendar 2-way sync still unverified in UI.
 
 ## Canonical docs (pull detail as needed, don't re-derive)
 - `RECONCILED-20-june-public-open-day-2026-06-03.md` — the decision + per-surface actions.

@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { HarvestImage } from "@/components/HarvestImage";
 import { EditableText } from "@/components/EditableText";
+import { setPageSeo } from "@/lib/seo";
 
 type Thread = {
   title: string;
@@ -190,15 +191,12 @@ const fadeInUp = {
 
 export default function HarvestReviewTest() {
   useEffect(() => {
-    document.title = "The Harvest Witta · Grow. Make. Gather.";
-    let meta = document.querySelector('meta[name="description"]') as HTMLMetaElement | null;
-    if (!meta) {
-      meta = document.createElement("meta");
-      meta.name = "description";
-      document.head.appendChild(meta);
-    }
-    meta.content =
-      "The Harvest is a community garden and creative gathering place in Witta, on Jinibara Country. A garden, events and art space, built in public with real photos, real work, and practical asks.";
+    setPageSeo({
+      title: "The Harvest Witta · Grow. Make. Gather.",
+      description:
+        "The Harvest is a community garden, DIY pizza place, events space and art space at 9 Gumland Drive, Witta, on Jinibara Country.",
+      path: "/",
+    });
   }, []);
 
   return (

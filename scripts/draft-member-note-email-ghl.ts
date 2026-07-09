@@ -1,12 +1,12 @@
 import { writeFileSync } from "node:fs";
 import dotenv from "dotenv";
 import { createGHLEmailTemplate } from "../server/gohighlevel.js";
+import { LOGO_URL } from "./harvest-brand.js";
 
 dotenv.config({ path: ".env.local", override: true });
 dotenv.config({ path: ".env", override: false });
 
 const RSVP_URL = "https://www.theharvestwitta.com.au/june-20#rsvp";
-const LOGO_URL = "https://www.theharvestwitta.com.au/images/logo-harvest-full.png";
 const GHL_API_BASE = "https://services.leadconnectorhq.com";
 const GHL_API_VERSION = "2021-07-28";
 
@@ -51,7 +51,7 @@ const html = `<!doctype html>
           <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:640px;background:#FFFDF8;border:1px solid #D8CDBE;">
             <tr>
               <td style="padding:28px 28px 14px 28px;border-top:8px solid #C4922A;">
-                <img src="${LOGO_URL}" alt="The Harvest" width="180" style="display:block;width:180px;max-width:70%;height:auto;margin:0 0 24px 0;">
+                <img src="${LOGO_URL}" alt="The Harvest" width="200" style="display:block;width:200px;max-width:72%;height:auto;margin:0 0 24px 0;">
                 <p style="margin:0 0 8px 0;color:#4A6741;font-size:13px;line-height:1.4;text-transform:uppercase;letter-spacing:1.4px;font-weight:700;">Members first · Witta · Jinibara Country</p>
                 <h1 style="margin:0;color:#1C1917;font-family:Montserrat,Arial,sans-serif;font-size:34px;line-height:1.05;letter-spacing:0;font-weight:800;">You are hearing this first.</h1>
               </td>

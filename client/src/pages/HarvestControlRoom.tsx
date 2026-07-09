@@ -195,7 +195,7 @@ const assetPicks: AssetPick[] = [
   {
     title: "Sophie garden",
     room: "Garden",
-    src: "/images/compendium/sophie-garden.jpg",
+    src: "/images/optimized/hero-aerial-1400.webp",
     status: "Consent check",
   },
   {
