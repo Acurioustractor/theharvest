@@ -238,7 +238,11 @@ async function checkBrowserMount() {
     await browser.send("Log.enable");
     await browser.send("Page.enable");
     await browser.send("Network.enable");
-    await browser.send("Page.navigate", { url: url.toString() });
+    await browser.send("Page.navigate", { url: url.toString() }).catch(() => {
+      // Some Chrome/CDP builds do not reliably acknowledge Page.navigate, while
+      // the page still loads. The final DOM/runtime assertions below are the
+      // actual promotion gate.
+    });
     await sleep(15_000);
 
     const evaluated = await browser.send("Runtime.evaluate", {
@@ -261,16 +265,13 @@ async function checkBrowserMount() {
         }
       | undefined;
     const errorText = JSON.stringify(events);
+    const browserError = summarizeBrowserError(events, errorText);
 
-    if (
-      /Supabase client env vars missing|Supabase is not configured|supabaseUrl is required|Uncaught|TypeError|ReferenceError/.test(
-        errorText
-      )
-    ) {
+    if (browserError) {
       record(
         "browser mount",
         false,
-        "browser runtime/config error found before promotion"
+        `browser runtime/config error found before promotion: ${browserError}`
       );
       return;
     }
@@ -347,13 +348,33 @@ function connectDevTools(
   events: Array<{ method: string; params: unknown }>
 ) {
   let id = 0;
-  const pending = new Map<number, (message: any) => void>();
+  const pending = new Map<
+    number,
+    {
+      resolve: (message: any) => void;
+      reject: (error: Error) => void;
+      timer: ReturnType<typeof setTimeout>;
+    }
+  >();
   const socket = new WebSocket(webSocketUrl);
 
   socket.addEventListener("message", (event) => {
-    const message = JSON.parse(String(event.data));
+    const rawMessage = webSocketMessageToString(event.data);
+    if (!rawMessage) return;
+
+    let message: any;
+    try {
+      message = JSON.parse(rawMessage);
+    } catch {
+      return;
+    }
+
     if (message.id && pending.has(message.id)) {
-      pending.get(message.id)?.(message);
+      const request = pending.get(message.id);
+      if (request) {
+        clearTimeout(request.timer);
+        request.resolve(message);
+      }
       pending.delete(message.id);
       return;
     }
@@ -368,6 +389,14 @@ function connectDevTools(
     }
   });
 
+  const rejectPending = (error: Error) => {
+    for (const [requestId, request] of pending) {
+      clearTimeout(request.timer);
+      request.reject(error);
+      pending.delete(requestId);
+    }
+  };
+
   return new Promise<{
     send: (method: string, params?: Record<string, unknown>) => Promise<any>;
     close: () => void;
@@ -375,18 +404,73 @@ function connectDevTools(
     socket.addEventListener("open", () => {
       resolve({
         send: (method, params = {}) =>
-          new Promise((sendResolve) => {
+          new Promise((sendResolve, sendReject) => {
             const callId = ++id;
-            pending.set(callId, sendResolve);
+            const timer = setTimeout(() => {
+              pending.delete(callId);
+              sendReject(
+                new Error(`Chrome DevTools command timed out: ${method}`)
+              );
+            }, 10_000);
+            pending.set(callId, {
+              resolve: sendResolve,
+              reject: sendReject,
+              timer,
+            });
             socket.send(JSON.stringify({ id: callId, method, params }));
           }),
         close: () => socket.close(),
       });
     });
     socket.addEventListener("error", () => {
+      rejectPending(new Error("Chrome DevTools socket error"));
       reject(new Error("Could not connect to Chrome DevTools"));
     });
+    socket.addEventListener("close", () => {
+      rejectPending(new Error("Chrome DevTools socket closed"));
+    });
   });
+}
+
+function webSocketMessageToString(data: unknown) {
+  if (typeof data === "string") return data;
+  if (data instanceof ArrayBuffer) return Buffer.from(data).toString("utf8");
+  if (ArrayBuffer.isView(data)) {
+    return Buffer.from(data.buffer, data.byteOffset, data.byteLength).toString(
+      "utf8"
+    );
+  }
+  return "";
+}
+
+function summarizeBrowserError(
+  events: Array<{ method: string; params: unknown }>,
+  errorText: string
+) {
+  const patterns = [
+    "Supabase client env vars missing",
+    "Supabase is not configured",
+    "supabaseUrl is required",
+    "Uncaught",
+    "TypeError",
+    "ReferenceError",
+  ];
+  const matchedPattern = patterns.find((pattern) => errorText.includes(pattern));
+  if (!matchedPattern) return "";
+
+  const eventSummary = events
+    .map((event) => summarizeBrowserEvent(event.params))
+    .find((summary) => patterns.some((pattern) => summary.includes(pattern)));
+
+  return eventSummary || matchedPattern;
+}
+
+function summarizeBrowserEvent(params: unknown) {
+  if (!params || typeof params !== "object") return "";
+  const text = JSON.stringify(params)
+    .replace(/\s+/g, " ")
+    .replace(/https?:\/\/[^\s"']+/g, "[url]");
+  return text.slice(0, 240);
 }
 
 function sleep(ms: number) {
