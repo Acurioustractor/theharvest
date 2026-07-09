@@ -13,6 +13,7 @@
     "build:sitemap": "tsx scripts/build-sitemap.ts",
     "start": "NODE_ENV=production node dist/index.js",
     "check": "tsc --noEmit",
+    "smoke:deployment": "tsx scripts/smoke-deployment.ts",
     "format": "prettier --write .",
     "test": "vitest run",
     "db:push": "drizzle-kit generate && drizzle-kit migrate",
