@@ -37,7 +37,7 @@ export default function People() {
               Who is on the land
             </h1>
             <p className="text-lg text-stone-600 leading-relaxed">
-              Storytellers, growers, makers — the people whose hands and voices shape The Harvest.
+              Storytellers, growers, makers: the people whose hands and voices shape The Harvest.
             </p>
           </motion.div>
         </div>
@@ -51,13 +51,23 @@ export default function People() {
                 <div key={i} className="h-64 animate-pulse rounded-lg border border-stone-200 bg-white" />
               ))}
             </div>
-          ) : error || !storytellers || storytellers.length === 0 ? (
+          ) : error ? (
+            <div className="mx-auto max-w-xl border border-stone-200 bg-white p-8 text-center">
+              <p className="font-mono text-xs uppercase tracking-[0.18em] text-stone-400">
+                Not loading
+              </p>
+              <p className="mt-3 text-stone-600">
+                This list is not loading right now. Try again in a bit.
+              </p>
+            </div>
+          ) : !storytellers || storytellers.length === 0 ? (
             <div className="mx-auto max-w-xl border border-stone-200 bg-white p-8 text-center">
               <p className="font-mono text-xs uppercase tracking-[0.18em] text-stone-400">
                 In review
               </p>
               <p className="mt-3 text-stone-600">
-                People stories are being checked for consent, context, and approval before they appear here.
+                Profiles appear here once each person has checked and approved
+                theirs. More are on the way.
               </p>
             </div>
           ) : (
@@ -119,7 +129,7 @@ export default function People() {
                           <span>· {s.transcriptCount} {s.transcriptCount === 1 ? "recording" : "recordings"}</span>
                         )}
                         {s.publishedArticleCount === 0 && s.publishedStoryCount === 0 && s.transcriptCount === 0 && (
-                          <span className="text-stone-400">Profile only — content coming</span>
+                          <span className="text-stone-400">Profile only for now</span>
                         )}
                       </div>
                       <ArrowRight className="h-4 w-4 text-stone-400 transition group-hover:translate-x-1 group-hover:text-amber-600" />
@@ -129,6 +139,23 @@ export default function People() {
               ))}
             </div>
           )}
+        </div>
+      </section>
+
+      <section className="border-t border-stone-200 bg-white py-14">
+        <div className="container max-w-xl text-center">
+          <p className="mb-6 text-stone-600">
+            These profiles grow as people say yes to sharing. If you want to be
+            part of what is taking shape here, membership is free and it is
+            where news lands first.
+          </p>
+          <Link
+            href="/membership"
+            className="inline-flex items-center gap-2 rounded-md bg-amber-500 px-6 py-3 font-semibold text-black transition-colors hover:bg-amber-600"
+          >
+            Join free
+            <ArrowRight className="h-4 w-4" />
+          </Link>
         </div>
       </section>
     </div>

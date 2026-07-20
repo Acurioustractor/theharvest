@@ -2,7 +2,9 @@ import { useEffect } from "react";
 import { Link } from "wouter";
 import { ArrowRight } from "lucide-react";
 import { ShopInterestSection } from "@/components/ShopInterestSection";
+import { setPageSeo } from "@/lib/seo";
 import { SiteNav, SiteFooter, harvestButtonClasses } from "./HarvestReviewTest";
+import { VisitStrip } from "@/components/VisitStrip";
 
 const shelfWays = [
   {
@@ -29,15 +31,14 @@ const shelfWays = [
 
 export default function Shop() {
   useEffect(() => {
-    document.title = "The Shop · The Harvest Witta";
-    let meta = document.querySelector('meta[name="description"]') as HTMLMetaElement | null;
-    if (!meta) {
-      meta = document.createElement("meta");
-      meta.name = "description";
-      document.head.appendChild(meta);
-    }
-    meta.content =
-      "Witta hasn't had a shop in a generation. The Harvest is putting one back: a shared shelf for the growers and makers who already live around Witta and Maleny.";
+    setPageSeo({
+      title: "The Shop · The Harvest Witta",
+      description:
+        "The Harvest shop is a small shared shelf for growers and makers around Witta and Maleny. Produce, made goods, food and simple local systems.",
+      path: "/shop",
+      image: "/images/optimized/local-produce-760.webp",
+      imageAlt: "Local produce gathered for a Harvest food story.",
+    });
   }, []);
 
   return (
@@ -50,13 +51,15 @@ export default function Shop() {
             The Shop
           </p>
           <h1 className="mt-5 max-w-3xl text-5xl font-black leading-[0.94] md:text-7xl">
-            Witta hasn't had a shop in a generation.
+            Witta hasn't had a shop in a long while.
           </h1>
           <p className="mt-7 max-w-2xl text-xl leading-relaxed text-white/80 md:text-2xl">
             Around 1,300 people live here, with nowhere to buy a loaf of bread or the thing
             your neighbour grew. The Shop is a small, slow attempt to put one back: a shared
-            shelf for the growers and makers who already live around Witta and Maleny. Not a
-            supermarket, not a boutique. A shelf with honest signage, kept simple on purpose.
+            shelf for the growers and makers who already live around Witta and Maleny. The
+            first shelves are being shaped now, and Susie and Joey steward the place day to
+            day. Not a supermarket, not a boutique. A shelf with honest signage, kept simple
+            on purpose.
           </p>
           <div className="mt-9 flex flex-wrap items-center gap-4">
             <a href="#shop-interest" className={harvestButtonClasses.primary}>
@@ -87,8 +90,27 @@ export default function Shop() {
             ))}
           </div>
           <p className="mt-8 max-w-2xl leading-relaxed text-stone-600">
-            We read every one. The form below asks for almost nothing on purpose. If there is a
-            fit, we will be in touch to talk through the detail.
+            An expression of interest starts a proper conversation, not a contract. The form
+            below asks for almost nothing on purpose. If there is a fit, we will be in touch to
+            talk through the detail. You keep ownership of what you bring, and we will work
+            out the money side together before anything goes on a shelf.
+          </p>
+          <p className="mt-4 max-w-2xl text-sm leading-relaxed text-stone-600">
+            Not selling, just want to shop here? Opening dates land with members first, and{" "}
+            <Link
+              href="/membership"
+              className="font-semibold text-[#8B4A2A] underline underline-offset-4 hover:text-[#1C1917]"
+            >
+              membership is free
+            </Link>
+            . Workshops and the art space have their own doors:{" "}
+            <Link
+              href="/get-involved"
+              className="font-semibold text-[#8B4A2A] underline underline-offset-4 hover:text-[#1C1917]"
+            >
+              start at Get Involved
+            </Link>
+            .
           </p>
         </div>
       </section>
@@ -111,6 +133,7 @@ export default function Shop() {
         </div>
       </section>
 
+      <VisitStrip />
       <SiteFooter />
     </main>
   );

@@ -34,6 +34,13 @@ function bookingUrl(slug?: string): string | undefined {
   return slug ? `https://api.leadconnectorhq.com/widget/bookings/${slug}` : undefined;
 }
 
+function maskEmail(email?: string): string | undefined {
+  if (!email) return undefined;
+  const [name, domain] = email.split("@");
+  if (!domain) return email;
+  return `${name.slice(0, 2)}***@${domain}`;
+}
+
 function saturdayHours(openHour: number, closeHour: number) {
   return [
     {
@@ -87,7 +94,10 @@ function buildPlans(users: Array<{ id: string; name?: string; email?: string }>)
   const locationId = requireEnv("GHL_LOCATION_ID");
   const ben = users.find((user) => user.email === "benjamin@act.place") ?? users[0];
   const nic = users.find((user) => user.email === "nicholas@act.place") ?? users[1] ?? ben;
-  const shopTeamMembers = [ben, nic]
+  const suzie = users.find((user) => /susie|suzie/i.test(`${user.name ?? ""} ${user.email ?? ""}`));
+  const joey = users.find((user) => /joey/i.test(`${user.name ?? ""} ${user.email ?? ""}`));
+  const shopTeam = suzie && joey ? [suzie, joey] : [ben, nic];
+  const shopTeamMembers = shopTeam
     .filter((user, index, arr): user is { id: string; name?: string; email?: string } => Boolean(user?.id) && arr.findIndex((item) => item?.id === user.id) === index)
     .map((user) => ({
       userId: user.id,
@@ -243,7 +253,8 @@ async function main(): Promise<void> {
     "witta-gathering-2026-06-20",
     "rsvp-maker-morning",
     "rsvp-pizza-dinner",
-    "harvest-shop-interest",
+    "project:act-hv",
+    "interest:markets",
     "shop-call-booked",
   ];
   const existingTags = new Set(tags.map((tag) => tag.name));
@@ -299,8 +310,8 @@ async function main(): Promise<void> {
 
   console.log(JSON.stringify({
     mode: apply ? "apply" : "dry-run",
-    usersAvailable: users.map((user) => ({ id: user.id, name: user.name, email: user.email })),
-    note: "Shop-chat uses the currently available GHL users. Susie/Joey are not listed as GHL users yet.",
+    usersAvailable: users.map((user) => ({ id: user.id, name: user.name, email: maskEmail(user.email) })),
+    note: "Shop-chat prefers Suzie/Joey when both GHL users exist. It falls back to Ben/Nicholas only while steward users are missing.",
     results,
   }, null, 2));
 }

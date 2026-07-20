@@ -129,7 +129,7 @@ const slides: Slide[] = [
         <Detail label="THE BAR" text="Bottom. Green. The land. The garden. Grow." />
         <Detail label="GROWING" text="Sophie's garden design. Pathways. The milk crate pavilion. The welcome." />
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, margin: "16px auto", maxWidth: 480 }}>
-          <img src="/images/compendium/sophie-garden.jpg" alt="Sophie in the garden — hay bales, timber arbour, green everywhere" style={{ width: "100%", borderRadius: 6, opacity: 0.9, objectFit: "cover", aspectRatio: "1" }} />
+          <img src="/images/optimized/hero-aerial-1400.webp" alt="The garden taking shape at The Harvest" style={{ width: "100%", borderRadius: 6, opacity: 0.9, objectFit: "cover", aspectRatio: "1" }} />
           <img src="/images/compendium/team-garden-selfie.jpg" alt="The garden team on site" style={{ width: "100%", borderRadius: 6, opacity: 0.9, objectFit: "cover", aspectRatio: "1" }} />
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, margin: "12px auto 16px", maxWidth: 480 }}>

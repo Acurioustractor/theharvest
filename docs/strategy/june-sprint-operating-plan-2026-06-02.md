@@ -50,11 +50,11 @@ workflow-builder or campaign-create actions. Do not claim these are built until 
 | --- | --- | --- |
 | Members | `harvest-member` | Harvest Notes, practical note, thank-you |
 | Public followers | `harvest-newsletter` | Public Field Notes only |
-| Makers and doers | `harvest-shop-interest`, `shop-prospect`, `shop-produce`, `shop-maker`, `shop-food`, `shop-consignment`, `shop-follow-up`, relevant volunteer/doer contacts | Makers' invite, shop follow-up, B1 |
+| Makers and doers | `interest:markets`, `role:supplier`, `shop-prospect`, `shop-produce`, `shop-maker`, `shop-food`, `shop-consignment`, `shop-follow-up`, relevant volunteer/doer contacts | Makers' invite, shop follow-up, B1 |
 | Event, all 20 June bookings | `witta-gathering-2026-06-20` | Event attendance segment |
 | B1 maker morning | `rsvp-maker-morning` | Maker-session headcount |
 | B2 afternoon and pizza | `rsvp-pizza-dinner` | Dough count |
-| Shop chat booked | `shop-call-booked` plus `harvest-shop-interest` | Shop pipeline and nurture |
+| Shop chat booked | `shop-call-booked` plus `interest:markets` | Shop pipeline and nurture |
 
 Do not add `harvest-newsletter` or `harvest-member` through an RSVP. An event yes is not a
 subscribe.
@@ -74,8 +74,8 @@ Current build state:
 5. Calendar tag workflows still need to be built in the GHL workflow UI:
    - B1 booking adds `witta-gathering-2026-06-20` and `rsvp-maker-morning`.
    - B2 booking adds `witta-gathering-2026-06-20` and `rsvp-pizza-dinner`.
-   - Shop-chat booking adds `harvest-shop-interest` and `shop-call-booked`.
-6. `Harvest - Shop Nurture`, triggered by `harvest-shop-interest`.
+   - Shop-chat booking adds `project:act-hv`, `interest:markets`, and `shop-call-booked`.
+6. `Harvest - Shop Nurture`, triggered by `interest:markets`.
 7. Five silent receipts: workshop, quiz, business, event, pulse.
 8. Campaign drafts, test sends, then scheduled sends.
 9. Social Planner drafts or schedules, using only approved real Harvest media.
@@ -175,7 +175,7 @@ Manual checks:
 
 - Test B1 booking lands in calendar and applies `witta-gathering-2026-06-20` plus `rsvp-maker-morning`.
 - Test B2 booking lands in calendar and applies `witta-gathering-2026-06-20` plus `rsvp-pizza-dinner`.
-- Test shop-chat booking applies `harvest-shop-interest` plus `shop-call-booked`.
+- Test shop-chat booking applies `project:act-hv`, `interest:markets`, and `shop-call-booked`.
 - Campaign test sends render on mobile, first-name fallback is `there`, and no broadcast adds tags.
 - Social Planner posts have real approved media attached.
 - Voice gate passes: no em-dashes in new public copy, no public 20 June date before intended channels, no invented facts, consent checked for people and photos.

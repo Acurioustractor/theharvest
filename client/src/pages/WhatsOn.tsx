@@ -1,4 +1,5 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
+import { Link, useLocation } from "wouter";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -18,6 +19,12 @@ import {
 } from "lucide-react";
 import { listApprovedEvents } from "@/lib/api";
 import { EventSubmissionDialog } from "@/components/EventSubmissionDialog";
+import { SiteFooter, SiteNav } from "./HarvestReviewTest";
+import { HarvestImage } from "@/components/HarvestImage";
+import { trpc } from "@/lib/trpc";
+import { EditableText } from "@/components/EditableText";
+import { MEMBERS_PAGE_URL } from "@/lib/links";
+import { clearJsonLd, setJsonLd, setPageSeo } from "@/lib/seo";
 import eventsData from "@/data/events.json";
 import { useQuery } from "@tanstack/react-query";
 
@@ -55,6 +62,34 @@ const categoryColors: Record<string, string> = {
   arts: "bg-purple-100 text-purple-700",
 };
 
+const pizzaFaqs = [
+  {
+    question: "Do I need to book for pizza at The Harvest?",
+    answer:
+      "You do not need a booking to come and have a look. The members page is the best place to RSVP, check this week's dates, and help us plan dough and toppings.",
+  },
+  {
+    question: "Where is The Harvest Witta?",
+    answer:
+      "The Harvest is at 9 Gumland Drive, Witta QLD 4552, near Maleny in the Sunshine Coast hinterland.",
+  },
+  {
+    question: "When is DIY pizza on?",
+    answer:
+      "The regular rhythm is Friday 3pm to 8pm with a community movie night, Saturday 12pm to 8pm, and Sunday 12pm to 6pm. Weeks can vary, so check the members page first.",
+  },
+  {
+    question: "Is The Harvest a restaurant?",
+    answer:
+      "Not really. The pizza oven is the first public rhythm for a community garden and creative gathering place taking shape in Witta.",
+  },
+  {
+    question: "Can families come?",
+    answer:
+      "Yes. Sunday has the easiest pace for families. Children need to be supervised around the oven, garden paths, tools, and works in progress.",
+  },
+];
+
 interface Event {
   id: number | string;
   title: string;
@@ -86,8 +121,687 @@ interface DBEvent {
   description: string | null;
 }
 
+function RegularSessions() {
+  const sessions = [
+    { slot: "session-friday", title: "Friday", detail: "DIY pizza and community movie night, 3pm to 8pm" },
+    { slot: "session-saturday", title: "Saturday", detail: "DIY pizza making, 12pm to 8pm" },
+    { slot: "session-sunday", title: "Sunday", detail: "DIY pizza making, 12pm to 6pm. An easier pace, good for families" },
+  ];
+
+  return (
+    <section className="py-12 bg-white border-b border-stone-200">
+      <div className="container max-w-4xl">
+        <p className="text-amber-600 font-medium tracking-wide uppercase text-sm mb-2">
+          The regular rhythm
+        </p>
+        <EditableText
+          page="whats-on"
+          slot="sessions-heading"
+          defaultContent="Open most weekends for DIY pizza"
+          as="h2"
+          className="text-3xl md:text-4xl font-serif font-bold text-stone-800 mb-3"
+        />
+        <EditableText
+          page="whats-on"
+          slot="sessions-intro"
+          defaultContent="Stretch dough, top it your way, fire it in the oven, and enjoy the garden while it bakes. Our resident pizza teacher Dennis is in the house. All welcome, no experience needed."
+          as="p"
+          className="text-stone-600 mb-8 max-w-2xl"
+          multiline
+        />
+        <div className="grid gap-4 sm:grid-cols-3 mb-8">
+          {sessions.map((s) => (
+            <div key={s.slot} className="rounded-lg border border-stone-200 bg-stone-50 p-5">
+              <EditableText
+                page="whats-on"
+                slot={`${s.slot}-title`}
+                defaultContent={s.title}
+                as="h3"
+                className="text-lg font-serif font-bold text-stone-800 mb-1"
+              />
+              <EditableText
+                page="whats-on"
+                slot={`${s.slot}-detail`}
+                defaultContent={s.detail}
+                as="p"
+                className="text-stone-600 text-sm leading-relaxed"
+                multiline
+              />
+            </div>
+          ))}
+        </div>
+        <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+          <a
+            href={MEMBERS_PAGE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center bg-amber-500 hover:bg-amber-600 text-black font-semibold px-8 py-3 rounded-md transition-colors"
+          >
+            Become a member
+          </a>
+          <p className="text-sm text-stone-500">
+            Weeks can vary. The members page has this week's dates first, and membership is free.
+          </p>
+        </div>
+        <p className="mt-6 text-sm text-stone-500">
+          Find us at 9 Gumland Drive, Witta, on Jinibara Country.
+        </p>
+      </div>
+    </section>
+  );
+}
+
+function PizzaGallery() {
+  const photos = [
+    { slot: "pizza-gallery-1", src: "/images/optimized/community-gathering-1000.webp", alt: "Neighbours sharing pizza at The Harvest" },
+    { slot: "pizza-gallery-2", src: "/images/optimized/gathering-recap-crowd-1200.webp", alt: "A pizza night crowd at The Harvest" },
+    { slot: "pizza-gallery-3", src: "/images/optimized/member-welcome-crates-1200.webp", alt: "Pizza dough and toppings ready to go at The Harvest" },
+    { slot: "pizza-gallery-4", src: "/images/optimized/community-gathering-1200.webp", alt: "Fresh pizza out of the oven at The Harvest" },
+  ];
+
+  return (
+    <section className="py-16 bg-white border-b border-stone-200">
+      <div className="container max-w-5xl">
+        <p className="text-amber-600 font-medium tracking-wide uppercase text-sm mb-2">
+          How it works
+        </p>
+        <EditableText
+          page="whats-on"
+          slot="pizza-gallery-heading"
+          defaultContent="Build your own pizza, fire it yourself."
+          as="h2"
+          className="text-3xl md:text-4xl font-serif font-bold text-stone-800 mb-6"
+        />
+        <div className="grid gap-6 mb-10 sm:grid-cols-3 max-w-3xl">
+          <div>
+            <EditableText
+              page="whats-on"
+              slot="pizza-gallery-pizza-title"
+              defaultContent="Your pizza"
+              as="h3"
+              className="text-lg font-serif font-bold text-stone-800 mb-2"
+            />
+            <EditableText
+              page="whats-on"
+              slot="pizza-gallery-pizza-body"
+              defaultContent="Stretch your own base, then choose your toppings from a bench of cheeses, meats and vegetables. Dennis, our resident pizza teacher, shows you how to fire it in the oven. $30 each."
+              as="p"
+              className="text-stone-600 text-sm leading-relaxed"
+              multiline
+            />
+          </div>
+          <div>
+            <EditableText
+              page="whats-on"
+              slot="pizza-gallery-dessert-title"
+              defaultContent="Not full yet?"
+              as="h3"
+              className="text-lg font-serif font-bold text-stone-800 mb-2"
+            />
+            <EditableText
+              page="whats-on"
+              slot="pizza-gallery-dessert-body"
+              defaultContent="There's a Nutella dessert pizza, topped with whipped cream, strawberries, caramel sauce or marshmallows. $10 each, or included free with an order of 3 pizzas."
+              as="p"
+              className="text-stone-600 text-sm leading-relaxed"
+              multiline
+            />
+          </div>
+          <div>
+            <EditableText
+              page="whats-on"
+              slot="pizza-gallery-drinks-title"
+              defaultContent="To drink"
+              as="h3"
+              className="text-lg font-serif font-bold text-stone-800 mb-2"
+            />
+            <EditableText
+              page="whats-on"
+              slot="pizza-gallery-drinks-body"
+              defaultContent="A range of soft drinks, from $5 to $6.50."
+              as="p"
+              className="text-stone-600 text-sm leading-relaxed"
+              multiline
+            />
+          </div>
+        </div>
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4">
+          {photos.map((photo) => (
+            <HarvestImage
+              key={photo.slot}
+              page="whats-on"
+              slot={photo.slot}
+              src={photo.src}
+              alt={photo.alt}
+              size="card"
+              className="aspect-square overflow-hidden rounded-lg bg-stone-100"
+              imgClassName="h-full w-full object-cover"
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function PizzaSearchBlock() {
+  return (
+    <section className="border-b border-stone-200 bg-stone-50 py-12">
+      <div className="container max-w-4xl">
+        <p className="mb-2 text-sm font-medium uppercase tracking-wide text-amber-600">
+          Pizza in Witta
+        </p>
+        <h2 className="mb-4 font-serif text-3xl font-bold text-stone-800 md:text-4xl">
+          DIY pizza at 9 Gumland Drive.
+        </h2>
+        <div className="grid gap-6 md:grid-cols-[1.3fr_0.7fr]">
+          <div className="space-y-4 text-stone-600">
+            <p>
+              The pizza oven is the easiest way to see The Harvest in person.
+              Come to Witta, make your own pizza, sit in the garden, and see
+              what is taking shape around the shed.
+            </p>
+            <p>
+              Most weeks the rhythm is Friday 3pm to 8pm with a community movie
+              night, Saturday 12pm to 8pm, and Sunday 12pm to 6pm. Weeks can
+              vary, so the members page carries this week's dates first.
+            </p>
+          </div>
+          <div className="rounded-lg border border-stone-200 bg-white p-5 text-sm text-stone-600">
+            <p className="mb-2 font-semibold text-stone-800">What to know</p>
+            <p>DIY pizza: $30 each.</p>
+            <p>Dessert pizza: $10 each.</p>
+            <p>Soft drinks: $5 to $6.50.</p>
+            <p className="mt-3">
+              The Harvest, 9 Gumland Drive, Witta QLD 4552.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function PizzaProofArticle() {
+  return (
+    <section className="border-b border-stone-200 bg-white py-16">
+      <article className="container max-w-4xl">
+        <p className="mb-2 text-sm font-medium uppercase tracking-wide text-amber-600">
+          First public rhythm
+        </p>
+        <h2 className="mb-5 font-serif text-3xl font-bold text-stone-800 md:text-4xl">
+          Pizza is how the gate opens.
+        </h2>
+        <div className="grid gap-8 text-stone-600 md:grid-cols-[1.2fr_0.8fr]">
+          <div className="space-y-4 leading-relaxed">
+            <p>
+              The Harvest is a community garden and creative gathering place
+              taking shape in Witta, on Jinibara Country. The pizza oven is the
+              simplest way to understand it: come through the gate, make
+              something with your hands, sit at a table, and meet the place
+              while it is still being made.
+            </p>
+            <p>
+              This is not a finished restaurant. It is a working room with a
+              garden around it. The oven sits beside the first public version of
+              the kitchen, the shop shelves are being shaped with local growers
+              and makers, and the art space is finding its first people.
+            </p>
+            <p>
+              If you are looking for pizza near Maleny or something to do in
+              Witta on the weekend, start here. If you are a maker, grower,
+              artist or neighbour, pizza weekends are also a good way to see
+              where you might fit.
+            </p>
+          </div>
+          <aside className="rounded-lg border border-stone-200 bg-stone-50 p-6">
+            <h3 className="mb-3 font-serif text-xl font-bold text-stone-800">
+              While you are here
+            </h3>
+            <ul className="space-y-3 text-sm leading-relaxed text-stone-600">
+              <li>
+                Walk the garden paths and see what is growing.{" "}
+                <Link
+                  href="/get-involved"
+                  className="font-semibold text-amber-700 underline underline-offset-4 hover:text-amber-800"
+                >
+                  Lend a hand
+                </Link>
+                .
+              </li>
+              <li>
+                Look at the first shop shelves for local growers and makers.{" "}
+                <Link
+                  href="/shop"
+                  className="font-semibold text-amber-700 underline underline-offset-4 hover:text-amber-800"
+                >
+                  See the shop
+                </Link>
+                .
+              </li>
+              <li>
+                Follow the works shaping the art space and shared rooms.{" "}
+                <Link
+                  href="/works"
+                  className="font-semibold text-amber-700 underline underline-offset-4 hover:text-amber-800"
+                >
+                  See the works
+                </Link>
+                .
+              </li>
+              <li>
+                Read the longer story of the old nursery becoming The Harvest.{" "}
+                <Link
+                  href="/what-is-the-harvest"
+                  className="font-semibold text-amber-700 underline underline-offset-4 hover:text-amber-800"
+                >
+                  Read the story
+                </Link>
+                .
+              </li>
+            </ul>
+          </aside>
+        </div>
+      </article>
+    </section>
+  );
+}
+
+function PizzaFaqBlock() {
+  return (
+    <section className="border-b border-stone-200 bg-stone-50 py-14">
+      <div className="container max-w-4xl">
+        <p className="mb-2 text-sm font-medium uppercase tracking-wide text-amber-600">
+          Plan the visit
+        </p>
+        <h2 className="mb-8 font-serif text-3xl font-bold text-stone-800 md:text-4xl">
+          Pizza questions
+        </h2>
+        <div className="grid gap-4">
+          {pizzaFaqs.map((faq) => (
+            <div key={faq.question} className="rounded-lg border border-stone-200 bg-white p-5">
+              <h3 className="mb-2 font-serif text-lg font-bold text-stone-800">
+                {faq.question}
+              </h3>
+              <p className="text-sm leading-relaxed text-stone-600">{faq.answer}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function MembershipInvite() {
+  const perks = [
+    {
+      slot: "member-perk-days",
+      title: "Member days",
+      body: "First notice of community and makers days, like the one we opened with on 20 June.",
+    },
+    {
+      slot: "member-perk-garden",
+      title: "Garden sessions",
+      body: "Work day dates land on the members page first, before anywhere else.",
+    },
+    {
+      slot: "member-perk-events",
+      title: "Upcoming events",
+      body: "New dates land on the members page first.",
+    },
+    {
+      slot: "member-perk-ideas",
+      title: "Share your ideas",
+      body: "Message us directly with what you think The Harvest should become for the community.",
+    },
+  ];
+
+  return (
+    <section className="py-16 bg-amber-50 border-y border-amber-200">
+      <div className="container max-w-4xl">
+        <p className="text-amber-700 font-medium tracking-wide uppercase text-sm mb-2">
+          Membership
+        </p>
+        <EditableText
+          page="whats-on"
+          slot="membership-heading"
+          defaultContent="Become a member, see it all first."
+          as="h2"
+          className="text-3xl md:text-4xl font-serif font-bold text-stone-800 mb-3"
+        />
+        <EditableText
+          page="whats-on"
+          slot="membership-intro"
+          defaultContent="Membership is free. It's the simplest way to stay close to The Harvest while it's still being made."
+          as="p"
+          className="text-stone-600 mb-8 max-w-2xl"
+          multiline
+        />
+        <div className="grid gap-4 sm:grid-cols-2 mb-8">
+          {perks.map((perk) => (
+            <div key={perk.slot} className="rounded-lg border border-amber-200 bg-white p-5">
+              <EditableText
+                page="whats-on"
+                slot={`${perk.slot}-title`}
+                defaultContent={perk.title}
+                as="h3"
+                className="text-lg font-serif font-bold text-stone-800 mb-2"
+              />
+              <EditableText
+                page="whats-on"
+                slot={`${perk.slot}-body`}
+                defaultContent={perk.body}
+                as="p"
+                className="text-stone-600 text-sm leading-relaxed"
+                multiline
+              />
+            </div>
+          ))}
+        </div>
+        <a
+          href={MEMBERS_PAGE_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center justify-center bg-amber-500 hover:bg-amber-600 text-black font-semibold px-8 py-3 rounded-md transition-colors"
+        >
+          Become a member
+        </a>
+      </div>
+    </section>
+  );
+}
+
+function RoadmapStrip() {
+  const areas = [
+    {
+      slot: "roadmap-garden",
+      title: "The Garden",
+      body: "Growing through regular work days: beds, seedlings, mulch, compost and paths.",
+      href: "/get-involved",
+      linkLabel: "Lend a hand",
+    },
+    {
+      slot: "roadmap-shop",
+      title: "The Shop",
+      body: "The first shelves are being shaped with local makers and growers.",
+      href: "/shop",
+      linkLabel: "See the shop",
+    },
+    {
+      slot: "roadmap-art-space",
+      title: "The Art Space",
+      body: "Finding its shape, and artists are the ones shaping it.",
+      href: "/works",
+      linkLabel: "See the works",
+    },
+  ];
+
+  return (
+    <section className="py-12 bg-stone-50 border-t border-stone-200">
+      <div className="container max-w-4xl">
+        <p className="text-amber-600 font-medium tracking-wide uppercase text-sm mb-2">
+          Elsewhere on site
+        </p>
+        <EditableText
+          page="whats-on"
+          slot="roadmap-heading"
+          defaultContent="Where the rest of the place stands"
+          as="h2"
+          className="text-2xl md:text-3xl font-serif font-bold text-stone-800 mb-8"
+        />
+        <div className="grid gap-4 sm:grid-cols-3">
+          {areas.map((area) => (
+            <div key={area.slot} className="rounded-lg border border-stone-200 bg-white p-5">
+              <h3 className="text-lg font-serif font-bold text-stone-800 mb-2">{area.title}</h3>
+              <EditableText
+                page="whats-on"
+                slot={`${area.slot}-body`}
+                defaultContent={area.body}
+                as="p"
+                className="text-stone-600 text-sm leading-relaxed mb-3"
+                multiline
+              />
+              <Link
+                href={area.href}
+                className="text-sm font-semibold text-amber-700 underline underline-offset-4 hover:text-amber-800"
+              >
+                {area.linkLabel}
+              </Link>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function FeedbackBand() {
+  return (
+    <section className="py-12 bg-stone-50 border-t border-stone-200">
+      <div className="container max-w-3xl text-center">
+        <EditableText
+          page="whats-on"
+          slot="feedback-heading"
+          defaultContent="Been along? Tell us how it went"
+          as="h2"
+          className="text-2xl md:text-3xl font-serif font-bold text-stone-800 mb-3"
+        />
+        <EditableText
+          page="whats-on"
+          slot="feedback-intro"
+          defaultContent="The Harvest is being shaped by the people who turn up. The pulse survey takes a few minutes and feeds straight into what happens next."
+          as="p"
+          className="text-stone-600 mb-6 max-w-xl mx-auto"
+          multiline
+        />
+        <Link
+          href="/pulse"
+          className="inline-flex items-center justify-center bg-amber-500 hover:bg-amber-600 text-black font-semibold px-8 py-3 rounded-md transition-colors"
+        >
+          Take the pulse survey
+        </Link>
+      </div>
+    </section>
+  );
+}
+
+function PizzaRsvpBlock() {
+  const [form, setForm] = useState({ name: "", email: "", day: "", people: "2" });
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [errorMsg, setErrorMsg] = useState("");
+  const submitRsvp = trpc.eoi.submit.useMutation();
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setStatus("loading");
+    try {
+      await submitRsvp.mutateAsync({
+        name: form.name,
+        email: form.email,
+        day: form.day || undefined,
+        people: form.people ? Number(form.people) : undefined,
+        source: "whats-on",
+      });
+      setStatus("success");
+    } catch (err) {
+      setErrorMsg(err instanceof Error ? err.message : "Something went wrong. Please try again.");
+      setStatus("error");
+    }
+  }
+
+  return (
+    <section className="py-12 bg-amber-50 border-y border-amber-200">
+      <div className="container max-w-3xl">
+        <h2 className="text-2xl md:text-3xl font-serif font-bold text-stone-800 mb-2">
+          Coming along? Let us know
+        </h2>
+        <p className="text-stone-600 mb-4">
+          The best place to RSVP is the members page. You can see this week's dates,
+          message us directly, and hear about new dates first. Membership is free.
+        </p>
+        <a
+          href={MEMBERS_PAGE_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center justify-center bg-stone-800 hover:bg-stone-900 text-white font-semibold px-8 py-3 rounded-md transition-colors mb-6"
+        >
+          RSVP on the members page
+        </a>
+        <p className="text-stone-500 text-sm mb-2">
+          Or leave your details here and we'll count you in.
+        </p>
+        <p className="text-stone-500 text-xs mb-6">
+          Used only to plan numbers and get in touch about this RSVP. See our{" "}
+          <Link href="/privacy" className="underline hover:text-stone-700">
+            privacy page
+          </Link>{" "}
+          for details.
+        </p>
+        {status === "success" ? (
+          <div className="bg-white border border-amber-300 rounded-lg p-6">
+            <p className="font-semibold text-stone-800">You're on the list.</p>
+            <p className="text-stone-600 mt-1">
+              We'll plan for you. For this week's dates and anything else,{" "}
+              <a
+                href={MEMBERS_PAGE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-amber-700 underline hover:text-amber-800"
+              >
+                join us on the members page
+              </a>
+              .
+            </p>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="grid gap-4 sm:grid-cols-2">
+            <input
+              type="text"
+              required
+              placeholder="Your name"
+              value={form.name}
+              onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
+              className="rounded-md border border-stone-300 bg-white px-4 py-3 text-stone-800"
+            />
+            <input
+              type="email"
+              required
+              placeholder="Email"
+              value={form.email}
+              onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
+              className="rounded-md border border-stone-300 bg-white px-4 py-3 text-stone-800"
+            />
+            <select
+              value={form.day}
+              onChange={(e) => setForm((f) => ({ ...f, day: e.target.value }))}
+              className="rounded-md border border-stone-300 bg-white px-4 py-3 text-stone-800"
+            >
+              <option value="">Which session suits?</option>
+              <option value="Friday evening (pizza + movie)">Friday, pizza and movie, 3pm to 8pm</option>
+              <option value="Saturday (12-8pm)">Saturday, 12pm to 8pm</option>
+              <option value="Sunday (12-6pm)">Sunday, 12pm to 6pm</option>
+              <option value="Not sure yet">Not sure yet</option>
+            </select>
+            <input
+              type="number"
+              min={1}
+              max={30}
+              placeholder="How many people?"
+              value={form.people}
+              onChange={(e) => setForm((f) => ({ ...f, people: e.target.value }))}
+              className="rounded-md border border-stone-300 bg-white px-4 py-3 text-stone-800"
+            />
+            {status === "error" && (
+              <p className="sm:col-span-2 text-sm text-red-700">{errorMsg}</p>
+            )}
+            <div className="sm:col-span-2">
+              <Button
+                type="submit"
+                disabled={status === "loading"}
+                className="bg-amber-500 hover:bg-amber-600 text-black font-semibold px-8"
+              >
+                {status === "loading" ? "Sending..." : "Count us in"}
+              </Button>
+            </div>
+          </form>
+        )}
+      </div>
+    </section>
+  );
+}
+
 export default function WhatsOn() {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [location] = useLocation();
+  const isPizzaPage = location === "/witta-pizza";
+
+  useEffect(() => {
+    setPageSeo({
+      title: isPizzaPage ? "DIY Pizza in Witta · The Harvest" : "What's On · The Harvest Witta",
+      description: isPizzaPage
+        ? "Make your own pizza at The Harvest, 9 Gumland Drive, Witta. Weekend DIY pizza sessions most Fridays, Saturdays and Sundays, with dates confirmed on the members page."
+        : "DIY pizza weekends, community days, work days and events at The Harvest, 9 Gumland Drive, Witta on Jinibara Country.",
+      path: isPizzaPage ? "/witta-pizza" : "/whats-on",
+      image: "/images/optimized/community-gathering-1000.webp",
+      imageAlt: "Neighbours gathered at The Harvest in Witta.",
+    });
+
+    setJsonLd("whats-on-jsonld", {
+      "@context": "https://schema.org",
+      "@type": isPizzaPage ? "FoodEstablishment" : "LocalBusiness",
+      "@id": isPizzaPage
+        ? "https://www.theharvestwitta.com.au/witta-pizza#pizza"
+        : "https://www.theharvestwitta.com.au/whats-on#events",
+      name: isPizzaPage ? "DIY pizza at The Harvest" : "What's on at The Harvest",
+      url: `https://www.theharvestwitta.com.au${isPizzaPage ? "/witta-pizza" : "/whats-on"}`,
+      image: "https://www.theharvestwitta.com.au/images/optimized/community-gathering-1000.webp",
+      description: isPizzaPage
+        ? "DIY pizza sessions at The Harvest, 9 Gumland Drive, Witta. Make your own pizza and sit in the garden while it bakes."
+        : "Weekend pizza sessions, community days, work days and gatherings at The Harvest in Witta.",
+      parentOrganization: {
+        "@id": "https://www.theharvestwitta.com.au/#organization",
+      },
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: "9 Gumland Drive",
+        addressLocality: "Witta",
+        addressRegion: "QLD",
+        postalCode: "4552",
+        addressCountry: "AU",
+      },
+      areaServed: ["Witta", "Maleny", "Sunshine Coast Hinterland"],
+      servesCuisine: isPizzaPage ? "Pizza" : undefined,
+      telephone: "+61422883943",
+      makesOffer: isPizzaPage
+        ? {
+            "@type": "Offer",
+            itemOffered: {
+              "@type": "Service",
+              name: "DIY pizza making",
+              description:
+                "Stretch your base, choose your toppings and fire your pizza at The Harvest.",
+            },
+          }
+        : undefined,
+    });
+
+    if (isPizzaPage) {
+      setJsonLd("pizza-faq-jsonld", {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: pizzaFaqs.map((faq) => ({
+          "@type": "Question",
+          name: faq.question,
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: faq.answer,
+          },
+        })),
+      });
+    } else {
+      clearJsonLd("pizza-faq-jsonld");
+    }
+  }, [isPizzaPage]);
 
   // Fetch approved events from database
   const { data: dbEvents, refetch } = useQuery({
@@ -155,62 +869,88 @@ export default function WhatsOn() {
 
   return (
     <div className="min-h-screen bg-background">
+      <SiteNav />
       {/* Hero Section */}
-      <section className="relative py-24 bg-gradient-to-b from-amber-50 to-white overflow-hidden">
-        <div className="absolute inset-0 opacity-5">
-          <div
-            className="absolute inset-0"
-            style={{
-              backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-            }}
-          />
-        </div>
+      <section className="relative overflow-hidden bg-stone-900 pt-36 pb-24">
+        <HarvestImage
+          page="whats-on"
+          slot="hero-photo"
+          src="/images/optimized/gathering-recap-crowd-1600.webp"
+          alt="Making pizza together at The Harvest, Witta"
+          size="hero"
+          priority
+          controlsPosition="corner"
+          className="absolute inset-0 h-full w-full"
+          imgClassName="h-full w-full object-cover"
+        />
+        <div className="pointer-events-none absolute inset-0 bg-stone-900/70" />
 
         <div className="container relative">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="max-w-3xl"
+            className="mx-auto max-w-3xl text-center"
           >
-            <span className="text-amber-600 font-medium tracking-wide uppercase text-sm">
-              Events & Gatherings
+            <span className="text-amber-400 font-medium tracking-wide uppercase text-sm">
+              {isPizzaPage ? "Witta pizza weekends" : "Events & Gatherings"}
             </span>
-            <h1 className="text-5xl md:text-6xl font-serif font-bold text-stone-800 mt-3 mb-6">
-              What's On
+            <h1 className="text-5xl md:text-6xl font-serif font-bold text-white mt-3 mb-6">
+              {isPizzaPage ? "DIY pizza in Witta" : "What's On"}
             </h1>
-            <p className="text-xl text-stone-600 leading-relaxed mb-8">
-              Markets, workshops, community gatherings, and more. As we build The Harvest,
-              we're hosting events that bring the community together.
+            <p className="text-xl text-white/80 leading-relaxed mb-8">
+              {isPizzaPage
+                ? "Make your own pizza at The Harvest, 9 Gumland Drive, Witta. Most weekends the oven is on Friday, Saturday and Sunday. Weeks can vary, and new dates land on the members page first."
+                : "Weekend pizza sessions, work days and gatherings at The Harvest, a community garden and creative gathering place in Witta, on Jinibara Country. New dates land on the members page first."}
             </p>
-            <EventSubmissionDialog onEventSubmitted={() => refetch()} />
+            <div className="flex justify-center">
+              <EventSubmissionDialog onEventSubmitted={() => refetch()} />
+            </div>
           </motion.div>
         </div>
       </section>
 
-      {/* Filter Section */}
-      <section className="py-8 bg-white border-b border-stone-200 sticky top-0 z-40">
-        <div className="container">
-          <div className="flex items-center gap-4 overflow-x-auto pb-2">
-            <Filter className="h-5 w-5 text-stone-400 flex-shrink-0" />
-            {categories.map((cat) => (
-              <Button
-                key={cat.value}
-                variant={selectedCategory === cat.value ? "default" : "outline"}
-                size="sm"
-                onClick={() => setSelectedCategory(cat.value)}
-                className={
-                  selectedCategory === cat.value
-                    ? "bg-amber-500 hover:bg-amber-600 text-black"
-                    : "border-stone-300"
-                }
-              >
-                {cat.label}
-              </Button>
-            ))}
+      <RegularSessions />
+
+      <PizzaGallery />
+
+      <PizzaSearchBlock />
+
+      {isPizzaPage && <PizzaProofArticle />}
+
+      {isPizzaPage && <PizzaFaqBlock />}
+
+      <MembershipInvite />
+
+      <RoadmapStrip />
+
+      <PizzaRsvpBlock />
+
+      {/* Filter Section: only worth showing once there are events to filter */}
+      {allEvents.length > 1 && (
+        <section className="py-8 bg-white border-b border-stone-200 sticky top-[76px] z-40">
+          <div className="container">
+            <div className="flex items-center gap-4 overflow-x-auto pb-2">
+              <Filter className="h-5 w-5 text-stone-400 flex-shrink-0" />
+              {categories.map((cat) => (
+                <Button
+                  key={cat.value}
+                  variant={selectedCategory === cat.value ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setSelectedCategory(cat.value)}
+                  className={
+                    selectedCategory === cat.value
+                      ? "bg-amber-500 hover:bg-amber-600 text-black"
+                      : "border-stone-300"
+                  }
+                >
+                  {cat.label}
+                </Button>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Events Content */}
       <section className="py-16 bg-white">
@@ -225,9 +965,18 @@ export default function WhatsOn() {
               {upcomingEvents.length === 0 ? (
                 <div className="text-center py-16">
                   <Calendar className="h-16 w-16 text-stone-300 mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold text-stone-600 mb-2">No upcoming events</h3>
+                  <h3 className="text-xl font-semibold text-stone-600 mb-2">Nothing listed just yet</h3>
                   <p className="text-stone-500 mb-6">
-                    Check back soon or submit your own community event!
+                    The pizza weekend rhythm above runs most weeks. New dates land on the{" "}
+                    <a
+                      href={MEMBERS_PAGE_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-amber-600 underline hover:text-amber-700"
+                    >
+                      members page
+                    </a>{" "}
+                    first. You can also submit your own community event.
                   </p>
                   <EventSubmissionDialog onEventSubmitted={() => refetch()} />
                 </div>
@@ -356,6 +1105,8 @@ export default function WhatsOn() {
         </div>
       </section>
 
+      <FeedbackBand />
+
       {/* CTA Section */}
       <section className="py-16 bg-stone-800 text-white">
         <div className="container">
@@ -365,25 +1116,26 @@ export default function WhatsOn() {
             </h2>
             <p className="text-stone-300 mb-8">
               Whether it's a workshop you want to run, a community gathering, or a skill you want to
-              teach – we'd love to hear from you. We're building The Harvest with the community, for the
+              teach, we'd love to hear from you. The Harvest is made with the community, for the
               community.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex justify-center">
               <EventSubmissionDialog onEventSubmitted={() => refetch()} />
-              <Button
-                variant="outline"
-                className="border-white/30 text-white hover:bg-white/10"
-                asChild
-              >
-                <a href="/venue-hire">
-                  <Users className="mr-2 h-5 w-5" />
-                  Enquire About Venue Hire
-                </a>
-              </Button>
             </div>
+            <p className="mt-6 text-sm text-stone-400">
+              Planning something bigger?{" "}
+              <Link
+                href="/venue-hire"
+                className="text-amber-400 underline underline-offset-4 hover:text-amber-300"
+              >
+                Ask about using the space
+              </Link>
+              .
+            </p>
           </div>
         </div>
       </section>
+      <SiteFooter />
     </div>
   );
 }

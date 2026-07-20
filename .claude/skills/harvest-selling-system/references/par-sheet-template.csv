@@ -1,0 +1,29 @@
+Code,Item,Pack,Cost/pack ex-GST,Cost/unit,Tier,Par (set for ~60 pizzas),Counted,Order (par minus counted),Notes
+107200,Pizza base classic 12in,24,73.56,3.07,B/event,2,,,48 bases. Bases store - modest buffer is fine.
+110228,Pizza base thin 12in,15,38.49,2.57,B/event,1,,,15 bases.
+170716,Pizza base GF 11in,15,94.21,6.28,B/event,1,,,15 bases. GF only - dairy cheese. No vegan claim this night.
+217211,Mozzarella shredded 2kg,1,27.28,1.64/pizza,B/event,4,,,8kg covers ~60-70 pizzas at ~110g. RESOLVES the cheese constraint (last order had 3).
+,Buffalo mozzarella 125g balls,1,~3.00,3.00/pizza,B/event,6,,,~6 balls for ~10 buffalo pizzas. Buy to expected buffalo count.
+39733,Pizza sauce Mutti 4.1kg,1,24.52,0.48/pizza,B/pantry,2,,,4.8kg needed for 60 at 80g. Shelf-stable.
+176743,Pepperoni 1kg,1,22.64,0.91/pizza,B/event,1,,,~800g for ~20 pepperoni at 40g.
+99808,Ham shredded 2kg,1,26.15,0.65/pizza,B/event,1,,,~750g for ~15 ham&pineapple at 50g.
+139092,Pineapple 3.03kg,1,13.43,0.27/pizza,B/pantry,1,,,Drained. Shelf-stable.
+185996,Parmesan shaved 1kg,1,28.42,0.43/pizza,B/pantry,1,,,~450g for ~30 pizzas at 15g.
+164143,Kalamata olives 2kg,1,23.37,0.23/pizza,B/pantry,1,,,Shelf-stable.
+4836,Garlic bread 40x170g,40,76.29,1.91/pc,B/event,1,,,40 pieces for ~60 covers. Raise par to 2 if it sells out.
+218354,Nutella 1kg,1,17.74,0.89/serve,B/event,1,,,~1kg for ~20 dessert pizzas at 50g.
+171363,Mini marshmallows 375g,1,11.98,~0.30/serve,B/event,1,,,Dessert topping.
+116116,Semolina 12.5kg,1,39.56,dough,B/pantry,1,,,Dusting/handling for bought-in bases.
+56339,Flour plain 10kg,1,16.56,dough,B/pantry,1,,,Dusting/handling.
+189781/197912/189779/189778,Jarritos sodas,24,64.22,2.68,A,1,,,Tier A resale - track in Square. Multi-week pantry: 1 carton (24) covers a 60-night. Reorder to par when count drops.
+206110,Coconut water,24,60.87,2.54,A,1,,,Tier A. GST-free on sale.
+206111,Coconut & yuzu,24,57.69,2.40,A,1,,,Tier A. GST-free on sale.
+28684,San Pellegrino 250ml,24,46.28,1.93,A,1,,,Tier A.
+8728,Bundaberg ginger beer,24,54.50,2.27,A,1,,,Tier A.
+213443/213446,OK Boocha kombucha,16,62.02,3.88,A,1,,,Tier A. Thinnest-margin line - range item only.
+,Pizza box 12-13in,TBC,TBC,TBC,B/event,1,,,ORDER CORRECT SIZE. The 7in (221668) are slice/dessert boxes - too small for 12in pizzas. Confirm Bidfood code for a 12-13in box.
+221668,Pizza box 7in (slice/dessert only),100,25.05,0.25,B/event,1,,,Use for garlic bread / dessert slices / single slices only. NOT for whole 12in pizzas.
+175812,Family box,50,23.60,0.47,B/event,1,,,
+222082,Clamshell 9x9,100,34.86,0.35,B/event,1,,,
+167993,Bowls 12oz,25,3.78,0.15,B/event,1,,,
+86140,Napkins 500s,500,8.81,0.02,B/pantry,1,,,

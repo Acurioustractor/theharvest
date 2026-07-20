@@ -7,7 +7,7 @@ import { trpc } from "@/lib/trpc";
 
 const FOOTER_LINES = [
   "Built on Jinibara Country",
-  "10 acres. 6 heritage layers. 1 table.",
+  "The old Green Harvest nursery, growing again.",
   "No tickets. No agenda. No speeches.",
   "Come as you are.",
   "We build to hand over.",
@@ -67,7 +67,7 @@ export default function BauhausFooter({ isMobile }: BauhausFooterProps) {
           color: colors.goldenHour,
           margin: "0 0 6px",
         }}>
-          NEXT COMMUNITY DAY · LATE JUNE
+          WE ARE OPEN
         </p>
         <p style={{
           fontFamily: fonts.body,
@@ -77,7 +77,7 @@ export default function BauhausFooter({ isMobile }: BauhausFooterProps) {
           margin: "0 0 14px",
           lineHeight: 1.5,
         }}>
-          A community open day around the end of June 2026. Date being confirmed. Become a member to hear first.
+          You do not need to book to come and have a look while we find our feet. Members hear about events first, every time.
         </p>
         <div style={{
           display: "flex",
@@ -208,7 +208,20 @@ export default function BauhausFooter({ isMobile }: BauhausFooterProps) {
         opacity: 0.4,
         margin: "0 0 12px",
       }}>
-        Witta, Blackall Range. Jinibara Country.
+        Witta, on Jinibara Country.
+      </p>
+      <p style={{
+        fontFamily: fonts.body,
+        fontSize: 12,
+        color: colors.milk,
+        opacity: 0.35,
+        margin: "0 0 12px",
+        maxWidth: 480,
+        marginLeft: "auto",
+        marginRight: "auto",
+        lineHeight: 1.5,
+      }}>
+        The Harvest stands on Jinibara Country. We acknowledge the Jinibara people as Traditional Custodians and pay respect to Elders past and present.
       </p>
       <p style={{
         fontFamily: fonts.body,

@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
+import { SiteFooter, SiteNav } from "./HarvestReviewTest";
 import {
   Milestone,
   Building,
@@ -11,8 +12,10 @@ import {
   ArrowRight,
   CheckCircle2,
   Clock,
-  Target,
   Camera,
+  Store,
+  Palette,
+  Compass,
 } from "lucide-react";
 import { HarvestGallery } from "@/components/EmpathyLedgerGallery";
 import { EditableImage } from "@/components/EditableImage";
@@ -20,8 +23,7 @@ import { EditableText } from "@/components/EditableText";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.6 },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.6 } },
 };
 
 const staggerContainer = {
@@ -37,74 +39,187 @@ interface TimelineEvent {
   date: string;
   title: string;
   description: string;
-  status: "complete" | "in-progress" | "planned";
+  status: "complete" | "in-progress";
   icon: React.ComponentType<{ className?: string }>;
-  slot: "hero" | "featured" | "card-1" | "card-2" | "card-3" | "card-4" | "card-5" | "card-6";
+  slot: "hero" | "featured" | "card-1" | "card-2" | "card-3" | "card-4" | "card-5";
   stats?: { label: string; value: string }[];
 }
 
 const timelineEvents: TimelineEvent[] = [
   {
     id: "discovery",
-    date: "Early 2025",
+    date: "Late 2025",
     title: "Discovering the Site",
     description:
-      "The old Witta Nursery site caught our eye – a neglected space with incredible potential. We began exploring what this could become for the community.",
+      "The old Green Harvest nursery site caught our eye. Overgrown and quiet, but the bones were good. We began exploring what it could become for the community.",
     status: "complete",
     icon: Leaf,
     slot: "card-1",
   },
   {
     id: "consultation",
-    date: "Q1 2025",
+    date: "Early 2026",
     title: "Community Consultation",
     description:
-      "We're talking to locals, gathering ideas, and understanding what the community needs. Your input is shaping what The Harvest will become.",
-    status: "in-progress",
+      "We talked with locals, gathered ideas, and listened to what the community needed. That input shaped what The Harvest has become.",
+    status: "complete",
     icon: Users,
     slot: "card-2",
   },
   {
     id: "activation",
-    date: "Q1-Q2 2025",
-    title: "Activation Phase",
+    date: "March 2026",
+    title: "The First Gathering",
     description:
-      "Hosting early events and gatherings to bring people together while we develop the site. Testing ideas, building connections, and learning what works.",
-    status: "in-progress",
+      "The first gathering brought people onto the lawn while the site was still finding its shape. We tested ideas, built connections, and learned what worked.",
+    status: "complete",
     icon: Heart,
     slot: "card-3",
   },
   {
     id: "development",
-    date: "Q2-Q3 2025",
+    date: "January to June 2026",
     title: "Site Development",
     description:
-      "Transforming the space: fitting out the kitchen, establishing garden areas, and creating gathering spaces. Volunteer work days and community build events.",
-    status: "planned",
+      "The first big push on the space: establishing garden areas, creating gathering spaces, and running community work days. The work continues.",
+    status: "complete",
     icon: Building,
     slot: "card-4",
   },
   {
     id: "soft-launch",
-    date: "Late 2025",
-    title: "Soft Launch",
+    date: "20 June 2026",
+    title: "First Members and Makers Day",
     description:
-      "Opening our doors more regularly with markets, workshops, and community gatherings. The beginning of something lasting.",
-    status: "planned",
+      "The Harvest opened with its first members and makers day. The beginning of something lasting.",
+    status: "complete",
     icon: Leaf,
     slot: "card-5",
   },
   {
-    id: "future",
-    date: "2026+",
-    title: "The Vision Ahead",
+    id: "underway",
+    date: "From July 2026",
+    title: "Properly Under Way",
     description:
-      "A thriving community kitchen, flourishing gardens, regular workshops, and a hub where locals shape what happens. We're building this together.",
-    status: "planned",
-    icon: Target,
-    slot: "card-6",
+      "The Harvest is now properly under way. The garden grows through regular work days, and upcoming events land with members first. You do not need to book to come and have a look while we find our feet.",
+    status: "in-progress",
+    icon: Clock,
+    slot: "featured",
   },
 ];
+
+interface RoadmapArea {
+  id: string;
+  title: string;
+  now: string;
+  next: string;
+  doorLabel: string;
+  doorHref: string;
+  icon: React.ComponentType<{ className?: string }>;
+}
+
+// Now/next lines come from docs/communications/now-open-communications-map-2026-07.md.
+// "Not yet" items (hours, prices, dates, stock) stay off this page until the
+// blocking fact clears. Edit the map first, then this copy.
+const roadmapAreas: RoadmapArea[] = [
+  {
+    id: "garden",
+    title: "The Garden",
+    now: "Growing through regular work days. Beds, seedlings, mulch, compost and paths, with hands in the soil.",
+    next: "Seasonal planting, a kids area shaped by kids, and more hands on the place.",
+    doorLabel: "Lend a hand",
+    doorHref: "/get-involved",
+    icon: Leaf,
+  },
+  {
+    id: "gatherings",
+    title: "Gatherings",
+    now: "Gatherings and shared meals are how the place works. DIY pizza runs most weekends: Friday 3pm to 8pm with a community movie night, Saturday 12pm to 8pm, Sunday 12pm to 6pm. Weeks can vary, and new dates land on the members page first.",
+    next: "More work days, more shared meals, and a rhythm that settles as we find our feet.",
+    doorLabel: "See what's on",
+    doorHref: "/whats-on",
+    icon: Heart,
+  },
+  {
+    id: "shop",
+    title: "The Shop",
+    now: "The first shelves are being shaped with local makers and growers. Every expression of interest starts a real conversation.",
+    next: "Real names on the shelf, starting small, with short opening windows when it is ready. The maker keeps most of the sale.",
+    doorLabel: "Put your hand up",
+    doorHref: "/shop",
+    icon: Store,
+  },
+  {
+    id: "art-space",
+    title: "The Art Space",
+    now: "Finding its shape, and artists are the ones shaping it.",
+    next: "First making sessions, and residency ideas as they form.",
+    doorLabel: "See the works",
+    doorHref: "/works",
+    icon: Palette,
+  },
+  {
+    id: "membership",
+    title: "Membership",
+    now: "Free, and it is how you hear first. The members page is live with events, RSVPs and direct messages.",
+    next: "Members bring a neighbour, and what gets made here becomes the public story.",
+    doorLabel: "Become a member",
+    doorHref: "/membership",
+    icon: Users,
+  },
+];
+
+function RoadmapCard({ area }: { area: RoadmapArea }) {
+  return (
+    <motion.div variants={fadeInUp} className="h-full">
+      <Card className="h-full border-0 shadow-md hover:shadow-lg transition-shadow">
+        <CardContent className="flex h-full flex-col p-6">
+          <div className="mb-4 flex items-center gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-amber-600">
+              <area.icon className="h-5 w-5 text-white" />
+            </div>
+            <h3 className="text-xl font-serif font-bold text-stone-800">{area.title}</h3>
+          </div>
+          <div className="flex-1 space-y-4">
+            <div>
+              <span className="mb-2 inline-block rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wide text-amber-700">
+                Now
+              </span>
+              <EditableText
+                page="journey"
+                slot={`roadmap-${area.id}-now`}
+                defaultContent={area.now}
+                as="p"
+                className="text-stone-600 leading-relaxed"
+                multiline
+              />
+            </div>
+            <div>
+              <span className="mb-2 inline-block rounded-full bg-stone-100 px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wide text-stone-500">
+                Next
+              </span>
+              <EditableText
+                page="journey"
+                slot={`roadmap-${area.id}-next`}
+                defaultContent={area.next}
+                as="p"
+                className="text-stone-600 leading-relaxed"
+                multiline
+              />
+            </div>
+          </div>
+          <Link
+            href={area.doorHref}
+            className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-amber-700 hover:text-amber-800"
+          >
+            {area.doorLabel}
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+        </CardContent>
+      </Card>
+    </motion.div>
+  );
+}
 
 function TimelineItem({
   event,
@@ -120,13 +235,11 @@ function TimelineItem({
   const statusColors = {
     complete: "bg-amber-600",
     "in-progress": "bg-amber-500",
-    planned: "bg-stone-300",
   };
 
   const statusIcons = {
     complete: CheckCircle2,
     "in-progress": Clock,
-    planned: Target,
   };
 
   const StatusIcon = statusIcons[event.status];
@@ -224,8 +337,9 @@ function TimelineItem({
 export default function Journey() {
   return (
     <div className="min-h-screen bg-stone-50">
+      <SiteNav />
       {/* Hero Section */}
-      <section className="relative py-24 bg-gradient-to-b from-stone-100 to-white overflow-hidden">
+      <section className="relative pt-36 pb-24 bg-gradient-to-b from-stone-100 to-white overflow-hidden">
         <div className="container">
           <motion.div
             initial={{ opacity: 0, y: 40 }}
@@ -234,14 +348,14 @@ export default function Journey() {
             className="max-w-3xl mx-auto text-center"
           >
             <span className="inline-flex items-center gap-2 px-4 py-2 mb-6 text-sm font-medium bg-amber-100 text-amber-700 rounded-full">
-              <Milestone className="h-4 w-4" />
-              Our Transformation
+              <Compass className="h-4 w-4" />
+              Now and next
             </span>
 
             <EditableText
               page="journey"
               slot="hero-title"
-              defaultContent="From Nursery to Community Hub"
+              defaultContent="What's happening, and what's coming"
               as="h1"
               className="text-5xl md:text-6xl font-serif font-bold text-stone-800 mb-6"
             />
@@ -249,7 +363,7 @@ export default function Journey() {
             <EditableText
               page="journey"
               slot="hero-description"
-              defaultContent="We're in the early stages of transforming an old Witta nursery into a community gathering place. Right now we're consulting with locals and hosting activation events – and you're invited to be part of the story."
+              defaultContent="The Harvest is a community garden and creative gathering place in Witta, on Jinibara Country. The gate opened on Saturday 20 June 2026, and the place is not arriving finished. That is the point. You do not need to book to come and have a look while we find our feet. Here is where each part stands, what comes next, and how we got here."
               as="p"
               className="text-xl text-stone-600 mb-8 leading-relaxed"
               multiline
@@ -273,9 +387,86 @@ export default function Journey() {
         </div>
       </section>
 
-      {/* Timeline Section */}
+      {/* Roadmap Section: what is coming, area by area */}
       <section className="py-24 bg-white">
+        <div className="container max-w-5xl">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-12"
+          >
+            <EditableText
+              page="journey"
+              slot="roadmap-heading"
+              defaultContent="Where things are heading"
+              as="h2"
+              className="text-4xl font-serif font-bold text-stone-800 mb-4"
+            />
+            <EditableText
+              page="journey"
+              slot="roadmap-intro"
+              defaultContent="Nothing here gets a date until it is real. New dates land on the members page first, and membership is free. This is where each part of the place stands."
+              as="p"
+              className="text-lg text-stone-600 max-w-2xl mx-auto"
+              multiline
+            />
+          </motion.div>
+
+          <motion.div
+            initial="initial"
+            whileInView="animate"
+            viewport={{ once: true }}
+            variants={staggerContainer}
+            className="grid gap-6 md:grid-cols-2 lg:grid-cols-3"
+          >
+            {roadmapAreas.map((area) => (
+              <RoadmapCard key={area.id} area={area} />
+            ))}
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="mt-10 text-center"
+          >
+            <EditableText
+              page="journey"
+              slot="roadmap-footnote"
+              defaultContent="Missing from this page on purpose: opening hours, prices, and dates that are not locked in. When those are real, members hear first."
+              as="p"
+              className="text-sm text-stone-500 max-w-2xl mx-auto"
+              multiline
+            />
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Timeline Section: how we got here */}
+      <section className="py-24 bg-stone-50">
         <div className="container max-w-4xl">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-16"
+          >
+            <span className="inline-flex items-center gap-2 px-4 py-2 mb-6 text-sm font-medium bg-amber-100 text-amber-700 rounded-full">
+              <Milestone className="h-4 w-4" />
+              How we got here
+            </span>
+            <EditableText
+              page="journey"
+              slot="timeline-heading"
+              defaultContent="From the old nursery to opening day"
+              as="h2"
+              className="text-4xl font-serif font-bold text-stone-800"
+            />
+          </motion.div>
           <motion.div
             initial="initial"
             whileInView="animate"
@@ -296,7 +487,7 @@ export default function Journey() {
       </section>
 
       {/* Transformation Gallery Section */}
-      <section className="py-24 bg-stone-50">
+      <section className="py-24 bg-white">
         <div className="container">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -313,8 +504,8 @@ export default function Journey() {
               The Transformation in Pictures
             </h2>
             <p className="text-lg text-stone-600 max-w-2xl mx-auto">
-              From overgrown nursery to emerging community hub - browse photos
-              documenting our journey and the hands that are building it.
+              From overgrown nursery to a garden, events and art space: browse
+              photos of the work as it happened and the hands that did it.
             </p>
           </motion.div>
 
@@ -333,13 +524,13 @@ export default function Journey() {
             className="max-w-3xl mx-auto text-center"
           >
             <h2 className="text-4xl md:text-5xl font-serif font-bold mb-6">
-              Be Part of the Next Chapter
+              Come be part of it
             </h2>
             <p className="text-xl text-stone-300 mb-10 leading-relaxed">
-              The Harvest is growing through community support. Whether you visit,
-              volunteer, or join our mailing list, you're helping write the story.
+              Membership is free, and members hear what is coming first. The rest
+              grows from whoever turns up.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex justify-center">
               <Button
                 size="lg"
                 className="bg-amber-500 hover:bg-amber-600 text-black font-semibold"
@@ -350,18 +541,28 @@ export default function Journey() {
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="border-white/30 text-white hover:bg-white/10"
-                asChild
-              >
-                <Link href="/contact">Plan Your Visit</Link>
-              </Button>
             </div>
+            <p className="mt-8 text-sm text-stone-400">
+              Planning a visit?{" "}
+              <Link
+                href="/whats-on"
+                className="text-amber-400 underline underline-offset-4 hover:text-amber-300"
+              >
+                See What's On
+              </Link>
+              . Got an idea for the place?{" "}
+              <Link
+                href="/contact"
+                className="text-amber-400 underline underline-offset-4 hover:text-amber-300"
+              >
+                Tell us
+              </Link>
+              .
+            </p>
           </motion.div>
         </div>
       </section>
+      <SiteFooter />
     </div>
   );
 }

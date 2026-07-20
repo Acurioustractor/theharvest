@@ -98,17 +98,17 @@ const colorStories: ColorStory[] = [
     label: "Golden Hour",
     hex: GOLDEN_HOUR,
     part: "Middle Bar",
-    zone: "Kitchen \u00b7 Feed",
-    origin: "Timber mills, dairy co-ops, shared tables",
-    story: "Late afternoon on the ridge when the light turns everything to honey. The colour of the timber mills and dairy farms that built this community. Families who worked together and shared what they had. The middle bar because heritage sits between the land and what's happening now. The kitchen where people are fed — food and stories both.",
+    zone: "Gather",
+    origin: "Milk crates, shared tables, end-of-June opening",
+    story: "Late afternoon on the ridge when the light turns everything to honey. The colour of shared tables, milk crates, food, questions, and people coming through the gate. Golden Hour carries the gathering promise, not a separate kitchen system.",
   },
   {
     label: "Crane",
     hex: CRANE,
     part: "Top Bar",
-    zone: "Art Space \u00b7 Make",
+    zone: "Make",
     origin: "Barry's crane \u00b7 Corrugated iron patina",
-    story: "Barry's crane, still standing in the yard. Rusted iron, corrugated patina, the colour of things that have been used hard and carry the marks. Not new, not polished — weathered by work. The top bar because what flows through now is the newest layer: artists sharing work, neighbours sharing tables, kids climbing, makers making. The next chapter being written on old iron.",
+    story: "Barry's crane, still standing in the yard. Rusted iron, corrugated patina, the colour of things that have been used hard and carry the marks. Not new, not polished. Crane carries Make: timber, tools, signs, repair, art, and the visible work of shaping the place.",
   },
 ];
 
@@ -385,11 +385,23 @@ export default function LogoStory() {
   return (
     <div style={{ backgroundColor: colors.milk, color: colors.shed, minHeight: "100vh" }}>
 
-      {/* ===== 0. V1 LAUNCH LOGO ===== */}
+      {/* ===== 0. CURRENT LOGO ===== */}
       <section style={heroStyle}>
-        <p style={heroEyebrow}>V1 LAUNCH LOGO</p>
+        <p style={heroEyebrow}>CURRENT LOGO SYSTEM</p>
+        <h1 style={{
+          fontFamily: fonts.display,
+          fontWeight: 900,
+          fontSize: 56,
+          letterSpacing: "0.08em",
+          lineHeight: 0.95,
+          margin: "0 0 18px",
+          textAlign: "center",
+        }}>
+          THE ROOT WORDMARK
+        </h1>
         <p style={{ ...heroTagline, marginTop: 0, marginBottom: 48, opacity: 0.5 }}>
-          The wordmark with roots. Three variants for every context.
+          Witta · Jinibara Country · Garden opening end of June<br />
+          Grow. Make. Gather.
         </p>
 
         {/* Dark on light */}
@@ -410,6 +422,26 @@ export default function LogoStory() {
         <p style={{ fontFamily: fonts.body, fontSize: 12, opacity: 0.3, textAlign: "center", marginBottom: 32 }}>
           Dark — for light backgrounds
         </p>
+
+        <div style={{
+          margin: "0 auto 40px",
+          maxWidth: 720,
+          padding: "24px 28px",
+          border: `1px solid rgba(28,25,23,0.1)`,
+          backgroundColor: "rgba(28,25,23,0.03)",
+          textAlign: "center",
+        }}>
+          <p style={{
+            fontFamily: fonts.body,
+            fontSize: 18,
+            lineHeight: 1.7,
+            margin: 0,
+            opacity: 0.72,
+          }}>
+            The current mark is the approved wordmark with roots. It should support the plain public line:
+            a community garden and creative gathering place taking shape in Witta.
+          </p>
+        </div>
 
         {/* Dark inverted on dark */}
         <div style={{
@@ -511,42 +543,39 @@ export default function LogoStory() {
         </div>
       </section>
 
-      {/* ===== 1. THE STORY (original hero) ===== */}
+      {/* ===== 1. THE STORY ===== */}
       <section style={{
         ...heroStyle,
         backgroundColor: "rgba(28,25,23,0.03)",
         borderTop: `1px solid rgba(28,25,23,0.06)`,
         color: colors.shed,
       }}>
-        <p style={{ ...heroEyebrow, opacity: 0.3 }}>THE LOGO SYSTEM</p>
+        <p style={{ ...heroEyebrow, opacity: 0.3 }}>CURRENT STORY</p>
         <div style={{ display: "flex", justifyContent: "center", marginBottom: 32 }}>
           <img
-            src={stages[0].file}
-            alt="The Seed — Stage 1"
-            style={{ height: 200, width: "auto" }}
+            src="/images/logo-v1-dark-clean.png"
+            alt="The Harvest wordmark with roots"
+            style={{ height: 180, width: "auto", maxWidth: "90%", objectFit: "contain" }}
           />
         </div>
-        <Wordmark height={64} style={{ display: "block", margin: "0 auto" }} />
         <p style={{ ...heroTagline, color: colors.shed }}>
-          The H is the logo. The logo is in the name.<br />
-          One lives. The rest is granite.
+          The wordmark carries the place.<br />
+          The roots keep it from becoming a generic venue brand.
         </p>
       </section>
 
 
       {/* ===== 2. THE IDEA ===== */}
       <section style={sectionStyle}>
-        <p style={eyebrow}>THE IDEA</p>
-        <h2 style={sectionTitle}>The logo lives inside the word.</h2>
+        <p style={eyebrow}>THE CURRENT IDEA</p>
+        <h2 style={sectionTitle}>The mark should feel grown, not decorated.</h2>
         <p style={sectionSub}>
-          Not a separate mark beside a wordmark. The H <em>is</em> the H in Harvest. Every time
-          you read the name, you see the logo. Every time you see the logo, you read the name.
-          They're the same thing.
+          The Harvest does not need a clever symbol sitting beside the name. It needs a wordmark
+          that feels like it comes out of soil, timber, milk crates, and hands on the place.
         </p>
         <p style={{ ...sectionSub, marginTop: 16 }}>
-          The lettering is ink on paper — wabi-sabi, never quite finished, always becoming.
-          But the H between the other letters is alive — it grows, fruits, sheds, and returns.
-          The word carries a living thing inside it.
+          Current public spine: <strong>Grow. Make. Gather.</strong> The logo should support that
+          line quietly. It should not introduce another system people need to learn.
         </p>
 
         {/* Show the lockup on light and dark */}
@@ -558,7 +587,11 @@ export default function LogoStory() {
             display: "flex",
             justifyContent: "center",
           }}>
-            <LiveWordmark hSrc={stages[0].file} height={56} light />
+            <img
+              src="/images/logo-v1-dark-clean.png"
+              alt="The Harvest wordmark on dark"
+              style={{ height: 120, width: "auto", maxWidth: "90%", objectFit: "contain", filter: "brightness(0) invert(1)" }}
+            />
           </div>
           <div style={{
             backgroundColor: colors.milk,
@@ -568,13 +601,17 @@ export default function LogoStory() {
             justifyContent: "center",
             border: `1px solid rgba(28,25,23,0.08)`,
           }}>
-            <LiveWordmark hSrc={stages[0].file} height={56} />
+            <img
+              src="/images/logo-v1-dark-clean.png"
+              alt="The Harvest wordmark on light"
+              style={{ height: 120, width: "auto", maxWidth: "90%", objectFit: "contain" }}
+            />
           </div>
         </div>
       </section>
 
 
-      {/* ===== 3. STACKED LOGO ===== */}
+      {/* ===== 3. ARCHIVED STACKED LOGO ===== */}
       <section style={{
         ...sectionStyle,
         maxWidth: "none",
@@ -582,11 +619,12 @@ export default function LogoStory() {
         borderTop: `1px solid rgba(28,25,23,0.06)`,
       }}>
         <div style={{ maxWidth: 720, margin: "0 auto" }}>
-          <p style={eyebrow}>THE STACKED MARK</p>
-          <h2 style={sectionTitle}>H on top. Name below.</h2>
+          <p style={eyebrow}>ARCHIVED EXPLORATION</p>
+          <h2 style={sectionTitle}>Stacked H mark.</h2>
           <p style={sectionSub}>
-            When the inline wordmark doesn't fit — square formats, app icons, signage — the
-            logo stacks. The H sits above the name. Same system, different arrangement.
+            This was an early direction for square formats and signage. It is not the current
+            production logo. Use the approved root wordmark above unless Ben or Nic explicitly
+            revive this exploration.
           </p>
 
           <div style={{
@@ -667,7 +705,7 @@ export default function LogoStory() {
       </section>
 
 
-      {/* ===== 4. THE LIVING H — LIFECYCLE (big section) ===== */}
+      {/* ===== 4. THE LIVING H — ARCHIVE ===== */}
       <section style={{
         ...sectionStyle,
         maxWidth: "none",
@@ -677,12 +715,12 @@ export default function LogoStory() {
         borderBottom: `1px solid rgba(28,25,23,0.06)`,
       }}>
         <div style={{ maxWidth: 720, margin: "0 auto" }}>
-          <p style={eyebrow}>THE LIVING H</p>
-          <h2 style={{ ...sectionTitle, fontSize: 36 }}>It grows. It fruits. It returns.</h2>
+          <p style={eyebrow}>ARCHIVED EXPLORATION · THE LIVING H</p>
+          <h2 style={{ ...sectionTitle, fontSize: 36 }}>Useful thinking. Not the current logo.</h2>
           <p style={sectionSub}>
-            The H isn't designed — it's grown. It has a lifecycle like everything on the land.
-            Six stages, from seed to return. The seed is the primary mark — because everything
-            starts here. The other stages appear as the brand breathes through the year.
+            This lifecycle system helped find the soil, growth, season, and incompleteness ideas.
+            It is now archive material. Do not use the changing H stages on the website, signs,
+            social assets, or public launch material unless the logo system is reopened.
           </p>
 
           {/* Stage selector — large pills */}
@@ -723,7 +761,7 @@ export default function LogoStory() {
           {/* Generation prompt */}
           <div style={promptBlock}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-              <span style={promptLabel}>GENERATION PROMPT — {stages[activeStage].label.toUpperCase()}</span>
+              <span style={promptLabel}>ARCHIVE PROMPT — {stages[activeStage].label.toUpperCase()}</span>
               <button
                 onClick={() => copyPrompt(stages[activeStage].prompt, `stage-${activeStage}`)}
                 style={copyBtn}
@@ -752,13 +790,13 @@ export default function LogoStory() {
             textAlign: "center",
             marginTop: 12,
           }}>
-            The wordmark with Stage {stages[activeStage].id}: {stages[activeStage].label}
+            Archived wordmark exploration with Stage {stages[activeStage].id}: {stages[activeStage].label}
           </p>
 
           {/* Wordmark prompt */}
           <div style={{ ...promptBlock, marginTop: 40 }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-              <span style={promptLabel}>WORDMARK LETTERING PROMPT</span>
+              <span style={promptLabel}>ARCHIVE WORDMARK LETTERING PROMPT</span>
               <button
                 onClick={() => copyPrompt(WORDMARK_LETTERING.prompt, "wordmark")}
                 style={copyBtn}
@@ -772,7 +810,7 @@ export default function LogoStory() {
       </section>
 
 
-      {/* ===== COLOR EXPLORATION — SEED H ===== */}
+      {/* ===== COLOR EXPLORATION — ARCHIVE ===== */}
       <section style={{
         ...sectionStyle,
         maxWidth: "none",
@@ -780,12 +818,11 @@ export default function LogoStory() {
         borderTop: `1px solid rgba(28,25,23,0.06)`,
       }}>
         <div style={{ maxWidth: 720, margin: "0 auto" }}>
-          <p style={eyebrow}>COLOR EXPLORATION</p>
+          <p style={eyebrow}>ARCHIVED COLOUR EXPLORATION</p>
           <h2 style={sectionTitle}>The seed in colour.</h2>
           <p style={sectionSub}>
-            The ink mark is the master. But sometimes the H needs to carry the brand colours —
-            signage, merchandise, digital accents. Here's the seed stage rendered through
-            each of the four locked colours.
+            These tests belong to the archived living-H direction. The current colour system still matters,
+            but production should use the approved dark, white, or colour root wordmark from the top of this page.
           </p>
 
           {/* Seed H in brand colors */}
@@ -921,9 +958,9 @@ export default function LogoStory() {
       </section>
 
 
-      {/* ===== THE LETTERING — LOCKED: "Never Done" ===== */}
+      {/* ===== THE LETTERING — ARCHIVE: "Never Done" ===== */}
       <section style={sectionStyle}>
-        <p style={eyebrow}>THE LETTERING</p>
+        <p style={eyebrow}>ARCHIVED LETTERING EXPLORATION</p>
         <h2 style={sectionTitle}>{WORDMARK_LETTERING.name}.</h2>
         <p style={{
           fontFamily: fonts.body,
@@ -969,16 +1006,14 @@ export default function LogoStory() {
           margin: "0 0 32px",
           maxWidth: 560,
         }}>
-          Ink on paper. Strokes that taper into nothing. The A's crossbar is a breath,
-          not a line. The T's crossbar trails off. Perfectly legible, quietly incomplete.
-          The H in HARVEST is the most complete letter — it's the living mark, the heart.
-          Everything else is at peace with being unfinished.
+          This helped define the right feeling: alive, imperfect, not polished. It is not the
+          current production wordmark. The approved root wordmark above is the one to use.
         </p>
 
         {/* Generation prompt */}
         <div style={promptBlock}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-            <span style={promptLabel}>GENERATION PROMPT</span>
+            <span style={promptLabel}>ARCHIVE GENERATION PROMPT</span>
             <button
               onClick={() => copyPrompt(WORDMARK_LETTERING.prompt, "lettering")}
               style={copyBtn}
@@ -993,13 +1028,13 @@ export default function LogoStory() {
 
       {/* ===== THE COLORS — DEEP STORY ===== */}
       <section style={{ ...sectionStyle, maxWidth: 760 }}>
-        <p style={eyebrow}>THE LOCKED COLORS</p>
+        <p style={eyebrow}>THE CURRENT COLOURS</p>
         <h2 style={sectionTitle}>Nothing is decoration. Every colour is a place, a person, a decision.</h2>
         <p style={sectionSub}>
           These aren't brand colours picked from a mood board. Each one was sampled from something
-          real — a wall, a tree, a rusted crane, the light at a specific hour. They map to the
-          three zones and the building that holds them. They are permanent. The form of the H
-          changes. The colours never do.
+          real: a wall, a tree, a rusted crane, the light at a specific hour. In current public use,
+          they support Grow, Make, and Gather. They do not create a separate old room-based
+          brand system.
         </p>
 
         {/* The H diagram */}
@@ -1122,19 +1157,18 @@ export default function LogoStory() {
           textAlign: "center",
           marginTop: 32,
         }}>
-          The form of the H changes with the seasons. The colours are permanent. Always.
+          The colours support the current root wordmark and the Grow. Make. Gather. public spine.
         </p>
       </section>
 
 
-      {/* ===== 5. SEASONAL LAYER ===== */}
+      {/* ===== 5. SEASONAL LAYER — ARCHIVE ===== */}
       <section style={sectionStyle}>
-        <p style={eyebrow}>THE SEASONAL LAYER</p>
-        <h2 style={sectionTitle}>Same mark. Different atmosphere.</h2>
+        <p style={eyebrow}>ARCHIVED SEASONAL LAYER</p>
+        <h2 style={sectionTitle}>Same thought. Not a production logo system.</h2>
         <p style={sectionSub}>
-          Seasons shift the mood but never the structure or the colours. The H breathes
-          with the land — warm in summer, quiet in winter. Like Google Doodles, but slower.
-          The land sets the pace.
+          The seasonal idea is useful brand memory, but the current production logo does not change
+          through seasonal H marks. Use seasons in photography, captions, and colour restraint instead.
         </p>
 
         <div style={seasonGrid}>
@@ -1171,7 +1205,7 @@ export default function LogoStory() {
       </section>
 
 
-      {/* ===== 6. THE EARTH ===== */}
+      {/* ===== 6. THE EARTH — ARCHIVE ===== */}
       <section style={{
         ...sectionStyle,
         maxWidth: "none",
@@ -1181,13 +1215,11 @@ export default function LogoStory() {
         borderBottom: `1px solid rgba(28,25,23,0.06)`,
       }}>
         <div style={{ maxWidth: 720, margin: "0 auto" }}>
-          <p style={eyebrow}>THE EARTH</p>
+          <p style={eyebrow}>ARCHIVED EARTH LAYER</p>
           <h2 style={{ ...sectionTitle, fontSize: 36 }}>The ground beneath.</h2>
           <p style={sectionSub}>
-            The logo was missing its ground. The Harvest grows <em>from</em> something — the soil,
-            the roots, the mycelium beneath. An earth underline gives the mark recognition,
-            connection to place, and another living layer. The H changes for celebrations.
-            The earth carries the everyday seasonal breathing.
+            The soil idea survived. The generated underline system did not become the current production
+            logo. Treat this as archived exploration. The approved root wordmark already carries the ground.
           </p>
 
           {/* The concept — grounded lockup */}
@@ -1232,8 +1264,7 @@ export default function LogoStory() {
           <div style={{ marginTop: 56 }}>
             <p style={{ ...eyebrow, marginBottom: 20 }}>SEASONAL VARIANTS</p>
             <p style={{ ...sectionSub, marginBottom: 36 }}>
-              The earth breathes with the seasons. Dry ochre in summer, rich compost in autumn,
-              cool mineral in winter, things pushing through in spring. The everyday pulse of the brand.
+              These variants are reference material only. Do not use them on current public assets.
             </p>
 
             <div style={{
@@ -1286,15 +1317,15 @@ export default function LogoStory() {
 
           {/* Earth generation prompts */}
           <div style={{ marginTop: 56 }}>
-            <p style={{ ...eyebrow, marginBottom: 8 }}>GENERATION PROMPTS</p>
+            <p style={{ ...eyebrow, marginBottom: 8 }}>ARCHIVE GENERATION PROMPTS</p>
             <p style={{ ...sectionSub, marginBottom: 24 }}>
-              Shared prefix + variant-specific instructions. Copy the full prompt for any variant.
+              Kept as a record of the exploration. Do not use these prompts for current production.
             </p>
 
             {/* Shared prefix */}
             <div style={promptBlock}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-                <span style={promptLabel}>EARTH PREFIX (SHARED)</span>
+                <span style={promptLabel}>ARCHIVE EARTH PREFIX</span>
                 <button
                   onClick={() => copyPrompt(EARTH_PREFIX, "earth-prefix")}
                   style={copyBtn}
@@ -1309,7 +1340,7 @@ export default function LogoStory() {
             {earthVariants.map((ev) => (
               <div key={ev.id} style={{ ...promptBlock, marginTop: 12 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-                  <span style={promptLabel}>EARTH — {ev.label.toUpperCase()}</span>
+                  <span style={promptLabel}>ARCHIVE EARTH — {ev.label.toUpperCase()}</span>
                   <button
                     onClick={() => copyPrompt(ev.prompt, `earth-${ev.id}`)}
                     style={copyBtn}
@@ -1325,7 +1356,7 @@ export default function LogoStory() {
       </section>
 
 
-      {/* ===== 7. ALL SIX LOCKUPS ===== */}
+      {/* ===== 7. ARCHIVED LOCKUPS ===== */}
       <section style={{
         ...sectionStyle,
         maxWidth: "none",
@@ -1334,13 +1365,13 @@ export default function LogoStory() {
         color: colors.milk,
       }}>
         <div style={{ maxWidth: 800, margin: "0 auto" }}>
-          <p style={{ ...eyebrow, opacity: 0.25 }}>THE LOCKUPS</p>
+          <p style={{ ...eyebrow, opacity: 0.25 }}>ARCHIVED LOCKUPS</p>
           <h2 style={{ ...sectionTitle, color: colors.milk }}>
-            Six words. Same name. Always alive.
+            Six old explorations. One current logo above.
           </h2>
           <p style={{ ...sectionSub, opacity: 0.35 }}>
-            "THE" and "ARVEST" are granite. The H between them tells you where
-            in the lifecycle we are.
+            These helped the brand find its ground, but they are not the current production system.
+            Use the approved root wordmark at the top of this page.
           </p>
 
           <div style={lockupGrid}>

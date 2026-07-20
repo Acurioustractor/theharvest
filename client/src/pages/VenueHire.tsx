@@ -1,13 +1,9 @@
-import { useState, FormEvent } from "react";
+import { useEffect, useState, FormEvent } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import {
-  Users,
   Calendar,
   Clock,
-  Car,
-  Coffee,
-  Utensils,
   CheckCircle,
   ArrowRight,
   Mail,
@@ -15,59 +11,23 @@ import {
   Loader2,
 } from "lucide-react";
 import { communitySubmit } from "@/lib/api";
-
-const fadeInUp = {
-  initial: { opacity: 0, y: 30 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.6 },
-};
-
-const staggerContainer = {
-  animate: {
-    transition: {
-      staggerChildren: 0.1,
-    },
-  },
-};
-
-const spaces = [
-  {
-    name: "The Main Hall",
-    capacity: "Up to 80 seated / 120 standing",
-    description:
-      "Our largest space is taking shape with exposed timber beams, natural light, and flexible seating. Perfect for workshops, markets, and celebrations.",
-    features: ["Natural lighting", "Flexible layout", "Kitchen access coming", "Sound system planned"],
-    ideal: ["Workshops", "Markets", "Private events", "Community gatherings"],
-  },
-  {
-    name: "The Garden Pavilion",
-    capacity: "Up to 40 seated",
-    description:
-      "A covered outdoor space we're developing surrounded by native gardens. Ideal for intimate gatherings, small workshops, or casual dining events.",
-    features: ["Covered outdoor", "Garden views", "Power outlets", "BBQ access planned"],
-    ideal: ["Small workshops", "Garden parties", "Pop-up dining", "Meetings"],
-  },
-  {
-    name: "The Kitchen",
-    capacity: "Up to 12 participants",
-    description:
-      "We're fitting out a commercial kitchen for cooking classes, food prep, and catering support for larger events.",
-    features: ["Commercial appliances", "Prep stations", "Storage", "Dishwashing"],
-    ideal: ["Cooking classes", "Food prep", "Catering base", "Preserving workshops"],
-  },
-];
-
-const amenities = [
-  { icon: Car, label: "Free Parking" },
-  { icon: Coffee, label: "Tea & Coffee" },
-  { icon: Utensils, label: "Kitchen Access" },
-  { icon: Users, label: "Accessible Entry" },
-];
+import { setPageSeo } from "@/lib/seo";
+import { SiteFooter, SiteNav } from "./HarvestReviewTest";
+import { VisitStrip } from "@/components/VisitStrip";
 
 export default function VenueHire() {
   const [formData, setFormData] = useState<Record<string, string>>({});
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
+
+  useEffect(() => {
+    setPageSeo({
+      title: "Venue Hire · The Harvest Witta",
+      description:
+        "Ask about venue hire at The Harvest in Witta for workshops, gatherings, team days and events while the place is still taking shape.",
+      path: "/venue-hire",
+    });
+  }, []);
 
   function updateField(name: string, value: string) {
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -97,8 +57,9 @@ export default function VenueHire() {
 
   return (
     <div className="min-h-screen bg-stone-50">
+      <SiteNav />
       {/* Hero Section */}
-      <section className="relative py-24 bg-stone-100 overflow-hidden">
+      <section className="relative pt-36 pb-24 bg-stone-100 overflow-hidden">
         <div className="container">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -113,142 +74,32 @@ export default function VenueHire() {
               Venue Hire
             </h1>
             <p className="text-xl text-stone-600 leading-relaxed">
-              We're developing flexible spaces for workshops, celebrations, community events,
-              and more — surrounded by the beauty of the hinterland. Get in touch to discuss
-              what's possible.
+              The Harvest is open and finding its feet: a community garden and creative
+              gathering place in Witta, on Jinibara Country. Our spaces can host workshops,
+              gatherings and team days. Tell us what you need and we'll work it out together.
             </p>
           </motion.div>
         </div>
       </section>
 
-      {/* Spaces Section */}
+      {/* The spaces, honestly: an enquiry door, not a brochure */}
       <section className="py-16 bg-white">
         <div className="container">
           <motion.div
-            initial="initial"
-            whileInView="animate"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            variants={staggerContainer}
-            className="text-center mb-12"
+            transition={{ duration: 0.6 }}
+            className="max-w-2xl mx-auto text-center"
           >
-            <motion.h2
-              variants={fadeInUp}
-              className="text-3xl md:text-4xl font-serif font-bold text-stone-800 mb-4"
-            >
-              Our Spaces
-            </motion.h2>
-            <motion.p variants={fadeInUp} className="text-lg text-stone-600 max-w-2xl mx-auto">
-              Each space has its own character — choose the one that fits your vision.
-            </motion.p>
-          </motion.div>
-
-          <motion.div
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true }}
-            variants={staggerContainer}
-            className="space-y-8"
-          >
-            {spaces.map((space, index) => (
-              <motion.div key={space.name} variants={fadeInUp}>
-                <Card className="overflow-hidden border-0 shadow-lg">
-                  <CardContent className="p-0">
-                    <div
-                      className={`grid lg:grid-cols-2 ${index % 2 === 1 ? "lg:flex-row-reverse" : ""}`}
-                    >
-                      {/* Image placeholder */}
-                      <div
-                        className={`h-64 lg:h-auto bg-stone-200 ${index % 2 === 1 ? "lg:order-2" : ""}`}
-                      >
-                        <div className="w-full h-full bg-gradient-to-br from-stone-100 to-amber-50 flex items-center justify-center">
-                          <div className="text-center p-8">
-                            <Users className="h-16 w-16 text-amber-600 mx-auto mb-4" />
-                            <p className="text-stone-600 font-medium">{space.capacity}</p>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Content */}
-                      <div className="p-8 lg:p-12">
-                        <h3 className="text-2xl font-serif font-bold text-stone-800 mb-2">
-                          {space.name}
-                        </h3>
-                        <p className="text-amber-600 font-medium mb-4">{space.capacity}</p>
-                        <p className="text-stone-600 mb-6">{space.description}</p>
-
-                        <div className="grid sm:grid-cols-2 gap-6">
-                          <div>
-                            <h4 className="font-semibold text-stone-800 mb-3">Features</h4>
-                            <ul className="space-y-2">
-                              {space.features.map((feature) => (
-                                <li key={feature} className="flex items-center gap-2 text-stone-600">
-                                  <CheckCircle className="h-4 w-4 text-amber-500" />
-                                  {feature}
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                          <div>
-                            <h4 className="font-semibold text-stone-800 mb-3">Ideal For</h4>
-                            <div className="flex flex-wrap gap-2">
-                              {space.ideal.map((use) => (
-                                <span
-                                  key={use}
-                                  className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border border-amber-300 text-amber-700 bg-amber-50"
-                                >
-                                  {use}
-                                </span>
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Amenities Section */}
-      <section className="py-16 bg-stone-100">
-        <div className="container">
-          <motion.div
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true }}
-            variants={staggerContainer}
-            className="text-center mb-12"
-          >
-            <motion.h2
-              variants={fadeInUp}
-              className="text-3xl md:text-4xl font-serif font-bold text-stone-800 mb-4"
-            >
-              What's Included
-            </motion.h2>
-          </motion.div>
-
-          <motion.div
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true }}
-            variants={staggerContainer}
-            className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-2xl mx-auto"
-          >
-            {amenities.map((amenity) => (
-              <motion.div key={amenity.label} variants={fadeInUp}>
-                <Card className="h-full border-0 shadow-sm bg-white text-center">
-                  <CardContent className="p-6">
-                    <div className="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center mx-auto mb-3">
-                      <amenity.icon className="h-6 w-6 text-amber-600" />
-                    </div>
-                    <p className="font-medium text-stone-700">{amenity.label}</p>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
+            <h2 className="text-3xl md:text-4xl font-serif font-bold text-stone-800 mb-4">
+              The spaces, honestly
+            </h2>
+            <p className="text-lg text-stone-600 leading-relaxed">
+              The site has indoor rooms and garden areas, all still taking shape.
+              Nothing is named or priced yet, on purpose. Tell us what you are
+              planning and we will talk through what works right now.
+            </p>
           </motion.div>
         </div>
       </section>
@@ -270,14 +121,14 @@ export default function VenueHire() {
                     Make an Enquiry
                   </h2>
                   <p className="text-stone-600 mb-6">
-                    Tell us about your event and we'll get back to you with availability and pricing.
+                    Tell us about your event and we'll get back to you to work out what's possible.
                   </p>
 
                   {status === "success" ? (
                     <div className="text-center py-12 space-y-4">
                       <CheckCircle className="h-12 w-12 text-amber-500 mx-auto" />
                       <h3 className="font-serif text-xl text-stone-800">Thanks for your enquiry</h3>
-                      <p className="text-stone-600">We'll get back to you within 2 business days.</p>
+                      <p className="text-stone-600">We'll get back to you within a few days.</p>
                       <button
                         onClick={() => { setStatus("idle"); setFormData({}); }}
                         className="mt-4 px-6 py-2 rounded-lg bg-stone-800 text-stone-200 text-sm font-medium hover:bg-stone-700 transition-colors"
@@ -361,7 +212,6 @@ export default function VenueHire() {
                           <input
                             type="number"
                             min="1"
-                            max="150"
                             placeholder="e.g. 30"
                             value={formData.guests || ""}
                             onChange={(e) => updateField("guests", e.target.value)}
@@ -387,6 +237,14 @@ export default function VenueHire() {
                       {status === "error" && (
                         <p className="text-red-600 text-sm">{errorMsg}</p>
                       )}
+
+                      <p className="text-xs text-stone-500">
+                        Used only to follow up about your enquiry. See our{" "}
+                        <a href="/privacy" className="underline hover:text-stone-700">
+                          privacy page
+                        </a>{" "}
+                        for details.
+                      </p>
 
                       <button
                         type="submit"
@@ -424,25 +282,26 @@ export default function VenueHire() {
                     <div>
                       <strong className="text-stone-800">Flexible spaces</strong>
                       <p className="text-stone-600">
-                        From intimate workshops to larger gatherings, we can accommodate your needs.
+                        From small workshops to garden gatherings, tell us the shape and we
+                        will see what works.
                       </p>
                     </div>
                   </li>
                   <li className="flex items-start gap-3">
                     <CheckCircle className="h-5 w-5 text-amber-500 mt-1 flex-shrink-0" />
                     <div>
-                      <strong className="text-stone-800">Beautiful setting</strong>
+                      <strong className="text-stone-800">A working garden setting</strong>
                       <p className="text-stone-600">
-                        Surrounded by native gardens and hinterland views — a world away from the everyday.
+                        Gardens and hinterland views in Witta, on Jinibara Country.
                       </p>
                     </div>
                   </li>
                   <li className="flex items-start gap-3">
                     <CheckCircle className="h-5 w-5 text-amber-500 mt-1 flex-shrink-0" />
                     <div>
-                      <strong className="text-stone-800">Community rates</strong>
+                      <strong className="text-stone-800">Community first</strong>
                       <p className="text-stone-600">
-                        Discounted rates for local community groups and non-profits.
+                        We want local community groups and non-profits here. Talk to us about what's workable.
                       </p>
                     </div>
                   </li>
@@ -451,7 +310,8 @@ export default function VenueHire() {
                     <div>
                       <strong className="text-stone-800">Catering options</strong>
                       <p className="text-stone-600">
-                        We can connect you with local caterers or you can use our kitchen facilities.
+                        We can connect you with local caterers. A kitchen is planned as a future
+                        sublicenced operation, so it's not part of hire for now.
                       </p>
                     </div>
                   </li>
@@ -487,8 +347,8 @@ export default function VenueHire() {
                     <div>
                       <h4 className="font-semibold text-stone-800 mb-2">Booking Timeline</h4>
                       <p className="text-stone-600 text-sm">
-                        We recommend booking at least 4 weeks in advance for larger events. For
-                        smaller gatherings, we can often accommodate shorter notice — just ask.
+                        We're still finding our rhythm, so the earlier you get in touch the more
+                        we can do. For smaller gatherings, just ask.
                       </p>
                     </div>
                   </div>
@@ -502,8 +362,8 @@ export default function VenueHire() {
                     <div>
                       <h4 className="font-semibold text-stone-800 mb-2">Still Taking Shape</h4>
                       <p className="text-stone-600 text-sm">
-                        Some spaces are still being developed. We're happy to discuss what's available
-                        now and what's coming — get in touch and we'll work something out.
+                        We're open and finding our feet, and some spaces are still being developed.
+                        Get in touch, tell us what you need, and we'll work something out together.
                       </p>
                     </div>
                   </div>
@@ -513,6 +373,8 @@ export default function VenueHire() {
           </div>
         </div>
       </section>
+      <VisitStrip />
+      <SiteFooter />
     </div>
   );
 }

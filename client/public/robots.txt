@@ -14,7 +14,6 @@ Disallow: /logo-story
 Disallow: /logo-lab
 Disallow: /growing-h
 Disallow: /gathering-postcard
-Disallow: /photo-wall/checkin
 Disallow: /new-look-test
 Disallow: /review-test
 Disallow: /launch-redesign

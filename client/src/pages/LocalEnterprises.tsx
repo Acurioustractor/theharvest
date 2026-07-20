@@ -3,13 +3,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Search, MapPin, Phone, Mail, Globe, ExternalLink, Facebook, Instagram, Calendar, Clock, Loader2 } from "lucide-react";
+import { Search, MapPin, Phone, Mail, Globe, ExternalLink, Facebook, Instagram, Clock, Loader2 } from "lucide-react";
 import { LazyImage } from "@/components/LazyImage";
 import enterpriseData from "@/data/enterprises.json";
 import staticEventsData from "@/data/events.json";
 import { EventSubmissionDialog } from "@/components/EventSubmissionDialog";
 import BusinessRegistrationDialog from "@/components/BusinessRegistrationDialog";
 import { listApprovedEvents } from "@/lib/api";
+import { SiteFooter, SiteNav } from "./HarvestReviewTest";
 import { useQuery } from "@tanstack/react-query";
 
 // Category images mapping
@@ -55,7 +56,7 @@ export default function LocalEnterprises() {
 
   // Combine API events with static events, prioritizing API events
   const allEvents = useMemo(() => {
-    const now = new Date('2025-12-01');
+    const now = new Date();
     
     // Transform API events
     const transformedApiEvents = (apiEvents || []).map(event => ({
@@ -82,8 +83,9 @@ export default function LocalEnterprises() {
 
   return (
     <>
+      <SiteNav />
       {/* Hero Section */}
-      <section className="relative h-[50vh] min-h-[400px] flex items-center justify-center overflow-hidden pt-16 md:pt-0">
+      <section className="relative h-[50vh] min-h-[400px] flex items-center justify-center overflow-hidden pt-24 md:pt-20">
         <div className="absolute inset-0 z-0">
           <LazyImage
             src="/images/enterprises-hero.jpg"
@@ -97,7 +99,7 @@ export default function LocalEnterprises() {
             Local Enterprises
           </h1>
           <p className="text-lg md:text-xl max-w-2xl mx-auto mb-8 text-white/90 font-light">
-            Celebrating the heartbeat of our community. Discover the businesses, artisans, and creators that make Witta and Maleny unique.
+            A directory of the businesses, makers and growers around Witta and Maleny.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
             <BusinessRegistrationDialog
@@ -237,7 +239,7 @@ export default function LocalEnterprises() {
             <div className="text-left">
               <h2 className="text-3xl md:text-4xl font-serif font-bold text-[#2c4c3b] mb-4">Community Events</h2>
               <p className="text-lg text-muted-foreground max-w-2xl">
-                Connect with your neighbors and celebrate local culture at these upcoming gatherings.
+                Upcoming gatherings around Witta and Maleny, shared by your neighbours.
               </p>
             </div>
             <EventSubmissionDialog onEventSubmitted={() => refetchEvents()} />
@@ -289,12 +291,6 @@ export default function LocalEnterprises() {
                       {event.description}
                     </p>
                   </CardContent>
-                  <CardFooter className="mt-auto pt-0">
-                    <Button variant="outline" className="w-full border-[#2c4c3b] text-[#2c4c3b] hover:bg-[#2c4c3b] hover:text-white">
-                      <Calendar className="h-4 w-4 mr-2" />
-                      Add to Calendar
-                    </Button>
-                  </CardFooter>
                 </Card>
               ))}
             </div>
@@ -314,13 +310,18 @@ export default function LocalEnterprises() {
         <div className="container px-4">
           <h2 className="text-3xl md:text-4xl font-serif font-bold mb-6">Be Part of The Harvest</h2>
           <p className="text-lg max-w-2xl mx-auto mb-8 text-white/80">
-            Are you a local business owner, artisan, or grower? Join our network to connect with the community and grow together.
+            Are you a local business owner, maker, or grower? Register your business and we'll add you to the directory.
           </p>
-          <Button size="lg" variant="secondary" className="bg-white text-[#2c4c3b] hover:bg-gray-100">
-            Register Your Business
-          </Button>
+          <BusinessRegistrationDialog
+            trigger={
+              <Button size="lg" variant="secondary" className="bg-white text-[#2c4c3b] hover:bg-gray-100">
+                Register Your Business
+              </Button>
+            }
+          />
         </div>
       </section>
+      <SiteFooter />
     </>
   );
 }

@@ -17,15 +17,18 @@ import { HarvestImage } from "@/components/HarvestImage";
 import { HarvestPhotoPicker, type PickedPhoto } from "@/components/HarvestPhotoPicker";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { optimize } from "@/lib/imageOptimize";
+import { MEMBERS_PAGE_URL } from "@/lib/links";
+import { setPageSeo } from "@/lib/seo";
 import { trpc } from "@/lib/trpc";
 import { harvestButtonClasses, SiteFooter, SiteNav } from "./HarvestReviewTest";
+import { VisitStrip } from "@/components/VisitStrip";
 
 const lanes = [
   {
     slug: "grow",
     title: "Grow.",
-    tagline: "Letters and updates while the garden gets made.",
-    body: "A monthly Harvest Note from Ben or Nic. What changed in the beds. What's coming next. One honest question. One small ask. Same shape every time so you know what to expect.",
+    tagline: "Letters and updates as the garden grows.",
+    body: "A Harvest Note when there is something worth saying. What changed in the beds. What's coming next. One honest question. One small ask. Same shape every time so you know what to expect.",
   },
   {
     slug: "make",
@@ -37,7 +40,7 @@ const lanes = [
     slug: "gather",
     title: "Gather.",
     tagline: "First call for community days and meals.",
-    body: "Members hear about the next community day, work days, workshops and shared meals before they go public. The late June 2026 community day lands here first.",
+    body: "Upcoming events land with members first. Most weekends the pizza oven runs: Friday 3pm to 8pm with a community movie night, Saturday 12pm to 8pm, Sunday 12pm to 6pm. Weeks can vary, and dates reach the member list before they go public, with a way to RSVP and message us directly.",
   },
 ];
 
@@ -54,7 +57,7 @@ type HeardAbout = "friend-or-neighbour" | "social-media" | "in-witta" | "other" 
 const HEARD_ABOUT_OPTIONS: { value: Exclude<HeardAbout, "">; label: string }[] = [
   { value: "friend-or-neighbour", label: "A friend or neighbour told me" },
   { value: "social-media", label: "Social media (Facebook or Instagram)" },
-  { value: "in-witta", label: "In Witta — sign, poster, or saw the place" },
+  { value: "in-witta", label: "In Witta: a sign, a poster, or saw the place" },
   { value: "other", label: "Something else" },
 ];
 
@@ -72,16 +75,12 @@ export default function Membership() {
   const [showMemberWelcome, setShowMemberWelcome] = useState(false);
 
   useEffect(() => {
-    document.title = "Become a Harvest member";
-
-    let meta = document.querySelector('meta[name="description"]') as HTMLMetaElement | null;
-    if (!meta) {
-      meta = document.createElement("meta");
-      meta.name = "description";
-      document.head.appendChild(meta);
-    }
-    meta.content =
-      "Join the Harvest member list for regular notes, community-day invitations, work day calls, and early opportunities.";
+    setPageSeo({
+      title: "Become a Harvest member · The Harvest Witta",
+      description:
+        "Join the free Harvest member list for regular notes, community-day invitations, work day calls and first notice of events in Witta.",
+      path: "/membership",
+    });
 
     if (import.meta.env.DEV) {
       const params = new URLSearchParams(window.location.search);
@@ -185,10 +184,11 @@ export default function Membership() {
           alt="The front of The Harvest building in Witta"
           size="hero"
           priority
+          controlsPosition="corner"
           className="absolute inset-0 h-full w-full"
           imgClassName="h-full w-full object-cover opacity-[0.38]"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#1C1917] via-[#1C1917]/82 to-[#1C1917]/40" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#1C1917] via-[#1C1917]/82 to-[#1C1917]/40" />
 
         <div className="relative z-10 mx-auto flex min-h-[78vh] max-w-6xl flex-col justify-end px-5 pb-6 pt-28 md:px-8">
           <div className="grid gap-10 pb-10 md:grid-cols-[1fr_0.78fr] md:items-end md:pb-14">
@@ -210,7 +210,7 @@ export default function Membership() {
               <EditableText
                 page="membership"
                 slot="hero-body"
-                defaultContent="For now, membership means this: your name is on the Harvest list. You get the letters, invitations, first calls, and early opportunities while the place is being made. Use the comments box for ideas, and we’ll invite public profiles later by email."
+                defaultContent="Membership is free, and it means this: your name is on the Harvest list. You get the letters, invitations, first calls, and early opportunities as the place finds its feet. Use the comments box for ideas."
                 as="p"
                 className="mt-7 max-w-2xl text-xl leading-relaxed text-white/80 md:text-2xl"
                 multiline
@@ -222,18 +222,29 @@ export default function Membership() {
               <EditableText
                 page="membership"
                 slot="hero-note-title"
-                defaultContent="The legal structure comes later."
+                defaultContent="What this list is."
                 as="p"
                 className="mt-5 text-xl font-semibold"
               />
               <EditableText
                 page="membership"
                 slot="hero-note-body"
-                defaultContent="This is the front gate list for people who want to stay close, turn up, and help shape the first version. If you have produce or made goods, use the shop form below."
+                defaultContent="This is the front gate list for people who want to stay close, turn up, and help shape what The Harvest becomes. If you have produce or made goods, use the shop form below."
                 as="p"
                 className="mt-3 leading-relaxed text-white/66"
                 multiline
               />
+              <p className="mt-4 text-sm leading-relaxed text-white/60">
+                Just want to have a look first? No booking needed while we find
+                our feet.{" "}
+                <Link
+                  href="/whats-on"
+                  className="text-[#C4922A] underline underline-offset-4 hover:text-white"
+                >
+                  Come by on a pizza weekend
+                </Link>{" "}
+                and say hello.
+              </p>
             </div>
           </div>
         </div>
@@ -398,6 +409,14 @@ export default function Membership() {
                 />
               </div>
 
+              <p className="text-xs text-stone-500">
+                Used only for Harvest updates and to reply if you write in. See our{" "}
+                <Link href="/privacy" className="underline hover:text-stone-700">
+                  privacy page
+                </Link>{" "}
+                for details.
+              </p>
+
               <Button
                 type="submit"
                 disabled={joinMutation.isPending}
@@ -437,7 +456,7 @@ export default function Membership() {
             <EditableText
               page="membership"
               slot="questions-body"
-              defaultContent="Sometimes you want to know something before you sign anything up. Ben or Nic will reply within 48 hours, sometimes faster."
+              defaultContent="Sometimes you want to know something before you sign anything up. Ben or Nic will reply, though replies can take a few days while we find our feet."
               as="p"
               className="mt-6 max-w-xl text-lg leading-relaxed text-stone-700"
               multiline
@@ -504,6 +523,14 @@ export default function Membership() {
                 />
               </div>
 
+              <p className="text-xs text-stone-500">
+                Used only to answer this question. See our{" "}
+                <Link href="/privacy" className="underline hover:text-stone-700">
+                  privacy page
+                </Link>{" "}
+                for details.
+              </p>
+
               <Button
                 type="submit"
                 disabled={questionMutation.isPending}
@@ -546,6 +573,7 @@ export default function Membership() {
           </div>
         </div>
       </section>
+      <VisitStrip />
       <SiteFooter />
     </main>
   );
@@ -627,13 +655,21 @@ function MemberWelcomeOverlay({
             </p>
 
             <div className="mt-10 flex flex-col gap-3 sm:flex-row">
+              <a
+                href={MEMBERS_PAGE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex min-h-12 items-center justify-center gap-2 bg-[#C4922A] px-6 py-3 font-semibold text-[#1C1917] transition hover:bg-[#E0AD43]"
+              >
+                Go to the members page
+                <ArrowRight className="h-4 w-4" />
+              </a>
               <Link
                 href="/works"
                 onClick={onClose}
-                className="inline-flex min-h-12 items-center justify-center gap-2 bg-[#C4922A] px-6 py-3 font-semibold text-[#1C1917] transition hover:bg-[#E0AD43]"
+                className="inline-flex min-h-12 items-center justify-center border border-white/24 px-6 py-3 font-semibold text-white transition hover:bg-white hover:text-[#1C1917]"
               >
                 See the works
-                <ArrowRight className="h-4 w-4" />
               </Link>
               <button
                 type="button"

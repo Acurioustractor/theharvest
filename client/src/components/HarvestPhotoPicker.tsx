@@ -73,16 +73,12 @@ export function HarvestPhotoPicker({
       )
     : photos;
 
-  const uploadWork = work ?? defaultWorkSlug;
+  // Falls back to "general" so uploads work even with no specific work
+  // filter selected — the photo still lands in the Harvest project in
+  // Empathy Ledger either way; the work tag is just for browsing later.
+  const uploadWork = work ?? defaultWorkSlug ?? "general";
 
   async function handleUpload(file: File) {
-    if (!uploadWork) {
-      toast.error("Choose a work first", {
-        description: "Pick the work this photo belongs to before uploading.",
-      });
-      return;
-    }
-
     const base64Data = await fileToBase64(file);
     const title = file.name.replace(/\.[^.]+$/, "").replace(/[-_]+/g, " ").trim() || "Harvest photo";
     const response = await uploadMutation.mutateAsync({
@@ -142,10 +138,10 @@ export function HarvestPhotoPicker({
             <Button
               type="button"
               variant="outline"
-              disabled={uploadMutation.isPending || !uploadWork}
+              disabled={uploadMutation.isPending}
               onClick={() => fileInputRef.current?.click()}
               className="inline-flex items-center gap-2"
-              title={uploadWork ? "Upload a local image to Empathy Ledger and tag it to this work" : "Choose a work before uploading"}
+              title="Upload a photo from your computer straight into Empathy Ledger, tagged to the Harvest project"
             >
               {uploadMutation.isPending ? (
                 <Loader2 className="h-4 w-4 animate-spin" />

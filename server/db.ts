@@ -33,6 +33,9 @@ import {
   imageOverrides,
   InsertImageOverride,
   ImageOverride,
+  communitySubmissions,
+  InsertCommunitySubmission,
+  CommunitySubmission,
 } from "../drizzle/schema.js";
 // Blog posts are now fetched from Empathy Ledger Content Hub API
 // See server/empathyLedgerClient.ts for the integration
@@ -184,7 +187,13 @@ export async function getDb() {
   if (shouldSkipPostgres()) return null;
   if (!_db && process.env.DATABASE_URL) {
     try {
-      _client = postgres(process.env.DATABASE_URL, { prepare: false });
+      // Pages with many EditableText/HarvestImage slots fire a couple dozen
+      // independent content.get/imageOverrides.get queries on mount. The
+      // pooler (PgBouncer, transaction mode) multiplexes these cheaply, but
+      // postgres.js's own default max (10) was queueing them into several
+      // waves and stacking up real page-load latency. Raise it so a single
+      // page's worth of queries can actually run concurrently.
+      _client = postgres(process.env.DATABASE_URL, { prepare: false, max: 30 });
       _db = drizzle(_client);
     } catch (error) {
       console.warn("[Database] Failed to connect:", error);
@@ -858,6 +867,47 @@ export async function deleteAnnotation(id: number): Promise<boolean> {
   } catch (error) {
     console.error("[Database] Failed to delete annotation:", error);
     return false;
+  }
+}
+
+// Community submissions (durable capture store; also written by the
+// community-submit edge function). Used for RSVPs from the tRPC server.
+export async function createCommunitySubmission(
+  submission: InsertCommunitySubmission,
+): Promise<CommunitySubmission | undefined> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot create community submission: database not available");
+    return undefined;
+  }
+
+  try {
+    const result = await db.insert(communitySubmissions).values(submission).returning();
+    return result[0];
+  } catch (error) {
+    console.error("[Database] Failed to create community submission:", error);
+    return undefined;
+  }
+}
+
+// RSVP list for the admin "who's coming" view — newest first, most recent 200.
+export async function listRsvpSubmissions(): Promise<CommunitySubmission[]> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot list RSVP submissions: database not available");
+    return [];
+  }
+
+  try {
+    return await db
+      .select()
+      .from(communitySubmissions)
+      .where(eq(communitySubmissions.type, "rsvp"))
+      .orderBy(desc(communitySubmissions.createdAt))
+      .limit(200);
+  } catch (error) {
+    console.error("[Database] Failed to list RSVP submissions:", error);
+    return [];
   }
 }
 

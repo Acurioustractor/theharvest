@@ -1,5 +1,12 @@
 # GHL Contact Intake And Cleanup
 
+> **Current canon check (2026-07-06).** Parts of this doc predate the June tag
+> alignment. Live canon: newsletter audience = `comms:harvest-newsletter` (154),
+> members = `tier:member` (135), followers = `tier:connected`; colon-namespaced
+> tags are canonical and hyphen twins are being retired. Before acting on tag
+> names or audience filters here, cross-check
+> `docs/communications/harvest-system-review-2026-07-06.md`.
+
 ## Job
 
 Keep HighLevel as the contact desk for The Harvest.
@@ -32,7 +39,7 @@ Keep `newsletter` only for backward compatibility with older contacts and older 
 | `/membership` question form | `members.question` | name + email | `harvest-member`, `harvest-newsletter`, `member-question`, `interest-membership`, `harvest-website` | Human reply + question receipt |
 | Footer member list | `newsletter.subscribe` | name + email | `harvest-member`, `harvest-newsletter`, `newsletter`, `interest-membership`, `interest-community`, `harvest-website` | Same as membership signup |
 | `/contact` | `contact-form` | name + email | `contact-form`, `harvest-website`, plus `harvest-newsletter` and `newsletter` when opted in | General enquiry receipt |
-| `/membership#shop-interest`, `/works/the-shop` | `shopInterest.submit` | name + email | `harvest-shop-interest`, `harvest-website`, `shop-follow-up`, one shop offer tag | Shop EOI follow-up |
+| `/membership#shop-interest`, `/works/the-shop` | `shopInterest.submit` | name + email | `project:act-hv`, `role:supplier`, `interest:markets`, `shop-follow-up`, `shop-stage-1`, one shop offer tag | Shop EOI follow-up |
 | `/garden-launch` | no active submit surface | none | none | Email-led invite only. Send to `harvest-member`; people reply and Ben/Nic count seats manually |
 | `/whats-on`, `/enterprises` | `events.submit` | name + email | `event-submission`, `harvest-website` | Event submission acknowledgement |
 | `/enterprises` business registration | `businesses.submit` | submitter name + email | `business-registration`, `harvest-website` | Business approval flow |
@@ -124,7 +131,7 @@ Create or keep these saved filters in HighLevel:
 |---|---|---|
 | New Harvest inbox | pipeline is `Universal Inquiry`, stage is `New Inquiry` | Daily reply queue |
 | Harvest inbox all | tag is `harvest-inbox` | Every contact that should have a board card |
-| Shop interest | tag is `harvest-shop-interest` | People offering produce, made goods, food, consignment, or shop help |
+| Shop interest | tag is `interest:markets` | People offering produce, made goods, food, consignment, or shop help |
 | Member questions | tag is `member-question` | People who asked a direct question |
 | Member comments | tag is `member-comments` | Member notes, ideas, offers, and encouragement that should be read |
 | Harvest members | tag is `harvest-member` | Weekly member update, invitations, early opportunities |
@@ -132,6 +139,12 @@ Create or keep these saved filters in HighLevel:
 | Venue enquiries | tag is `venue-enquiry` | Venue hire or site-use enquiries |
 | Needs name cleanup | tag is `harvest-needs-name-review` | Manual cleanup queue |
 | Duplicate cleanup | tag is `harvest-duplicate-review` | Manual merge queue |
+
+Producer and Mighty follow-up now has its own working sheet:
+`docs/communications/producer-reengagement-and-mighty-drafts-2026-06-27.md`.
+Use it for the post-launch producer sweep, reply drafts, Mighty invite rules, and the
+Harvest-scoped producer smart-list filters. Do not use plain `interest:markets` or plain
+`role:supplier` as the producer list; both are too broad in the shared GHL location.
 
 ## Label System
 
@@ -151,7 +164,7 @@ Harvest | [Flow]
 | Footer member signup | `Harvest | Footer Member Signup` | `harvest-member` |
 | Member question | `Harvest | Member Question` | `member-question` |
 | General contact form | `Harvest | Contact` | `contact-form` |
-| Shop interest | `Harvest | Shop` | `harvest-shop-interest` |
+| Shop interest | `Harvest | Shop` | `interest:markets` |
 | Venue / community submit | `Harvest | venue-enquiry`, or matching type | `venue-enquiry`, or matching type tag |
 | Event submission | `Harvest | Event` | `event-submission` |
 | Business registration | `Harvest | Business` | `business-registration` |

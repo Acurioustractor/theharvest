@@ -22,33 +22,46 @@ For ACT-facing public copy, also read the parent writing voice file:
 
 ## Current decision
 
-The Harvest is a working community hub in Witta, on Jinibara Country.
+The current public Harvest frame is:
 
-The brand is not a generic cafe, retreat venue, community centre, farm shop, or arts space. It is three rooms held together by one place:
+```text
+Witta · Jinibara Country · Garden opening end of June
 
-| Room | Verb | Public meaning | Regional memory |
-| --- | --- | --- | --- |
-| Garden | Grow | food, plants, kids, working bees, soil | nursery, ridge gardens, practical care |
-| Kitchen | Feed | long tables, pop-ups, milk bar, fire cooking | dairy, milk, co-op tables, shared meals |
-| Art Space | Make | residencies, workshops, repair, exhibition | timber, tools, Barry's shed, local craft |
+The Harvest
+Grow. Make. Gather.
+A community garden and creative gathering place taking shape in Witta.
+Learn about The Harvest
+```
 
-The first residency theme is **timber, dairy, and co-operatives**. It should shape the launch story, not sit in a footnote.
+This is the front door. Lead with it before any internal operating model, future room map, governance idea, residency concept, or program detail.
+
+The brand is not a generic cafe, retreat venue, community centre, farm shop, or arts space. For this stage, keep it simple:
+
+| Public word | Meaning now | Regional memory |
+| --- | --- | --- |
+| Grow | garden opening, old nursery, seedlings, beds, soil, kids, working bees | nursery, ridge gardens, practical care |
+| Make | creative build, timber, tools, signs, repair, art, hands on the place | timber, tools, Barry's shed, local craft |
+| Gather | neighbours, open days, food, tables, music, stories, questions | dairy, milk crates, co-op tables, shared meals |
+
+Kitchen, art space, shop, residencies, dairy, timber, and co-operative practice are supporting story threads. They do not replace the current public spine.
 
 ## Facts, inferences, unknowns
 
 Verified in the repo and Notion:
 
-- Public rooms: Garden, Kitchen, Art Space.
+- Current public spine: Grow. Make. Gather.
+- Current plain-language description: A community garden and creative gathering place taking shape in Witta.
 - Live app tokens live in `client/src/styles/brand.ts`.
 - Internal brand guide route exists at `client/src/pages/BrandGuide.tsx`.
 - Harvest HQ exists in Notion as `The Harvest Witta HQ`.
 - Real Harvest source material already exists in the repo: site photos, Barry and shed photos, floor plans, Witta/Teutoburg history images, website screenshots, and WhatsApp field media.
-- The current launch target in Notion is 20 June 2026.
-- Strategy docs still carry a 20 June 2026 soft-open go/no-go decision, with Ben away from 20 June to 15 August 2026.
+- The current public line is "Garden opening end of June." Use the exact 20 June operational date only where the page or send needs a confirmed date.
+- Older private members' day, capped proof-night, and soft-open go/no-go language is superseded unless Ben or Nic changes the decision again.
 
 Working inference:
 
-- The 20 June 2026 date should be treated as the **launch readiness target** for brand, website, deck, and comms unless Ben or Nic explicitly changes it.
+- The garden-opening frame should be treated as the public frame for brand, website, deck, and comms unless Ben or Nic explicitly changes it.
+- Brand work should still name operational gates plainly: public liability insurance, food safety, pizza lead, extra hands / roster, parking, and consent / rights for public media.
 - The visual direction should keep the current Harvest material palette and Bauhaus discipline, but avoid cold CivicGraph-style Bauhaus. This is a working place, not a data terminal.
 
 Open issue:
@@ -57,22 +70,26 @@ Open issue:
 
 ## Brand spine
 
+Public lockup:
+
+```text
+Witta · Jinibara Country · Garden opening end of June
+
+The Harvest
+Grow. Make. Gather.
+A community garden and creative gathering place taking shape in Witta.
+```
+
 Short identity:
 
 ```text
-The Harvest is a garden, kitchen, and art space taking shape in Witta.
-```
-
-Launch line:
-
-```text
-A working place for growing, feeding, making, and gathering in Witta.
+A community garden and creative gathering place taking shape in Witta.
 ```
 
 Internal test:
 
 ```text
-If it tries to do everything, no one knows what it is. Garden. Kitchen. Art Space.
+If it tries to do everything, no one knows what it is. Grow. Make. Gather.
 ```
 
 What it must feel like:
@@ -117,6 +134,21 @@ Typography in the current app:
 
 Keep type direct and workmanlike. Use large type only where the page has room to breathe. Do not scale fonts with viewport width.
 
+## Logo
+
+One mark, one family: the roots wordmark. The letters of HARVEST with a root system growing down from them. Do not introduce a different logo concept.
+
+Canonical files by context:
+
+- Web and email primary: `client/public/images/logo-harvest-only-clean.png` (the short "HARVEST" roots mark). This is what the live site header and footer render, and what email and script-built HTML must use.
+- Full "THE HARVEST" lockup: `the-harvest-witta-logo.png` (used by the site structured-data logo in `client/index.html`) and the higher-resolution `logo-v1-dark-clean.png` / `logo-v1-colour-clean.png` for standalone placements that need the full name.
+
+Deprecated, do not use: `logo-harvest-full.png` (old wooden-H "THE HARVEST WITTA" sketch) and `logo-mono-v1.png` (retired three-circle mark). `logo-harvest-full.png` stays on the live site only while older GHL email templates still link it; add no new references.
+
+One source of truth for outbound HTML: scripts import `LOGO_URL` from `scripts/harvest-brand.ts`. Never hardcode a logo URL in a script. Old explorations not referenced by the live app live in `docs/brand/archive/logos/`. Start from the canonical mark above, not the archive.
+
+Open reconciliation (decide once with Nic, then align all surfaces): the in-app brand guide page (`client/src/pages/BrandGuide.tsx`) names `logo-v1-dark-clean.png` (the "THE HARVEST" lockup) as the official file, but the live header uses `logo-harvest-only-clean.png` (the short "HARVEST" lockup). Same mark, different lockup. Pick the primary, then make the header, the in-app guide, structured data, and email all name the same file.
+
 ## Composition rules
 
 - Show the real place first.
@@ -125,7 +157,7 @@ Keep type direct and workmanlike. Use large type only where the page has room to
 - Simple icons, line marks, maps, type treatments, and crop systems are allowed only when they support a real photo, historical image, floor plan, or story source.
 - Let one thing dominate each screen: a photo, a line, a map, a room, a table.
 - Use hard edges or small radii. Cards may exist for repeated items, but do not stack cards inside cards.
-- Make the first viewport legible: Garden, Kitchen, Art Space, or the launch invitation must be obvious.
+- Make the first viewport legible: Witta, Jinibara Country, garden opening end of June, The Harvest, Grow. Make. Gather.
 - Do not hide the place behind abstract gradients, bokeh, blobs, or generic atmosphere.
 - Motion should feel like work happening: lift, slide, reveal, stack, mark, fold. Avoid shiny SaaS motion.
 
@@ -186,14 +218,14 @@ Avoid:
 - polished venue language
 - formal co-op claims before the governance is real
 
-Public copy should usually use these rooms and bodies:
+Public copy should usually use these public words and bodies:
 
-| Topic | Room | Body/object |
+| Topic | Body/object |
 | --- | --- | --- |
-| Garden | bed, path, nursery, soil | hands, boots, fork, leaves |
-| Kitchen | table, plate, pot, milk bar | mouth, bowl, kettle, crate |
-| Art Space | wall, studio, workbench | brush, tool, hand, timber |
-| Launch | gate, shed, pavilion | neighbour, crate, chair |
+| Grow | bed, path, nursery, soil, hands, boots, fork, leaves |
+| Make | wall, sign, studio, workbench, brush, tool, hand, timber |
+| Gather | table, plate, pot, milk bar, neighbour, crate, chair |
+| Launch | gate, shed, pavilion, garden opening, Witta |
 
 ## Audience angles
 
@@ -227,7 +259,7 @@ For funders, landlord, and operators:
 Use this when asking an AI design tool to arrange a Harvest surface from supplied real assets:
 
 ```text
-Use the Harvest design memory. This is a working community hub in Witta on Jinibara Country: Garden, Kitchen, Art Space. Use only the supplied real photos, historical images, screenshots, scans, sketches, and floor plans. Do not invent or generate new brand imagery. Build from milk crates, timber, dairy, co-op tables, rammed earth, rusted iron, shed light, garden beds, floor plan marks, and Witta history. Use the Harvest palette: shed #1C1917, milk #F5F0E8, golden hour #C4922A, canopy #4A6741, crane #8B4A2A, workshirt #3B5563. Typography should feel direct and material. Simple icons and line marks can support the real source material, but cannot replace it. Avoid generic startup gradients, stock-photo wellness, and abstract community language. One screen, one job.
+Use the Harvest design memory. This is The Harvest in Witta on Jinibara Country: Grow. Make. Gather. A community garden and creative gathering place taking shape in Witta, with the garden opening end of June. Use only the supplied real photos, historical images, screenshots, scans, sketches, and floor plans. Do not invent or generate new brand imagery. Build from garden beds, milk crates, timber, dairy memory, shared tables, rammed earth, rusted iron, shed light, floor plan marks, and Witta history. Use the Harvest palette: shed #1C1917, milk #F5F0E8, golden hour #C4922A, canopy #4A6741, crane #8B4A2A, workshirt #3B5563. Typography should feel direct and material. Simple icons and line marks can support the real source material, but cannot replace it. Avoid generic startup gradients, stock-photo wellness, and abstract community language. One screen, one job.
 ```
 
 ## Workflow
@@ -242,7 +274,7 @@ Use it this way:
 
 1. Reference: gather real photos, historical photos, story sources, sketches, current page, and this file.
 2. Compose: make one strong surface only, using real source material.
-3. Inspect: check if the three rooms, the people, and the place are legible.
+3. Inspect: check if Grow, Make, Gather, the people, and the place are legible.
 4. Systemise: update this file or `docs/brand/README.md` if a rule is now proven.
 5. Iterate: improve the same surface.
 6. Remix: only then make the slide, reel, mobile screen, poster, or newsletter version.
@@ -256,6 +288,7 @@ Do not let every layout pass invent a new Harvest.
 - Real photo and history assets: `docs/brand/real-photo-and-history-assets.md`
 - Brand voice: `docs/brand/harvest-brand-voice.md`
 - Launch deck: `docs/brand/harvest-launch-deck.md`
+- Brand development guide: `docs/brand/harvest-brand-development-guide.md`
 - Current comms home: `docs/communications/00-COMMS-HOME.md`
 - Current photo/copy guide: `docs/communications/photo-graphics-copy-style-guide.md`
 - Live tokens: `client/src/styles/brand.ts`

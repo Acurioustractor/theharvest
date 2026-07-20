@@ -114,7 +114,7 @@ export function EditableText({
   // Editing mode
   if (isEditing) {
     return (
-      <div className="relative group">
+      <div className="relative group" data-editable-text>
         {multiline ? (
           <Textarea
             ref={inputRef as React.RefObject<HTMLTextAreaElement>}
@@ -170,9 +170,9 @@ export function EditableText({
     return <Component className={className}>{displayContent}</Component>;
   }
 
-  // Admin: always-visible edit affordance — click anywhere on the text or the pencil chip.
+  // Admin: always-visible edit affordance, click anywhere on the text or the pencil chip.
   return (
-    <div className="relative group">
+    <div className="relative group" data-editable-text>
       <Component
         className={cn(className, "cursor-text hover:bg-amber-50/40 rounded-sm transition-colors")}
         onClick={startEditing}

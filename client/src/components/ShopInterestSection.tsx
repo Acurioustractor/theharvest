@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "wouter";
 import { ArrowRight } from "lucide-react";
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
@@ -22,7 +23,7 @@ export function ShopInterestSection({
   id = "shop-interest",
   eyebrow = "Shop interest",
   title = "Put something real on the first shelf.",
-  body = "The Shop starts small: produce, made goods, food, useful objects, and people who want to help test the shape before it becomes too polished.",
+  body = "The Shop starts small: real names on the shelf, and short opening windows once the first shelves are ready. Telling us what you grow or make starts a proper conversation about whether it fits.",
 }: ShopInterestSectionProps) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -148,6 +149,14 @@ export function ShopInterestSection({
                   placeholder="Optional: a line on what you grow, make, cook, stock, or want to help test. We'll ask for the detail when we talk."
                 />
               </label>
+
+              <p className="text-xs text-stone-500">
+                Used only to follow up about the shop. See our{" "}
+                <Link href="/privacy" className="underline hover:text-stone-700">
+                  privacy page
+                </Link>{" "}
+                for details.
+              </p>
 
               <button
                 type="submit"

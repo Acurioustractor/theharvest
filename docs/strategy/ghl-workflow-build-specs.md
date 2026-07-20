@@ -262,10 +262,10 @@ The shop EOI already fires an immediate receipt ("Harvest - Shop Interest Receip
 of one ack and silence. It is the "engagement" half of the shop track.
 
 Unlike the follow-welcome, this needs **no env var and no code change**. It triggers on the
-`harvest-shop-interest` tag the website already applies to every shop EOI. Build it, publish
-it, done.
+`interest:markets` tag the website already applies to every shop EOI. Build it, publish it,
+done.
 
-- **Trigger:** Contact Tag added is `harvest-shop-interest`.
+- **Trigger:** Contact Tag added is `interest:markets`.
 - **Re-entry:** OFF. **Allow multiple opportunities:** OFF (one nurture per contact).
 - **Steps:**
   1. Wait 4 days (gives the receipt room; feels like a person following up, not a machine).
@@ -320,14 +320,14 @@ behind them in the workflow UI, then test one booking per calendar.
 | --- | --- | --- | --- | --- | --- | --- |
 | 7a | RSVP: Maker session, Sat 20 June, ID `M0KzSu7Bo3jJ3ZQta3ag` | Class/Event | 18 (B1) | Sat 20 Jun 10am-2pm | `witta-gathering-2026-06-20` + `rsvp-maker-morning` | OFF |
 | 7b | RSVP: Afternoon + pizza, Sat 20 June, ID `4IpU9GnzAChTMkKFJPWi` | Class/Event | 40 (B2) | Sat 20 Jun from 2pm | `witta-gathering-2026-06-20` + `rsvp-pizza-dinner` | OFF |
-| 7c | Book a chat about the shop, ID `viM1BRnHG9gwpIEZd4HM` | Round robin | 1 | Tue/Thu 1pm-4pm | `harvest-shop-interest` + `shop-call-booked` | ON |
+| 7c | Book a chat about the shop, ID `viM1BRnHG9gwpIEZd4HM` | Round robin | 1 | Tue/Thu 1pm-4pm | `project:act-hv` + `interest:markets` + `shop-call-booked` | ON |
 
 Notes:
 
 - `rsvp-pizza-dinner` count is the pizza dough headcount.
 - `witta-gathering-2026-06-20` is the event tag; it feeds the The Harvest Events smart list (empty
   until the first booking) and would fire an event-RSVP workflow if one is built later.
-- 7c reuses `harvest-shop-interest` so a booked shop chat flows into the Shop pipeline and the shop
+- 7c reuses `interest:markets` so a booked shop chat flows into the Shop smart lists and the shop
   nurture; `shop-call-booked` distinguishes a booked call from a form EOI.
 - Build 7a, then clone it twice and swap the calendar filter and the two tags. No email step: the
   calendar sends its own booking confirmation.

@@ -42,9 +42,9 @@
 
 ### 1. The page (`client/src/pages/GardenLaunch.tsx`) — SHIP IT
 - It is built, fact-correct, typecheck-clean, but **unmerged** (4 commits ahead of main) and
-  **`IM_COMING_URL` is still `""`** (verified 2026-06-03). Public open day means it goes live and
+  **`VITE_GHL_IM_COMING_URL` is not yet set** (previously verified as an empty page constant on 2026-06-03). Public open day means it goes live and
   **indexed** (no noindex).
-- **Action:** wire `IM_COMING_URL` (see GHL §3), then merge `wip/june-20-page-2026-06-03` → `main`
+- **Action:** set `VITE_GHL_IM_COMING_URL` (see GHL §3), then merge `wip/june-20-page-2026-06-03` → `main`
   (auto-deploys to theharvestwitta.com.au). This is the one Tier-3 "deploy" step — needs Ben's go.
 - Fix the **idea path** before ship: `IDEA_URL = /get-involved` defaults to the residency tab. Add
   the `?form=idea` deep-link (or point at a dedicated idea capture) so "Share an idea" lands right.
@@ -66,7 +66,7 @@
 - **"I'm coming" wiring — the key reconciliation:** the public one-tap should reuse the existing
   headcount rails, not create a parallel one. Build a GHL **Trigger Link** "Pizza RSVP — I'm coming"
   (redirect → /june-20) + a *Trigger Link Clicked* workflow that adds **`rsvp-pizza-dinner`** +
-  **`witta-gathering-2026-06-20`** (re-entry OFF). Paste that link into `IM_COMING_URL`. This keeps
+  **`witta-gathering-2026-06-20`** (re-entry OFF). Set that link as `VITE_GHL_IM_COMING_URL`. This keeps
   the dough count flowing through the same `rsvp-pizza-dinner` tag the B2 calendar uses, so
   `npm run count:rsvps:ghl` still reads the headcount. **Do not** also push the B2 booking-calendar
   link onto the public page — pick one RSVP surface (the trigger link) to avoid two headcount sources.
@@ -99,14 +99,14 @@
 
 ## Time-critical sequence before Ben departs 27 June
 - **Now:** schedule social post 1 (4 Jun tease); fix idea deep-link; build the trigger link + workflow.
-- **Before Fri 6 Jun:** wire `IM_COMING_URL`; **deploy** the page (Ben's "merge/deploy" go); decide
+- **Before Fri 6 Jun:** set `VITE_GHL_IM_COMING_URL`; **deploy** the page (Ben's "merge/deploy" go); decide
   sub-decisions 1–3; if honouring members-first, send Harvest Note 02 Fri 6 Jun.
 - **Sat 7 Jun:** public dated announce post goes live.
 - **Through 19 Jun:** run the 6-post series; Harvest Note 03 Fri 19; confirm all six gates.
 - **Sat 20 Jun:** the day. On-site idea wall + produce + feedback capture sheets.
 
 ## Provenance
-- Verified directly this session: GHL pipelines (get-pipelines), `IM_COMING_URL=""`, branch unmerged.
+- Verified directly this session: GHL pipelines (get-pipelines), page RSVP URL blank, branch unmerged.
 - From repo docs (attributed, not re-verified): B1/B2 calendars live, tags present, 1,152 contacts,
   6 email templates — per `june-sprint-operating-plan-2026-06-02.md` + the 2-Jun handoff YAML.
 - Insurance state: **unverified** — confirm against the ACT insurance addendum before counting done.

@@ -2,7 +2,8 @@ import { useState, useEffect, type CSSProperties } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
-import BauhausFooter from "@/components/BauhausFooter";
+import { setPageSeo } from "@/lib/seo";
+import { SiteFooter, SiteNav } from "./HarvestReviewTest";
 
 /* ─────────────────────────────────────
    DESIGN TOKENS
@@ -351,7 +352,7 @@ function Step1({ data, update, isMobile }: {
       </div>
 
       <div>
-        <QuestionLabel>What's missing — what do you wish existed here?</QuestionLabel>
+        <QuestionLabel>What's missing? What do you wish existed here?</QuestionLabel>
         <TextArea
           value={data.whatsMissing}
           onChange={v => update({ whatsMissing: v })}
@@ -379,12 +380,12 @@ function Step2({ data, update, isMobile }: {
       }}>THE HARVEST</p>
 
       <div style={{ marginBottom: 36 }}>
-        <QuestionLabel>Have you heard of The Harvest?</QuestionLabel>
+        <QuestionLabel>Have you visited The Harvest yet?</QuestionLabel>
         <RadioGroup
           options={[
             { value: "yes", label: "Yes" },
-            { value: "no", label: "No" },
-            { value: "not-sure", label: "Not sure" },
+            { value: "no", label: "Not yet" },
+            { value: "not-sure", label: "Didn't know it was open" },
           ]}
           value={data.heardOfHarvest}
           onChange={v => update({ heardOfHarvest: v })}
@@ -493,6 +494,14 @@ function Step3({ data, update, isMobile }: {
             placeholder="Your email"
             type="email"
           />
+          <p style={{ fontSize: 12, color: C.creamFaint, lineHeight: 1.5 }}>
+            If you add your name and email, your answers are linked to you so we can follow
+            up. Leave both blank to answer anonymously. See our{" "}
+            <a href="/privacy" style={{ color: C.creamFaint, textDecoration: "underline" }}>
+              privacy page
+            </a>{" "}
+            for details.
+          </p>
         </div>
       </div>
     </div>
@@ -555,13 +564,26 @@ function ThankYou({ isMobile }: { isMobile: boolean }) {
         color: C.creamDim,
         lineHeight: 1.6,
         maxWidth: 480,
+        margin: "0 auto 20px",
+      }}>
+        A human reads every response. If you left your email, we will get back
+        to you.
+      </p>
+      <p style={{
+        fontFamily: "'Inter', sans-serif",
+        fontSize: 15,
+        color: C.creamDim,
+        lineHeight: 1.6,
+        maxWidth: 480,
         margin: "0 auto 40px",
       }}>
-        Your voice matters. We're building The Harvest around what this community
-        actually wants — and you just helped shape that.
+        Come see the place for yourself. Most weekends we fire the pizza oven:
+        Friday 3pm to 8pm with a community movie night, Saturday 12pm to 8pm,
+        Sunday 12pm to 6pm. No booking needed. Weeks can vary, and members hear
+        the dates first.
       </p>
       <a
-        href="/"
+        href="/membership"
         style={{
           display: "inline-block",
           fontFamily: "'Montserrat', sans-serif",
@@ -575,7 +597,7 @@ function ThankYou({ isMobile }: { isMobile: boolean }) {
           textDecoration: "none",
         }}
       >
-        VISIT THE HARVEST
+        BECOME A MEMBER (IT'S FREE)
       </a>
     </motion.div>
   );
@@ -593,6 +615,15 @@ export default function CommunityPulse() {
   const [submitting, setSubmitting] = useState(false);
 
   const submitMutation = trpc.pulse.submit.useMutation();
+
+  useEffect(() => {
+    setPageSeo({
+      title: "Harvest Pulse · The Harvest Witta",
+      description:
+        "Tell The Harvest what is working, what is missing and what would help the community garden and gathering place take shape in Witta.",
+      path: "/pulse",
+    });
+  }, []);
 
   const update = (patch: Partial<SurveyData>) => {
     setData(prev => ({ ...prev, ...patch }));
@@ -612,6 +643,7 @@ export default function CommunityPulse() {
       setSubmitted(true);
     } catch (err) {
       console.error("Failed to submit pulse survey:", err);
+      toast.error("That didn't send. Try again, or reach us via the contact page.");
     } finally {
       setSubmitting(false);
     }
@@ -629,9 +661,10 @@ export default function CommunityPulse() {
       minHeight: "100vh",
       fontFamily: "'Inter', sans-serif",
     }}>
+      <SiteNav />
       {/* Hero */}
       <section style={{
-        padding: isMobile ? "60px 20px 40px" : "80px 40px 60px",
+        padding: isMobile ? "110px 20px 40px" : "140px 40px 60px",
         textAlign: "center",
         background: `radial-gradient(ellipse at 50% 30%, rgba(217,169,78,0.06), transparent 70%)`,
       }}>
@@ -768,7 +801,7 @@ export default function CommunityPulse() {
         )}
       </section>
 
-      <BauhausFooter isMobile={isMobile} />
+      <SiteFooter />
     </div>
   );
 }

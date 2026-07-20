@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=Nunito+Sans:wght@400;600;700;800&display=swap');
+  :root{--golden-light:#E8C16A;--crane:#8B4A2A;--cream:#F5EFE2;--ink:#231711;
+    --earth:#B58B70;--canopy:#4A6741;--golden:#C4922A;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{width:1080px;height:1080px;}
+  body{font-family:'Nunito Sans',sans-serif;}
+  .stage{position:relative;width:1080px;height:1080px;overflow:hidden;background:var(--ink);}
+  .photo-wrap{position:absolute;top:0;left:0;right:0;height:452px;overflow:hidden;}
+  .photo{width:100%;height:100%;object-fit:cover;object-position:center 42%;}
+  .scrim-top{position:absolute;top:0;left:0;right:0;height:220px;
+    background:linear-gradient(180deg, rgba(26,18,11,0.62) 0%, rgba(26,18,11,0.0) 100%);}
+  .brand{position:absolute;top:34px;left:48px;display:flex;align-items:center;gap:18px;z-index:3;}
+  .brand img{height:84px;filter:brightness(0) invert(1) drop-shadow(0 2px 8px rgba(0,0,0,0.5));}
+  .brand .place{color:#fff;font-weight:700;letter-spacing:0.4em;font-size:20px;
+    text-transform:uppercase;border-left:2px solid rgba(255,255,255,0.6);padding-left:18px;
+    padding-top:5px;text-shadow:0 2px 8px rgba(0,0,0,0.5);}
+  .bar{position:absolute;top:452px;left:0;right:0;height:11px;z-index:4;
+    background:linear-gradient(90deg,var(--crane) 0%,var(--golden) 34%,var(--earth) 67%,var(--canopy) 100%);}
+  .band{position:absolute;left:0;right:0;bottom:0;height:628px;
+    background:radial-gradient(130% 150% at 16% 0%, #2c1d12 0%, #231711 60%, #1c130c 100%);
+    display:flex;gap:44px;padding:44px 48px 40px;}
+  .band-left{flex:1;display:flex;flex-direction:column;color:var(--cream);min-width:0;}
+  .eyebrow{color:var(--golden-light);font-weight:800;letter-spacing:0.3em;font-size:24px;
+    text-transform:uppercase;margin-bottom:8px;}
+  .headline{font-family:'Fraunces',serif;font-weight:600;font-size:84px;line-height:0.92;
+    color:#fff;letter-spacing:-0.015em;}
+  .when{font-family:'Fraunces',serif;font-weight:400;font-style:italic;font-size:36px;
+    color:var(--golden-light);margin-top:12px;}
+  .sub{font-weight:600;font-size:27px;line-height:1.34;color:var(--cream);opacity:0.95;margin-top:16px;}
+  .foot{margin-top:auto;display:flex;flex-direction:column;gap:18px;align-items:flex-start;}
+  .price{display:inline-flex;align-items:baseline;gap:13px;
+    background:linear-gradient(135deg,#E8C16A 0%, #C4922A 100%);color:var(--ink);
+    border-radius:999px;padding:15px 30px;box-shadow:0 10px 28px rgba(0,0,0,0.4);}
+  .price .amt{font-family:'Fraunces',serif;font-weight:700;font-size:46px;line-height:1;}
+  .price .per{font-weight:700;font-size:22px;}
+  .where{display:flex;align-items:center;gap:10px;font-weight:600;font-size:25px;
+    color:var(--cream);opacity:0.92;}
+  .band-right{width:284px;display:flex;align-items:center;justify-content:center;}
+  .qr{background:var(--cream);border-radius:22px;padding:24px 24px 20px;display:flex;
+    flex-direction:column;align-items:center;box-shadow:0 16px 44px rgba(0,0,0,0.45);width:100%;}
+  .qr img{width:226px;height:226px;display:block;border-radius:7px;}
+  .qr .scan{font-weight:800;font-size:23px;color:var(--ink);margin-top:14px;text-align:center;line-height:1.18;}
+  .qr .fb{font-weight:700;font-size:17px;color:var(--crane);margin-top:5px;text-align:center;}
+</style>
+</head>
+<body>
+  <div class="stage">
+    <div class="photo-wrap">
+      <img class="photo" src="file:///Users/benknight/Code/The%20Harvest%20Website/client/public/images/harvest-hero.jpg" alt="" />
+      <div class="scrim-top"></div>
+    </div>
+    <div class="brand">
+      <img src="file:///Users/benknight/Code/The%20Harvest%20Website/client/public/images/logo-v1-dark-clean.png" alt="The Harvest" />
+      <span class="place">Witta</span>
+    </div>
+    <div class="bar"></div>
+    <div class="band">
+      <div class="band-left">
+        <div class="eyebrow">Opening Night</div>
+        <div class="headline">Saturday<br/>20 June</div>
+        <div class="when">Pizza from 5pm, till dark</div>
+        <div class="sub">Music, activities, and the old nursery open again. Come and say hello.</div>
+        <div class="foot">
+          <div class="price"><span class="amt">$30</span><span class="per">per person · pizza + activities</span></div>
+          <div class="where">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11z" stroke="#E8C16A" stroke-width="2" fill="rgba(232,193,106,0.18)"/><circle cx="12" cy="10" r="2.6" stroke="#E8C16A" stroke-width="2"/></svg>
+            <span>9 Gumland Drive, Witta</span>
+          </div>
+        </div>
+      </div>
+      <div class="band-right">
+        <div class="qr">
+          <img src="file:///Users/benknight/Code/The%20Harvest%20Website/docs/strategy/weekend-20-june-2026/launch-flyer/qr-fb-event.png" alt="RSVP QR" />
+          <div class="scan">Scan to come</div>
+          <div class="fb">facebook → The Harvest Witta</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

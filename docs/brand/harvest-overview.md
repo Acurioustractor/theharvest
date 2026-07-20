@@ -6,17 +6,17 @@ Use it when someone needs to understand the place quickly before looking at the 
 
 ## One sentence
 
-The Harvest is a garden, kitchen, and art space taking shape in Witta, on Jinibara Country.
+The Harvest is a community garden and creative gathering place taking shape in Witta, on Jinibara Country.
 
 ## What it is
 
-The Harvest is a working community hub.
+The Harvest is a community garden and creative gathering place.
 
-A former nursery is becoming three public rooms:
+A former nursery is opening first through the garden, then deepening through what people grow, make, and gather around:
 
-- Garden: a place to grow food, plants, kids' projects, working bees, and practical care.
-- Kitchen: a place to feed people through long tables, pop-ups, milk bar tests, fire cooking, and local produce.
-- Art Space: a place to make, repair, exhibit, build, host residencies, and work with timber, tools, and local craft.
+- Grow: garden beds, seedlings, soil, old nursery memory, kids' projects, working bees, and practical care.
+- Make: timber, tools, signs, art, repair, workshops, and the creative build of the place.
+- Gather: neighbours, shared tables, food, music, questions, local stories, and people coming through the gate.
 
 The first version should feel like a shed waking up, a garden being worked, and a table being set.
 
@@ -28,42 +28,40 @@ The Harvest is not a polished venue brand.
 
 It is not a generic cafe, wellness retreat, council activation, lifestyle precinct, or abstract community hub.
 
-If the explanation gets too broad, come back to the three rooms:
+If the explanation gets too broad, come back to the public line:
 
 ```text
-Garden. Kitchen. Art Space.
+Grow. Make. Gather.
 ```
 
 ## The first public story
 
-The first residency and launch story is:
+The current public lockup is:
 
 ```text
-timber, dairy, and co-operatives
+Witta · Jinibara Country · Garden opening end of June
+
+The Harvest
+Grow. Make. Gather.
+A community garden and creative gathering place taking shape in Witta.
 ```
 
-That thread should be visible across the website, works pages, deck, social, newsletter, and photo sorting.
-
-Timber belongs with the Art Space: Barry's shed, tools, reclaimed wood, sawmill memory, workbenches, repair, and making.
-
-Dairy belongs with the Kitchen: milk crates, cheese, butter, milk bar thinking, shared meals, long tables, and local food.
-
-Co-operatives belong with the table: shared tools, open books, working bees, local help, gradual handover, and practical ownership. Do not imply a formal cooperative exists until the governance is real.
+Timber, dairy, milk crates, shared tables, shop tests, art, and co-operative practice are supporting story threads. Use them as proof and texture, not as the top-line brand.
 
 ## What is being built first
 
 The first public version is not trying to explain everything.
 
-The public focus until July is the Garden.
+The public focus until July is the garden opening.
 
-Do not frame the longer kitchen, art, events and community space as ready for this round. It stays visible as the longer Harvest model, but the public work now is the Garden, timber paths, giant milk crate pavilion, kids playground, and co-op shop test.
+Do not frame the longer kitchen, art, events and community space as ready for this round. The public work now is the Garden, timber paths, giant milk crate pavilion, kids playground, and local shop test.
 
 It needs to show:
 
 - garden paths and beds
 - the milk crate pavilion
-- the kitchen, long table and food idea
-- art, events and community space as working rooms, not blank venue language
+- the long table and food idea
+- creative work and community space as things being made, not blank venue language
 - timber, tools, crates, plans, and people at work
 - events, community use, and the longer Witta collection
 - what help is needed next
@@ -74,35 +72,50 @@ The current works to keep clear:
 - Giant Milk Crate Pavilion: a large pavilion made from milk crates for events, music, play, talks, shared meals, shade, and the dairy story.
 - St Mary's Timber Walkways: walkways made from timber taken from St Mary's Cathedral in Sydney. The working story is that the timber originally came from the Witta region, but that Witta-origin line needs a clean source note before it becomes public proof.
 - Kids Playground: a play area shaped with local kids, not designed over their heads.
-- Co-op Type Shop: a local produce shop and shared table for nearby growers, makers, cooks, gardeners, and neighbours. Do not imply a formal cooperative exists until governance is real.
+- Local Shop Test: a local produce shop and shared table for nearby growers, makers, cooks, gardeners, and neighbours. Do not imply a formal cooperative exists until governance is real.
 - Garden to Cafe Food Loop: the hope that the garden slowly grows into the food story for the future cafe and restaurant space inside. Do not overpromise self-sufficiency.
 
-## 20 June 2026 soft opening
+## Garden Opening End Of June
 
-Frame locked 2026-05-22 via [harvest-launch-alignment-2026-05-22.md](../strategy/harvest-launch-alignment-2026-05-22.md). Path A.
+Current public frame:
+
+```text
+Witta · Jinibara Country · Garden opening end of June
+```
+
+The reconciled 20 June operational note remains a planning source, but public brand surfaces should use the current garden-opening language unless the exact date is needed.
 
 Working details:
 
-- Date: Saturday 20 June 2026.
-- Time: 3pm to 7pm.
+- Date language: garden opening end of June.
+- Exact timing: use only where confirmed and needed.
 - Place: 9 Gumland Drive, Witta, on Jinibara Country.
-- Audience: member list only. About 40 seats.
-- Shape: a soft opening, not a launch. Proof night for the operating system.
-- Experience: garden walk, simple food under the pavilion (pizza if oven + licence land, otherwise tea and snacks), a short circle about what's next, soft close. No bar, no register, no open mic at this scale.
+- Audience: public. Everyone welcome.
+- Shape: garden opening and public invitation, with operational gates still to clear.
+- Experience: see the Garden, first works, giant milk crate, Milk Man, pizza from 5pm if the food and roster gates hold, and a question wall about what the place should become.
 
-Use the night to show dairy, timber, and co-operative memory through what people can touch on site:
+Operational gates:
 
-- dairy through milk crates and the pavilion
-- timber through the cedar work and reclaimed material
-- co-operative interest through the room being open at all
+- public liability insurance
+- food safety
+- pizza lead
+- extra hands and roster
+- parking
+- approved public media and consent checks
 
-Bigger public day lands later in the year, once the operating rhythm is real. Until then, the practical ask stays small:
+Use the opening to show Grow, Make, and Gather through what people can touch on site:
+
+- Grow through beds, seedlings, soil, paths, and garden work
+- Make through timber, signs, tools, objects, and the build itself
+- Gather through crates, tables, food, questions, and people arriving
+
+The practical ask:
 
 ```text
-Member list signup. Reply to the email invite with seat count and dietary need.
+Come through. Bring a question, a story, a skill, a tool, a crate, a plant, a recipe, or a few hours.
 ```
 
-Source-of-truth Notion page: [Harvest Launch Alignment - Countdown to 20 June 2026](https://www.notion.so/acurioustractor/Harvest-Launch-Alignment-Countdown-to-20-June-2026-363ebcf981cf81b19deef477e76983e0).
+Source-of-truth strategy doc: [RECONCILED-20-june-public-open-day-2026-06-03.md](../strategy/RECONCILED-20-june-public-open-day-2026-06-03.md).
 
 ## How the website should explain it
 
@@ -111,9 +124,9 @@ The website should stand at the gate.
 It should show the real place first, then make the structure clear:
 
 1. The place: Witta, Jinibara Country, real photos.
-2. The structure: Garden first, then kitchen, art, events and community space.
+2. The structure: Grow, Make, Gather.
 3. The current work: what changed on site this week.
-4. The first story: timber, dairy, co-operatives.
+4. The supporting story: timber, dairy, milk crates, shared tables, and local making.
 5. The works: pavilion, garden, timber, shed, plans, table.
 6. The community use: events, working bees, meals, music, workshops, play.
 7. The collection: photos, objects, memories, source notes, local records.
@@ -161,7 +174,7 @@ Only use these pages for the current phase:
 - `/photo-wall`
 - `/garden-launch`
 
-`/garden-launch` is email-led for now. It can explain the day, but it must not collect public RSVPs until Ben explicitly reopens that form. The current RSVP path is: member list -> GHL email -> people reply -> manual headcount.
+`/june-20` is the current public launch front door. The public one-tap "I'm coming" path should reuse the same GHL headcount rail as `rsvp-pizza-dinner`, per the reconciled open-day note.
 
 Keep the root shell separate for now. Do not expand `/` in this phase unless asked.
 

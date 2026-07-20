@@ -24,37 +24,41 @@ repo holds the executable memory -> Notion holds the accessible memory -> GHL pu
 
 ## Brand spine
 
-The Harvest is a garden, kitchen, and art space taking shape in Witta.
-
-Launch line:
-
 ```text
-A working place for growing, feeding, making, and gathering in Witta.
+Witta · Jinibara Country · Garden opening end of June
+
+The Harvest
+Grow. Make. Gather.
+A community garden and creative gathering place taking shape in Witta.
+Learn about The Harvest
 ```
 
-## The three rooms
+## Public Words
 
-| Room | Verb | Meaning |
-| --- | --- | --- |
-| Garden | Grow | food, plants, kids, working bees, soil |
-| Kitchen | Feed | long tables, pop-ups, milk bar, fire cooking |
-| Art Space | Make | residencies, workshops, repair, exhibition |
+| Word | Meaning |
+| --- | --- |
+| Grow | garden opening, old nursery, seedlings, beds, soil, kids, working bees |
+| Make | creative build, timber, tools, signs, repair, art, workshops |
+| Gather | neighbours, shared tables, food, music, questions, local stories |
 
-## First residency theme
+## Supporting Story Threads
 
-```text
-timber, dairy, and co-operatives
-```
+Timber, dairy, milk crates, shared tables, shop tests, art, and co-operative practice support the brand. They are not the top-line public spine.
 
-This is the launch story.
+## Launch frame
 
-It should show up in the pavilion, website, launch deck, captions, local asks, signage, and conversations with timber, dairy, and co-op people.
+Current frame: **garden opening end of June**.
 
-## Launch target
+Use the exact operational date only where it is confirmed and needed. The current brand line is softer and simpler.
 
-Working target: **20 June 2026**.
+Operational gates still need checking before public promises go out:
 
-Treat this as the launch readiness date for brand, website, deck, and comms. The operational go/no-go still needs checking before any public event promise is made.
+- public liability insurance
+- food safety
+- pizza lead
+- extra hands and roster
+- parking
+- source, rights, and consent for public media
 
 ## Voice
 
@@ -118,9 +122,10 @@ Every public image needs:
 
 ## Current questions
 
-- Is the 20 June launch a public event, invite-only soft open, or internal readiness milestone?
-- Which Harvest page becomes the launch front door?
+- Are all open-day gates clear enough for the next public send?
+- Is `/june-20` fully wired as the launch front door?
 - What are the first three practical asks for locals?
 - Who can speak directly into timber, dairy, and co-op networks?
 - Which photos, plans, and drawings are the launch asset set?
 - Which Witta history photos and book notes are cleared for public use?
+- What did the open day prove, and what should the July rhythm become?

@@ -6,7 +6,9 @@ import { works, LIFECYCLE_VOCAB, sortLifecycleTags } from "@/data/works";
 import { EditableText } from "@/components/EditableText";
 import { HarvestImage } from "@/components/HarvestImage";
 import { useAuth } from "@/_core/hooks/useAuth";
+import { setPageSeo } from "@/lib/seo";
 import { harvestButtonClasses, SiteFooter, SiteNav } from "./HarvestReviewTest";
+import { VisitStrip } from "@/components/VisitStrip";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
@@ -21,15 +23,14 @@ export default function Works() {
   const isAdmin = user?.role === "admin";
 
   useEffect(() => {
-    document.title = "The Collection · The Harvest";
-    const desc = "The works of The Harvest — a living collection on Jinibara Country, Witta. Each piece carries a thread back to the history of the place.";
-    let meta = document.querySelector('meta[name="description"]') as HTMLMetaElement | null;
-    if (!meta) {
-      meta = document.createElement("meta");
-      meta.name = "description";
-      document.head.appendChild(meta);
-    }
-    meta.content = desc;
+    setPageSeo({
+      title: "The Collection · The Harvest Witta",
+      description:
+        "The works of The Harvest: a living collection on Jinibara Country in Witta. Garden, pavilion, shop, kids area and art space works taking shape.",
+      path: "/works",
+      image: "/images/optimized/gathering-recap-crowd-1200.webp",
+      imageAlt: "People gathered at The Harvest in Witta.",
+    });
   }, []);
 
   return (
@@ -55,15 +56,6 @@ export default function Works() {
               Some are growing. Some are still forthcoming. Each one carries a
               thread back to the history of this place.
             </p>
-            <div className="mt-10">
-              <Link
-                href="/witta"
-                className="inline-flex items-center gap-2 text-stone-700 hover:text-stone-900 underline underline-offset-4 decoration-amber-500 decoration-2"
-              >
-                Read the Witta history first
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-            </div>
           </motion.div>
         </div>
       </section>
@@ -150,6 +142,18 @@ export default function Works() {
                         className="mt-5 text-stone-600 leading-relaxed"
                         multiline
                       />
+                      {work.slug === "the-shop" && (
+                        <p className="mt-4 text-sm text-stone-600">
+                          Make or grow something?{" "}
+                          <Link
+                            href="/shop"
+                            className="font-medium text-amber-700 underline underline-offset-4 hover:text-amber-800"
+                          >
+                            An expression of interest starts a real conversation
+                          </Link>
+                          .
+                        </p>
+                      )}
                       <Link
                         href={`/works/${work.slug}`}
                         className="mt-4 inline-flex items-center gap-1.5 text-amber-700 font-medium text-sm group-hover:gap-2.5 transition-all"
@@ -177,22 +181,23 @@ export default function Works() {
               The next pieces will be made with you.
             </h2>
             <p className="text-lg text-stone-300 leading-relaxed mb-10">
-              Each season brings a new work — sometimes a structure, sometimes a
-              practice, sometimes a partnership. Add a memory, share a skill, or
-              come and help build one.
+              Each season brings a new work: sometimes a structure, sometimes a
+              practice, sometimes a partnership. If you want to help make one,
+              tell us what you would bring.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex justify-center">
               <Link
-                href="/witta"
+                href="/get-involved"
                 className={harvestButtonClasses.primary}
               >
-                Add to Witta history
+                Share a skill or an idea
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
           </motion.div>
         </div>
       </section>
+      <VisitStrip />
       <SiteFooter />
     </div>
   );

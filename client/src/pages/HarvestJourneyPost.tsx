@@ -8,6 +8,8 @@ import {
   Users,
 } from "lucide-react";
 import { HarvestImage } from "@/components/HarvestImage";
+import { EditableText } from "@/components/EditableText";
+import { setPageSeo } from "@/lib/seo";
 import { harvestButtonClasses, SiteFooter, SiteNav } from "./HarvestReviewTest";
 
 const rooms = [
@@ -15,7 +17,7 @@ const rooms = [
     name: "Garden",
     verb: "Grow",
     body: "Beds, paths, nursery life, soil, work days, and kids with dirt on their hands.",
-    image: "/images/optimized/sophie-garden-1000.webp",
+    image: "/images/optimized/hero-aerial-1400.webp",
     icon: Sprout,
   },
   {
@@ -26,9 +28,9 @@ const rooms = [
     icon: Hammer,
   },
   {
-    name: "Kitchen and table",
+    name: "Events",
     verb: "Gather",
-    body: "The Milk Crate Pavilion, the long table, work days, open days, music, markets, and the room where neighbours actually meet.",
+    body: "The Milk Crate Pavilion, the long table, work days, open days, music, markets, and the moments where neighbours actually meet.",
     image: "/images/optimized/community-gathering-1000.webp",
     icon: Users,
   },
@@ -36,16 +38,14 @@ const rooms = [
 
 export default function HarvestJourneyPost() {
   useEffect(() => {
-    document.title = "What is The Harvest?";
-
-    let meta = document.querySelector('meta[name="description"]') as HTMLMetaElement | null;
-    if (!meta) {
-      meta = document.createElement("meta");
-      meta.name = "description";
-      document.head.appendChild(meta);
-    }
-    meta.content =
-      "The Harvest is a community garden and creative gathering place in Witta on Jinibara Country, for locals and visitors to grow, make, and gather.";
+    setPageSeo({
+      title: "What is The Harvest? · The Harvest Witta",
+      description:
+        "The Harvest is a community garden and creative gathering place in Witta on Jinibara Country, for locals and visitors to grow, make and gather.",
+      path: "/what-is-the-harvest",
+      image: "/images/optimized/hero-aerial-1400.webp",
+      imageAlt: "Aerial view of The Harvest site in Witta.",
+    });
   }, []);
 
   return (
@@ -60,10 +60,11 @@ export default function HarvestJourneyPost() {
             alt="Aerial view of The Harvest site in Witta"
             size="hero"
             priority
+            controlsPosition="corner"
             className="absolute inset-0 h-full w-full"
             imgClassName="h-full w-full object-cover opacity-60"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-stone-950/86 via-stone-950/54 to-stone-950/16" />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-stone-950/86 via-stone-950/54 to-stone-950/16" />
           <div className="relative z-10 mx-auto flex min-h-[86vh] max-w-6xl flex-col justify-end px-5 pb-10 pt-28 md:px-8 md:pb-14">
             <div className="max-w-4xl pb-10 md:pb-14">
               <p className="mb-5 font-mono text-xs uppercase tracking-[0.24em] text-[#C4922A]">
@@ -86,26 +87,23 @@ export default function HarvestJourneyPost() {
                 Witta, Jinibara Country
               </p>
               <h2 className="mt-3 text-4xl font-black leading-[0.98] md:text-5xl">
-                A garden becoming a place to gather.
+                A garden that is now a place to gather.
               </h2>
             </aside>
 
             <div className="space-y-8 text-lg leading-relaxed text-stone-800">
               <p>
-                The Harvest is a community garden and creative gathering place taking
-                shape in Witta on Jinibara Country.
+                The Harvest is a community garden and creative gathering place in
+                Witta, on Jinibara Country. It is open, and it is still being made.
               </p>
               <p>
                 Before it was The Harvest, this was Green Harvest: a nursery and seed
                 place where gardeners from around the region came for plants, seeds,
                 advice, and growing knowledge.
               </p>
-              <h3 className="pt-2 text-3xl font-black leading-tight text-[#8B4A2A] md:text-4xl">
-                Grow. Make. Gather.
-              </h3>
               <p>
-                <strong>Grow is the garden.</strong> Paths, beds, seedlings, working
-                bees, compost, kids, and food in the ground. It is the part of the
+                <strong>Grow is the garden.</strong> Paths, beds, seedlings, work
+                days, compost, kids, and food in the ground. It is the part of the
                 place that tells the truth fastest. Either something is growing or it
                 is not.
               </p>
@@ -116,24 +114,41 @@ export default function HarvestJourneyPost() {
               </p>
               <p>
                 <strong>Gather is the table.</strong> The Milk Crate Pavilion, the long
-                table, working bees, music, markets, open days, and the moments that
+                table, work days, music, markets, open days, and the moments that
                 bring neighbours and visitors through the gate.
               </p>
+              <EditableText
+                page="what-is-the-harvest"
+                slot="story-thread"
+                defaultContent="Timber in the shed, milk crates in the pavilion, shared tools, and a table anyone can sit at."
+                as="p"
+                multiline
+              />
               <p>
-                The first story thread is timber, dairy, and co-operatives. Timber in
-                the shed. Milk crates in the pavilion. Shared tools, open books, and
-                a table people can sit at before any formal co-op structure is claimed.
+                The Harvest opened with a first members and makers day on Saturday
+                20 June 2026, and is now properly under way. You do not need
+                to book to come and have a look while we find our feet. Members hear
+                first, every time.
               </p>
+              <EditableText
+                page="what-is-the-harvest"
+                slot="visiting-basics"
+                defaultContent="Most weekends we fire the pizza oven: Friday 3 to 8pm with a community movie night, Saturday 12 to 8pm, Sunday 12 to 6pm. Weeks can vary, so dates land on the members page first. Dennis, our resident pizza teacher, will show you how to stretch a base. No booking needed."
+                as="p"
+                multiline
+              />
               <p>
-                We're working toward the first public day around the end of June. A community
-                celebration and working open day, not a polished venue reveal. Date being
-                confirmed. Members hear first.
+                Full session times and the work day calendar live on{" "}
+                <Link href="/whats-on" className="underline decoration-[#8B4A2A]/40 underline-offset-4 hover:decoration-[#8B4A2A]">
+                  What's On
+                </Link>
+                .
               </p>
               <p>
                 That is what the member list is for. People on the list get the letters, the
                 first invitations, the work day calls, the early opportunities, and the
-                next questions while the place is still being made. No paid tier. No app.
-                One list. You are welcome on it.
+                next questions while the place is still being made. Membership is free.
+                No app. One list. You are welcome on it.
               </p>
             </div>
           </div>
@@ -194,6 +209,13 @@ export default function HarvestJourneyPost() {
                 You will get regular Harvest notes, community-day invites, calls for help,
                 and first notice when there are workshops, meals, residencies, materials,
                 or paid opportunities to share.
+              </p>
+              <p className="mt-4 max-w-2xl text-base leading-relaxed text-white/60">
+                If you grow, make, or have an idea for the place,{" "}
+                <Link href="/contact" className="underline decoration-white/40 underline-offset-4 hover:decoration-white">
+                  get in touch through the contact page
+                </Link>
+                . A person reads every message.
               </p>
             </div>
             <div className="border border-white/14 bg-white/5 p-6">

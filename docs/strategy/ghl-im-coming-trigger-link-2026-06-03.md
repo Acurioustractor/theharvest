@@ -40,9 +40,9 @@ GHL → **Automation → Workflows → + Create Workflow** (blank)
 
 ## Step 3 — Wire the page
 
-In `client/src/pages/GardenLaunch.tsx` **line 22**, paste the Step 1 link:
-```ts
-const IM_COMING_URL = "https://…paste-the-trigger-link…";
+Set the Step 1 link in local/Vercel env:
+```text
+VITE_GHL_IM_COMING_URL=https://…paste-the-trigger-link…
 ```
 The page already routes an `http(s)` value as an external link and falls back to scroll-to-`#ways-in`
 while it's empty, so nothing is ever a dead link. Then the page is ready to deploy.

@@ -1,6 +1,10 @@
-import { useState, FormEvent } from "react";
+import { useEffect, useState, FormEvent } from "react";
+import { VisitStrip } from "@/components/VisitStrip";
+import { MEMBERS_PAGE_URL } from "@/lib/links";
 import { communitySubmit } from "@/lib/api";
 import { cn } from "@/lib/utils";
+import { setPageSeo } from "@/lib/seo";
+import { SiteFooter, SiteNav } from "./HarvestReviewTest";
 import {
   Palette,
   Building2,
@@ -37,7 +41,7 @@ const FORMS: FormConfig[] = [
     id: "residency",
     label: "Residencies",
     icon: Palette,
-    tagline: "Come create. Artist, enterprise, or workshop — find your place here.",
+    tagline: "Come create. Artist, enterprise, or workshop leader: find your place here.",
     fields: [
       { name: "name", label: "Your name", type: "text", required: true },
       { name: "email", label: "Email", type: "email", required: true },
@@ -60,7 +64,7 @@ const FORMS: FormConfig[] = [
       { name: "description", label: "Tell us more", type: "textarea", required: true, placeholder: "What draws you here? What would you create, build, or share?" },
       { name: "portfolioUrl", label: "Portfolio or website", type: "text", placeholder: "https://..." },
       { name: "durationWeeks", label: "Ideal duration (weeks)", type: "number" },
-      { name: "preferredDates", label: "Preferred timing", type: "text", placeholder: "e.g. March 2026, flexible, etc." },
+      { name: "preferredDates", label: "Preferred timing", type: "text", placeholder: "e.g. spring, later this year, flexible" },
     ],
   },
   {
@@ -93,7 +97,7 @@ const FORMS: FormConfig[] = [
     id: "business-interest",
     label: "Local Businesses",
     icon: Store,
-    tagline: "Run a local business? Let's find ways to work together.",
+    tagline: "Make, grow or run something local? The first shelves are being shaped with local makers and growers. An expression of interest starts a real conversation.",
     fields: [
       { name: "name", label: "Your name", type: "text", required: true },
       { name: "email", label: "Email", type: "email", required: true },
@@ -105,6 +109,7 @@ const FORMS: FormConfig[] = [
         type: "select",
         required: true,
         options: [
+          { value: "shop-shelf", label: "Selling on the shop shelves" },
           { value: "info-session", label: "Attending an info session" },
           { value: "expression-of-interest", label: "Expression of interest" },
           { value: "partnership", label: "Partnership opportunity" },
@@ -124,7 +129,7 @@ const FORMS: FormConfig[] = [
       { name: "name", label: "Your name", type: "text", required: true },
       { name: "email", label: "Email", type: "email", required: true },
       { name: "title", label: "Workshop title or topic", type: "text", required: true },
-      { name: "description", label: "What would people learn?", type: "textarea", required: true, placeholder: "Describe the workshop — who it's for, what they'd take away" },
+      { name: "description", label: "What would people learn?", type: "textarea", required: true, placeholder: "Describe the workshop: who it's for, what they'd take away" },
     ],
   },
   {
@@ -136,7 +141,7 @@ const FORMS: FormConfig[] = [
       { name: "name", label: "Your name", type: "text", required: true },
       { name: "email", label: "Email", type: "email", required: true },
       { name: "title", label: "What's your story about?", type: "text", required: true, placeholder: "A sentence or two" },
-      { name: "description", label: "Tell us more", type: "textarea", required: true, placeholder: "What would you like to share? Your connection to Witta, your craft, your journey?" },
+      { name: "description", label: "Tell us more", type: "textarea", required: true, placeholder: "What would you like to share? Your connection to Witta, your craft, how you got here?" },
       { name: "portfolioUrl", label: "Website or social link", type: "text", placeholder: "https://..." },
     ],
   },
@@ -153,6 +158,15 @@ export default function GetInvolved() {
   const [errorMsg, setErrorMsg] = useState("");
 
   const config = FORMS.find((f) => f.id === activeForm)!;
+
+  useEffect(() => {
+    setPageSeo({
+      title: "Get Involved · The Harvest Witta",
+      description:
+        "Start where you are: work days, workshops, residencies, local business ideas and stories at The Harvest in Witta.",
+      path: "/get-involved",
+    });
+  }, []);
 
   function updateField(name: string, value: string) {
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -184,12 +198,31 @@ export default function GetInvolved() {
 
   return (
     <div className="min-h-screen">
+      <SiteNav />
       {/* Hero */}
-      <section className="bg-stone-900 pt-28 pb-16 px-4">
+      <section className="bg-stone-900 pt-36 pb-16 px-4">
         <div className="container max-w-3xl text-center">
           <h1 className="font-serif text-3xl sm:text-4xl text-amber-400 mb-4">Get Involved</h1>
           <p className="text-stone-400 text-lg leading-relaxed max-w-xl mx-auto">
-            The Harvest is built by the people who show up. There's no single way in — just start where you are.
+            The Harvest is built by the people who show up. There's no single way in, so start where you are.
+          </p>
+          <p className="text-stone-400 leading-relaxed max-w-xl mx-auto mt-4">
+            We opened with a first members and makers day on 20 June 2026, and from July the
+            place is properly under way. The simplest ways in are the garden's regular work
+            days and{" "}
+            <a href="/membership" className="text-amber-400 underline hover:text-amber-300">
+              free membership
+            </a>
+            . Work day dates land on the{" "}
+            <a
+              href={MEMBERS_PAGE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-amber-400 underline hover:text-amber-300"
+            >
+              members page
+            </a>{" "}
+            first, and no experience is needed. Members hear first, every time.
           </p>
         </div>
       </section>
@@ -288,6 +321,14 @@ export default function GetInvolved() {
                   <p className="text-red-600 text-sm">{errorMsg}</p>
                 )}
 
+                <p className="text-xs text-stone-500">
+                  Used only to follow up about this. See our{" "}
+                  <a href="/privacy" className="underline hover:text-stone-700">
+                    privacy page
+                  </a>{" "}
+                  for details.
+                </p>
+
                 <button
                   type="submit"
                   disabled={status === "loading"}
@@ -311,16 +352,17 @@ export default function GetInvolved() {
         <div className="container max-w-2xl text-center space-y-6">
           <h3 className="font-serif text-2xl text-amber-400">Building for people who want to belong</h3>
           <p className="text-stone-400 leading-relaxed">
-            The Harvest draws on the spirit of the Bauhaus — where artists, makers, thinkers and builders
-            lived and worked side by side. Not a retreat from the world, but a workshop for it.
-            From anywhere in Australia or the world, if you have something to create, teach, or grow —
-            there's a place for you here.
+            The Harvest is a community garden and creative gathering place in Witta, on
+            Jinibara Country. If you have something to create, teach or grow, there's a
+            place for you here.
           </p>
           <p className="text-stone-500 text-sm">
             Listen. Be curious. Take action. Make art.
           </p>
         </div>
       </section>
+      <VisitStrip />
+      <SiteFooter />
     </div>
   );
 }

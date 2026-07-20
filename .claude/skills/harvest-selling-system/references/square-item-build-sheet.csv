@@ -1,0 +1,15 @@
+Category,Item,Public price (AUD),Unit cost ex-GST (AUD),Track stock,GST on sale,Member price (auto -15%),Notes
+Pizza,Margherita / Cheese,16.00,5.19,No,Taxable,13.60,~36% food cost. Made to order - do not track stock.
+Pizza,Pepperoni,17.00,6.10,No,Taxable,14.45,~39% food cost.
+Pizza,Ham & Pineapple,17.00,6.11,No,Taxable,14.45,~40% food cost.
+Pizza,Buffalo Margherita,21.00,8.19,No,Taxable,17.85,Premium - ~43% food cost.
+Pizza,GF base (modifier),3.00,3.20,No,Taxable,3.00,Add as a +$3 modifier on any pizza. GF base only - no vegan cheese on menu.
+Sides,Garlic Bread,6.00,1.91,No,Taxable,5.10,~35% food cost.
+Dessert,Nutella Pizza,12.00,4.26,No,Taxable,10.20,~39% food cost.
+Coffee,Coffee,5.00,0.70,No,Taxable,FREE,Member perk: 1 free per visit (comp at till). ~15% cost - the margin hero when it exists.
+Drinks,Jarritos Soda,5.00,2.68,Yes,Taxable,4.25,Cola/lime/mango/guava - one item or one per flavour. Service item ~59% cost.
+Drinks,Bundaberg Ginger Beer,5.00,2.27,Yes,Taxable,4.25,Service item ~50% cost.
+Drinks,San Pellegrino 250ml,4.00,1.93,Yes,Taxable,3.40,Service item ~53% cost.
+Drinks,Coconut Water,5.00,2.54,Yes,GST-free,4.25,Plain coconut water is GST-free. Service item ~51% cost.
+Drinks,Coconut & Yuzu,5.00,2.40,Yes,GST-free,4.25,GST-free. Service item ~48% cost.
+Drinks,OK Boocha Kombucha,6.50,3.88,Yes,Taxable,5.53,Service item ~66% cost - the thinnest line. Range item only.

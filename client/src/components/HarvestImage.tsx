@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ImageIcon, Loader2, X } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { useAuth } from "@/_core/hooks/useAuth";
@@ -26,6 +26,7 @@ export function HarvestImage({
   defaultWorkSlug,
   size = "feature",
   priority = false,
+  controlsPosition = "center",
 }: {
   /** Logical page id, e.g. "works" */
   page: string;
@@ -43,11 +44,18 @@ export function HarvestImage({
   size?: ImageSize;
   /** Above-the-fold image — sets eager loading + high fetchpriority */
   priority?: boolean;
+  /** Where the admin swap/revert controls sit. Use "corner" for full-bleed
+   * heroes with text overlaid on top of the image, so the controls don't
+   * land underneath the (higher z-index) heading and become unclickable. */
+  controlsPosition?: "center" | "corner";
 }) {
   const { user } = useAuth();
   const isAdmin = user?.role === "admin";
 
-  const overrideQuery = trpc.imageOverrides.get.useQuery({ page, slot });
+  const overrideQuery = trpc.imageOverrides.get.useQuery(
+    { page, slot },
+    { staleTime: 5 * 60 * 1000 },
+  );
   const utils = trpc.useUtils();
   const setMutation = trpc.imageOverrides.set.useMutation({
     onSuccess: () => {
@@ -65,12 +73,24 @@ export function HarvestImage({
 
   const [pickerOpen, setPickerOpen] = useState(false);
   const [loaded, setLoaded] = useState(false);
+  const [imgErrored, setImgErrored] = useState(false);
 
   const override = overrideQuery.data;
   const rawSrc = override?.src ?? defaultSrc;
-  const src = optimize(rawSrc, size);
+  const primarySrc = optimize(rawSrc, size);
+  const bundledSrc = optimize(defaultSrc, size);
+  // If the resolved (override or EL) image fails to load — e.g. a deleted
+  // EL asset, a stale Supabase link — fall back to the page's bundled
+  // default rather than leaving a broken image in place.
+  const src = imgErrored && primarySrc !== bundledSrc ? bundledSrc : primarySrc;
   const alt = override?.altText ?? defaultAlt;
   const hasExplicitPosition = /\b(?:absolute|fixed|sticky)\b/.test(className ?? "");
+
+  // Reset the error flag whenever the resolved source changes (e.g. an
+  // admin swaps the photo), so a stale failure doesn't stick around.
+  useEffect(() => {
+    setImgErrored(false);
+  }, [rawSrc]);
 
   const handlePick = async (photo: PickedPhoto) => {
     await setMutation.mutateAsync({
@@ -87,25 +107,29 @@ export function HarvestImage({
     await clearMutation.mutateAsync({ page, slot });
   };
 
-  // Hold the skeleton until the override query has settled — otherwise the
-  // browser flashes the bundled fallback first and then re-fetches the EL
-  // override. With this gate, we render the img exactly once, with the right
-  // src.
+  // Wait for the override lookup before rendering, so the real photo is the
+  // only thing that ever appears — no flash of the bundled default swapping
+  // to the chosen photo a moment later. This used to stack into a slow-feeling
+  // load when the query itself was slow; that's fixed at the source now (DB
+  // pool + localized photos), so the wait here is brief and worth it.
   const isResolving = overrideQuery.isPending;
   const showSkeleton = isResolving || !loaded;
 
   return (
-    <div className={`${hasExplicitPosition ? "" : "relative"} group ${className ?? ""} ${showSkeleton ? "bg-stone-200 animate-pulse" : ""}`}>
+    <div className={`${hasExplicitPosition ? "" : "relative"} group ${className ?? ""} ${showSkeleton ? "bg-stone-200" : ""}`}>
       {!isResolving && src && (
         <img
           src={src}
           alt={alt}
-          className={`${imgClassName ?? ""} ${loaded ? "" : "opacity-0"} transition-opacity duration-300`}
+          className={`${imgClassName ?? ""} ${loaded ? "" : "opacity-0"}`}
           loading={priority ? "eager" : "lazy"}
           decoding={priority ? "sync" : "async"}
           fetchPriority={priority ? "high" : undefined}
           onLoad={() => setLoaded(true)}
-          onError={() => setLoaded(true)}
+          onError={() => {
+            setLoaded(true);
+            setImgErrored(true);
+          }}
         />
       )}
 
@@ -114,7 +138,13 @@ export function HarvestImage({
           {/* Hover-only admin overlay */}
           <div className="pointer-events-none absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-200" />
 
-          <div className="pointer-events-none absolute inset-0 flex items-center justify-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+          <div
+            className={`pointer-events-none absolute inset-0 flex gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200 ${
+              controlsPosition === "corner"
+                ? "items-start justify-end p-4 pt-11"
+                : "items-center justify-center"
+            }`}
+          >
             <button
               type="button"
               onClick={() => setPickerOpen(true)}

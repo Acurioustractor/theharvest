@@ -28,6 +28,11 @@ function Root() {
           url: "/api/trpc",
           transformer: superjson,
           headers: () => devAdminHeaders(),
+          // Pages with many independent EditableText/HarvestImage slots can
+          // batch dozens of queries into one GET request; cap the URL length
+          // so tRPC splits into multiple requests instead of tripping a
+          // "431 Request Header Fields Too Large" server response.
+          maxURLLength: 2000,
         }),
       ],
     })

@@ -108,7 +108,7 @@ The date spine is fixed. This only adds the content, reveal, and shop beats onto
 ## 8. Reuse vs net-new
 
 **Lean on (already built — do not rebuild):**
-- The locked 20 June date spine and the three-list members-first sequence (harvest-newsletter / harvest-member / harvest-shop-interest).
+- The locked 20 June date spine and the three-list members-first sequence (`harvest-newsletter` / `harvest-member` / `interest:markets`).
 - The four email templates and their written subjects (Field Note `6a1de93fa5ab652f24f6bee8`, Makers' invite `6a1de93f6972087910787f77`, Harvest Note 02 `6a1de9407526e35f3eb1506a`, Harvest Note 03 `6a1de941eae4d2744602e305`).
 - The two live RSVP calendar slots (maker session + afternoon pizza) and the welcome workflows.
 - The weekly content rhythm (Place / People / Making / Invitation) and the four content pillars. The posting engine already exists.
