@@ -40,14 +40,14 @@ const localStatic = Boolean(args.get("local-static"));
 const expectedSha = stringArg("expected-sha") ?? process.env.EXPECTED_SHA;
 
 const principalRoutes = [
-  { path: "/", marker: "Grow. Make. Gather." },
-  { path: "/whats-on", marker: "What's On" },
-  { path: "/membership", marker: "Become a Harvest member." },
-  { path: "/get-involved", marker: "Get Involved" },
-  { path: "/venue-hire", marker: "Venue Hire" },
-  { path: "/works", marker: "Everything here" },
-  { path: "/shop", marker: "Witta hasn't had a shop" },
-  { path: "/contact", marker: "GET IN TOUCH" },
+  { path: "/", marker: "harvest-route:home" },
+  { path: "/whats-on", marker: "harvest-route:whats-on" },
+  { path: "/membership", marker: "harvest-route:membership" },
+  { path: "/get-involved", marker: "harvest-route:get-involved" },
+  { path: "/venue-hire", marker: "harvest-route:venue-hire" },
+  { path: "/works", marker: "harvest-route:works" },
+  { path: "/shop", marker: "harvest-route:shop" },
+  { path: "/contact", marker: "harvest-route:contact" },
 ] as const;
 
 if (!deploymentUrl) {
@@ -288,7 +288,7 @@ async function checkBrowserMount() {
       const value = await waitForRouteMarker(browser, routeUrl, route.marker);
       record(
         `${route.path} current-site marker`,
-        Boolean(value?.rootText.includes(route.marker)),
+        value?.routeMarker === route.marker,
         value
           ? `rendered ${value.rootHtmlLength ?? 0} characters; expected “${route.marker}”`
           : `did not render “${route.marker}” before timeout`
@@ -337,7 +337,7 @@ async function waitForRouteMarker(
       expression: `(() => ({
         href: location.href,
         title: document.title,
-        rootText: document.querySelector("#root")?.textContent?.slice(0, 12000) ?? "",
+        routeMarker: document.querySelector("[data-harvest-route]")?.getAttribute("data-harvest-route") ?? "",
         rootHtmlLength: document.querySelector("#root")?.innerHTML.length ?? null
       }))()`,
       returnByValue: true,
@@ -347,10 +347,11 @@ async function waitForRouteMarker(
           href: string;
           title: string;
           rootText: string;
+          routeMarker: string;
           rootHtmlLength: number | null;
         }
       | undefined;
-    if (value?.rootText.includes(marker)) return value;
+    if (value?.routeMarker === marker) return value;
     await sleep(250);
   }
   return undefined;

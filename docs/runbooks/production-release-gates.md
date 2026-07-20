@@ -5,8 +5,9 @@ The Harvest production domain must represent the current commit on GitHub `main`
 ## Automated contract
 
 - Pull requests into `main` run TypeScript, the complete Vitest suite, a production build, and browser checks for all eight principal routes.
-- Pushes to `main` run the same checks, then wait for production `/api/version` to report that exact GitHub SHA.
-- Production promotion fails when a route does not contain its current-site identity marker or the browser reports a blocking runtime/configuration error.
+- Pushes to `main` run the same checks. The production verification job then waits for a manually promoted deployment and verifies that `/api/version` reports the exact GitHub SHA.
+- This project uses manual Vercel promotion: merging does not itself authorise promotion. Promote the `main` deployment only after the required pull-request checks and Vercel preview have passed.
+- After promotion, production verification fails when an immutable route identity is missing, the SHA differs, or the browser reports a blocking runtime/configuration error. This is a detection and rollback signal, not a substitute for the pre-promotion checks.
 - `/api/version` returns non-secret deployment provenance with `Cache-Control: no-store` and `X-Robots-Tag: noindex, nofollow`.
 
 Principal routes:
@@ -34,9 +35,10 @@ Repository code cannot set these account-level controls. Confirm them in GitHub 
 
 ### Vercel
 
-- Set the production branch to `main` only.
+- Set `main` as the only source eligible for manual production promotion.
 - Keep preview deployments enabled for feature branches.
 - Do not assign the production domain to preview deployments.
+- Keep automatic production promotion disabled; preview and verify first, then promote the successful `main` deployment.
 - Enable the Vercel system environment variables used by `/api/version`.
 - Optionally set `DEPLOYMENT_TIMESTAMP` if the project does not expose `VERCEL_DEPLOYMENT_CREATED_AT`.
 
