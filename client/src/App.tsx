@@ -71,6 +71,7 @@ function Router() {
   }, []);
 
   // All pages are standalone (no PublicLayout)
+
   if (location === "/") return <BauhausHome />;
   if (location === "/gather") return <Redirect to="/whats-on" />;
   if (location === "/about") return <Redirect to="/what-is-the-harvest" />;
@@ -145,11 +146,24 @@ function App() {
         <SeasonalProvider>
           <TooltipProvider>
             <Toaster />
+            <RouteIdentity />
             <Router />
           </TooltipProvider>
         </SeasonalProvider>
       </ThemeProvider>
     </ErrorBoundary>
+  );
+}
+
+function RouteIdentity() {
+  const [location] = useLocation();
+  const route = location === "/" ? "home" : location.slice(1).replaceAll("/", ":");
+  return (
+    <span
+      data-harvest-route={`harvest-route:${route}`}
+      hidden
+      aria-hidden="true"
+    />
   );
 }
 

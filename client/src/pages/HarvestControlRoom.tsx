@@ -12,6 +12,7 @@ import { getLoginUrl } from "@/const";
 import { trpc } from "@/lib/trpc";
 import { colors } from "@/styles/brand";
 import type { EditorialPost } from "@/types/social";
+import { useQuery } from "@tanstack/react-query";
 import {
   AlertTriangle,
   ArrowRight,
@@ -86,6 +87,14 @@ type GhlPost = {
   scheduledAt?: string;
   createdAt?: string;
   summary?: string;
+};
+
+type DeploymentVersion = {
+  commitSha: string;
+  deploymentId: string | null;
+  deployedAt: string | null;
+  environment: string;
+  productionUrl: string | null;
 };
 
 const statusClasses: Record<StatusTone, string> = {
@@ -511,6 +520,17 @@ export default function HarvestControlRoom() {
     retry: false,
     enabled: isAuthenticated && user?.role === "admin",
   });
+  const deploymentVersionQuery = useQuery({
+    queryKey: ["deployment-version"],
+    queryFn: async () => {
+      const response = await fetch("/api/version", { cache: "no-store" });
+      if (!response.ok) throw new Error(`Version endpoint returned ${response.status}`);
+      return (await response.json()) as DeploymentVersion;
+    },
+    enabled: isAuthenticated && user?.role === "admin",
+    staleTime: 60_000,
+    retry: false,
+  });
 
   useEffect(() => {
     document.title = "Harvest Control Room";
@@ -615,6 +635,28 @@ export default function HarvestControlRoom() {
               Refresh
             </Button>
           </div>
+        </div>
+      </section>
+
+      <section className="border-b border-stone-300 bg-[#FFFDF7] px-5 py-4 md:px-8">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-x-6 gap-y-2 font-mono text-[11px] uppercase tracking-[0.12em] text-stone-600">
+          <span className="font-semibold text-[#1C1917]">Deployment provenance</span>
+          {deploymentVersionQuery.data ? (
+            <>
+              <span>Commit {deploymentVersionQuery.data.commitSha.slice(0, 12)}</span>
+              <span>Environment {deploymentVersionQuery.data.environment}</span>
+              <span>Deployment {deploymentVersionQuery.data.deploymentId ?? "unavailable"}</span>
+              <span>
+                Deployed {deploymentVersionQuery.data.deployedAt
+                  ? new Date(deploymentVersionQuery.data.deployedAt).toLocaleString("en-AU")
+                  : "timestamp unavailable"}
+              </span>
+            </>
+          ) : deploymentVersionQuery.isError ? (
+            <span className="text-[#CF5C1E]">Version metadata unavailable</span>
+          ) : (
+            <span>Loading version metadata</span>
+          )}
         </div>
       </section>
 

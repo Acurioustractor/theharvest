@@ -36,6 +36,19 @@ const shareToken =
   process.env.VERCEL_SHARE_TOKEN ??
   process.env.VERCEL_PROTECTION_BYPASS;
 const skipBrowser = Boolean(args.get("skip-browser"));
+const localStatic = Boolean(args.get("local-static"));
+const expectedSha = stringArg("expected-sha") ?? process.env.EXPECTED_SHA;
+
+const principalRoutes = [
+  { path: "/", marker: "harvest-route:home" },
+  { path: "/whats-on", marker: "harvest-route:whats-on" },
+  { path: "/membership", marker: "harvest-route:membership" },
+  { path: "/get-involved", marker: "harvest-route:get-involved" },
+  { path: "/venue-hire", marker: "harvest-route:venue-hire" },
+  { path: "/works", marker: "harvest-route:works" },
+  { path: "/shop", marker: "harvest-route:shop" },
+  { path: "/contact", marker: "harvest-route:contact" },
+] as const;
 
 if (!deploymentUrl) {
   console.error(
@@ -52,9 +65,12 @@ const previewCookie = shareToken
   : "";
 
 await checkAppShell();
-await checkRedirect("/pizza", "/witta-pizza");
-await checkRedirect("/gather", "/whats-on");
-await checkRedirect("/photo-wall", "/whats-on");
+if (!localStatic) {
+  await checkRedirect("/pizza", "/witta-pizza");
+  await checkRedirect("/gather", "/whats-on");
+  await checkRedirect("/photo-wall", "/whats-on");
+  await checkVersion();
+}
 await checkSitemap();
 
 if (skipBrowser) {
@@ -190,6 +206,31 @@ async function checkSitemap() {
   );
 }
 
+async function checkVersion() {
+  const response = await deploymentFetch("/api/version", { redirect: "follow" });
+  const body = (await response.json().catch(() => null)) as
+    | {
+        commitSha?: string;
+        deploymentId?: string | null;
+        environment?: string;
+      }
+    | null;
+
+  record(
+    "version endpoint",
+    response.status === 200 && Boolean(body?.commitSha),
+    `expected deployment provenance, got ${response.status} ${body?.commitSha ?? "(no SHA)"}`
+  );
+
+  if (expectedSha) {
+    record(
+      "production commit SHA",
+      body?.commitSha === expectedSha,
+      `expected ${expectedSha}, got ${body?.commitSha ?? "(no SHA)"}`
+    );
+  }
+}
+
 async function checkBrowserMount() {
   const chromePath = findChrome();
   if (!chromePath) {
@@ -203,7 +244,7 @@ async function checkBrowserMount() {
 
   const profileDir = mkdtempSync(path.join(tmpdir(), "harvest-smoke-chrome-"));
   const port = 9300 + Math.floor(Math.random() * 500);
-  const url = new URL("/witta-pizza", baseUrl);
+  const url = new URL(principalRoutes[0].path, baseUrl);
   if (shareToken) url.searchParams.set("_vercel_share", shareToken);
   const chrome = spawn(
     chromePath,
@@ -241,54 +282,29 @@ async function checkBrowserMount() {
     await browser.send("Log.enable");
     await browser.send("Page.enable");
     await browser.send("Network.enable");
-    await browser.send("Page.navigate", { url: url.toString() }).catch(() => {
-      // Some Chrome/CDP builds do not reliably acknowledge Page.navigate, while
-      // the page still loads. The final DOM/runtime assertions below are the
-      // actual promotion gate.
-    });
-    await sleep(15_000);
-
-    const evaluated = await browser.send("Runtime.evaluate", {
-      expression: `(() => ({
-        href: location.href,
-        title: document.title,
-        rootText: document.querySelector("#root")?.textContent?.slice(0, 2000) ?? "",
-        rootHtmlLength: document.querySelector("#root")?.innerHTML.length ?? null
-      }))()`,
-      returnByValue: true,
-    });
-    browser.close();
-
-    const value = evaluated.result?.result?.value as
-      | {
-          href: string;
-          title: string;
-          rootText: string;
-          rootHtmlLength: number | null;
-        }
-      | undefined;
-    const errorText = JSON.stringify(events);
-    const browserError = summarizeBrowserError(events, errorText);
-
-    if (browserError) {
+    for (const route of principalRoutes) {
+      const routeUrl = new URL(route.path, baseUrl);
+      if (shareToken) routeUrl.searchParams.set("_vercel_share", shareToken);
+      const value = await waitForRouteMarker(browser, routeUrl, route.marker);
       record(
-        "browser mount",
-        false,
-        `browser runtime/config error found before promotion: ${browserError}`
+        `${route.path} current-site marker`,
+        value?.routeMarker === route.marker,
+        value
+          ? `rendered ${value.rootHtmlLength ?? 0} characters; expected “${route.marker}”`
+          : `did not render “${route.marker}” before timeout`
       );
-      return;
     }
 
-    if (!value || value.rootHtmlLength === 0) {
-      record("browser mount", false, "React root stayed empty");
-      return;
-    }
-
+    const errorText = JSON.stringify(events);
+    const browserError = summarizeBrowserError(events, errorText, localStatic);
     record(
-      "browser mount",
-      /Witta|pizza|Harvest/i.test(value.rootText),
-      `React root rendered ${value.rootHtmlLength} characters and contains Harvest/Witta/pizza content`
+      "browser runtime",
+      !browserError,
+      browserError
+        ? `runtime/config error found before promotion: ${browserError}`
+        : "no blocking browser runtime/config errors"
     );
+    browser.close();
   } catch (error) {
     record(
       "browser mount",
@@ -304,6 +320,41 @@ async function checkBrowserMount() {
       retryDelay: 100,
     });
   }
+}
+
+async function waitForRouteMarker(
+  browser: { send: (method: string, params?: Record<string, unknown>) => Promise<any> },
+  url: URL,
+  marker: string
+) {
+  await browser.send("Page.navigate", { url: url.toString() }).catch(() => {
+    // The final DOM assertion is the promotion gate.
+  });
+
+  const deadline = Date.now() + 15_000;
+  while (Date.now() < deadline) {
+    const evaluated = await browser.send("Runtime.evaluate", {
+      expression: `(() => ({
+        href: location.href,
+        title: document.title,
+        routeMarker: document.querySelector("[data-harvest-route]")?.getAttribute("data-harvest-route") ?? "",
+        rootHtmlLength: document.querySelector("#root")?.innerHTML.length ?? null
+      }))()`,
+      returnByValue: true,
+    });
+    const value = evaluated.result?.result?.value as
+      | {
+          href: string;
+          title: string;
+          rootText: string;
+          routeMarker: string;
+          rootHtmlLength: number | null;
+        }
+      | undefined;
+    if (value?.routeMarker === marker) return value;
+    await sleep(250);
+  }
+  return undefined;
 }
 
 async function stopChrome(chrome: ReturnType<typeof spawn>) {
@@ -452,12 +503,16 @@ function webSocketMessageToString(data: unknown) {
 
 function summarizeBrowserError(
   events: Array<{ method: string; params: unknown }>,
-  errorText: string
+  errorText: string,
+  allowMissingLocalEnv = false
 ) {
-  const patterns = [
+  const productionConfigPatterns = [
     "Supabase client env vars missing",
     "Supabase is not configured",
     "supabaseUrl is required",
+  ];
+  const patterns = [
+    ...(allowMissingLocalEnv ? [] : productionConfigPatterns),
     "Uncaught",
     "TypeError",
     "ReferenceError",
