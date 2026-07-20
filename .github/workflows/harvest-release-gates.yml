@@ -1,0 +1,86 @@
+name: Harvest release gates
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: harvest-release-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: TypeScript, tests, build, and route smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.4.1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm check
+      - run: pnpm test
+      - run: pnpm build
+      - name: Start built-site preview
+        run: |
+          pnpm exec vite preview --host 127.0.0.1 --port 4173 > /tmp/harvest-vite-preview.log 2>&1 &
+          echo $! > /tmp/harvest-vite-preview.pid
+          for attempt in {1..30}; do
+            curl --fail --silent http://127.0.0.1:4173/ >/dev/null && exit 0
+            sleep 1
+          done
+          cat /tmp/harvest-vite-preview.log
+          exit 1
+      - name: Verify eight current-site routes
+        env:
+          CHROME_PATH: /usr/bin/google-chrome
+        run: pnpm smoke:deployment -- --url http://127.0.0.1:4173 --local-static
+      - if: always()
+        run: test ! -f /tmp/harvest-vite-preview.pid || kill "$(cat /tmp/harvest-vite-preview.pid)" || true
+
+  verify-production:
+    name: Production SHA and route verification
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.4.1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Wait for production to report this main commit
+        env:
+          EXPECTED_SHA: ${{ github.sha }}
+          VERSION_URL: https://www.theharvestwitta.com.au/api/version
+        run: |
+          for attempt in {1..60}; do
+            live_sha="$(curl --fail --silent "$VERSION_URL" | node -e 'let body=""; process.stdin.on("data", c => body += c); process.stdin.on("end", () => { try { console.log(JSON.parse(body).commitSha || ""); } catch { console.log(""); } });')"
+            if [ "$live_sha" = "$EXPECTED_SHA" ]; then
+              echo "Production reports main commit $EXPECTED_SHA"
+              exit 0
+            fi
+            echo "Waiting for production: expected $EXPECTED_SHA, got ${live_sha:-unavailable}"
+            sleep 10
+          done
+          echo "Production never reported the pushed main commit."
+          exit 1
+      - name: Verify production identity and principal routes
+        env:
+          CHROME_PATH: /usr/bin/google-chrome
+        run: pnpm smoke:deployment -- --url https://www.theharvestwitta.com.au --expected-sha "${{ github.sha }}"

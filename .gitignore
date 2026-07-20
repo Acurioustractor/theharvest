@@ -133,9 +133,6 @@ test-results/
 .env.local.backup*
 *.backup-*
 
-# GitHub workflows (if added here)
-.github/
-
 # Global scripts symlink
 scripts-global
 
