@@ -605,6 +605,31 @@ function FeedbackBand() {
   );
 }
 
+type PizzaSession = "friday" | "saturday" | "sunday";
+
+const pizzaSessionByDay: Partial<Record<number, PizzaSession>> = {
+  0: "sunday",
+  5: "friday",
+  6: "saturday",
+};
+
+function todayInBrisbane() {
+  const parts = new Intl.DateTimeFormat("en-AU", {
+    timeZone: "Australia/Brisbane",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(new Date());
+  const value = Object.fromEntries(parts.map((part) => [part.type, part.value]));
+  return `${value.year}-${value.month}-${value.day}`;
+}
+
+function pizzaSessionForDate(value: string): PizzaSession | null {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return null;
+  const [year, month, day] = value.split("-").map(Number);
+  return pizzaSessionByDay[new Date(Date.UTC(year, month - 1, day)).getUTCDay()] ?? null;
+}
+
 function PizzaRsvpBlock() {
   const [form, setForm] = useState({ name: "", email: "", day: "", people: "2" });
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
@@ -613,12 +638,19 @@ function PizzaRsvpBlock() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    const session = pizzaSessionForDate(form.day);
+    if (!form.day || !session) {
+      setErrorMsg("Choose a Friday, Saturday or Sunday pizza date.");
+      setStatus("error");
+      return;
+    }
     setStatus("loading");
     try {
       await submitRsvp.mutateAsync({
         name: form.name,
         email: form.email,
-        day: form.day || undefined,
+        occurrenceDate: form.day,
+        session,
         people: form.people ? Number(form.people) : undefined,
         source: "whats-on",
       });
@@ -691,17 +723,15 @@ function PizzaRsvpBlock() {
               onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
               className="rounded-md border border-stone-300 bg-white px-4 py-3 text-stone-800"
             />
-            <select
+            <input
+              type="date"
+              required
+              min={todayInBrisbane()}
               value={form.day}
               onChange={(e) => setForm((f) => ({ ...f, day: e.target.value }))}
               className="rounded-md border border-stone-300 bg-white px-4 py-3 text-stone-800"
-            >
-              <option value="">Which session suits?</option>
-              <option value="Friday evening (pizza + movie)">Friday, pizza and movie, 3pm to 8pm</option>
-              <option value="Saturday (12-8pm)">Saturday, 12pm to 8pm</option>
-              <option value="Sunday (12-6pm)">Sunday, 12pm to 6pm</option>
-              <option value="Not sure yet">Not sure yet</option>
-            </select>
+              aria-label="Pizza date"
+            />
             <input
               type="number"
               min={1}

@@ -213,7 +213,7 @@ async function checkBrowserMount() {
       "--no-sandbox",
       `--remote-debugging-port=${port}`,
       `--user-data-dir=${profileDir}`,
-      "about:blank",
+      url.toString(),
     ],
     { stdio: ["ignore", "ignore", "pipe"] }
   );
@@ -225,7 +225,10 @@ async function checkBrowserMount() {
 
   try {
     const tabs = await waitForDevToolsTabs(port, () => stderr);
-    const webSocketUrl = tabs[0]?.webSocketDebuggerUrl;
+    const targetTab =
+      tabs.find((tab) => tab.type === "page" && tab.url?.includes(url.host)) ??
+      tabs.find((tab) => tab.type === "page");
+    const webSocketUrl = targetTab?.webSocketDebuggerUrl;
     if (!webSocketUrl) {
       record("browser mount", false, "Chrome DevTools tab was not available");
       return;
@@ -249,7 +252,7 @@ async function checkBrowserMount() {
       expression: `(() => ({
         href: location.href,
         title: document.title,
-        bodyText: document.body.innerText.slice(0, 1000),
+        rootText: document.querySelector("#root")?.textContent?.slice(0, 2000) ?? "",
         rootHtmlLength: document.querySelector("#root")?.innerHTML.length ?? null
       }))()`,
       returnByValue: true,
@@ -260,7 +263,7 @@ async function checkBrowserMount() {
       | {
           href: string;
           title: string;
-          bodyText: string;
+          rootText: string;
           rootHtmlLength: number | null;
         }
       | undefined;
@@ -283,8 +286,8 @@ async function checkBrowserMount() {
 
     record(
       "browser mount",
-      /Witta|pizza|Harvest/i.test(value.bodyText),
-      "rendered DOM contains Harvest/Witta/pizza content"
+      /Witta|pizza|Harvest/i.test(value.rootText),
+      `React root rendered ${value.rootHtmlLength} characters and contains Harvest/Witta/pizza content`
     );
   } catch (error) {
     record(
@@ -330,7 +333,11 @@ async function waitForDevToolsTabs(port: number, getStderr: () => string) {
         signal: AbortSignal.timeout(1_000),
       });
       if (response.ok) {
-        return (await response.json()) as Array<{ webSocketDebuggerUrl?: string }>;
+        return (await response.json()) as Array<{
+          type?: string;
+          url?: string;
+          webSocketDebuggerUrl?: string;
+        }>;
       }
     } catch {
       // Chrome is still starting.
