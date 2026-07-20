@@ -19,6 +19,7 @@ When that interactive flow is risky, write the migration SQL by hand and apply i
 | `0002_image_overrides_and_witta_contributions.sql` | 2026-05-09 (verify) | Adds `image_overrides` and `witta_contributions` tables; widens `editable_content.slot` from varchar(100) to varchar(200) |
 | `0003_member_wall_entries.sql` | pending | Adds the opt-in public members wall table |
 | `0004_public_form_tables.sql` | 2026-05-24 | Adds missing public form tables for event submissions, business submissions, and event feedback |
+| `0005_lock_down_harvest_server_managed_tables.sql` | 2026-06-07 | Enables RLS and revokes browser-role grants for `editable_content`, `image_overrides`, `member_wall_entries`, and `witta_contributions` |
 
 ## When to use this vs `npm run db:push`
 

@@ -75,7 +75,7 @@ const zones: Zone[] = [
     ],
     position: { top: "35%", left: "45%" },
     color: "bg-amber-500",
-    image: "/images/zone-kitchen.jpg",
+    image: "/images/optimized/local-produce-900.webp",
   },
   {
     id: "garden-centre",
@@ -93,7 +93,7 @@ const zones: Zone[] = [
     ],
     position: { top: "55%", left: "25%" },
     color: "bg-green-500",
-    image: "/images/zone-garden.jpg",
+    image: "/images/optimized/hero-aerial-1400.webp",
   },
   {
     id: "gathering-space",
@@ -111,7 +111,7 @@ const zones: Zone[] = [
     ],
     position: { top: "25%", left: "65%" },
     color: "bg-blue-500",
-    image: "/images/zone-gathering.jpg",
+    image: "/images/optimized/community-gathering-1200.webp",
   },
   {
     id: "makers-shed",
@@ -129,7 +129,7 @@ const zones: Zone[] = [
     ],
     position: { top: "65%", left: "60%" },
     color: "bg-purple-500",
-    image: "/images/zone-makers.jpg",
+    image: "/images/optimized/barry-5745-1000.webp",
   },
   {
     id: "food-forest",
@@ -147,7 +147,7 @@ const zones: Zone[] = [
     ],
     position: { top: "75%", left: "40%" },
     color: "bg-emerald-500",
-    image: "/images/zone-forest.jpg",
+    image: "/images/optimized/hero-aerial-1400.webp",
   },
   {
     id: "parking",
@@ -165,7 +165,7 @@ const zones: Zone[] = [
     ],
     position: { top: "45%", left: "15%" },
     color: "bg-stone-500",
-    image: "/images/zone-arrival.jpg",
+    image: "/images/optimized/seed-house-front-1600.webp",
   },
   {
     id: "future-hub",
@@ -183,7 +183,7 @@ const zones: Zone[] = [
     ],
     position: { top: "20%", left: "35%" },
     color: "bg-stone-400",
-    image: "/images/zone-future.jpg",
+    image: "/images/optimized/hero-aerial-1400.webp",
   },
 ];
 

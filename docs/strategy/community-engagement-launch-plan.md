@@ -118,7 +118,7 @@ Consent on format: ask each first-audience how they want to receive and share be
 | Partners | Second | Warming funnel | Receive | partner pipeline |
 | Corporate (team days) | Second | Warming funnel | Use it | corporate pipeline |
 | Funders | Second | Warming funnel | Receive | funder pipeline |
-| Makers / shop | Cross-cutting | Shop form | Use it / Make it | `harvest-shop-interest` |
+| Makers / shop | Cross-cutting | Shop form | Use it / Make it | `interest:markets` |
 | Broader public | Second | Social plus website | Receive | `harvest-website` |
 
 ## Content note

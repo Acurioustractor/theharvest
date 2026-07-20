@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Link } from "wouter";
 import { ArrowRight } from "lucide-react";
 import { harvestButtonClasses, SiteFooter, SiteNav } from "./HarvestReviewTest";
+import { setPageSeo } from "@/lib/seo";
 
 const sections = [
   {
@@ -33,16 +34,12 @@ const sections = [
 
 export default function Privacy() {
   useEffect(() => {
-    document.title = "Privacy · The Harvest Witta";
-
-    let meta = document.querySelector('meta[name="description"]') as HTMLMetaElement | null;
-    if (!meta) {
-      meta = document.createElement("meta");
-      meta.name = "description";
-      document.head.appendChild(meta);
-    }
-    meta.content =
-      "Plain privacy notes for The Harvest Witta member list, contact forms, shop interest forms, and community memory contributions.";
+    setPageSeo({
+      title: "Privacy · The Harvest Witta",
+      description:
+        "Plain privacy notes for The Harvest Witta member list, contact forms, shop interest forms, and community contributions.",
+      path: "/privacy",
+    });
   }, []);
 
   return (

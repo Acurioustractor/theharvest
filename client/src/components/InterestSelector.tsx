@@ -56,6 +56,8 @@ interface InterestSelectorProps {
   onChange: (interests: Interest[]) => void;
   variant?: "light" | "dark";
   className?: string;
+  id?: string;
+  name?: string;
 }
 
 export function InterestSelector({
@@ -63,6 +65,8 @@ export function InterestSelector({
   onChange,
   variant = "light",
   className,
+  id = "interest-selector",
+  name = "interests",
 }: InterestSelectorProps) {
   const toggleInterest = (interest: Interest) => {
     if (selected.includes(interest)) {
@@ -73,16 +77,17 @@ export function InterestSelector({
   };
 
   const isDark = variant === "dark";
+  const labelId = `${id}-label`;
 
   return (
     <div className={cn("space-y-2", className)}>
-      <p className={cn(
+      <p id={labelId} className={cn(
         "text-sm font-medium",
         isDark ? "text-stone-300" : "text-stone-600"
       )}>
         I'm interested in: <span className={cn("font-normal", isDark ? "text-stone-400" : "text-stone-500")}>(optional)</span>
       </p>
-      <div className="flex flex-wrap gap-2">
+      <div role="group" aria-labelledby={labelId} className="flex flex-wrap gap-2">
         {interestOptions.map((option) => {
           const isSelected = selected.includes(option.id);
           const Icon = option.icon;
@@ -90,7 +95,11 @@ export function InterestSelector({
           return (
             <button
               key={option.id}
+              id={`${id}-${option.id}`}
+              name={name}
+              value={option.id}
               type="button"
+              aria-pressed={isSelected}
               onClick={() => toggleInterest(option.id)}
               className={cn(
                 "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-all",
@@ -104,7 +113,7 @@ export function InterestSelector({
                     : "bg-stone-100 text-stone-600 border-stone-200 hover:bg-stone-200 hover:border-stone-300"
               )}
             >
-              <Icon className="h-3.5 w-3.5" />
+              <Icon aria-hidden="true" className="h-3.5 w-3.5" />
               {option.label}
             </button>
           );

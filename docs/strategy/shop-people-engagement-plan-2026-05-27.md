@@ -10,8 +10,8 @@
 - The Shop work (`works.ts:287`) carries the hook ("village shop Witta hasn't had in a
   generation"), three Witta threads, and three CTAs to `#shop-interest`.
 - `WorkDetail.tsx:337` renders `<ShopInterestSection />` for the-shop.
-- Intake `shopInterest.submit` (`routers.ts:870`) → tags `harvest-shop-interest`,
-  `harvest-website`, `shop-follow-up`, offer tag → fires "Harvest - Shop Interest Receipt"
+- Intake `shopInterest.submit` (`routers.ts:870`) → tags `project:act-hv`, `role:supplier`,
+  `interest:markets`, `shop-follow-up`, `shop-stage-1`, offer tag → fires "Harvest - Shop Interest Receipt"
   (`GHL_SHOP_INTEREST_WORKFLOW_ID`, wired). Receipt fires once, no further touch.
 
 So the door is not missing. The gaps are friction at the door and no ongoing drip.
@@ -58,7 +58,7 @@ The receipt fires once. Add a nurture sequence so makers get ongoing, useful tou
 "engagement" the track is about. Same shape as the follow-welcome we just shipped.
 
 - New spec section in `ghl-workflow-build-specs.md`: **"Harvest - Shop Nurture"** — trigger
-  on tag `harvest-shop-interest`, wait a few days, send a follow-up branched by offer tag
+  on tag `interest:markets`, wait a few days, send a follow-up branched by offer tag
   (`shop-produce` / `shop-maker` / `shop-food` / `shop-consignment` / `shop-follow-up`).
   Harvest-voice email copy per branch, drafted in the spec. Keep the existing receipt
   workflow as the immediate ack; the nurture is the second touch.

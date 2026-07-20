@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>The Harvest Question Wall - 20 June 2026</title>
+    <style>
+      :root {
+        --shed: #1c1917;
+        --milk: #f5f0e8;
+        --rammed-earth: #b58b70;
+        --golden-hour: #c4922a;
+        --canopy: #4a6741;
+        --workshirt: #3b5563;
+        --crane: #8b4a2a;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: var(--milk);
+        color: var(--shed);
+        font-family: Inter, Arial, sans-serif;
+      }
+
+      .page {
+        min-height: 100vh;
+        width: 100%;
+        padding: 32mm 26mm;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        page-break-after: always;
+      }
+
+      .label {
+        font-size: 15px;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--workshirt);
+      }
+
+      .prompt {
+        max-width: 980px;
+        font-family: Montserrat, Inter, Arial, sans-serif;
+        font-size: 76px;
+        line-height: 0.94;
+        font-weight: 900;
+        letter-spacing: 0;
+        margin: 18mm 0 16mm;
+      }
+
+      .support {
+        max-width: 760px;
+        font-size: 26px;
+        line-height: 1.25;
+      }
+
+      .footer {
+        display: flex;
+        justify-content: space-between;
+        gap: 24px;
+        border-top: 3px solid var(--shed);
+        padding-top: 8mm;
+        font-size: 18px;
+        font-weight: 700;
+      }
+
+      .cards {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(2, 1fr);
+        gap: 14mm;
+        min-height: calc(100vh - 64mm);
+      }
+
+      .card {
+        border: 3px solid var(--shed);
+        padding: 12mm;
+        min-height: 105mm;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+
+      .card.question {
+        border-top: 18mm solid var(--workshirt);
+      }
+
+      .card.support-card {
+        border-top: 18mm solid var(--canopy);
+      }
+
+      .card.offer {
+        border-top: 18mm solid var(--golden-hour);
+      }
+
+      .card h2 {
+        margin: 0;
+        font-family: Montserrat, Inter, Arial, sans-serif;
+        font-size: 38px;
+        line-height: 1;
+        letter-spacing: 0;
+      }
+
+      .card p {
+        margin: 0;
+        font-size: 17px;
+        line-height: 1.3;
+      }
+
+      .write-lines {
+        display: grid;
+        gap: 12mm;
+        margin-top: 16mm;
+      }
+
+      .write-lines span {
+        display: block;
+        border-bottom: 2px solid var(--shed);
+        height: 1px;
+      }
+
+      .small {
+        font-size: 14px;
+        font-weight: 700;
+      }
+
+      @media print {
+        @page {
+          size: A4;
+          margin: 0;
+        }
+
+        body {
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <section class="page">
+      <div>
+        <div class="label">Question wall / The Harvest / 20 June</div>
+        <h1 class="prompt">What should this place hold?</h1>
+        <p class="support">
+          Write one thing. A meal. A workshop. A shop shelf. A garden bed. A kids corner.
+          A story. A warning. A thing you want to see here.
+        </p>
+      </div>
+      <div class="footer">
+        <span>9 Gumland Drive, Witta</span>
+        <span>Garden / Kitchen / Art Space</span>
+      </div>
+    </section>
+
+    <section class="page">
+      <div>
+        <div class="label">Question wall / The Harvest / 20 June</div>
+        <h1 class="prompt">What should this place not become?</h1>
+        <p class="support">
+          Useful criticism is welcome. Tell us what would make the place feel wrong,
+          too polished, too closed, too expensive, too loud, or not Witta enough.
+        </p>
+      </div>
+      <div class="footer">
+        <span>Write it plainly</span>
+        <span>No one is keeping score</span>
+      </div>
+    </section>
+
+    <section class="page">
+      <div>
+        <div class="label">Question wall / The Harvest / 20 June</div>
+        <h1 class="prompt">What can you bring?</h1>
+        <p class="support">
+          A story. A skill. A tool. A crate. A plant. A recipe. A few hours.
+          A local contact. A hard question. Put it here.
+        </p>
+      </div>
+      <div class="footer">
+        <span>Bring what is real</span>
+        <span>We will write it down</span>
+      </div>
+    </section>
+
+    <section class="page">
+      <div class="cards">
+        <article class="card question">
+          <div>
+            <h2>Question</h2>
+            <p>I want to understand / I am unsure / I disagree.</p>
+            <div class="write-lines"><span></span><span></span><span></span></div>
+          </div>
+          <p class="small">Name optional</p>
+        </article>
+        <article class="card question">
+          <div>
+            <h2>Question</h2>
+            <p>I want to understand / I am unsure / I disagree.</p>
+            <div class="write-lines"><span></span><span></span><span></span></div>
+          </div>
+          <p class="small">Name optional</p>
+        </article>
+        <article class="card question">
+          <div>
+            <h2>Question</h2>
+            <p>I want to understand / I am unsure / I disagree.</p>
+            <div class="write-lines"><span></span><span></span><span></span></div>
+          </div>
+          <p class="small">Name optional</p>
+        </article>
+        <article class="card question">
+          <div>
+            <h2>Question</h2>
+            <p>I want to understand / I am unsure / I disagree.</p>
+            <div class="write-lines"><span></span><span></span><span></span></div>
+          </div>
+          <p class="small">Name optional</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="page">
+      <div class="cards">
+        <article class="card support-card">
+          <div>
+            <h2>Support</h2>
+            <p>I want this to happen / I can help / I want to stay close.</p>
+            <div class="write-lines"><span></span><span></span><span></span></div>
+          </div>
+          <p class="small">Name + phone/email if you want a reply</p>
+        </article>
+        <article class="card support-card">
+          <div>
+            <h2>Support</h2>
+            <p>I want this to happen / I can help / I want to stay close.</p>
+            <div class="write-lines"><span></span><span></span><span></span></div>
+          </div>
+          <p class="small">Name + phone/email if you want a reply</p>
+        </article>
+        <article class="card support-card">
+          <div>
+            <h2>Support</h2>
+            <p>I want this to happen / I can help / I want to stay close.</p>
+            <div class="write-lines"><span></span><span></span><span></span></div>
+          </div>
+          <p class="small">Name + phone/email if you want a reply</p>
+        </article>
+        <article class="card support-card">
+          <div>
+            <h2>Support</h2>
+            <p>I want this to happen / I can help / I want to stay close.</p>
+            <div class="write-lines"><span></span><span></span><span></span></div>
+          </div>
+          <p class="small">Name + phone/email if you want a reply</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="page">
+      <div class="cards">
+        <article class="card offer">
+          <div>
+            <h2>Offer</h2>
+            <p>I can bring something specific.</p>
+            <div class="write-lines"><span></span><span></span><span></span></div>
+          </div>
+          <p class="small">Name + phone/email needed</p>
+        </article>
+        <article class="card offer">
+          <div>
+            <h2>Offer</h2>
+            <p>I can bring something specific.</p>
+            <div class="write-lines"><span></span><span></span><span></span></div>
+          </div>
+          <p class="small">Name + phone/email needed</p>
+        </article>
+        <article class="card offer">
+          <div>
+            <h2>Offer</h2>
+            <p>I can bring something specific.</p>
+            <div class="write-lines"><span></span><span></span><span></span></div>
+          </div>
+          <p class="small">Name + phone/email needed</p>
+        </article>
+        <article class="card offer">
+          <div>
+            <h2>Offer</h2>
+            <p>I can bring something specific.</p>
+            <div class="write-lines"><span></span><span></span><span></span></div>
+          </div>
+          <p class="small">Name + phone/email needed</p>
+        </article>
+      </div>
+    </section>
+  </body>
+</html>

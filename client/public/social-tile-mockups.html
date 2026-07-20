@@ -341,7 +341,7 @@
         <div class="branding text-milk">The Harvest, Witta</div>
       </div>
     </div>
-    <div class="tile-caption">Facebook Event image. Share in Maleny, Witta, Hinterland groups. Link: /gather</div>
+    <div class="tile-caption">Facebook Event image. Share in Maleny, Witta, Hinterland groups. Link: /whats-on</div>
     <div class="tile-photo-info" id="tile-info-1">02-event-announcement.png</div>
   </div>
 
@@ -356,7 +356,7 @@
         <div class="branding text-milk">The Harvest, Witta</div>
       </div>
     </div>
-    <div class="tile-caption">Trust signal + food story. Post 3-4 days before. Link: /gather</div>
+    <div class="tile-caption">Trust signal + food story. Post 3-4 days before. Link: /whats-on</div>
     <div class="tile-photo-info" id="tile-info-2">03-shaun-fisher.png</div>
   </div>
 
@@ -429,7 +429,7 @@
         <div class="branding text-milk">The Harvest, Witta</div>
       </div>
     </div>
-    <div class="tile-caption">One week out. Urgency post. Boost this one. Link: /gather</div>
+    <div class="tile-caption">One week out. Urgency post. Boost this one. Link: /whats-on</div>
     <div class="tile-photo-info" id="tile-info-7">08-countdown-7days.png</div>
   </div>
 
@@ -444,7 +444,7 @@
         <div class="branding text-milk">The Harvest, Witta</div>
       </div>
     </div>
-    <div class="tile-caption">Witta locals only. Share in local groups and next-door apps. Link: /gather</div>
+    <div class="tile-caption">Witta locals only. Share in local groups and next-door apps. Link: /whats-on</div>
     <div class="tile-photo-info" id="tile-info-8">09-locals-day.png</div>
   </div>
 
@@ -459,7 +459,7 @@
         <div class="branding text-milk">The Harvest, Witta</div>
       </div>
     </div>
-    <div class="tile-caption">Final CTA. Post day before + use as paid boost. Link: /gather</div>
+    <div class="tile-caption">Final CTA. Post day before + use as paid boost. Link: /whats-on</div>
     <div class="tile-photo-info" id="tile-info-9">10-save-your-spot.png</div>
   </div>
 
@@ -487,7 +487,7 @@
         <div class="branding text-milk">The Harvest, Witta</div>
       </div>
     </div>
-    <div class="tile-caption">Instagram/Facebook story. Swipe-up or link sticker to /gather.</div>
+    <div class="tile-caption">Instagram/Facebook story. Swipe-up or link sticker to /whats-on.</div>
     <div class="tile-photo-info" id="tile-info-11">12-story-invite.png</div>
   </div>
 
@@ -516,7 +516,7 @@
         <div class="branding text-milk">The Harvest, Witta</div>
       </div>
     </div>
-    <div class="tile-caption">Three days out. Pair with 7-day countdown. Story + feed. Link: /gather</div>
+    <div class="tile-caption">Three days out. Pair with 7-day countdown. Story + feed. Link: /whats-on</div>
     <div class="tile-photo-info" id="tile-info-13">14-countdown-3days.png</div>
   </div>
 </div>
@@ -588,7 +588,7 @@
 <div class="tracking" style="border-top:none; padding-top:0;">
   <h2>Tracking Architecture — GHL + UTM</h2>
   <p><strong>Every link in every post</strong> uses this format:</p>
-  <p style="margin-bottom:1rem;"><code>theharvestwitta.com.au/gather?utm_source=instagram&amp;utm_medium=social&amp;utm_campaign=first-gathering&amp;utm_content=post-1-announcement</code></p>
+  <p style="margin-bottom:1rem;"><code>theharvestwitta.com.au/whats-on?utm_source=instagram&amp;utm_medium=social&amp;utm_campaign=first-gathering&amp;utm_content=post-1-announcement</code></p>
   <p><strong>What this gives you:</strong></p>
   <ul>
     <li><strong>utm_source</strong> — which platform (instagram, facebook, google-business)</li>
@@ -598,7 +598,7 @@
   </ul>
   <p><strong>GHL tracking flow:</strong></p>
   <ul>
-    <li>Person sees post &rarr; clicks link &rarr; lands on <code>/gather</code> with UTM params</li>
+    <li>Person sees post &rarr; clicks link &rarr; lands on <code>/whats-on</code> with UTM params</li>
     <li>Person fills RSVP form &rarr; creates GHL contact with <strong>source = utm_source</strong></li>
     <li>GHL shows: <strong>which posts drive RSVPs</strong>, which platform works best</li>
   </ul>
@@ -706,18 +706,18 @@ let uploadedThisSession = [];
 let socialPosts = [
   // Fallback data used while Notion loads
   { date: '2026-02-18', title: 'Origin Story', tile: 0, platforms: ['IG','FB'], link: '/' },
-  { date: '2026-02-20', title: 'First Gathering', tile: 1, platforms: ['IG','FB','GBP'], link: '/gather' },
-  { date: '2026-02-22', title: 'Shaun Fisher', tile: 2, platforms: ['IG','FB'], link: '/gather' },
+  { date: '2026-02-20', title: 'First Gathering', tile: 1, platforms: ['IG','FB','GBP'], link: '/whats-on' },
+  { date: '2026-02-22', title: 'Shaun Fisher', tile: 2, platforms: ['IG','FB'], link: '/whats-on' },
   { date: '2026-02-24', title: 'Radical Scoops', tile: 3, platforms: ['IG','FB'], link: '/' },
   { date: '2026-02-26', title: 'Zone: Garden', tile: 4, platforms: ['IG','FB'], link: '/' },
   { date: '2026-02-27', title: 'Zone: Art', tile: 5, platforms: ['IG','FB'], link: '/' },
   { date: '2026-02-28', title: 'Zone: Food', tile: 6, platforms: ['IG','FB'], link: '/' },
-  { date: '2026-03-01', title: 'Countdown 7 Days', tile: 7, platforms: ['IG','FB','GBP'], link: '/gather' },
-  { date: '2026-03-03', title: 'Locals Day', tile: 8, platforms: ['FB'], link: '/gather' },
-  { date: '2026-03-04', title: 'Story: Shaun', tile: 12, platforms: ['IG'], link: '/gather' },
-  { date: '2026-03-04', title: 'Countdown 3 Days', tile: 13, platforms: ['IG','FB'], link: '/gather' },
-  { date: '2026-03-05', title: 'Save Your Spot', tile: 9, platforms: ['IG','FB','GBP'], link: '/gather' },
-  { date: '2026-03-05', title: 'Story: Invite', tile: 11, platforms: ['IG'], link: '/gather' },
+  { date: '2026-03-01', title: 'Countdown 7 Days', tile: 7, platforms: ['IG','FB','GBP'], link: '/whats-on' },
+  { date: '2026-03-03', title: 'Locals Day', tile: 8, platforms: ['FB'], link: '/whats-on' },
+  { date: '2026-03-04', title: 'Story: Shaun', tile: 12, platforms: ['IG'], link: '/whats-on' },
+  { date: '2026-03-04', title: 'Countdown 3 Days', tile: 13, platforms: ['IG','FB'], link: '/whats-on' },
+  { date: '2026-03-05', title: 'Save Your Spot', tile: 9, platforms: ['IG','FB','GBP'], link: '/whats-on' },
+  { date: '2026-03-05', title: 'Story: Invite', tile: 11, platforms: ['IG'], link: '/whats-on' },
 ];
 
 // Fetch editorial posts from Notion via tRPC and replace socialPosts

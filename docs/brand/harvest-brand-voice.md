@@ -7,19 +7,19 @@ Plain. Local. Awake. No varnish.
 ## One-line identity
 
 ```text
-The Harvest is a garden, kitchen, and art space taking shape in Witta.
+The Harvest is a community garden and creative gathering place taking shape in Witta.
 ```
 
 ## Short description
 
 ```text
-The Harvest is a working community hub in Witta: a garden to grow from, a kitchen to feed from, and an art space to make in.
+The Harvest is a community garden and creative gathering place in Witta, on Jinibara Country.
 ```
 
 ## Longer description
 
 ```text
-The Harvest is a working community hub in Witta, on Jinibara Country. A former nursery is becoming three public rooms: a garden, a kitchen, and an art space. The first version is being built with local hands, old timber, milk crates, shared meals, and the people who want to help shape it.
+The Harvest is a community garden and creative gathering place taking shape in Witta, on Jinibara Country. The garden opens at the end of June. The public rhythm is simple: Grow. Make. Gather.
 ```
 
 ## Voice rules
@@ -27,8 +27,8 @@ The Harvest is a working community hub in Witta, on Jinibara Country. A former n
 Use:
 
 - short paragraphs
-- named rooms
 - named objects
+- Grow, Make, Gather when the structure needs naming
 - practical asks
 - local detail
 - one clear next action
@@ -46,7 +46,7 @@ Avoid:
 
 Before publishing, ask:
 
-- Is there a room in the sentence?
+- Does the sentence help someone understand Grow, Make, or Gather?
 - Is there a body, tool, plant, plate, or material?
 - Does the line stop before it explains itself?
 - Is there one clear action?
@@ -194,9 +194,8 @@ Use one per piece:
 
 ## Words to keep close
 
-garden, kitchen, art space, table, shed, timber, milk, crate, tool, soil, path, pot, plate, wall, studio, nursery, hands, neighbour, Witta, ridge, working bee, pavilion, local.
+grow, make, gather, garden, table, shed, timber, milk, crate, tool, soil, path, pot, plate, sign, wall, studio, nursery, hands, neighbour, Witta, ridge, working bee, pavilion, local.
 
 ## Words to keep out
 
 precinct, destination, offering, activate, ecosystem, stakeholders, vibrant, unique, innovative, world-class, immersive, community-led if no actual community decision is named.
-

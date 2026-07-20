@@ -6,7 +6,7 @@
  */
 
 import { readFileSync, existsSync, readdirSync, statSync } from "fs";
-import { join, resolve, extname, basename } from "path";
+import { join, resolve, extname, basename, sep } from "path";
 import { parse as parseYaml } from "yaml";
 
 // Base path to wiki content
@@ -16,10 +16,10 @@ const WIKI_BASE = resolve(process.cwd(), "thoughts/wiki");
  * Safely read a file from the wiki folder
  */
 function readWikiFile(relativePath: string): string | null {
-  const fullPath = join(WIKI_BASE, relativePath);
+  const fullPath = resolve(WIKI_BASE, relativePath);
 
   // Prevent path traversal
-  if (!fullPath.startsWith(WIKI_BASE)) {
+  if (fullPath !== WIKI_BASE && !fullPath.startsWith(`${WIKI_BASE}${sep}`)) {
     console.error("Path traversal attempt blocked:", relativePath);
     return null;
   }
@@ -283,6 +283,11 @@ export function listStories(): string[] {
  * Load a specific story by slug
  */
 export function loadStory(slug: string): { frontmatter: Record<string, unknown>; body: string } | null {
+  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
+    console.error("Invalid story slug blocked:", slug);
+    return null;
+  }
+
   const content = readWikiFile(`community/stories/${slug}.md`);
   if (!content) return null;
 

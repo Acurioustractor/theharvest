@@ -5,6 +5,8 @@
  * Content Hub API for display on The Harvest website.
  */
 
+import { mirrorHarvestImage } from "./harvestImageStorage.js";
+
 export interface ELArticle {
   id: string;
   title: string;
@@ -126,7 +128,10 @@ interface FetchArticlesOptions {
   before?: string;
 }
 
-const DEFAULT_BASE_URL = process.env.EMPATHY_LEDGER_API_URL || "https://empathyledger.com";
+const DEFAULT_BASE_URL =
+  process.env.EMPATHY_LEDGER_API_URL ||
+  process.env.VITE_EMPATHY_LEDGER_URL ||
+  "https://empathy-ledger-v2.vercel.app";
 const API_KEY = process.env.EMPATHY_LEDGER_API_KEY || "";
 
 /**
@@ -141,31 +146,65 @@ class EmpathyLedgerClient {
     this.apiKey = apiKey || API_KEY;
   }
 
+  /**
+   * The content-hub/media endpoint returns internal `/api/media/:id/file`
+   * links that redirect to the underlying storage URL. Browsers block
+   * loading those cross-origin (the EL server sends
+   * Cross-Origin-Resource-Policy: same-origin), so resolve to the final
+   * storage URL here, server-side, before handing it to the client. This
+   * also keeps saved image overrides portable — they end up pointing at the
+   * permanent storage URL rather than a local EL dev-server port.
+   */
+  private async resolveMediaFileUrl(url: string): Promise<string> {
+    if (!/^https?:\/\/[^/]+\/api\/media\//.test(url)) return url;
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 4000);
+      const response = await fetch(url, { redirect: "manual", signal: controller.signal });
+      clearTimeout(timeout);
+      const location = response.headers.get("location");
+      return location || url;
+    } catch (error) {
+      console.error(`[EmpathyLedger] Failed to resolve media URL ${url}:`, error);
+      return url;
+    }
+  }
+
   private async fetch<T>(endpoint: string, options?: RequestInit): Promise<T> {
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
     };
+
+    // EL is an enrichment source, not a reason for a public page to hang.
+    // A bounded request lets callers return their local fallback content.
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 8_000);
 
     // Add API key for ecosystem-level access if available
     if (this.apiKey) {
       headers["X-API-Key"] = this.apiKey;
     }
 
-    const response = await fetch(`${this.baseUrl}${endpoint}`, {
-      ...options,
-      headers: {
-        ...headers,
-        ...options?.headers,
-      },
-    });
+    try {
+      const response = await fetch(`${this.baseUrl}${endpoint}`, {
+        ...options,
+        signal: controller.signal,
+        headers: {
+          ...headers,
+          ...options?.headers,
+        },
+      });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error(`[EmpathyLedger] API error: ${response.status} - ${errorText}`);
-      throw new Error(`Empathy Ledger API error: ${response.status}`);
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error(`[EmpathyLedger] API error: ${response.status} - ${errorText}`);
+        throw new Error(`Empathy Ledger API error: ${response.status}`);
+      }
+
+      return response.json();
+    } finally {
+      clearTimeout(timeout);
     }
-
-    return response.json();
   }
 
   /**
@@ -191,7 +230,11 @@ class EmpathyLedgerClient {
     const endpoint = `/api/v1/content-hub/articles${queryString ? `?${queryString}` : ""}`;
 
     try {
-      return await this.fetch<ELArticlesResponse>(endpoint);
+      const response = await this.fetch<ELArticlesResponse>(endpoint);
+      return {
+        ...response,
+        articles: await this.mirrorArticleImages(response.articles),
+      };
     } catch (error) {
       console.error("[EmpathyLedger] Failed to fetch articles:", error);
       // Return empty response on error
@@ -204,8 +247,11 @@ class EmpathyLedgerClient {
    */
   async fetchArticle(slug: string): Promise<ELArticle | null> {
     try {
-      const response = await this.fetch<ELArticle>(`/api/v1/content-hub/articles/${slug}`);
-      return response;
+      const response = await this.fetch<ELArticle>(
+        `/api/v1/content-hub/articles/${encodeURIComponent(slug)}`,
+      );
+      const [article] = await this.mirrorArticleImages([response]);
+      return article ?? null;
     } catch (error) {
       console.error(`[EmpathyLedger] Failed to fetch article ${slug}:`, error);
       return null;
@@ -292,7 +338,7 @@ class EmpathyLedgerClient {
       const res = await this.fetch<{ media?: ELMediaAsset[]; items?: ELMediaAsset[] }>(
         `/api/v1/content-hub/media?${params.toString()}`,
       );
-      return res.media ?? res.items ?? [];
+      return await this.mirrorImages(res.media ?? res.items ?? []);
     } catch (error) {
       console.error(`[EmpathyLedger] Failed to fetch media for storyteller ${identifier}:`, error);
       return [];
@@ -409,7 +455,8 @@ class EmpathyLedgerClient {
     const endpoint = `/api/v1/harvest/gallery${queryString ? `?${queryString}` : ""}`;
 
     try {
-      return await this.fetch<ELMediaResponse>(endpoint);
+      const response = await this.fetch<ELMediaResponse>(endpoint);
+      return { ...response, media: await this.mirrorImages(response.media) };
     } catch (error) {
       console.error("[EmpathyLedger] Failed to fetch Harvest gallery:", error);
       return { media: [], pagination: { page: 1, limit: 20, total: 0, hasMore: false } };
@@ -479,9 +526,21 @@ class EmpathyLedgerClient {
     // Map the broader content-hub schema onto the gallery schema the website
     // consumes. Untagged photos get empty arrays so the UI keeps working.
     const sliced = collected.slice(0, requestedLimit);
+
+    // Resolve each item's proxy link to its real storage URL, in
+    // concurrency-limited batches so we don't fire hundreds of requests at
+    // the EL server at once.
+    const resolvedSrcs: string[] = [];
+    const RESOLVE_BATCH_SIZE = 20;
+    for (let i = 0; i < sliced.length; i += RESOLVE_BATCH_SIZE) {
+      const batch = sliced.slice(i, i + RESOLVE_BATCH_SIZE);
+      const batchSrcs = await Promise.all(batch.map((item) => this.resolveMediaFileUrl(item.url)));
+      resolvedSrcs.push(...batchSrcs);
+    }
+
     const media: ELMediaAsset[] = sliced.map((item, index) => ({
       id: item.id,
-      src: item.url,
+      src: resolvedSrcs[index],
       title: item.title || item.altText || "Untitled",
       description: item.description,
       altText: item.altText,
@@ -499,8 +558,10 @@ class EmpathyLedgerClient {
       updatedAt: item.createdAt,
     }));
 
+    const mirroredMedia = await this.mirrorImages(media);
+
     return {
-      media,
+      media: mirroredMedia,
       pagination: {
         page: startPage,
         limit: requestedLimit,
@@ -508,6 +569,26 @@ class EmpathyLedgerClient {
         hasMore: pagination.total > collected.length,
       },
     };
+  }
+
+  private async mirrorImages(media: ELMediaAsset[]): Promise<ELMediaAsset[]> {
+    return await Promise.all(
+      media.map(async (item) => ({
+        ...item,
+        src: await mirrorHarvestImage(item.id, item.src),
+      })),
+    );
+  }
+
+  private async mirrorArticleImages(articles: ELArticle[]): Promise<ELArticle[]> {
+    return await Promise.all(
+      articles.map(async (article) => ({
+        ...article,
+        featuredImageUrl: article.featuredImageUrl
+          ? await mirrorHarvestImage(article.id, article.featuredImageUrl)
+          : null,
+      })),
+    );
   }
 
   /**

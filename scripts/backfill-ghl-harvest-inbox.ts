@@ -32,6 +32,7 @@ const ACTION_TAGS = new Map<string, string>([
   ["member-question", "Member question"],
   ["contact-form", "Contact form"],
   ["harvest-shop-interest", "Shop interest"],
+  ["interest:markets", "Shop interest"],
   ["venue-enquiry", "Venue enquiry"],
   ["event-submission", "Event submission"],
   ["business-registration", "Business registration"],

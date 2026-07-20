@@ -134,7 +134,7 @@ no code, no deploy. Build and publish, done.
 
 | Workflow | Trigger: Contact Tag added = | Copy from |
 | --- | --- | --- |
-| Harvest - Shop Nurture | `harvest-shop-interest` | spec 6 |
+| Harvest - Shop Nurture | `interest:markets` | spec 6 |
 | Harvest - Workshop Receipt | `workshop-booking` | spec 1 |
 | Harvest - Quiz Follow Up | `quiz-completed` | spec 2 |
 | Harvest - Business Receipt | `business-registration` | spec 3 |

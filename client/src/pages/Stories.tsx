@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { PenLine, ArrowDown } from "lucide-react";
 import { Link } from "wouter";
+import { SiteFooter, SiteNav } from "./HarvestReviewTest";
+import { VisitStrip } from "@/components/VisitStrip";
 
 const barryPhotos = [
   { src: "/images/compendium/barry/IMG_5764.jpg", caption: "Barry at golden hour" },
@@ -26,7 +28,7 @@ const storyCards: StoryCard[] = [
   {
     id: "barry",
     title: "Barry & The Shed",
-    subtitle: "27 years of engines, rust, and memory",
+    subtitle: "Decades of engines, rust, and memory",
     image: barryPhotos[5].src,
     available: true,
   },
@@ -39,7 +41,7 @@ const storyCards: StoryCard[] = [
   },
   {
     id: "the-kitchen",
-    title: "The Kitchen",
+    title: "The Gatherings",
     subtitle: "Where strangers become neighbours",
     image: "/images/compendium/barry/IMG_5727.jpg",
     available: false,
@@ -65,8 +67,9 @@ export default function Stories() {
 
   return (
     <div className="min-h-screen bg-stone-900">
+      <SiteNav />
       {/* Hero */}
-      <section className="relative py-32 flex items-center justify-center">
+      <section className="relative pt-40 pb-32 flex items-center justify-center">
         <div className="container">
           <motion.div
             initial={{ opacity: 0, y: 40 }}
@@ -113,10 +116,10 @@ export default function Stories() {
                 transition={{ delay: index * 0.1 }}
               >
                 <Card
-                  className={`overflow-hidden border-0 bg-stone-800 group cursor-pointer transition-all duration-300 ${
+                  className={`overflow-hidden border-0 bg-stone-800 group transition-all duration-300 ${
                     story.available
-                      ? "hover:ring-2 hover:ring-amber-500/50 hover:shadow-2xl hover:shadow-amber-500/10"
-                      : "opacity-60"
+                      ? "cursor-pointer hover:ring-2 hover:ring-amber-500/50 hover:shadow-2xl hover:shadow-amber-500/10"
+                      : "opacity-60 cursor-default"
                   }`}
                   onClick={() => story.available && scrollToStory(story.id)}
                 >
@@ -132,7 +135,7 @@ export default function Stories() {
                     {!story.available && (
                       <div className="absolute top-4 right-4">
                         <span className="px-3 py-1 bg-stone-700/80 backdrop-blur-sm rounded-full text-xs font-medium text-stone-300">
-                          Coming soon
+                          Not written yet
                         </span>
                       </div>
                     )}
@@ -166,9 +169,8 @@ export default function Stories() {
             transition={{ duration: 0.8 }}
             className="mb-16"
           >
-            <p className="text-stone-500 font-mono text-sm mb-4">Section II — The Shed</p>
             <h2 className="text-3xl md:text-5xl font-serif font-bold text-white leading-tight">
-              Barry has been on this land since 1972.{" "}
+              Barry has been on this land for decades.{" "}
               <span className="text-amber-400">
                 His shed is full of machines that built this hinterland.
               </span>
@@ -200,7 +202,7 @@ export default function Stories() {
           >
             <div className="text-lg md:text-xl text-stone-300 leading-relaxed space-y-6">
               <p>
-                Barry Rodgerig is 80 years old. Before this place, Peachester — 25 years
+                Barry Rodgerig is 80 years old. Before this place, Peachester: 25 years
                 of dairy, timber, and red soil. He drove tractors before he could see over
                 the steering wheel. He still drives them now.
               </p>
@@ -249,7 +251,7 @@ export default function Stories() {
             <p className="text-2xl md:text-3xl text-white font-serif italic leading-relaxed mb-3">
               "Rust is a terrible thing. It's just like cancer in humans. It eats. It just kills you."
             </p>
-            <p className="text-sm text-stone-500 font-mono">— Barry Rodgerig, Witta</p>
+            <p className="text-sm text-stone-500 font-mono">Barry Rodgerig, Witta</p>
           </motion.div>
 
           {/* Body text block 2 */}
@@ -301,7 +303,7 @@ export default function Stories() {
             <p className="text-2xl md:text-3xl text-white font-serif italic leading-relaxed mb-3">
               "I think when I die, it'll probably all go for scrap."
             </p>
-            <p className="text-sm text-stone-500 font-mono">— Barry</p>
+            <p className="text-sm text-stone-500 font-mono">Barry</p>
           </motion.div>
 
           {/* Closing text */}
@@ -313,13 +315,13 @@ export default function Stories() {
           >
             <div className="text-lg text-stone-400 leading-relaxed space-y-6">
               <p>
-                Not if we can help it. Barry's shed isn't scrap — it's archaeology.
+                Not if we can help it. Barry's shed isn't scrap. It's archaeology.
                 It's the living memory of what this place was, and the reason why
                 what we build next has to mean something.
               </p>
               <p>
                 Barry is one neighbour. There are more. Every person who lives
-                around this land carries a piece of its story — and The Harvest
+                around this land carries a piece of its story, and The Harvest
                 exists to make sure those stories aren't forgotten.
               </p>
               <p className="text-amber-400/80 font-serif italic">
@@ -370,7 +372,7 @@ export default function Stories() {
             </h2>
             <p className="text-lg text-stone-300 mb-10 leading-relaxed">
               We're collecting stories from neighbours, volunteers, growers, and visitors.
-              If you have a connection to this place — or to the land it sits on — we'd
+              If you have a connection to this place, or to the land it sits on, we'd
               love to hear it. It doesn't have to be long. Just honest.
             </p>
             <Button
@@ -386,6 +388,8 @@ export default function Stories() {
           </motion.div>
         </div>
       </section>
+      <VisitStrip />
+      <SiteFooter />
     </div>
   );
 }

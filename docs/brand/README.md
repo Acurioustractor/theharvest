@@ -16,6 +16,7 @@ repo holds the executable memory -> Notion holds the accessible memory -> GHL pu
 | `../../DESIGN.md` | Agent-facing design memory. Read before design, copy, slides, or website work. |
 | `real-photo-and-history-assets.md` | Real photo, historical photo, rights, consent, and source workflow. |
 | `harvest-brand-voice.md` | Public voice, audience angles, copy patterns. |
+| `harvest-brand-development-guide.md` | Repeatable AI-assisted discovery, review, and one-page strategy process for Harvest brand surfaces. |
 | `harvest-launch-deck.md` | Editable photo-led launch deck source. |
 | `harvest-launch-deck.pdf` | Shareable PDF export of the launch deck. |
 | `harvest-launch-deck.pptx` | PowerPoint export of the launch deck. |
@@ -83,35 +84,46 @@ Every public asset needs a source note:
 who/where/when -> rights/permission -> attribution -> publish status
 ```
 
-## Launch target
+The current in-app brand guide image set is listed in `real-photo-and-history-assets.md` under
+`Current brand guide image set`. Use that before old launch graphics, concept renders, or
+generated-looking venue scenes.
 
-Working target: **20 June 2026**.
+## Current Public Frame
 
-Treat this as the launch readiness date for brand, website, deck, and comms. The strategy docs still carry a 20 June soft-open go/no-go decision, so operational certainty must be checked before public event copy goes out.
+Current public lockup:
+
+```text
+Witta · Jinibara Country · Garden opening end of June
+
+The Harvest
+Grow. Make. Gather.
+A community garden and creative gathering place taking shape in Witta.
+Learn about The Harvest
+```
+
+This is the current front door for the brand guide and public surfaces. The exact operational date can be used where needed, but the brand frame is **garden opening end of June**.
 
 ## Brand spine
 
 ```text
-The Harvest is a garden, kitchen, and art space taking shape in Witta.
+A community garden and creative gathering place taking shape in Witta.
 ```
 
-Public launch line:
-
-```text
-A working place for growing, feeding, making, and gathering in Witta.
-```
-
-The three rooms:
+The public words:
 
 - Garden: grow
-- Kitchen: feed
-- Art Space: make
+- Creative build: make
+- Community place: gather
 
-The first residency theme:
+Supporting story threads:
 
-```text
-timber, dairy, and co-operatives
-```
+- timber
+- dairy
+- milk crates
+- shared tables
+- old nursery
+- local makers
+- Witta stories
 
 ## Daily use
 
@@ -120,8 +132,9 @@ For website redesign:
 1. Read `DESIGN.md`.
 2. Open the current page and inspect the real components.
 3. Use real site imagery, historical photos, drawings, and materials first.
-4. Keep Garden, Kitchen, and Art Space legible.
-5. Update `DESIGN.md` if a new design rule is proven.
+4. Keep Grow, Make, and Gather legible.
+5. Use `harvest-brand-development-guide.md` for the stage gate and surface brief.
+6. Update `DESIGN.md` if a new design rule is proven.
 
 For slides:
 
@@ -136,8 +149,9 @@ For comms:
 1. Start from the week in `../communications/THIS-WEEK.md`.
 2. Use `harvest-brand-voice.md` for the caption or newsletter.
 3. Pull approved social assets from the Notion asset review database.
-4. Build in GHL.
-5. Pull the record back to Notion.
+4. Check the current stage in `harvest-brand-development-guide.md`.
+5. Build in GHL.
+6. Pull the record back to Notion.
 
 For Notion:
 

@@ -43,7 +43,7 @@ One tag per job. Scope + tier + role are the spine; interest/source/consent are 
 | Interest | `interest:*` (namespaced) | `interest-*` (flat, after code migration) |
 | Source | `source:*` (namespaced) | `source-*` (flat, after code migration) |
 | Consent | `consent:newsletter-yes` | — |
-| Operational (events/shop/quiz) | keep flat: `rsvp-pizza-dinner`, `rsvp-maker-morning`, `shop-call-booked`, `harvest-shop-interest`, `quiz-*`, `witta-gathering-2026-06-20` | — |
+| Operational (events/shop/quiz) | keep flat: `rsvp-pizza-dinner`, `rsvp-maker-morning`, `shop-call-booked`, `quiz-*`, `witta-gathering-2026-06-20`; use namespaced `interest:markets` + `role:supplier` for shop intent | — |
 
 **The bridge that fixes the orphaned Journey:** whenever someone becomes a member, apply `tier:member` + `role:member` (not just `harvest-member`). Whenever someone follows, apply `tier:connected`. That feeds the Journey pipeline.
 

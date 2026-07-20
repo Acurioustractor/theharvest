@@ -146,6 +146,9 @@ function FooterNewsletter() {
             <div className="flex flex-col sm:flex-row gap-2">
               <input
                 type="text"
+                name="footer-name"
+                autoComplete="name"
+                aria-label="Your name"
                 required
                 value={name}
                 onChange={(e) => { setName(e.target.value); if (status === "error") setStatus("idle"); }}
@@ -154,6 +157,9 @@ function FooterNewsletter() {
               />
               <input
                 type="email"
+                name="footer-email"
+                autoComplete="email"
+                aria-label="Your email"
                 required
                 value={email}
                 onChange={(e) => { setEmail(e.target.value); if (status === "error") setStatus("idle"); }}
@@ -164,6 +170,9 @@ function FooterNewsletter() {
             <div className="flex gap-2">
               <input
                 type="tel"
+                name="footer-phone"
+                autoComplete="tel"
+                aria-label="Phone optional"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="Phone (optional)"

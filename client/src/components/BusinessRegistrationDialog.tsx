@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useId, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -39,6 +39,7 @@ const categories = [
 ];
 
 export default function BusinessRegistrationDialog({ trigger }: BusinessRegistrationDialogProps) {
+  const idPrefix = useId();
   const [open, setOpen] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [formData, setFormData] = useState({
@@ -56,6 +57,29 @@ export default function BusinessRegistrationDialog({ trigger }: BusinessRegistra
     submitterEmail: "",
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const ids = {
+    name: `${idPrefix}-business-name`,
+    nameError: `${idPrefix}-business-name-error`,
+    category: `${idPrefix}-business-category`,
+    categoryError: `${idPrefix}-business-category-error`,
+    description: `${idPrefix}-business-description`,
+    descriptionError: `${idPrefix}-business-description-error`,
+    address: `${idPrefix}-business-address`,
+    phone: `${idPrefix}-business-phone`,
+    email: `${idPrefix}-business-email`,
+    emailError: `${idPrefix}-business-email-error`,
+    website: `${idPrefix}-business-website`,
+    websiteError: `${idPrefix}-business-website-error`,
+    facebook: `${idPrefix}-business-facebook`,
+    instagram: `${idPrefix}-business-instagram`,
+    imageUrl: `${idPrefix}-business-image-url`,
+    imageUrlHint: `${idPrefix}-business-image-url-hint`,
+    imageUrlError: `${idPrefix}-business-image-url-error`,
+    submittedBy: `${idPrefix}-business-submitted-by`,
+    submittedByError: `${idPrefix}-business-submitted-by-error`,
+    submitterEmail: `${idPrefix}-business-submitter-email`,
+    submitterEmailError: `${idPrefix}-business-submitter-email-error`,
+  };
 
   const submitMutation = trpc.businesses.submit.useMutation({
     onSuccess: () => {
@@ -78,8 +102,7 @@ export default function BusinessRegistrationDialog({ trigger }: BusinessRegistra
     }
     if (!formData.description.trim()) {
       newErrors.description = "Description is required";
-    }
-    if (formData.description.trim().length < 20) {
+    } else if (formData.description.trim().length < 20) {
       newErrors.description = "Description must be at least 20 characters";
     }
     if (!formData.submittedBy.trim()) {
@@ -156,7 +179,7 @@ export default function BusinessRegistrationDialog({ trigger }: BusinessRegistra
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         {trigger || (
-          <Button className="bg-[#c17c54] hover:bg-[#a86843] text-white">
+          <Button className="bg-[#8B4A2A] hover:bg-[#6f3820] text-white">
             <Store className="h-4 w-4 mr-2" />
             Register Your Business
           </Button>
@@ -200,7 +223,7 @@ export default function BusinessRegistrationDialog({ trigger }: BusinessRegistra
               </div>
             </DialogHeader>
 
-            <form onSubmit={handleSubmit} className="space-y-6 py-4">
+            <form onSubmit={handleSubmit} className="space-y-6 py-4" noValidate aria-busy={submitMutation.isPending}>
               {/* Basic Information */}
               <div className="space-y-4">
                 <h3 className="text-sm font-semibold text-[#2c4c3b] uppercase tracking-wide">
@@ -209,27 +232,39 @@ export default function BusinessRegistrationDialog({ trigger }: BusinessRegistra
 
                 <div className="grid gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="name" className="flex items-center gap-2">
+                    <Label htmlFor={ids.name} className="flex items-center gap-2">
                       <Store className="h-4 w-4 text-[#c17c54]" />
                       Business Name *
                     </Label>
                     <Input
-                      id="name"
+                      id={ids.name}
+                      name="name"
+                      autoComplete="organization"
+                      required
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       placeholder="e.g., Witta Artisan Bakery"
                       className={errors.name ? "border-red-500" : ""}
+                      aria-invalid={Boolean(errors.name)}
+                      aria-describedby={errors.name ? ids.nameError : undefined}
                     />
-                    {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
+                    {errors.name && <p id={ids.nameError} role="alert" className="text-sm text-red-500">{errors.name}</p>}
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="category">Category *</Label>
+                    <Label htmlFor={ids.category}>Category *</Label>
                     <Select
+                      name="category"
+                      required
                       value={formData.category}
                       onValueChange={(value) => setFormData({ ...formData, category: value })}
                     >
-                      <SelectTrigger className={errors.category ? "border-red-500" : ""}>
+                      <SelectTrigger
+                        id={ids.category}
+                        className={errors.category ? "border-red-500" : ""}
+                        aria-invalid={Boolean(errors.category)}
+                        aria-describedby={errors.category ? ids.categoryError : undefined}
+                      >
                         <SelectValue placeholder="Select a category" />
                       </SelectTrigger>
                       <SelectContent>
@@ -240,29 +275,37 @@ export default function BusinessRegistrationDialog({ trigger }: BusinessRegistra
                         ))}
                       </SelectContent>
                     </Select>
-                    {errors.category && <p className="text-sm text-red-500">{errors.category}</p>}
+                    {errors.category && <p id={ids.categoryError} role="alert" className="text-sm text-red-500">{errors.category}</p>}
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="description">Description *</Label>
+                    <Label htmlFor={ids.description}>Description *</Label>
                     <Textarea
-                      id="description"
+                      id={ids.description}
+                      name="description"
+                      autoComplete="off"
+                      required
+                      minLength={20}
                       value={formData.description}
                       onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                       placeholder="Tell us about your business, what you offer, and what makes you unique..."
                       rows={4}
                       className={errors.description ? "border-red-500" : ""}
+                      aria-invalid={Boolean(errors.description)}
+                      aria-describedby={errors.description ? ids.descriptionError : undefined}
                     />
-                    {errors.description && <p className="text-sm text-red-500">{errors.description}</p>}
+                    {errors.description && <p id={ids.descriptionError} role="alert" className="text-sm text-red-500">{errors.description}</p>}
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="address" className="flex items-center gap-2">
+                    <Label htmlFor={ids.address} className="flex items-center gap-2">
                       <MapPin className="h-4 w-4 text-[#c17c54]" />
                       Address
                     </Label>
                     <Input
-                      id="address"
+                      id={ids.address}
+                      name="address"
+                      autoComplete="street-address"
                       value={formData.address}
                       onChange={(e) => setFormData({ ...formData, address: e.target.value })}
                       placeholder="e.g., 123 Main Street, Witta QLD 4552"
@@ -279,13 +322,15 @@ export default function BusinessRegistrationDialog({ trigger }: BusinessRegistra
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="phone" className="flex items-center gap-2">
+                    <Label htmlFor={ids.phone} className="flex items-center gap-2">
                       <Phone className="h-4 w-4 text-[#c17c54]" />
                       Phone
                     </Label>
                     <Input
-                      id="phone"
+                      id={ids.phone}
+                      name="phone"
                       type="tel"
+                      autoComplete="tel"
                       value={formData.phone}
                       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                       placeholder="e.g., 0412 345 678"
@@ -293,19 +338,23 @@ export default function BusinessRegistrationDialog({ trigger }: BusinessRegistra
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="email" className="flex items-center gap-2">
+                    <Label htmlFor={ids.email} className="flex items-center gap-2">
                       <Mail className="h-4 w-4 text-[#c17c54]" />
                       Business Email
                     </Label>
                     <Input
-                      id="email"
+                      id={ids.email}
+                      name="email"
                       type="email"
+                      autoComplete="email"
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       placeholder="e.g., hello@yourbusiness.com"
                       className={errors.email ? "border-red-500" : ""}
+                      aria-invalid={Boolean(errors.email)}
+                      aria-describedby={errors.email ? ids.emailError : undefined}
                     />
-                    {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
+                    {errors.email && <p id={ids.emailError} role="alert" className="text-sm text-red-500">{errors.email}</p>}
                   </div>
                 </div>
               </div>
@@ -318,29 +367,35 @@ export default function BusinessRegistrationDialog({ trigger }: BusinessRegistra
 
                 <div className="grid gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="website" className="flex items-center gap-2">
+                    <Label htmlFor={ids.website} className="flex items-center gap-2">
                       <Globe className="h-4 w-4 text-[#c17c54]" />
                       Website
                     </Label>
                     <Input
-                      id="website"
+                      id={ids.website}
+                      name="website"
                       type="url"
+                      autoComplete="url"
                       value={formData.website}
                       onChange={(e) => setFormData({ ...formData, website: e.target.value })}
                       placeholder="https://www.yourbusiness.com"
                       className={errors.website ? "border-red-500" : ""}
+                      aria-invalid={Boolean(errors.website)}
+                      aria-describedby={errors.website ? ids.websiteError : undefined}
                     />
-                    {errors.website && <p className="text-sm text-red-500">{errors.website}</p>}
+                    {errors.website && <p id={ids.websiteError} role="alert" className="text-sm text-red-500">{errors.website}</p>}
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="facebook" className="flex items-center gap-2">
+                      <Label htmlFor={ids.facebook} className="flex items-center gap-2">
                         <Facebook className="h-4 w-4 text-[#c17c54]" />
                         Facebook
                       </Label>
                       <Input
-                        id="facebook"
+                        id={ids.facebook}
+                        name="facebook"
+                        autoComplete="url"
                         value={formData.facebook}
                         onChange={(e) => setFormData({ ...formData, facebook: e.target.value })}
                         placeholder="facebook.com/yourbusiness"
@@ -348,12 +403,14 @@ export default function BusinessRegistrationDialog({ trigger }: BusinessRegistra
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="instagram" className="flex items-center gap-2">
+                      <Label htmlFor={ids.instagram} className="flex items-center gap-2">
                         <Instagram className="h-4 w-4 text-[#c17c54]" />
                         Instagram
                       </Label>
                       <Input
-                        id="instagram"
+                        id={ids.instagram}
+                        name="instagram"
+                        autoComplete="url"
                         value={formData.instagram}
                         onChange={(e) => setFormData({ ...formData, instagram: e.target.value })}
                         placeholder="@yourbusiness"
@@ -362,22 +419,26 @@ export default function BusinessRegistrationDialog({ trigger }: BusinessRegistra
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="imageUrl" className="flex items-center gap-2">
+                    <Label htmlFor={ids.imageUrl} className="flex items-center gap-2">
                       <Image className="h-4 w-4 text-[#c17c54]" />
                       Business Image URL
                     </Label>
                     <Input
-                      id="imageUrl"
+                      id={ids.imageUrl}
+                      name="imageUrl"
                       type="url"
+                      autoComplete="url"
                       value={formData.imageUrl}
                       onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
                       placeholder="https://example.com/your-business-photo.jpg"
                       className={errors.imageUrl ? "border-red-500" : ""}
+                      aria-invalid={Boolean(errors.imageUrl)}
+                      aria-describedby={[ids.imageUrlHint, errors.imageUrl ? ids.imageUrlError : ""].filter(Boolean).join(" ")}
                     />
-                    <p className="text-xs text-muted-foreground">
+                    <p id={ids.imageUrlHint} className="text-xs text-muted-foreground">
                       Provide a link to a high-quality image of your business or products
                     </p>
-                    {errors.imageUrl && <p className="text-sm text-red-500">{errors.imageUrl}</p>}
+                    {errors.imageUrl && <p id={ids.imageUrlError} role="alert" className="text-sm text-red-500">{errors.imageUrl}</p>}
                   </div>
                 </div>
               </div>
@@ -390,28 +451,38 @@ export default function BusinessRegistrationDialog({ trigger }: BusinessRegistra
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="submittedBy">Your Name *</Label>
+                    <Label htmlFor={ids.submittedBy}>Your Name *</Label>
                     <Input
-                      id="submittedBy"
+                      id={ids.submittedBy}
+                      name="submittedBy"
+                      autoComplete="name"
+                      required
                       value={formData.submittedBy}
                       onChange={(e) => setFormData({ ...formData, submittedBy: e.target.value })}
                       placeholder="e.g., John Smith"
                       className={errors.submittedBy ? "border-red-500" : ""}
+                      aria-invalid={Boolean(errors.submittedBy)}
+                      aria-describedby={errors.submittedBy ? ids.submittedByError : undefined}
                     />
-                    {errors.submittedBy && <p className="text-sm text-red-500">{errors.submittedBy}</p>}
+                    {errors.submittedBy && <p id={ids.submittedByError} role="alert" className="text-sm text-red-500">{errors.submittedBy}</p>}
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="submitterEmail">Your Email *</Label>
+                    <Label htmlFor={ids.submitterEmail}>Your Email *</Label>
                     <Input
-                      id="submitterEmail"
+                      id={ids.submitterEmail}
+                      name="submitterEmail"
                       type="email"
+                      autoComplete="email"
+                      required
                       value={formData.submitterEmail}
                       onChange={(e) => setFormData({ ...formData, submitterEmail: e.target.value })}
                       placeholder="your@email.com"
                       className={errors.submitterEmail ? "border-red-500" : ""}
+                      aria-invalid={Boolean(errors.submitterEmail)}
+                      aria-describedby={errors.submitterEmail ? ids.submitterEmailError : undefined}
                     />
-                    {errors.submitterEmail && <p className="text-sm text-red-500">{errors.submitterEmail}</p>}
+                    {errors.submitterEmail && <p id={ids.submitterEmailError} role="alert" className="text-sm text-red-500">{errors.submitterEmail}</p>}
                   </div>
                 </div>
                 <p className="text-xs text-muted-foreground">

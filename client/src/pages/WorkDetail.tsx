@@ -13,6 +13,7 @@ import { optimize } from "@/lib/imageOptimize";
 import { HarvestPhotoPicker } from "@/components/HarvestPhotoPicker";
 import { toast } from "sonner";
 import { SiteFooter, SiteNav } from "./HarvestReviewTest";
+import { VisitStrip } from "@/components/VisitStrip";
 
 const SITE_URL = "https://www.theharvestwitta.com.au";
 
@@ -46,6 +47,7 @@ export default function WorkDetail({ slug }: { slug: string }) {
   useEffect(() => {
     if (!work) {
       document.title = "Work not found · The Harvest";
+      setMeta("name", "robots", "noindex, nofollow");
       return;
     }
     document.title = `${work.title} · The Collection · The Harvest`;
@@ -54,6 +56,7 @@ export default function WorkDetail({ slug }: { slug: string }) {
     const image = work.heroImage.startsWith("http") ? work.heroImage : `${SITE_URL}${work.heroImage}`;
 
     setMeta("name", "description", work.blurb);
+    setMeta("name", "robots", "index, follow");
     setMeta("property", "og:type", "article");
     setMeta("property", "og:url", url);
     setMeta("property", "og:title", title);
@@ -451,6 +454,17 @@ export default function WorkDetail({ slug }: { slug: string }) {
               </div>
             )}
 
+            <p className="mt-10 border-t border-stone-200 pt-6 text-stone-600">
+              Want to help make this one? Hands, materials, skills and local
+              knowledge all count.{" "}
+              <Link
+                href="/get-involved"
+                className="font-medium text-amber-700 underline underline-offset-4 hover:text-amber-800"
+              >
+                Tell us on the Get Involved page
+              </Link>
+              .
+            </p>
           </div>
         </div>
       </section>
@@ -525,6 +539,7 @@ export default function WorkDetail({ slug }: { slug: string }) {
           </div>
         </div>
       </section>
+      <VisitStrip />
       <SiteFooter />
     </div>
   );
@@ -776,7 +791,7 @@ function WorkVideoSection({
                 ) : (
                   <iframe
                     src={embed.src}
-                    title={`${work.title} — video`}
+                    title={`${work.title} video`}
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     allowFullScreen
                     className="w-full h-full border-0"
@@ -1052,7 +1067,7 @@ function InlineFeatureImage({
             slot={slot}
             defaultWorkSlug={work.slug}
             src={work.heroImage}
-            alt={`${work.title} — feature image`}
+            alt={`${work.title} feature image`}
             className="aspect-[16/9] overflow-hidden rounded-sm shadow-md bg-stone-200"
             imgClassName="w-full h-full object-cover"
           />
@@ -1089,7 +1104,7 @@ function InlineSpreadImages({ work }: { work: import("@/data/works").Work }) {
             slot={`${work.slug}-spread-left`}
             defaultWorkSlug={work.slug}
             src={work.heroImage}
-            alt={`${work.title} — spread, left`}
+            alt={`${work.title} spread, left`}
             className="aspect-[4/3] overflow-hidden rounded-sm shadow-md bg-stone-200"
             imgClassName="w-full h-full object-cover"
           />
@@ -1098,7 +1113,7 @@ function InlineSpreadImages({ work }: { work: import("@/data/works").Work }) {
             slot={`${work.slug}-spread-right`}
             defaultWorkSlug={work.slug}
             src={work.heroImage}
-            alt={`${work.title} — spread, right`}
+            alt={`${work.title} spread, right`}
             className="aspect-[4/3] overflow-hidden rounded-sm shadow-md bg-stone-200"
             imgClassName="w-full h-full object-cover"
           />

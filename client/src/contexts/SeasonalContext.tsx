@@ -58,7 +58,7 @@ const seasonalData: Record<Season, SeasonalData> = {
     },
     content: {
       tagline: "Long days, warm gatherings",
-      heroImage: "/images/harvest-hero-summer.jpg",
+      heroImage: "/images/optimized/hero-aerial-1400.webp",
       welcomeMessage: "We're dreaming of long summer evenings – community tables under the stars, food shared with neighbours, gardens bursting with life.",
     },
   },
@@ -78,7 +78,7 @@ const seasonalData: Record<Season, SeasonalData> = {
     },
     content: {
       tagline: "Harvest time, gratitude season",
-      heroImage: "/images/harvest-hero-autumn.jpg",
+      heroImage: "/images/optimized/hero-aerial-1400.webp",
       welcomeMessage: "We're building a place for harvest gatherings – where preserving skills pass between generations and gratitude becomes tradition.",
     },
   },
@@ -98,7 +98,7 @@ const seasonalData: Record<Season, SeasonalData> = {
     },
     content: {
       tagline: "Slow down, warm up",
-      heroImage: "/images/harvest-hero-winter.jpg",
+      heroImage: "/images/optimized/hero-aerial-1400.webp",
       welcomeMessage: "Picture winter here: warm kitchens, slow conversations, a fire going while we plan what comes next together.",
     },
   },
@@ -118,7 +118,7 @@ const seasonalData: Record<Season, SeasonalData> = {
     },
     content: {
       tagline: "New growth, fresh starts",
-      heroImage: "/images/harvest-hero-spring.jpg",
+      heroImage: "/images/optimized/hero-aerial-1400.webp",
       welcomeMessage: "Spring is for beginnings. We're preparing the ground for something beautiful – a place to grow, learn, and belong.",
     },
   },

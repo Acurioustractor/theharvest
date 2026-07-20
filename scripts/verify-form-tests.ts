@@ -51,7 +51,7 @@ const TEST_CASES: TestCase[] = [
     key: "shop",
     label: "Shop interest section",
     expectedSource: "Harvest | Shop",
-    expectedTags: ["harvest-shop-interest", "shop-produce", "shop-follow-up"],
+    expectedTags: ["project:act-hv", "interest:markets", "role:supplier", "shop-produce", "shop-follow-up", "shop-stage-1"],
   },
 ];
 

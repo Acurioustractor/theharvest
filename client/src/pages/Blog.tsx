@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Mail, Newspaper, Search } from "lucide-react";
 import { Link } from "wouter";
 import { SiteFooter, SiteNav } from "./HarvestReviewTest";
+import { VisitStrip } from "@/components/VisitStrip";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 20 },
@@ -69,7 +70,7 @@ export default function Blog() {
             </h1>
             <p className="text-lg text-stone-600 leading-relaxed">
               Start with What is The Harvest, then follow the people, work, and
-              notes coming out of the garden, kitchen, and art space.
+              notes coming out of the garden, events, and art space.
             </p>
             <div className="mt-6">
               <Link
@@ -89,10 +90,10 @@ export default function Blog() {
           <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             <div>
               <p className="font-mono text-xs uppercase tracking-[0.18em] text-stone-400">
-                Empathy Ledger
+                Field notes
               </p>
               <p className="mt-1 text-sm text-stone-600">
-                Published stories syndicated to The Harvest.
+                Stories from the garden, events and art space.
               </p>
             </div>
             <div className="relative w-full md:w-80">
@@ -141,8 +142,8 @@ export default function Blog() {
                       What is The Harvest?
                     </h3>
                     <p className="mb-4 leading-relaxed text-stone-300">
-                      The old Witta nursery, the three rooms, and the first public
-                      member list as the place takes shape.
+                      The old Witta nursery, the three rooms, and how to be part
+                      of the place now that it is open.
                     </p>
                     <p className="inline-flex items-center gap-2 text-sm font-medium text-amber-500 transition-colors group-hover:text-amber-400">
                       Read the story <ArrowRight className="h-4 w-4" />
@@ -192,8 +193,8 @@ export default function Blog() {
               </h3>
               <p className="text-stone-500 mb-6">
                 {searchQuery
-                  ? "Try adjusting your search or filters"
-                  : "Check back soon for new stories from The Harvest"}
+                  ? "Try a different search"
+                  : "The first field notes are on the way. Meanwhile, the place itself is open most weekends. Visiting details below."}
               </p>
               {searchQuery && (
                 <Button
@@ -228,19 +229,14 @@ export default function Blog() {
                 ))}
               </div>
 
-              {/* Pagination hint */}
-              {data?.pagination?.hasMore && (
-                <div className="text-center mt-12">
-                  <Button variant="outline" size="lg">
-                    Load more articles
-                  </Button>
-                </div>
-              )}
+              {/* Pagination not built yet: no dead Load-more button. When more
+                  articles exist than one page shows, wire real pagination here. */}
             </motion.div>
           )}
         </div>
       </section>
 
+      <VisitStrip />
       <SiteFooter />
     </div>
   );

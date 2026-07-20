@@ -1,5 +1,12 @@
 # Membership and contact email setup
 
+> **Current canon check (2026-07-06).** Parts of this doc predate the June tag
+> alignment. Live canon: newsletter audience = `comms:harvest-newsletter` (154),
+> members = `tier:member` (135), followers = `tier:connected`; colon-namespaced
+> tags are canonical and hyphen twins are being retired. Before acting on tag
+> names or audience filters here, cross-check
+> `docs/communications/harvest-system-review-2026-07-06.md`.
+
 Runbook for the active Harvest GHL email flows.
 
 Last updated: 2026-05-14.

@@ -2,7 +2,8 @@ import { useState, useEffect, type CSSProperties } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
-import BauhausFooter from "@/components/BauhausFooter";
+import { setPageSeo } from "@/lib/seo";
+import { SiteFooter, SiteNav } from "./HarvestReviewTest";
 
 /* ─────────────────────────────────────
    DESIGN TOKENS
@@ -16,7 +17,7 @@ const C = {
   green: "#3A6E47",
   red: "#D62C2C",
   cream: "#F4F4F2",
-  creamDim: "rgba(245,240,232,0.5)",
+  creamDim: "rgba(245,240,232,0.75)",
   creamFaint: "rgba(245,240,232,0.12)",
 };
 
@@ -138,23 +139,48 @@ const AGE_OPTIONS = [
    FORM COMPONENTS
    ───────────────────────────────────── */
 
-function RadioGroup({ options, value, onChange, isMobile }: {
+function RadioGroup({ id, name, labelledBy, options, value, onChange, isMobile }: {
+  id: string;
+  name: string;
+  labelledBy: string;
   options: { value: string; label: string }[];
   value: string;
   onChange: (v: string) => void;
   isMobile: boolean;
 }) {
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>, index: number) => {
+    if (!["ArrowRight", "ArrowDown", "ArrowLeft", "ArrowUp"].includes(event.key)) return;
+
+    event.preventDefault();
+    const offset = event.key === "ArrowRight" || event.key === "ArrowDown" ? 1 : -1;
+    const nextIndex = (index + offset + options.length) % options.length;
+    const nextOption = options[nextIndex];
+    onChange(nextOption.value);
+    document.getElementById(`${id}-${nextOption.value}`)?.focus();
+  };
+
   return (
-    <div style={{
-      display: "grid",
-      gridTemplateColumns: isMobile ? "1fr" : "repeat(2, 1fr)",
-      gap: 10,
-    }}>
-      {options.map(opt => (
+    <div
+      role="radiogroup"
+      aria-labelledby={labelledBy}
+      style={{
+        display: "grid",
+        gridTemplateColumns: isMobile ? "1fr" : "repeat(2, 1fr)",
+        gap: 10,
+      }}
+    >
+      {options.map((opt, index) => (
         <button
           key={opt.value}
+          id={`${id}-${opt.value}`}
+          name={name}
+          value={opt.value}
           type="button"
+          role="radio"
+          aria-checked={value === opt.value}
+          tabIndex={value === opt.value || (!value && index === 0) ? 0 : -1}
           onClick={() => onChange(opt.value)}
+          onKeyDown={(event) => handleKeyDown(event, index)}
           style={{
             padding: "14px 18px",
             background: value === opt.value ? C.gold : "rgba(245,240,232,0.05)",
@@ -176,7 +202,11 @@ function RadioGroup({ options, value, onChange, isMobile }: {
   );
 }
 
-function MultiSelect({ options, selected, onChange, isMobile }: {
+function MultiSelect({ id, name, labelledBy, describedBy, options, selected, onChange, isMobile }: {
+  id: string;
+  name: string;
+  labelledBy: string;
+  describedBy?: string;
   options: string[];
   selected: string[];
   onChange: (v: string[]) => void;
@@ -190,18 +220,30 @@ function MultiSelect({ options, selected, onChange, isMobile }: {
     );
   };
 
+  const getOptionId = (option: string) =>
+    `${id}-${option.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")}`;
+
   return (
-    <div style={{
-      display: "flex",
-      flexWrap: "wrap",
-      gap: 10,
-    }}>
+    <div
+      role="group"
+      aria-labelledby={labelledBy}
+      aria-describedby={describedBy}
+      style={{
+        display: "flex",
+        flexWrap: "wrap",
+        gap: 10,
+      }}
+    >
       {options.map(opt => {
         const active = selected.includes(opt);
         return (
           <button
             key={opt}
+            id={getOptionId(opt)}
+            name={name}
+            value={opt}
             type="button"
+            aria-pressed={active}
             onClick={() => toggle(opt)}
             style={{
               padding: "10px 18px",
@@ -224,13 +266,18 @@ function MultiSelect({ options, selected, onChange, isMobile }: {
   );
 }
 
-function TextArea({ value, onChange, placeholder }: {
+function TextArea({ id, name, value, onChange, placeholder }: {
+  id: string;
+  name: string;
   value: string;
   onChange: (v: string) => void;
   placeholder: string;
 }) {
   return (
     <textarea
+      id={id}
+      name={name}
+      autoComplete="off"
       value={value}
       onChange={e => onChange(e.target.value)}
       placeholder={placeholder}
@@ -253,7 +300,11 @@ function TextArea({ value, onChange, placeholder }: {
   );
 }
 
-function TextInput({ value, onChange, placeholder, type = "text" }: {
+function TextInput({ id, name, label, autoComplete, value, onChange, placeholder, type = "text" }: {
+  id: string;
+  name: string;
+  label: string;
+  autoComplete: string;
   value: string;
   onChange: (v: string) => void;
   placeholder: string;
@@ -261,6 +312,10 @@ function TextInput({ value, onChange, placeholder, type = "text" }: {
 }) {
   return (
     <input
+      id={id}
+      name={name}
+      aria-label={label}
+      autoComplete={autoComplete}
       type={type}
       value={value}
       onChange={e => onChange(e.target.value)}
@@ -281,24 +336,31 @@ function TextInput({ value, onChange, placeholder, type = "text" }: {
   );
 }
 
-function QuestionLabel({ children }: { children: React.ReactNode }) {
-  return (
-    <p style={{
-      fontFamily: "'Playfair Display', serif",
-      fontSize: 22,
-      fontWeight: 700,
-      color: C.cream,
-      margin: "0 0 16px",
-      lineHeight: 1.3,
-    }}>
-      {children}
-    </p>
-  );
+const questionLabelStyle: CSSProperties = {
+  display: "block",
+  fontFamily: "'Playfair Display', serif",
+  fontSize: 22,
+  fontWeight: 700,
+  color: C.cream,
+  margin: "0 0 16px",
+  lineHeight: 1.3,
+};
+
+function QuestionLabel({ children, id, htmlFor }: {
+  children: React.ReactNode;
+  id?: string;
+  htmlFor?: string;
+}) {
+  if (htmlFor) {
+    return <label id={id} htmlFor={htmlFor} style={questionLabelStyle}>{children}</label>;
+  }
+
+  return <p id={id} style={questionLabelStyle}>{children}</p>;
 }
 
-function QuestionHint({ children }: { children: React.ReactNode }) {
+function QuestionHint({ children, id }: { children: React.ReactNode; id?: string }) {
   return (
-    <p style={{
+    <p id={id} style={{
       fontFamily: "'Inter', sans-serif",
       fontSize: 13,
       color: C.creamDim,
@@ -330,8 +392,11 @@ function Step1({ data, update, isMobile }: {
       }}>YOU & THIS PLACE</p>
 
       <div style={{ marginBottom: 36 }}>
-        <QuestionLabel>How long have you lived in the Witta / Maleny area?</QuestionLabel>
+        <QuestionLabel id="pulse-years-label">How long have you lived in the Witta / Maleny area?</QuestionLabel>
         <RadioGroup
+          id="pulse-years"
+          name="yearsInArea"
+          labelledBy="pulse-years-label"
           options={YEARS_OPTIONS}
           value={data.yearsInArea}
           onChange={v => update({ yearsInArea: v })}
@@ -340,9 +405,13 @@ function Step1({ data, update, isMobile }: {
       </div>
 
       <div style={{ marginBottom: 36 }}>
-        <QuestionLabel>What do you value most about this community?</QuestionLabel>
-        <QuestionHint>Select all that apply</QuestionHint>
+        <QuestionLabel id="pulse-community-values-label">What do you value most about this community?</QuestionLabel>
+        <QuestionHint id="pulse-community-values-hint">Select all that apply</QuestionHint>
         <MultiSelect
+          id="pulse-community-values"
+          name="communityValues"
+          labelledBy="pulse-community-values-label"
+          describedBy="pulse-community-values-hint"
           options={COMMUNITY_VALUES}
           selected={data.communityValues}
           onChange={v => update({ communityValues: v })}
@@ -351,8 +420,10 @@ function Step1({ data, update, isMobile }: {
       </div>
 
       <div>
-        <QuestionLabel>What's missing — what do you wish existed here?</QuestionLabel>
+        <QuestionLabel htmlFor="pulse-whats-missing">What's missing? What do you wish existed here?</QuestionLabel>
         <TextArea
+          id="pulse-whats-missing"
+          name="whatsMissing"
           value={data.whatsMissing}
           onChange={v => update({ whatsMissing: v })}
           placeholder="Tell us what you'd love to see..."
@@ -379,12 +450,15 @@ function Step2({ data, update, isMobile }: {
       }}>THE HARVEST</p>
 
       <div style={{ marginBottom: 36 }}>
-        <QuestionLabel>Have you heard of The Harvest?</QuestionLabel>
+        <QuestionLabel id="pulse-visited-label">Have you visited The Harvest yet?</QuestionLabel>
         <RadioGroup
+          id="pulse-visited"
+          name="heardOfHarvest"
+          labelledBy="pulse-visited-label"
           options={[
             { value: "yes", label: "Yes" },
-            { value: "no", label: "No" },
-            { value: "not-sure", label: "Not sure" },
+            { value: "no", label: "Not yet" },
+            { value: "not-sure", label: "Didn't know it was open" },
           ]}
           value={data.heardOfHarvest}
           onChange={v => update({ heardOfHarvest: v })}
@@ -393,9 +467,13 @@ function Step2({ data, update, isMobile }: {
       </div>
 
       <div style={{ marginBottom: 36 }}>
-        <QuestionLabel>Which of these would you actually use?</QuestionLabel>
-        <QuestionHint>Select all that interest you</QuestionHint>
+        <QuestionLabel id="pulse-would-use-label">Which of these would you actually use?</QuestionLabel>
+        <QuestionHint id="pulse-would-use-hint">Select all that interest you</QuestionHint>
         <MultiSelect
+          id="pulse-would-use"
+          name="wouldUse"
+          labelledBy="pulse-would-use-label"
+          describedBy="pulse-would-use-hint"
           options={WOULD_USE}
           selected={data.wouldUse}
           onChange={v => update({ wouldUse: v })}
@@ -404,8 +482,11 @@ function Step2({ data, update, isMobile }: {
       </div>
 
       <div style={{ marginBottom: 36 }}>
-        <QuestionLabel>How often would you visit?</QuestionLabel>
+        <QuestionLabel id="pulse-frequency-label">How often would you visit?</QuestionLabel>
         <RadioGroup
+          id="pulse-frequency"
+          name="visitFrequency"
+          labelledBy="pulse-frequency-label"
           options={VISIT_FREQUENCY}
           value={data.visitFrequency}
           onChange={v => update({ visitFrequency: v })}
@@ -414,9 +495,13 @@ function Step2({ data, update, isMobile }: {
       </div>
 
       <div>
-        <QuestionLabel>What day / time works best?</QuestionLabel>
-        <QuestionHint>Select all that work for you</QuestionHint>
+        <QuestionLabel id="pulse-preferred-time-label">What day / time works best?</QuestionLabel>
+        <QuestionHint id="pulse-preferred-time-hint">Select all that work for you</QuestionHint>
         <MultiSelect
+          id="pulse-preferred-time"
+          name="preferredTime"
+          labelledBy="pulse-preferred-time-label"
+          describedBy="pulse-preferred-time-hint"
           options={PREFERRED_TIMES}
           selected={data.preferredTime}
           onChange={v => update({ preferredTime: v })}
@@ -444,8 +529,10 @@ function Step3({ data, update, isMobile }: {
       }}>ABOUT YOU</p>
 
       <div style={{ marginBottom: 36 }}>
-        <QuestionLabel>What skills or knowledge would you share with others?</QuestionLabel>
+        <QuestionLabel htmlFor="pulse-skills">What skills or knowledge would you share with others?</QuestionLabel>
         <TextArea
+          id="pulse-skills"
+          name="skillsToShare"
           value={data.skillsToShare}
           onChange={v => update({ skillsToShare: v })}
           placeholder="Gardening, cooking, painting, music, woodwork, coding..."
@@ -453,9 +540,13 @@ function Step3({ data, update, isMobile }: {
       </div>
 
       <div style={{ marginBottom: 36 }}>
-        <QuestionLabel>What stops you from participating in community activities?</QuestionLabel>
-        <QuestionHint>Select all that apply</QuestionHint>
+        <QuestionLabel id="pulse-barriers-label">What stops you from participating in community activities?</QuestionLabel>
+        <QuestionHint id="pulse-barriers-hint">Select all that apply</QuestionHint>
         <MultiSelect
+          id="pulse-barriers"
+          name="participationBarriers"
+          labelledBy="pulse-barriers-label"
+          describedBy="pulse-barriers-hint"
           options={BARRIERS}
           selected={data.participationBarriers}
           onChange={v => update({ participationBarriers: v })}
@@ -464,8 +555,11 @@ function Step3({ data, update, isMobile }: {
       </div>
 
       <div style={{ marginBottom: 36 }}>
-        <QuestionLabel>Age bracket</QuestionLabel>
+        <QuestionLabel id="pulse-age-label">Age bracket</QuestionLabel>
         <RadioGroup
+          id="pulse-age"
+          name="ageBracket"
+          labelledBy="pulse-age-label"
           options={AGE_OPTIONS}
           value={data.ageBracket}
           onChange={v => update({ ageBracket: v })}
@@ -473,26 +567,47 @@ function Step3({ data, update, isMobile }: {
         />
       </div>
 
-      <div style={{
-        background: "rgba(217,169,78,0.08)",
-        border: `1px solid ${C.goldDim}`,
-        borderRadius: 12,
-        padding: 24,
-      }}>
-        <QuestionLabel>Stay connected (optional)</QuestionLabel>
-        <QuestionHint>Add your name if you want email follow-up from The Harvest.</QuestionHint>
+      <div
+        role="group"
+        aria-labelledby="pulse-contact-label"
+        aria-describedby="pulse-contact-hint"
+        style={{
+          background: "rgba(217,169,78,0.08)",
+          border: `1px solid ${C.goldDim}`,
+          borderRadius: 12,
+          padding: 24,
+        }}
+      >
+        <QuestionLabel id="pulse-contact-label">Stay connected (optional)</QuestionLabel>
+        <QuestionHint id="pulse-contact-hint">Add your name if you want email follow-up from The Harvest.</QuestionHint>
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           <TextInput
+            id="pulse-name"
+            name="name"
+            label="Your name"
+            autoComplete="name"
             value={data.name}
             onChange={v => update({ name: v })}
             placeholder="Your name"
           />
           <TextInput
+            id="pulse-email"
+            name="email"
+            label="Your email"
+            autoComplete="email"
             value={data.email}
             onChange={v => update({ email: v })}
             placeholder="Your email"
             type="email"
           />
+          <p style={{ fontSize: 12, color: C.creamFaint, lineHeight: 1.5 }}>
+            If you add your name and email, your answers are linked to you so we can follow
+            up. Leave both blank to answer anonymously. See our{" "}
+            <a href="/privacy" style={{ color: C.creamFaint, textDecoration: "underline" }}>
+              privacy page
+            </a>{" "}
+            for details.
+          </p>
         </div>
       </div>
     </div>
@@ -505,11 +620,18 @@ function Step3({ data, update, isMobile }: {
 
 function ProgressBar({ step, total }: { step: number; total: number }) {
   return (
-    <div style={{
-      display: "flex",
-      gap: 6,
-      marginBottom: 40,
-    }}>
+    <div
+      role="progressbar"
+      aria-label="Survey progress"
+      aria-valuemin={1}
+      aria-valuemax={total}
+      aria-valuenow={step + 1}
+      style={{
+        display: "flex",
+        gap: 6,
+        marginBottom: 40,
+      }}
+    >
       {Array.from({ length: total }, (_, i) => (
         <div
           key={i}
@@ -555,13 +677,26 @@ function ThankYou({ isMobile }: { isMobile: boolean }) {
         color: C.creamDim,
         lineHeight: 1.6,
         maxWidth: 480,
+        margin: "0 auto 20px",
+      }}>
+        A human reads every response. If you left your email, we will get back
+        to you.
+      </p>
+      <p style={{
+        fontFamily: "'Inter', sans-serif",
+        fontSize: 15,
+        color: C.creamDim,
+        lineHeight: 1.6,
+        maxWidth: 480,
         margin: "0 auto 40px",
       }}>
-        Your voice matters. We're building The Harvest around what this community
-        actually wants — and you just helped shape that.
+        Come see the place for yourself. Most weekends we fire the pizza oven:
+        Friday 3pm to 8pm with a community movie night, Saturday 12pm to 8pm,
+        Sunday 12pm to 6pm. No booking needed. Weeks can vary, and members hear
+        the dates first.
       </p>
       <a
-        href="/"
+        href="/membership"
         style={{
           display: "inline-block",
           fontFamily: "'Montserrat', sans-serif",
@@ -575,7 +710,7 @@ function ThankYou({ isMobile }: { isMobile: boolean }) {
           textDecoration: "none",
         }}
       >
-        VISIT THE HARVEST
+        BECOME A MEMBER (IT'S FREE)
       </a>
     </motion.div>
   );
@@ -593,6 +728,15 @@ export default function CommunityPulse() {
   const [submitting, setSubmitting] = useState(false);
 
   const submitMutation = trpc.pulse.submit.useMutation();
+
+  useEffect(() => {
+    setPageSeo({
+      title: "Harvest Pulse · The Harvest Witta",
+      description:
+        "Tell The Harvest what is working, what is missing and what would help the community garden and gathering place take shape in Witta.",
+      path: "/pulse",
+    });
+  }, []);
 
   const update = (patch: Partial<SurveyData>) => {
     setData(prev => ({ ...prev, ...patch }));
@@ -612,6 +756,7 @@ export default function CommunityPulse() {
       setSubmitted(true);
     } catch (err) {
       console.error("Failed to submit pulse survey:", err);
+      toast.error("That didn't send. Try again, or reach us via the contact page.");
     } finally {
       setSubmitting(false);
     }
@@ -629,9 +774,10 @@ export default function CommunityPulse() {
       minHeight: "100vh",
       fontFamily: "'Inter', sans-serif",
     }}>
+      <SiteNav />
       {/* Hero */}
       <section style={{
-        padding: isMobile ? "60px 20px 40px" : "80px 40px 60px",
+        padding: isMobile ? "110px 20px 40px" : "140px 40px 60px",
         textAlign: "center",
         background: `radial-gradient(ellipse at 50% 30%, rgba(217,169,78,0.06), transparent 70%)`,
       }}>
@@ -768,7 +914,7 @@ export default function CommunityPulse() {
         )}
       </section>
 
-      <BauhausFooter isMobile={isMobile} />
+      <SiteFooter />
     </div>
   );
 }

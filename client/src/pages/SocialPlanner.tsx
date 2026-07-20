@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { trpc } from "../lib/trpc";
+import { useAuth } from "@/_core/hooks/useAuth";
+import { getLoginUrl } from "@/const";
 import { colors, fonts } from "../styles/brand";
 import type { EditorialPost, EditorialProject } from "../types/social";
 
@@ -84,16 +86,21 @@ const statusColors: Record<string, string> = {
 };
 
 export default function SocialPlanner() {
+  const { user, isAuthenticated, loading: authLoading } = useAuth();
   const [tab, setTab] = useState<Tab>("tiles");
   const [projectId, setProjectId] = useState<string>("");
+  const canLoadAdminData = !authLoading && isAuthenticated && user?.role === "admin";
 
   // Fetch projects for the selector
-  const projectsQuery = trpc.editorial.projects.useQuery();
+  const projectsQuery = trpc.editorial.projects.useQuery(undefined, {
+    enabled: canLoadAdminData,
+  });
   const projects: EditorialProject[] = projectsQuery.data ?? [];
 
   // Fetch posts from Notion filtered by project
   const postsQuery = trpc.editorial.list.useQuery(
     projectId ? { projectId } : {},
+    { enabled: canLoadAdminData },
   );
   const posts: EditorialPost[] = postsQuery.data ?? [];
 
@@ -103,6 +110,52 @@ export default function SocialPlanner() {
   useEffect(() => {
     document.title = "ACT \u2014 Social Planner";
   }, []);
+
+  // Auth gate: this page publishes to social accounts, admin only.
+  if (authLoading) {
+    return (
+      <div style={{ background: colors.shed, minHeight: "100vh", color: colors.milk, fontFamily: fonts.display, display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <div style={{ fontSize: "0.85rem", opacity: 0.7 }}>Checking access\u2026</div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated || user?.role !== "admin") {
+    return (
+      <div style={{ background: colors.shed, minHeight: "100vh", color: colors.milk, fontFamily: fonts.display, display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <div style={{ textAlign: "center", maxWidth: 360, padding: "2rem" }}>
+          <h1 style={{ fontSize: "1.2rem", fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.05em", margin: 0 }}>
+            Admin access required
+          </h1>
+          <p style={{ fontSize: "0.85rem", opacity: 0.7, margin: "0.75rem 0 1.25rem" }}>
+            {isAuthenticated
+              ? "Your account does not have permission to use the social planner."
+              : "Sign in with an admin account to use the social planner."}
+          </p>
+          {isAuthenticated ? (
+            <a href="/" style={{ color: colors.goldenHour, fontSize: "0.85rem" }}>Return to home</a>
+          ) : (
+            <button
+              onClick={() => { window.location.href = getLoginUrl(); }}
+              style={{
+                background: colors.goldenHour,
+                color: colors.shed,
+                border: "none",
+                borderRadius: 4,
+                padding: "0.5rem 1rem",
+                fontSize: "0.8rem",
+                fontFamily: fonts.display,
+                fontWeight: 700,
+                cursor: "pointer",
+              }}
+            >
+              Sign in
+            </button>
+          )}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div style={{ background: colors.shed, minHeight: "100vh", color: colors.milk, fontFamily: fonts.display }}>
@@ -430,8 +483,6 @@ function PublishTab({ posts }: { posts: EditorialPost[] }) {
         <PublishCard key={post.id} post={post} accounts={accounts} postMutation={postMutation} editorialUpdate={editorialUpdate} />
       ))}
 
-      {/* Newsletter section */}
-      <NewsletterSection />
     </div>
   );
 }
@@ -915,78 +966,6 @@ function QueueTab({ posts }: { posts: EditorialPost[] }) {
           </div>
         );
       })}
-    </div>
-  );
-}
-
-// ─────────────────────────────────────────────
-// NEWSLETTER SECTION
-// ─────────────────────────────────────────────
-function NewsletterSection() {
-  const [subscriberCount, setSubscriberCount] = useState<number | null>(null);
-  const [sending, setSending] = useState(false);
-  const [result, setResult] = useState<{ ok: boolean; msg: string } | null>(null);
-  const sendNewsletter = trpc.newsletter.sendCampaign.useMutation();
-
-  const countQuery = trpc.newsletter.subscriberCount.useQuery();
-  useEffect(() => {
-    if (countQuery.data?.count != null) {
-      setSubscriberCount(countQuery.data.count);
-    }
-  }, [countQuery.data]);
-
-  const handleSend = async () => {
-    if (!confirm("Send newsletter to all subscribers tagged 'newsletter'? This triggers the GHL workflow.")) return;
-    setSending(true);
-    setResult(null);
-    try {
-      const res = await sendNewsletter.mutateAsync({ tag: "newsletter" });
-      setResult({ ok: res.success, msg: res.success ? `Triggered for ${res.contactCount} contacts` : (res.error || "Failed") });
-    } catch (err: any) {
-      setResult({ ok: false, msg: err.message });
-    }
-    setSending(false);
-  };
-
-  return (
-    <div style={{ marginTop: "2rem", borderTop: "1px solid #333", paddingTop: "1.5rem" }}>
-      <h3 style={{ fontSize: "0.85rem", fontWeight: 900, textTransform: "uppercase", color: colors.goldenHour, marginBottom: "0.75rem" }}>
-        Newsletter
-      </h3>
-      <div style={{ background: "#222", borderRadius: 8, padding: "1rem", display: "flex", gap: "1rem", alignItems: "center", justifyContent: "space-between" }}>
-        <div>
-          <div style={{ fontSize: "0.75rem", color: colors.milk }}>
-            Subscribers: <strong style={{ color: colors.goldenHour }}>{subscriberCount ?? "..."}</strong>
-          </div>
-          <div style={{ fontSize: "0.6rem", color: "#666", marginTop: 4 }}>
-            Sends via GHL workflow to contacts tagged "newsletter"
-          </div>
-        </div>
-        <button
-          onClick={handleSend}
-          disabled={sending}
-          style={{
-            background: colors.calendula,
-            color: "white",
-            border: "none",
-            padding: "0.5rem 1rem",
-            borderRadius: 4,
-            fontSize: "0.65rem",
-            fontWeight: 700,
-            cursor: sending ? "wait" : "pointer",
-            fontFamily: fonts.display,
-            opacity: sending ? 0.5 : 1,
-            whiteSpace: "nowrap",
-          }}
-        >
-          {sending ? "Sending..." : "Send Newsletter"}
-        </button>
-      </div>
-      {result && (
-        <div style={{ marginTop: "0.5rem", fontSize: "0.65rem", color: result.ok ? colors.canopy : colors.calendula }}>
-          {result.msg}
-        </div>
-      )}
     </div>
   );
 }

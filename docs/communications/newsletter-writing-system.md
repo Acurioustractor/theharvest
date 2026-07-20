@@ -1,5 +1,12 @@
 # Newsletter Writing System
 
+> **Current canon check (2026-07-06).** Parts of this doc predate the June tag
+> alignment. Live canon: newsletter audience = `comms:harvest-newsletter` (154),
+> members = `tier:member` (135), followers = `tier:connected`; colon-namespaced
+> tags are canonical and hyphen twins are being retired. Before acting on tag
+> names or audience filters here, cross-check
+> `docs/communications/harvest-system-review-2026-07-06.md`.
+
 ## Job
 
 The newsletter should make people feel close to the work and clear about the next useful action.
@@ -59,7 +66,7 @@ Avoid:
 
 Make it concrete:
 
-- A working bee, a garden update, and one thing we need.
+- A work day, a garden update, and one thing we need.
 - The next gathering is taking shape.
 - A short note from 9 Gumland Drive.
 

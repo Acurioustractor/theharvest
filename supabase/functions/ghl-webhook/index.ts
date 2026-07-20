@@ -6,6 +6,20 @@ const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type'
 };
+// GHL workflow webhooks send `tags` as a comma-separated string (not an array)
+// and dates as epoch-millisecond numbers (not ISO). The DB columns expect an
+// array and a timestamp, so the raw values crash the upsert. Normalize both.
+function normalizeTags(t) {
+  if (Array.isArray(t)) return t;
+  if (typeof t === 'string') return t.split(',').map((s)=>s.trim()).filter(Boolean);
+  return [];
+}
+function normalizeDate(d) {
+  if (d === null || d === undefined || d === '') return null;
+  if (typeof d === 'number') return new Date(d).toISOString();
+  const parsed = new Date(d);
+  return isNaN(parsed.getTime()) ? null : parsed.toISOString();
+}
 Deno.serve(async (req)=>{
   // Handle CORS preflight
   if (req.method === 'OPTIONS') {
@@ -64,9 +78,9 @@ Deno.serve(async (req)=>{
       const email = contact.email;
       const phone = contact.phone;
       const companyName = contact.companyName || contact.company_name;
-      const tags = contact.tags || [];
-      const dateAdded = contact.dateAdded || contact.date_added || contact.dateCreated || contact.date_created;
-      const dateUpdated = contact.dateUpdated || contact.date_updated;
+      const tags = normalizeTags(contact.tags);
+      const dateAdded = normalizeDate(contact.dateAdded || contact.date_added || contact.dateCreated || contact.date_created);
+      const dateUpdated = normalizeDate(contact.dateUpdated || contact.date_updated);
       console.log(`📥 Processing contact: ${contactId} - ${firstName} ${lastName} - ${email}`);
       if (eventType.includes('Delete')) {
         await supabase.from('ghl_contacts').update({
@@ -126,8 +140,8 @@ Deno.serve(async (req)=>{
         monetary_value: opp.monetaryValue,
         custom_fields: opp.customFields || {},
         assigned_to: opp.assignedTo,
-        ghl_created_at: opp.dateAdded,
-        ghl_updated_at: opp.dateUpdated || new Date().toISOString(),
+        ghl_created_at: normalizeDate(opp.dateAdded),
+        ghl_updated_at: normalizeDate(opp.dateUpdated) || new Date().toISOString(),
         last_synced_at: new Date().toISOString()
       };
       await supabase.from('ghl_opportunities').upsert(oppData, {

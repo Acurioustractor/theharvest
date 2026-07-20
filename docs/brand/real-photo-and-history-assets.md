@@ -129,6 +129,31 @@ Decision:
 Use this instead of the old generated long-table hero image. No identifiable people visible. Fits the current timber, dairy, and co-operative story better than generic venue imagery.
 ```
 
+## Current brand guide image set
+
+Use these as the first visible image set in the in-app brand guide and launch comms. They
+replace old March event graphics, generated-looking crowd/table scenes, and concept-only
+inspiration renders.
+
+| Role | Asset |
+| --- | --- |
+| Current share image | `client/public/images/social/harvest-social-card.jpg` |
+| Milk crate pavilion source | `client/public/images/membership/member-welcome-crates.jpg` |
+| Front building / wayfinding | `client/public/images/optimized/seed-house-front-1600.webp` |
+| Whole site context | `client/public/images/optimized/hero-aerial-1600.webp` |
+| Garden work | `client/public/images/optimized/sophie-garden-1000.webp` |
+| Garden crew / working proof | `client/public/images/optimized/team-garden-selfie-1000.webp` |
+| Timber and tools | `client/public/images/optimized/barry-5745-1000.webp` |
+| Golden-hour local story | `client/public/images/optimized/barry-5764-1000.webp` |
+| Plan / unfinished proof | `client/public/images/compendium/canvas-drawing-full.jpg` |
+
+Archive-only for public brand guide use:
+
+- old March `Witta Gathering` graphics
+- generated or generated-looking long-table scenes
+- concept-only site-plan inspiration renders
+- any old flyer with stale dates, prices, or event promises
+
 ## Simple icons and support visuals
 
 Use icons like road signs, not illustrations trying to carry the brand.

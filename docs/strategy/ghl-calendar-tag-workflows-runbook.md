@@ -59,7 +59,7 @@
 ## Acceptance
 - [ ] 7a published, test booking tagged `witta-gathering-2026-06-20` + `rsvp-maker-morning`
 - [ ] 7b published, test booking tagged `witta-gathering-2026-06-20` + `rsvp-pizza-dinner`
-- [ ] 7c published, test booking tagged `harvest-shop-interest` + `shop-call-booked`
+- [ ] 7c published, test booking tagged `project:act-hv` + `interest:markets` + `shop-call-booked`
 - [ ] all three test bookings + tags cleaned up so live counts are zero at start
 
 ## Guardrails

@@ -1,11 +1,11 @@
 import { systemRouter } from "./_core/systemRouter.js";
-import { publicProcedure, protectedProcedure, router } from "./_core/trpc.js";
-import { createEvent, getApprovedEvents, getPendingEvents, updateEventStatus, createBusiness, getApprovedBusinesses, getPendingBusinesses, updateBusinessStatus, getBusinessByUserId, getBusinessById, claimBusiness, updateBusinessProfile, getUnclaimedApprovedBusinesses, createMemberWallEntry, getPublicMemberWallEntries, getProgressImages, createProgressImage, updateProgressImage, deleteProgressImage, promoteUserToAdmin, getAllUsers, getContent, getContentForPage, upsertContent, getAnnotationsForPoint, createAnnotation, deleteAnnotation, createPulseResponse, getPulseResults, createEventFeedbackEntry, getEventFeedbackByEventId, getAllEventFeedback, createWittaContribution, getApprovedWittaContributions, getPendingWittaContributions, updateWittaContributionStatus, getImageOverride, setImageOverride, clearImageOverride, listImageOverrides } from "./db.js";
+import { adminProcedure, publicProcedure, protectedProcedure, router } from "./_core/trpc.js";
+import { createEvent, getApprovedEvents, getPendingEvents, updateEventStatus, createBusiness, getApprovedBusinesses, getPendingBusinesses, updateBusinessStatus, getBusinessByUserId, getBusinessById, claimBusiness, updateBusinessProfile, getUnclaimedApprovedBusinesses, createMemberWallEntry, getPublicMemberWallEntries, getProgressImages, createProgressImage, updateProgressImage, deleteProgressImage, promoteUserToAdmin, getAllUsers, getContent, getContentForPage, upsertContent, getAnnotationsForPoint, createAnnotation, deleteAnnotation, createPulseResponse, getPulseResults, createCommunitySubmission, listRsvpSubmissions, createEventFeedbackEntry, getEventFeedbackByEventId, getAllEventFeedback, createWittaContribution, getApprovedWittaContributions, getPendingWittaContributions, updateWittaContributionStatus, getImageOverride, setImageOverride, clearImageOverride, listImageOverrides } from "./db.js";
 import { storagePut } from "./storage.js";
 import { getDb } from "./db.js";
 import { pulseResponses } from "../drizzle/schema.js";
 import { eq } from "drizzle-orm";
-import { upsertGHLContact, upsertGHLHarvestInboxOpportunity, addGHLContactNote, addGHLContactTag, getGHLContact, triggerGHLWorkflow, getGHLContactCountByTag, getGHLSocialAccounts, createGHLSocialPost, getGHLSocialPosts, searchGHLContactsByTag, batchTriggerWorkflow, createGHLEmailTemplate } from "./gohighlevel.js";
+import { upsertGHLContact, upsertGHLHarvestInboxOpportunity, addGHLContactNote, addGHLContactTag, addGHLInboundFormMessage, getGHLContact, triggerGHLWorkflow, getGHLContactCountByTag, getGHLSocialAccounts, createGHLSocialPost, getGHLSocialPosts, searchGHLContactsByTag, createGHLEmailTemplate } from "./gohighlevel.js";
 import { getGalleryPhotos, addGalleryPhoto, removeGalleryPhoto } from "./photoWallGallery.js";
 import { empathyLedgerClient } from "./empathyLedgerClient.js";
 import {
@@ -51,20 +51,167 @@ import {
   getWikiStatus,
 } from "./wiki.js";
 import { queryEditorialCalendar, getEditorialPost, updateEditorialPost, createEditorialPost, getEditorialProjects, getEditorialCommunicationTypes, syncReadyPosts, syncPublishedPosts } from "./notion.js";
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
 const INTEREST_OPTIONS = ["kids-play", "cafe", "garden", "pop-up-events", "art-exhibitions", "something-else"] as const;
 
-// Next upcoming Harvest gathering. Update these three lines per event — the
-// rest of the system reads from them (tags, count query, workflow source).
-const CURRENT_GATHERING_DATE = "2026-06-20";
-const CURRENT_GATHERING_TAG = "witta-gathering-2026-06-20";
-const CURRENT_GATHERING_SWITCHBOARD_TAGS = [
-  `Event: Witta Gathering - ${CURRENT_GATHERING_DATE}`,
-  "Event type: Public launch (50-150)",
-  "Access: Open registration (Public)",
-];
 const DEFAULT_NOTION_HARVEST_PROJECT_ID = "11debcf981cf80828fd0d6031a9709f2";
+const HARVEST_PUBLIC_OPEN_DAY_SOURCE =
+  "Website RSVP form and community_submissions RSVP store";
+const QUIZ_PERSONA_TAGS = {
+  regular: ["quiz-regular", "high-frequency", "community-builder"],
+  maker: ["quiz-maker", "workshop-interested", "hands-on-learner"],
+  gatherer: ["quiz-gatherer", "venue-interested", "event-host"],
+  grower: ["quiz-grower", "garden-interested", "plant-buyer"],
+  explorer: ["quiz-explorer", "first-timer", "curious-visitor"],
+} as const;
+const PULSE_WOULD_USE_OPTIONS = [
+  "Community garden",
+  "Cooking workshops",
+  "Art / maker space",
+  "Market stalls",
+  "Meeting rooms",
+  "Kids programs",
+  "Live music & events",
+  "Co-working space",
+] as const;
+const PIZZA_SESSION_LABELS = {
+  friday: "Friday, pizza and movie, 3pm to 8pm",
+  saturday: "Saturday, 12pm to 8pm",
+  sunday: "Sunday, 12pm to 6pm",
+  unsure: "Not sure yet",
+} as const;
+const PIZZA_SESSION_BY_DAY: Record<number, keyof typeof PIZZA_SESSION_LABELS> = {
+  5: "friday",
+  6: "saturday",
+  0: "sunday",
+};
+
+type RsvpPayload = {
+  occurrenceDate?: unknown;
+  session?: unknown;
+  people?: unknown;
+};
+
+function todayInBrisbane() {
+  const parts = new Intl.DateTimeFormat("en-AU", {
+    timeZone: "Australia/Brisbane",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(new Date());
+  const value = Object.fromEntries(parts.map((part) => [part.type, part.value]));
+  return `${value.year}-${value.month}-${value.day}`;
+}
+
+function dayOfIsoDate(value: string) {
+  const [year, month, day] = value.split("-").map(Number);
+  return new Date(Date.UTC(year, month - 1, day)).getUTCDay();
+}
+
+function expectedPizzaSessionForDate(value: string) {
+  return PIZZA_SESSION_BY_DAY[dayOfIsoDate(value)];
+}
+
+function validatePizzaOccurrence(occurrenceDate: string, session: keyof typeof PIZZA_SESSION_LABELS) {
+  const expectedSession = expectedPizzaSessionForDate(occurrenceDate);
+  if (!expectedSession) {
+    throw new TRPCError({
+      code: "BAD_REQUEST",
+      message: "Choose a Friday, Saturday or Sunday pizza date.",
+    });
+  }
+  if (occurrenceDate < todayInBrisbane()) {
+    throw new TRPCError({
+      code: "BAD_REQUEST",
+      message: "Choose an upcoming pizza date.",
+    });
+  }
+  if (session !== "unsure" && session !== expectedSession) {
+    throw new TRPCError({
+      code: "BAD_REQUEST",
+      message: "The session does not match the date you selected.",
+    });
+  }
+}
+
+function getRsvpPayload(value: unknown): RsvpPayload {
+  return value && typeof value === "object" ? (value as RsvpPayload) : {};
+}
+
+function getRsvpPeople(payload: RsvpPayload) {
+  return typeof payload.people === "number" && Number.isFinite(payload.people)
+    ? Math.max(1, payload.people)
+    : 1;
+}
+
+async function summarizeUpcomingPizzaRsvps() {
+  const rows = await listRsvpSubmissions();
+  const today = todayInBrisbane();
+  const groups = new Map<string, { occurrenceDate: string; people: number; rsvps: number }>();
+
+  for (const row of rows) {
+    const payload = getRsvpPayload(row.payload);
+    const occurrenceDate = typeof payload.occurrenceDate === "string" ? payload.occurrenceDate : null;
+    if (!occurrenceDate || occurrenceDate < today) continue;
+
+    const existing = groups.get(occurrenceDate) ?? { occurrenceDate, people: 0, rsvps: 0 };
+    existing.people += getRsvpPeople(payload);
+    existing.rsvps += 1;
+    groups.set(occurrenceDate, existing);
+  }
+
+  const next = Array.from(groups.values()).sort((a, b) => a.occurrenceDate.localeCompare(b.occurrenceDate))[0];
+  return {
+    tag: "event:witta-pizza",
+    count: next?.people ?? 0,
+    rsvpCount: next?.rsvps ?? 0,
+    occurrenceDate: next?.occurrenceDate ?? null,
+    ok: true,
+    error: null,
+  };
+}
+
+function escapeHtml(value: string | number) {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+type SetupGateStatus = "good" | "watch" | "blocked";
+
+async function safeGhlTagCount(tag: string) {
+  try {
+    return {
+      tag,
+      count: await getGHLContactCountByTag(tag),
+      ok: true,
+      error: null,
+    };
+  } catch (error) {
+    return {
+      tag,
+      count: 0,
+      ok: false,
+      error: error instanceof Error ? error.message : "GHL tag count failed",
+    };
+  }
+}
+
+function setupGate(input: {
+  id: string;
+  title: string;
+  status: SetupGateStatus;
+  owner: string;
+  detail: string;
+  nextAction: string;
+}) {
+  return input;
+}
 
 export const NEWSLETTER_INTEREST_OPTIONS = [
   "events",
@@ -132,7 +279,9 @@ const SHOP_INTEREST_TAGS: Record<ShopInterestOfferType, string> = {
   "made-goods": "shop-maker",
   food: "shop-food",
   consignment: "shop-consignment",
-  "help-shape": "shop-follow-up",
+  // Distinct offer tag: shop-follow-up is the always-on EOI marker below, so
+  // reusing it here made the help-shape segment unrecoverable (TODOS cleanup 1).
+  "help-shape": "shop-help-shape",
 };
 
 function splitPersonName(name: string) {
@@ -261,7 +410,7 @@ export const appRouter = router({
         time: z.string().min(1).max(100),
         location: z.string().min(1).max(255),
         category: z.enum(["market", "community", "arts", "workshop", "music"]),
-        description: z.string().min(1),
+        description: z.string().min(1).max(5000),
         contactEmail: z.string().email(),
         submittedBy: z.string().trim().min(1).max(120),
       }))
@@ -292,6 +441,13 @@ export const appRouter = router({
               name: formatHarvestInboxOpportunityName(input.submittedBy, "Event submission"),
               source: "Harvest | Event",
             });
+
+            await addGHLInboundFormMessage({
+              contactId: result.contactId,
+              fromEmail: input.contactEmail,
+              subject: `Event submission: ${input.title}`,
+              html: `<p><strong>Community event submission (website)</strong></p><p>${escapeHtml(input.title)}, ${escapeHtml(input.date)} ${escapeHtml(input.time)}, ${escapeHtml(input.location)} (${escapeHtml(input.category)})</p><p>${escapeHtml(input.description)}</p>`,
+            }).catch(err => console.error("GHL inbox message failed (event submit):", err));
 
             const workflowId = process.env.GHL_EVENT_SUBMIT_WORKFLOW_ID;
             if (workflowId) {
@@ -341,7 +497,7 @@ export const appRouter = router({
       .input(z.object({
         name: z.string().min(1).max(255),
         category: z.enum(["markets", "arts", "accommodation", "services", "food", "wellness", "retail", "other"]),
-        description: z.string().min(1),
+        description: z.string().min(1).max(5000),
         address: z.string().max(500).optional(),
         phone: z.string().max(50).optional(),
         email: z.string().email().optional(),
@@ -379,6 +535,13 @@ export const appRouter = router({
               name: formatHarvestInboxOpportunityName(input.submittedBy, "Business registration"),
               source: "Harvest | Business",
             });
+
+            await addGHLInboundFormMessage({
+              contactId: result.contactId,
+              fromEmail: input.submitterEmail,
+              subject: `Business registration: ${input.name}`,
+              html: `<p><strong>Business registration (website)</strong></p><p>${escapeHtml(input.name)} (${escapeHtml(input.category)})</p><p>${escapeHtml(input.description)}</p>`,
+            }).catch(err => console.error("GHL inbox message failed (business reg):", err));
 
             const workflowId = process.env.GHL_BUSINESS_REG_WORKFLOW_ID;
             if (workflowId) {
@@ -450,7 +613,7 @@ export const appRouter = router({
       .input(z.object({
         businessId: z.number(),
         name: z.string().min(1).max(255).optional(),
-        description: z.string().min(1).optional(),
+        description: z.string().min(1).max(5000).optional(),
         address: z.string().max(500).optional(),
         phone: z.string().max(50).optional(),
         email: z.string().email().optional().or(z.literal("")),
@@ -471,62 +634,126 @@ export const appRouter = router({
   }),
 
   eoi: router({
+    // RSVP for the current event rhythm (pizza weekends). Configurable via
+    // HARVEST_CURRENT_EVENT_LABEL / HARVEST_CURRENT_EVENT_TAG so the next
+    // event does not need a code change. DB row is written BEFORE the GHL
+    // call so a CRM outage can never lose an RSVP.
     submit: publicProcedure
       .input(z.object({
-        name: z.string().min(1),
+        name: z.string().trim().min(1).max(120),
         email: z.string().email().nullish(),
-        phone: z.string().nullish(),
-        excitement: z.string().optional(),
-        source: z.string().optional(),
+        phone: z.string().max(60).nullish(),
+        occurrenceDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+        session: z.enum(["friday", "saturday", "sunday", "unsure"]),
+        people: z.number().int().min(1).max(30).optional(),
+        message: z.string().max(2000).optional(),
+        source: z.string().max(100).optional(),
       }))
       .mutation(async ({ input }) => {
         if (!input.email && !input.phone) {
-          throw new Error("Email or phone is required");
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "Email or phone is required.",
+          });
         }
-        const { firstName, lastName } = splitPersonName(input.name);
+        validatePizzaOccurrence(input.occurrenceDate, input.session);
+        const sessionLabel = PIZZA_SESSION_LABELS[input.session];
+        const eventLabel = `Witta Pizza ${input.occurrenceDate}`;
+        const occurrenceTag = `event:witta-pizza:${input.occurrenceDate}`;
 
+        const submission = await createCommunitySubmission({
+          type: "rsvp",
+          name: input.name.trim(),
+          email: input.email || "",
+          phone: input.phone || null,
+          payload: {
+            event: eventLabel,
+            occurrenceDate: input.occurrenceDate,
+            session: input.session,
+            day: sessionLabel,
+            people: input.people ?? null,
+            message: input.message || null,
+            source: input.source || "whats-on",
+          },
+        });
+
+        const { firstName, lastName } = splitPersonName(input.name);
         const result = await upsertGHLContact({
           email: input.email || undefined,
           firstName,
           lastName,
           phone: input.phone || undefined,
-          source: `Harvest | RSVP ${CURRENT_GATHERING_DATE}`,
+          source: `Harvest | RSVP ${eventLabel}`,
           tags: [
-            CURRENT_GATHERING_TAG,
+            "event:witta-pizza",
+            occurrenceTag,
+            "rsvp:pizza",
             "harvest-event-attendee",
             "harvest-website",
             "harvest-inbox",
-            ...CURRENT_GATHERING_SWITCHBOARD_TAGS,
           ],
         });
 
-        if (result.contactId && input.excitement) {
-          await addGHLContactNote(result.contactId,
-            `**RSVP - Witta Gathering ${CURRENT_GATHERING_DATE}**\n\n**What excites them:** ${input.excitement}\n**Source:** ${input.source || "Not specified"}`
-          );
-        }
-
         if (result.contactId) {
+          const noteLines = [`**RSVP - ${eventLabel}**`];
+          noteLines.push(`**Session:** ${sessionLabel}`);
+          if (input.people) noteLines.push(`**People:** ${input.people}`);
+          if (input.message) noteLines.push(`**Message:** ${input.message}`);
+          noteLines.push(`**Source:** ${input.source || "whats-on"}`);
+          await addGHLContactNote(result.contactId, noteLines.join("\n\n"));
+
+          await addGHLInboundFormMessage({
+            contactId: result.contactId,
+            fromEmail: input.email || undefined,
+            subject: `RSVP: ${input.name.trim()} for ${eventLabel} (${sessionLabel})`,
+            html: [
+              `<p><strong>RSVP for ${eventLabel} (website)</strong></p>`,
+              `<p>Session: ${sessionLabel}</p>`,
+              input.people ? `<p>People: ${input.people}</p>` : "",
+              input.message ? `<p>${escapeHtml(input.message)}</p>` : "",
+            ].join(""),
+          }).catch(err => console.error("GHL inbox message failed (rsvp):", err));
+
           await upsertGHLHarvestInboxOpportunity({
             contactId: result.contactId,
-            name: formatHarvestInboxOpportunityName(input.name, `RSVP ${CURRENT_GATHERING_DATE}`),
-            source: `Harvest | RSVP ${CURRENT_GATHERING_DATE}`,
+            name: formatHarvestInboxOpportunityName(input.name, `RSVP ${eventLabel}`),
+            source: `Harvest | RSVP ${eventLabel}`,
           });
 
-          const workflowId = process.env.GHL_GATHERING_RSVP_WORKFLOW_ID || process.env.GHL_EOI_WORKFLOW_ID;
+          // Receipt workflow: set GHL_PIZZA_RSVP_WORKFLOW_ID once the
+          // "Harvest - RSVP Pizza Dinner (tag)" workflow is published in the
+          // GHL UI (it is DRAFT as of 2026-07-06). Skipped silently until then.
+          const workflowId = process.env.GHL_PIZZA_RSVP_WORKFLOW_ID;
           if (workflowId) {
             triggerGHLWorkflow(workflowId, result.contactId).catch(err =>
-              console.error("GHL workflow trigger failed (gathering rsvp):", err)
+              console.error("GHL workflow trigger failed (pizza rsvp):", err)
             );
           }
+        }
+
+        if (!submission && !result.contactId) {
+          throw new Error(
+            "We could not save your RSVP just now. Please try again, or message us on the members page.",
+          );
         }
 
         return { success: true };
       }),
 
-    count: publicProcedure.query(async () => {
-      const count = await getGHLContactCountByTag(CURRENT_GATHERING_TAG);
-      return { count };
+    count: adminProcedure.query(async () => {
+      const summary = await summarizeUpcomingPizzaRsvps();
+      return {
+        count: summary.count,
+        rsvpCount: summary.rsvpCount,
+        occurrenceDate: summary.occurrenceDate,
+      };
+    }),
+
+    // Admin "who's coming" list — the RSVP form's write path also tags a GHL
+    // contact, but this is the simple, no-CRM-navigation-needed way to check.
+    list: protectedProcedure.query(async ({ ctx }) => {
+      if (ctx.user.role !== "admin") throw new Error("Unauthorized");
+      return listRsvpSubmissions();
     }),
   }),
 
@@ -573,7 +800,7 @@ export const appRouter = router({
           }
         }
 
-        return { success: true, message: "Booking request submitted. We'll confirm your spot within 24 hours." };
+        return { success: true, message: "Booking request submitted. We'll be in touch to confirm." };
       }),
   }),
 
@@ -583,11 +810,10 @@ export const appRouter = router({
       .input(z.object({
         name: z.string().trim().min(1).max(120),
         email: z.string().email(),
-        persona: z.string().min(1),
-        ghlTags: z.array(z.string()),
-        motivation: z.string().optional(),
-        frequency: z.string().optional(),
-        interests: z.array(z.string()).optional(),
+        persona: z.enum(["regular", "maker", "gatherer", "grower", "explorer"]),
+        motivation: z.string().max(80).optional(),
+        frequency: z.string().max(80).optional(),
+        interests: z.array(z.string().max(80)).max(12).optional(),
       }))
       .mutation(async ({ input }) => {
         const { firstName, lastName } = splitPersonName(input.name);
@@ -597,7 +823,7 @@ export const appRouter = router({
           lastName,
           source: "Harvest | Quiz",
           // A quiz-taker is a first touch: tier:curious feeds the top of the Journey.
-          tags: [...input.ghlTags, "quiz-completed", "harvest-website", "tier:curious"],
+          tags: [...QUIZ_PERSONA_TAGS[input.persona], "quiz-completed", "harvest-website", "tier:curious"],
         });
 
         if (result.contactId) {
@@ -622,8 +848,8 @@ export const appRouter = router({
   interestPoll: router({
     vote: publicProcedure
       .input(z.object({
-        interests: z.array(z.string()).min(1),
-        other: z.string().optional(),
+        interests: z.array(z.enum(INTEREST_OPTIONS)).min(1).max(INTEREST_OPTIONS.length),
+        other: z.string().max(1000).optional(),
       }))
       .mutation(async ({ input }) => {
         const db = await getDb();
@@ -727,38 +953,10 @@ export const appRouter = router({
       }),
 
     // Get subscriber count
-    subscriberCount: publicProcedure
+    subscriberCount: adminProcedure
       .query(async () => {
-        const count = await getGHLContactCountByTag("newsletter");
+        const count = await getGHLContactCountByTag("comms:harvest-newsletter");
         return { count };
-      }),
-
-    // Send campaign: find contacts by tag, trigger workflow for each
-    sendCampaign: publicProcedure
-      .input(z.object({
-        tag: z.string().min(1).default("newsletter"),
-        workflowId: z.string().optional(),
-      }))
-      .mutation(async ({ input }) => {
-        const workflowId = input.workflowId || process.env.GHL_NEWSLETTER_WORKFLOW_ID;
-        if (!workflowId) {
-          return { success: false, error: "Newsletter workflow ID not configured. Set GHL_NEWSLETTER_WORKFLOW_ID env var.", contactCount: 0 };
-        }
-
-        const searchResult = await searchGHLContactsByTag(input.tag);
-        if (!searchResult.success || !searchResult.contacts?.length) {
-          return { success: false, error: searchResult.error || "No subscribers found.", contactCount: 0 };
-        }
-
-        const contactIds = searchResult.contacts.map(c => c.id);
-        const batchResult = await batchTriggerWorkflow(workflowId, contactIds);
-
-        return {
-          success: batchResult.success,
-          contactCount: batchResult.triggered,
-          failed: batchResult.failed,
-          error: batchResult.error,
-        };
       }),
   }),
 
@@ -852,11 +1050,7 @@ export const appRouter = router({
           lastName: rest.join(" ") || undefined,
           phone: input.phone || undefined,
           source: input.source || "Harvest | Member Question",
-          tags: buildNewsletterTags({
-            member: true,
-            interests: ["membership"],
-            extraTags: ["member-question", "harvest-inbox"],
-          }),
+          tags: ["harvest-website", "tier:curious", "member-question", "harvest-inbox"],
         });
 
         if (!result.success) {
@@ -878,6 +1072,13 @@ export const appRouter = router({
             name: formatHarvestInboxOpportunityName(input.name, "Member question"),
             source: input.source || "Harvest | Member Question",
           });
+
+          await addGHLInboundFormMessage({
+            contactId: result.contactId,
+            fromEmail: input.email,
+            subject: `Member question from ${input.name.trim()}`,
+            html: `<p><strong>Member question (website)</strong></p><p>${escapeHtml(input.question)}</p>`,
+          }).catch(err => console.error("GHL inbox message failed (member question):", err));
 
           const workflowId = process.env.GHL_MEMBER_QUESTION_WORKFLOW_ID || process.env.GHL_CONTACT_FORM_WORKFLOW_ID;
           if (workflowId) {
@@ -950,6 +1151,19 @@ export const appRouter = router({
             throw new Error(noteResult.error || "Failed to save shop interest note");
           }
 
+          await addGHLInboundFormMessage({
+            contactId: result.contactId,
+            fromEmail: input.email,
+            subject: `Shop interest from ${input.name.trim()} (${input.offerType})`,
+            html: [
+              "<p><strong>Shop expression of interest (website)</strong></p>",
+              `<p>Offer type: ${escapeHtml(input.offerType)}</p>`,
+              input.location ? `<p>Location: ${escapeHtml(input.location)}</p>` : "",
+              input.readiness ? `<p>Readiness: ${escapeHtml(input.readiness)}</p>` : "",
+              input.description ? `<p>${escapeHtml(input.description)}</p>` : "",
+            ].join(""),
+          }).catch(err => console.error("GHL inbox message failed (shop interest):", err));
+
           // Route into the dedicated Shop pipeline once it exists in GHL. Both env vars
           // must be set together (a stage ID only belongs to its own pipeline); until then
           // this falls back to the shared Harvest Inbox. See ghl-pipeline-playbook.md.
@@ -978,7 +1192,7 @@ export const appRouter = router({
   }),
 
   photoWall: router({
-    submit: publicProcedure
+    submit: adminProcedure
       .input(z.object({
         firstName: z.string().min(1).max(100),
         email: z.string().email(),
@@ -1021,7 +1235,7 @@ export const appRouter = router({
         return { success: true, contactId: result.contactId };
       }),
 
-    getContact: publicProcedure
+    getContact: adminProcedure
       .input(z.object({ contactId: z.string().min(1) }))
       .query(async ({ input }) => {
         const result = await getGHLContact(input.contactId);
@@ -1031,7 +1245,7 @@ export const appRouter = router({
         return { firstName: result.contact.firstName, lastName: result.contact.lastName };
       }),
 
-    addNote: publicProcedure
+    addNote: adminProcedure
       .input(z.object({
         contactId: z.string().min(1),
         note: z.string().min(1).max(2000),
@@ -1044,7 +1258,7 @@ export const appRouter = router({
         return { success: true };
       }),
 
-    sendPhoto: publicProcedure
+    sendPhoto: adminProcedure
       .input(z.object({
         contactId: z.string().min(1),
         photoUrl: z.string().url(),
@@ -1061,7 +1275,7 @@ export const appRouter = router({
       }),
 
     // Upload a photo to the shared gallery (via Supabase Storage)
-    upload: publicProcedure
+    upload: adminProcedure
       .input(z.object({
         base64Data: z.string().min(1),
         fileName: z.string().min(1),
@@ -1103,7 +1317,7 @@ export const appRouter = router({
       }),
 
     // Get all gallery photos (list from Supabase storage, fall back to local JSON)
-    gallery: publicProcedure.query(async () => {
+    gallery: adminProcedure.query(async () => {
       const supabaseUrl = process.env.VITE_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL;
       const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
       if (supabaseUrl && serviceKey) {
@@ -1133,10 +1347,11 @@ export const appRouter = router({
       return getGalleryPhotos();
     }),
 
-    // Delete a photo from the gallery
-    deletePhoto: publicProcedure
+    // Delete a photo from the gallery (admin only)
+    deletePhoto: protectedProcedure
       .input(z.object({ url: z.string().min(1) }))
-      .mutation(async ({ input }) => {
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== "admin") throw new Error("Unauthorized");
         // Delete from Supabase storage
         const supabaseUrl = process.env.VITE_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL;
         const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -1155,8 +1370,9 @@ export const appRouter = router({
         return { success: false };
       }),
 
-    // Add photo-wall-ready tag to all photo-wall contacts (triggers GHL text workflow)
-    notifyAll: publicProcedure.mutation(async () => {
+    // Add photo-wall-ready tag to all photo-wall contacts (triggers GHL text workflow). Admin only.
+    notifyAll: protectedProcedure.mutation(async ({ ctx }) => {
+      if (ctx.user.role !== "admin") throw new Error("Unauthorized");
       const searchResult = await searchGHLContactsByTag("photo-wall");
       if (!searchResult.success || !searchResult.contacts?.length) {
         return { success: false, error: searchResult.error || "No photo-wall contacts found.", tagged: 0 };
@@ -1208,7 +1424,7 @@ export const appRouter = router({
     // Public: Get single article by slug
     bySlug: publicProcedure
       .input(z.object({
-        slug: z.string().min(1),
+        slug: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
       }))
       .query(async ({ input }) => {
         const article = await empathyLedgerClient.fetchArticle(input.slug);
@@ -1327,7 +1543,7 @@ export const appRouter = router({
 
     // Get a specific story by slug
     story: publicProcedure
-      .input(z.object({ slug: z.string() }))
+      .input(z.object({ slug: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/) }))
       .query(({ input }) => {
         return loadStory(input.slug);
       }),
@@ -1351,7 +1567,7 @@ export const appRouter = router({
       }).optional())
       .query(async ({ input }) => {
         const images = await getProgressImages(input?.category || "all");
-        return images;
+        return images.map(({ uploadedBy: _uploadedBy, ...image }) => image);
       }),
 
     // Public: Get gallery images from Empathy Ledger
@@ -1377,13 +1593,17 @@ export const appRouter = router({
         limit: z.number().min(1).max(500).optional(),
         page: z.number().min(1).optional(),
       }).optional())
-      .query(async ({ input }) => {
+      .query(async ({ ctx, input }) => {
         const limit = input?.limit || 50;
         const hasFilter = Boolean(
           input?.work || input?.theme || input?.tag ||
           (input?.category && input.category !== "all") ||
           input?.project,
         );
+
+        if (!hasFilter && ctx.user?.role !== "admin") {
+          throw new TRPCError({ code: "FORBIDDEN", message: "Admin access required" });
+        }
 
         // Filtered — use the strict /harvest/gallery endpoint that returns
         // only tagged photos with the rich metadata needed for filtering.
@@ -1494,20 +1714,20 @@ export const appRouter = router({
 
   // Site plan annotations (notes & photos on info points)
   sitePlan: router({
-    annotations: publicProcedure
+    annotations: adminProcedure
       .input(z.object({ pointId: z.string() }))
       .query(async ({ input }) => {
         return await getAnnotationsForPoint(input.pointId);
       }),
 
-    addNote: publicProcedure
+    addNote: adminProcedure
       .input(z.object({ pointId: z.string(), content: z.string().min(1) }))
       .mutation(async ({ input }) => {
         const annotation = await createAnnotation(input.pointId, "note", input.content);
         return { success: true, annotation };
       }),
 
-    uploadPhoto: publicProcedure
+    uploadPhoto: adminProcedure
       .input(z.object({
         pointId: z.string(),
         fileName: z.string(),
@@ -1523,7 +1743,7 @@ export const appRouter = router({
         return { success: true, annotation };
       }),
 
-    delete: publicProcedure
+    delete: adminProcedure
       .input(z.object({ id: z.number() }))
       .mutation(async ({ input }) => {
         const success = await deleteAnnotation(input.id);
@@ -1535,19 +1755,24 @@ export const appRouter = router({
   pulse: router({
     submit: publicProcedure
       .input(z.object({
-        yearsInArea: z.string().optional(),
-        communityValues: z.array(z.string()).optional(),
-        whatsMissing: z.string().optional(),
-        heardOfHarvest: z.string().optional(),
-        wouldUse: z.array(z.string()).optional(),
-        visitFrequency: z.string().optional(),
-        preferredTime: z.array(z.string()).optional(),
-        skillsToShare: z.string().optional(),
-        participationBarriers: z.array(z.string()).optional(),
-        ageBracket: z.string().optional(),
-        name: z.string().optional(),
+        yearsInArea: z.string().max(80).optional(),
+        communityValues: z.array(z.string().max(120)).max(12).optional(),
+        whatsMissing: z.string().max(4000).optional(),
+        heardOfHarvest: z.string().max(120).optional(),
+        wouldUse: z.array(z.string()).max(PULSE_WOULD_USE_OPTIONS.length).refine(
+          (values) => values.every((value) => PULSE_WOULD_USE_OPTIONS.includes(
+            value as (typeof PULSE_WOULD_USE_OPTIONS)[number],
+          )),
+          "Unknown pulse option",
+        ).optional(),
+        visitFrequency: z.string().max(80).optional(),
+        preferredTime: z.array(z.string().max(80)).max(8).optional(),
+        skillsToShare: z.string().max(2000).optional(),
+        participationBarriers: z.array(z.string().max(120)).max(12).optional(),
+        ageBracket: z.string().max(80).optional(),
+        name: z.string().trim().max(120).optional(),
         email: z.string().email().optional().or(z.literal("")),
-        source: z.string().optional(),
+        source: z.string().max(100).optional(),
       }))
       .mutation(async ({ input }) => {
         const cleanEmail = input.email || undefined;
@@ -1559,7 +1784,12 @@ export const appRouter = router({
 
         // Only sync to GHL when we have both email and a real name.
         if (cleanEmail && cleanName) {
-          const interestTags = (input.wouldUse || []).flatMap(u => withFlatAlias(`interest:${slugifyTagPart(u)}`));
+          // Pulse answers are free-text-ish survey choices, not the smaller
+          // newsletter interest enum. Keep them namespaced and slugged so GHL
+          // segments stay predictable without dropping useful signal.
+          const interestTags = (input.wouldUse || [])
+            .flatMap(u => withFlatAlias(`interest:${slugifyTagPart(u)}`))
+            .filter(Boolean);
           const pulseResult = await upsertGHLContact({
             email: cleanEmail,
             firstName: cleanName.split(" ")[0],
@@ -1597,15 +1827,15 @@ export const appRouter = router({
       .input(z.object({
         eventId: z.number().optional(),
         rating: z.number().min(1).max(4),
-        bestPart: z.string().optional(),
-        wouldReturn: z.string(),
+        bestPart: z.string().max(2000).optional(),
+        wouldReturn: z.string().max(80),
       }))
       .mutation(async ({ input }) => {
         const feedback = await createEventFeedbackEntry(input);
         return { success: true, id: feedback?.id };
       }),
 
-    forEvent: publicProcedure
+    forEvent: adminProcedure
       .input(z.object({ eventId: z.number() }))
       .query(async ({ input }) => {
         return await getEventFeedbackByEventId(input.eventId);
@@ -2068,10 +2298,149 @@ export const appRouter = router({
       }),
   }),
 
+  businessSetup: router({
+    summary: protectedProcedure.query(async ({ ctx }) => {
+      if (ctx.user.role !== "admin") {
+        throw new Error("Unauthorized");
+      }
+
+      const [
+        pizzaCount,
+        newsletterCount,
+        memberCount,
+        harvestInboxCount,
+        shopInterestCount,
+        shopFollowUpCount,
+        shopCallBookedCount,
+        pendingEvents,
+        pendingBusinesses,
+      ] = await Promise.all([
+        summarizeUpcomingPizzaRsvps(),
+        safeGhlTagCount("comms:harvest-newsletter"),
+        safeGhlTagCount("tier:member"),
+        safeGhlTagCount("harvest-inbox"),
+        safeGhlTagCount("interest:markets"),
+        safeGhlTagCount("shop-follow-up"),
+        safeGhlTagCount("shop-call-booked"),
+        getPendingEvents(),
+        getPendingBusinesses(),
+      ]);
+
+      const countsOk = [
+        pizzaCount,
+        newsletterCount,
+        memberCount,
+        harvestInboxCount,
+        shopInterestCount,
+        shopFollowUpCount,
+        shopCallBookedCount,
+      ].every((item) => item.ok);
+
+      const gates = [
+        setupGate({
+          id: "public-open-day-truth",
+          title: "Current public event truth",
+          status: "good",
+          owner: "Website",
+          detail:
+            "The public RSVP path is now the recurring pizza-weekend flow, not the 20 June launch page.",
+          nextAction:
+            "Keep What's On as the source of truth when weekend hours or RSVP language changes.",
+        }),
+        setupGate({
+          id: "public-rsvp-form",
+          title: "Public RSVP form",
+          status: "good",
+          owner: "Website + GHL",
+          detail:
+            "The public form writes a durable RSVP row, then upserts a GHL contact with event:witta-pizza and occurrence-date tags.",
+          nextAction:
+            "After deploy, submit one production test RSVP, verify the stored row and tags, then remove the test contact.",
+        }),
+        setupGate({
+          id: "rsvp-headcount",
+          title: "RSVP headcount signal",
+          status: pizzaCount.count > 0 ? "good" : "blocked",
+          owner: "Website database",
+          detail: pizzaCount.occurrenceDate
+            ? `${pizzaCount.count} people across ${pizzaCount.rsvpCount} RSVP(s) for ${pizzaCount.occurrenceDate}. This is the dough and turnout signal.`
+            : "No upcoming pizza RSVPs are stored yet.",
+          nextAction:
+            "Use /admin/rsvps for the attendee list and date/session breakdown.",
+        }),
+        setupGate({
+          id: "calendar-tag-workflows",
+          title: "Calendar tag workflows",
+          status: pizzaCount.count > 0 ? "watch" : "blocked",
+          owner: "GHL UI",
+          detail:
+            "The website applies RSVP tags. Any follow-up receipt or reminder workflow still needs to be published in the GHL UI.",
+          nextAction:
+            "Publish and test the pizza RSVP follow-up workflow once the final copy is approved.",
+        }),
+        setupGate({
+          id: "supabase-security",
+          title: "Supabase security review",
+          status: "watch",
+          owner: "Ben / dev",
+          detail:
+            "Harvest server-managed tables are locked behind RLS/service-role access. The shared Supabase project still has broader advisor noise outside this repo's immediate launch path.",
+          nextAction:
+            "Continue the wider shared-schema RLS cleanup before adding any new browser-side Supabase writes.",
+        }),
+        setupGate({
+          id: "shop-operating-loop",
+          title: "Shop operating loop",
+          status: shopInterestCount.count > 0 ? "watch" : "blocked",
+          owner: "Susie / Joey / Ben",
+          detail: `${shopInterestCount.count} contacts carry interest:markets, ${shopFollowUpCount.count} carry shop-follow-up, and ${shopCallBookedCount.count} carry shop-call-booked.`,
+          nextAction:
+            "Finish shop-chat ownership, Square setup, and Monday maker follow-up sweep.",
+        }),
+      ];
+
+      return {
+        generatedAt: new Date().toISOString(),
+        currentTruth: {
+          eventDate: pizzaCount.occurrenceDate ?? "No upcoming RSVP date yet",
+          dayModel: "Pizza weekend RSVP",
+          publicRoute: "/whats-on#pizza-rsvp",
+          sourceDoc: HARVEST_PUBLIC_OPEN_DAY_SOURCE,
+        },
+        launch: {
+          publicRsvp: {
+            mode: "embedded-form",
+            route: "/whats-on#pizza-rsvp",
+            tags: ["event:witta-pizza", "rsvp:pizza"],
+          },
+          tags: {
+            pizza: pizzaCount,
+          },
+        },
+        crm: {
+          tagsOk: countsOk,
+          tags: {
+            newsletter: newsletterCount,
+            members: memberCount,
+            harvestInbox: harvestInboxCount,
+            shopInterest: shopInterestCount,
+            shopFollowUp: shopFollowUpCount,
+            shopCallBooked: shopCallBookedCount,
+          },
+        },
+        website: {
+          pendingEvents: pendingEvents.length,
+          pendingBusinesses: pendingBusinesses.length,
+        },
+        gates,
+      };
+    }),
+  }),
+
   // Editorial calendar (ACT Communications Dashboard in Notion)
   editorial: router({
     // List posts from Notion, optionally filtered by project/status/type
-    list: publicProcedure
+    list: adminProcedure
       .input(z.object({
         projectId: z.string().optional(),
         status: z.string().optional(),
@@ -2086,7 +2455,7 @@ export const appRouter = router({
       }),
 
     // Harvest-specific editorial rows. Keeps the Notion project ID server-side.
-    harvestList: publicProcedure
+    harvestList: adminProcedure
       .input(z.object({
         status: z.string().optional(),
         communicationType: z.string().optional(),
@@ -2101,7 +2470,7 @@ export const appRouter = router({
 
     // Control-room friendly Harvest editorial state. Notion credentials can drift;
     // return that as an operator signal instead of taking down the whole page.
-    harvestSummary: publicProcedure.query(async () => {
+    harvestSummary: adminProcedure.query(async () => {
       try {
         const posts = await queryEditorialCalendar({
           projectId: process.env.NOTION_HARVEST_PROJECT_ID || DEFAULT_NOTION_HARVEST_PROJECT_ID,
@@ -2125,7 +2494,7 @@ export const appRouter = router({
     }),
 
     // Create a new post in Notion
-    create: publicProcedure
+    create: adminProcedure
       .input(z.object({
         title: z.string(),
         communicationType: z.string().optional(),
@@ -2145,14 +2514,14 @@ export const appRouter = router({
       }),
 
     // Get a single post by Notion page ID
-    get: publicProcedure
+    get: adminProcedure
       .input(z.object({ id: z.string() }))
       .query(async ({ input }) => {
         return await getEditorialPost(input.id);
       }),
 
     // Update a post in Notion (status, caption, date, GHL Post ID)
-    update: publicProcedure
+    update: adminProcedure
       .input(z.object({
         id: z.string(),
         status: z.string().optional(),
@@ -2168,24 +2537,24 @@ export const appRouter = router({
       }),
 
     // List projects from the ACT Projects database
-    projects: publicProcedure.query(async () => {
+    projects: adminProcedure.query(async () => {
       return await getEditorialProjects();
     }),
 
     // List communication type options
-    communicationTypes: publicProcedure.query(async () => {
+    communicationTypes: adminProcedure.query(async () => {
       return await getEditorialCommunicationTypes();
     }),
 
     // Auto-sync: push Ready → GHL, pull Published ← GHL
-    autoSync: publicProcedure.mutation(async () => {
+    autoSync: adminProcedure.mutation(async () => {
       const readyResult = await syncReadyPosts();
       const publishedResult = await syncPublishedPosts();
       return { success: true, ...readyResult, published: publishedResult.updated };
     }),
 
     // Sync published status from GHL back to Notion (legacy, kept for backward compat)
-    syncPublished: publicProcedure.mutation(async () => {
+    syncPublished: adminProcedure.mutation(async () => {
       const result = await syncPublishedPosts();
       return { success: true, updated: result.updated };
     }),
@@ -2194,14 +2563,14 @@ export const appRouter = router({
   // Social media posting via GHL Social Planner
   social: router({
     // Get connected social accounts
-    accounts: publicProcedure
+    accounts: adminProcedure
       .query(async () => {
         const result = await getGHLSocialAccounts();
         return result;
       }),
 
-    // Create/schedule a social post
-    post: publicProcedure
+    // Create/schedule a social post (admin only)
+    post: adminProcedure
       .input(z.object({
         summary: z.string().min(1).max(5000),
         accountIds: z.array(z.string()).min(1),
@@ -2214,7 +2583,7 @@ export const appRouter = router({
       }),
 
     // List posts from GHL
-    list: publicProcedure
+    list: adminProcedure
       .input(z.object({
         status: z.enum(["draft", "scheduled", "published"]).optional(),
       }).optional())
@@ -2226,7 +2595,7 @@ export const appRouter = router({
 
   // Email templates
   email: router({
-    createTemplate: publicProcedure
+    createTemplate: adminProcedure
       .input(z.object({
         name: z.string().min(1),
         html: z.string().min(1),

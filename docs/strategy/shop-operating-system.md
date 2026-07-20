@@ -23,7 +23,7 @@ A shared shelf for what people around Witta and Maleny grow and make, with hones
 
 | Step | What happens | Where it lives |
 | --- | --- | --- |
-| 1. Interest | `/shop` form applies `harvest-shop-interest` plus an offer tag | GHL Shop pipeline, New interest |
+| 1. Interest | `/shop` form applies `project:act-hv`, `role:supplier`, `interest:markets`, `shop-follow-up`, `shop-stage-1`, plus an offer tag | GHL Shop pipeline, New interest |
 | 2. Connect | "Book a chat about the shop" calendar, a real conversation | In conversation |
 | 3. Onboard | Consignment agreement, pricing, the story, food-safety where needed | Sampling / trial shelf |
 | 4. On the shelf | Live stockist, honest signage | On the shelf |

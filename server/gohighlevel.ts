@@ -340,6 +340,87 @@ export async function addGHLContactTag(contactId: string, tag: string): Promise<
 /**
  * Add a note to a contact in Go High Level
  */
+// Conversations API uses an older version header than the rest of the v2 API.
+const GHL_CONVERSATIONS_API_VERSION = "2021-04-15";
+const GHL_INBOX_EMAIL = "hi@act.place";
+
+/**
+ * Push a website form submission into the contact's GHL Conversations thread
+ * as an inbound email-type message, so the GHL inbox is the triage desk of
+ * record (decided 2026-07-06). Finds or creates the conversation first.
+ * Fire-and-forget from callers: failures log but never block the submission.
+ */
+export async function addGHLInboundFormMessage(input: {
+  contactId: string;
+  subject: string;
+  html: string;
+  fromEmail?: string | null;
+}): Promise<{ success: boolean; error?: string }> {
+  const apiKey = process.env.GHL_API_KEY;
+  const locationId = process.env.GHL_LOCATION_ID;
+  if (!apiKey || !locationId) {
+    return { success: false, error: "GHL credentials not configured." };
+  }
+
+  const headers = {
+    "Content-Type": "application/json",
+    Accept: "application/json",
+    Authorization: `Bearer ${apiKey}`,
+    Version: GHL_CONVERSATIONS_API_VERSION,
+  };
+
+  try {
+    // 1. Find (or create) the contact's conversation
+    let conversationId: string | undefined;
+    const searchRes = await fetch(
+      `${GHL_API_BASE}/conversations/search?locationId=${locationId}&contactId=${input.contactId}`,
+      { headers },
+    );
+    if (searchRes.ok) {
+      const data = await searchRes.json() as { conversations?: { id: string }[] };
+      conversationId = data.conversations?.[0]?.id;
+    }
+    if (!conversationId) {
+      const createRes = await fetch(`${GHL_API_BASE}/conversations/`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify({ locationId, contactId: input.contactId }),
+      });
+      if (createRes.ok) {
+        const created = await createRes.json() as { conversation?: { id: string }; id?: string };
+        conversationId = created.conversation?.id ?? created.id;
+      }
+    }
+    if (!conversationId) {
+      console.error("GHL inbox message: could not find or create conversation for", input.contactId);
+      return { success: false, error: "No conversation available." };
+    }
+
+    // 2. Inject the form message as an inbound email
+    const msgRes = await fetch(`${GHL_API_BASE}/conversations/messages/inbound`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify({
+        type: "Email",
+        conversationId,
+        emailTo: GHL_INBOX_EMAIL,
+        emailFrom: input.fromEmail || GHL_INBOX_EMAIL,
+        subject: input.subject,
+        html: input.html,
+      }),
+    });
+    if (!msgRes.ok) {
+      const errorData = await msgRes.json().catch(() => ({})) as GHLErrorResponse;
+      console.error("GHL inbox message failed:", msgRes.status, errorData);
+      return { success: false, error: errorData.message || "Failed to add inbox message." };
+    }
+    return { success: true };
+  } catch (error) {
+    console.error("GHL inbox message request failed:", error);
+    return { success: false, error: "Unable to add inbox message." };
+  }
+}
+
 export async function addGHLContactNote(contactId: string, noteBody: string): Promise<{ success: boolean; error?: string }> {
   const apiKey = process.env.GHL_API_KEY;
 
@@ -377,13 +458,14 @@ export async function addGHLContactNote(contactId: string, noteBody: string): Pr
  * Search contacts by tag and return count
  * Used for RSVP social proof counter
  */
-let _eoiCountCache: { count: number; fetchedAt: number } | null = null;
+const _tagCountCache = new Map<string, { count: number; fetchedAt: number }>();
 const EOI_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
 
 export async function getGHLContactCountByTag(tag: string): Promise<number> {
   // Return cached value if fresh
-  if (_eoiCountCache && Date.now() - _eoiCountCache.fetchedAt < EOI_CACHE_TTL) {
-    return _eoiCountCache.count;
+  const cached = _tagCountCache.get(tag);
+  if (cached && Date.now() - cached.fetchedAt < EOI_CACHE_TTL) {
+    return cached.count;
   }
 
   const apiKey = process.env.GHL_API_KEY;
@@ -408,16 +490,16 @@ export async function getGHLContactCountByTag(tag: string): Promise<number> {
 
     if (!response.ok) {
       console.error("GHL search error:", response.status);
-      return _eoiCountCache?.count ?? 0;
+      return cached?.count ?? 0;
     }
 
     const data = await response.json() as { meta?: { total?: number }; contacts?: unknown[] };
     const count = data.meta?.total ?? data.contacts?.length ?? 0;
-    _eoiCountCache = { count, fetchedAt: Date.now() };
+    _tagCountCache.set(tag, { count, fetchedAt: Date.now() });
     return count;
   } catch (error) {
     console.error("GHL search failed:", error);
-    return _eoiCountCache?.count ?? 0;
+    return cached?.count ?? 0;
   }
 }
 
@@ -850,9 +932,17 @@ export async function getGHLAccountMap(): Promise<Map<string, string[]>> {
 }
 
 /**
- * Get social media posts from GHL (with auto token refresh)
+ * Get social media posts from GHL (with auto token refresh).
+ *
+ * Pagination note: the posts/list endpoint requires skip/limit as JSON
+ * STRINGS (numbers return 422). The planner holds posts created both via
+ * this API and by staff in the GHL UI; the default createdBy filter hides
+ * UI-created posts, so review tooling should pass allCreators: true.
  */
-export async function getGHLSocialPosts(status?: string): Promise<{ success: boolean; posts?: any[]; error?: string }> {
+export async function getGHLSocialPosts(
+  status?: string,
+  opts?: { allCreators?: boolean },
+): Promise<{ success: boolean; posts?: any[]; error?: string }> {
   return withTokenRetry(async () => {
     const apiKey = getSocialApiKey();
     const locationId = process.env.GHL_LOCATION_ID;
@@ -862,34 +952,44 @@ export async function getGHLSocialPosts(status?: string): Promise<{ success: boo
     }
 
     const url = `${GHL_API_BASE}/social-media-posting/${locationId}/posts/list`;
-    const body: Record<string, unknown> = { limit: "50" };
+    const pageSize = 100;
+    const allPosts: any[] = [];
 
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        Version: GHL_API_VERSION,
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify(body),
-    });
+    for (let skip = 0; skip < 1000; skip += pageSize) {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          Version: GHL_API_VERSION,
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({ skip: String(skip), limit: String(pageSize) }),
+      });
 
-    if (response.status === 401) {
-      throw Object.assign(new Error("401 Unauthorized"), { status: 401 });
+      if (response.status === 401) {
+        throw Object.assign(new Error("401 Unauthorized"), { status: 401 });
+      }
+
+      if (!response.ok) {
+        const errorData = await response.json() as GHLErrorResponse;
+        return { success: false, error: errorData.message || "Failed to fetch posts." };
+      }
+
+      const data = await response.json() as { results?: { posts?: any[] }; posts?: any[] };
+      const page = data.results?.posts || data.posts || [];
+      allPosts.push(...page);
+      if (page.length < pageSize) break;
     }
 
-    if (!response.ok) {
-      const errorData = await response.json() as GHLErrorResponse;
-      return { success: false, error: errorData.message || "Failed to fetch posts." };
+    let posts = allPosts;
+    if (!opts?.allCreators) {
+      const userId = await getSocialUserId();
+      if (userId) posts = posts.filter((p: any) => p.createdBy === userId);
     }
-
-    const data = await response.json() as { results?: { posts?: any[] }; posts?: any[] };
-    const allPosts = data.results?.posts || data.posts || [];
-    const userId = await getSocialUserId();
-    const posts = userId
-      ? allPosts.filter((p: any) => p.createdBy === userId)
-      : allPosts;
+    if (status) {
+      posts = posts.filter((p: any) => String(p.status || "").toLowerCase() === status.toLowerCase());
+    }
     return { success: true, posts };
   });
 }
@@ -1070,15 +1170,14 @@ export async function createGHLEmailTemplate(input: {
       },
       body: JSON.stringify({
         locationId,
+        title: input.name,
         name: input.name,
         type: "html",
         updatedBy: "api",
         builderVersion: "2",
-        templateData: {
-          html: input.html,
-          subject: input.subject || input.name,
-          preheader: input.preheader || "",
-        },
+        isPlainText: false,
+        subjectLine: input.subject || input.name,
+        previewText: input.preheader || "",
       }),
     });
 
@@ -1097,11 +1196,14 @@ export async function createGHLEmailTemplate(input: {
         },
         body: JSON.stringify({
           locationId,
+          title: input.name,
           name: input.name,
           type: "html",
-          html: input.html,
-          subject: input.subject || input.name,
-          preheader: input.preheader || "",
+          updatedBy: "api",
+          builderVersion: "2",
+          isPlainText: false,
+          subjectLine: input.subject || input.name,
+          previewText: input.preheader || "",
         }),
       });
       if (!response2.ok) {
@@ -1115,8 +1217,41 @@ export async function createGHLEmailTemplate(input: {
     }
 
     const data = await response.json() as Record<string, unknown>;
+    const templateId = (data.id || data._id || data.templateId || data.redirect) as string | undefined;
+
+    if (!templateId) {
+      console.error("GHL Email Template created without a template id:", data);
+      return { success: false, error: "Template created without a returned template id." };
+    }
+
+    // The create endpoint can return a default builder shell. Push the HTML into
+    // the template data endpoint so the preview and editable template contain
+    // the intended email instead of HighLevel's placeholder.
+    const dataResponse = await fetch(`${GHL_API_BASE}/emails/builder/data`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Authorization": `Bearer ${apiKey}`,
+        "Version": GHL_API_VERSION,
+      },
+      body: JSON.stringify({
+        locationId,
+        templateId,
+        updatedBy: "api",
+        editorType: "html",
+        html: input.html,
+      }),
+    });
+
+    if (!dataResponse.ok) {
+      const errorData = await dataResponse.json().catch(() => ({})) as Record<string, unknown>;
+      console.error("GHL Email Template Data Error:", dataResponse.status, errorData);
+      return { success: false, templateId, error: `Template shell created, but HTML update failed ${dataResponse.status}: ${JSON.stringify(errorData)}` };
+    }
+
     console.log("GHL Email Template created:", data);
-    return { success: true, templateId: (data.id || data._id || data.templateId) as string };
+    return { success: true, templateId };
   } catch (error) {
     console.error("GHL Email Template request failed:", error);
     return { success: false, error: "Unable to create email template." };

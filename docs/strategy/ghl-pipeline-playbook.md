@@ -16,7 +16,7 @@ Each layer does one job. Keep them separate in your head and the system stays si
 
 | Layer | Answers | Example | How often it changes |
 | --- | --- | --- | --- |
-| **Tags** | *Who* they are, *what* they want | `harvest-shop-interest`, `shop-produce` | Rarely. Durable labels. |
+| **Tags** | *Who* they are, *what* they want | `interest:markets`, `shop-produce` | Rarely. Durable labels. |
 | **Pipeline + stage** | *Where* they are with us | Shop pipeline → "In conversation" | Often. You drag the card. |
 | **Workflows** | *What* they hear automatically | follow welcome, shop receipt | Set once, runs itself. |
 | **Tasks / next-action date** | *What we owe them next* | "Call Friday about volumes" | The follow-up engine. |

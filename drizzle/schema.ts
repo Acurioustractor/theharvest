@@ -7,6 +7,7 @@ import {
   serial,
   text,
   timestamp,
+  uuid,
   varchar,
   jsonb,
 } from "drizzle-orm/pg-core";
@@ -425,3 +426,26 @@ export const imageOverrides = pgTable("image_overrides", {
 
 export type ImageOverride = typeof imageOverrides.$inferSelect;
 export type InsertImageOverride = typeof imageOverrides.$inferInsert;
+
+/**
+ * Community submissions — durable store for every community-submit edge
+ * function capture (venue enquiries and all get-involved forms). Written
+ * BEFORE the GHL upsert so a CRM outage can never lose a message.
+ * Type-specific fields live in payload. Table created 2026-07-06 via
+ * Supabase migration create_community_submissions; this entry keeps the
+ * schema source of truth aligned (do not re-generate a create for it).
+ */
+export const communitySubmissions = pgTable("community_submissions", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  type: text("type").notNull(),
+  name: text("name").notNull(),
+  email: text("email").notNull(),
+  phone: text("phone"),
+  payload: jsonb("payload").notNull().default({}),
+  ghlContactId: text("ghl_contact_id"),
+  ghlSynced: boolean("ghl_synced").notNull().default(false),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+});
+
+export type CommunitySubmission = typeof communitySubmissions.$inferSelect;
+export type InsertCommunitySubmission = typeof communitySubmissions.$inferInsert;

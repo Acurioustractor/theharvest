@@ -236,7 +236,7 @@ export default function Person({ slug }: { slug: string }) {
               <Mic className="h-5 w-5 text-amber-700" /> Conversations & recordings
             </h2>
             <p className="mb-6 text-sm text-stone-600">
-              Transcripts of recorded sessions. Full text is held in the Harvest archive — reach out if you'd like access.
+              Transcripts of recorded sessions. Full text is held in the Harvest archive. Reach out if you'd like access.
             </p>
             <div className="grid gap-3">
               {s.transcripts.map((t) => {
@@ -299,7 +299,7 @@ export default function Person({ slug }: { slug: string }) {
         <section className="py-12 bg-stone-50">
           <div className="container mx-auto max-w-3xl text-center text-stone-600">
             <ImageIcon className="mx-auto h-8 w-8 text-stone-400" />
-            <p className="mt-3 text-sm">No published content yet — check back soon.</p>
+            <p className="mt-3 text-sm">Nothing published here yet.</p>
           </div>
         </section>
       )}

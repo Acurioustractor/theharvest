@@ -1,0 +1,26 @@
+# Local agent and editor support files are not part of the deployed application.
+.agent/
+.agents/
+.claude/
+.Codex/
+.junie/
+.kiro/
+.obsidian/
+.pi/
+.qwen/
+.superdesign/
+.tldr/
+.trae/
+.windsurf/
+
+# Local QA, caches, exports, and working artifacts.
+backups/
+logs/
+output/
+test-results/
+tmp/
+.pnpm-store/
+dist/
+
+# Tests beside Vercel functions must never become deployed endpoints.
+api/**/*.test.ts

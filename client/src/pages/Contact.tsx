@@ -5,6 +5,8 @@ import FadeIn from "@/components/FadeIn";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { rootStyle, colors, fonts, detailLabelStyle, detailTextStyle, formLabelStyle, formInputStyle } from "@/styles/brand";
 import { SiteFooter, SiteNav } from "./HarvestReviewTest";
+import { VisitStrip } from "@/components/VisitStrip";
+import { setPageSeo } from "@/lib/seo";
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
@@ -22,18 +24,12 @@ export default function Contact() {
   const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
-    document.title = "Contact The Harvest";
-    const meta = (name: string, content: string) => {
-      let el = document.querySelector(`meta[property="${name}"]`) as HTMLMetaElement | null;
-      if (!el) {
-        el = document.createElement("meta");
-        el.setAttribute("property", name);
-        document.head.appendChild(el);
-      }
-      el.content = content;
-    };
-    meta("og:title", "Contact The Harvest");
-    meta("og:description", "Questions, ideas, or just want to say hello.");
+    setPageSeo({
+      title: "Contact The Harvest Witta",
+      description:
+        "Contact The Harvest in Witta about the shop, workshops, work days, venue hire, local stories or an idea for the place.",
+      path: "/contact",
+    });
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -103,7 +99,20 @@ export default function Contact() {
             marginRight: "auto",
             lineHeight: 1.55,
           }}>
-            The Harvest is in Witta, on Jinibara Country, at the old nursery. We're not open for casual drop-ins yet. Use the form below, or one of the paths beneath it.
+            The Harvest is in Witta, on Jinibara Country, at the old nursery. You do not need to book to come and have a look while we find our feet. Use the form below, or one of the paths beneath it.
+          </p>
+          <p style={{
+            fontFamily: fonts.body,
+            fontSize: 15,
+            opacity: 0.55,
+            margin: "12px 0 0",
+            maxWidth: 540,
+            marginLeft: "auto",
+            marginRight: "auto",
+            lineHeight: 1.55,
+          }}>
+            Good things to write to us about: selling or making something for the shop
+            shelves, running a workshop, joining a work day, or an idea for the place.
           </p>
         </motion.div>
       </section>
@@ -149,24 +158,44 @@ export default function Contact() {
               lineHeight: 1.6,
               margin: "0 0 32px",
             }}>
-              We've got your message and will get back to you soon.
-              In the meantime, feel free to explore what we're building.
+              We've got your message. We read everything. Replies can take a few
+              days while we find our feet.
+            </p>
+            <p style={{
+              fontFamily: fonts.body,
+              fontSize: isMobile ? 15 : 16,
+              color: colors.milk,
+              opacity: 0.7,
+              lineHeight: 1.6,
+              margin: "0 0 32px",
+            }}>
+              While you wait: membership is free, and members hear about open days
+              and events first.{" "}
+              <a
+                href="/membership"
+                style={{ color: colors.goldenHour, textDecoration: "underline", textUnderlineOffset: 3 }}
+              >
+                Become a member
+              </a>
+              .
             </p>
             <button
+              type="button"
               onClick={() => setSubmitted(false)}
               style={{
-                fontFamily: fonts.display,
-                fontWeight: 700,
-                fontSize: 13,
-                letterSpacing: "0.1em",
-                color: colors.shed,
-                backgroundColor: colors.goldenHour,
+                fontFamily: fonts.body,
+                fontSize: 14,
+                letterSpacing: "0.06em",
+                color: colors.milk,
+                background: "none",
                 border: "none",
-                padding: "14px 32px",
+                textDecoration: "underline",
+                textUnderlineOffset: 3,
+                opacity: 0.7,
                 cursor: "pointer",
               }}
             >
-              SEND ANOTHER MESSAGE
+              Send another message
             </button>
           </motion.div>
         ) : (
@@ -180,10 +209,12 @@ export default function Contact() {
                 marginBottom: 20,
               }}>
                 <div>
-                  <label style={formLabelStyle} htmlFor="name">Your Name</label>
+                  <label style={formLabelStyle} htmlFor="contact-name">Your Name</label>
                   <input
-                    id="name"
+                    id="contact-name"
+                    name="name"
                     type="text"
+                    autoComplete="name"
                     placeholder="Jane Smith"
                     value={formData.name}
                     onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
@@ -192,10 +223,12 @@ export default function Contact() {
                   />
                 </div>
                 <div>
-                  <label style={formLabelStyle} htmlFor="email">Email Address</label>
+                  <label style={formLabelStyle} htmlFor="contact-email">Email Address</label>
                   <input
-                    id="email"
+                    id="contact-email"
+                    name="email"
                     type="email"
+                    autoComplete="email"
                     placeholder="jane@example.com"
                     value={formData.email}
                     onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
@@ -206,10 +239,12 @@ export default function Contact() {
               </div>
 
               <div style={{ marginBottom: 20 }}>
-                <label style={formLabelStyle} htmlFor="subject">Subject</label>
+                <label style={formLabelStyle} htmlFor="contact-subject">Subject</label>
                 <input
-                  id="subject"
+                  id="contact-subject"
+                  name="subject"
                   type="text"
+                  autoComplete="off"
                   placeholder="What's this about?"
                   value={formData.subject}
                   onChange={(e) => setFormData((prev) => ({ ...prev, subject: e.target.value }))}
@@ -219,9 +254,11 @@ export default function Contact() {
               </div>
 
               <div style={{ marginBottom: 20 }}>
-                <label style={formLabelStyle} htmlFor="message">Message</label>
+                <label style={formLabelStyle} htmlFor="contact-message">Message</label>
                 <textarea
-                  id="message"
+                  id="contact-message"
+                  name="message"
+                  autoComplete="off"
                   placeholder="Tell us what's on your mind..."
                   value={formData.message}
                   onChange={(e) => setFormData((prev) => ({ ...prev, message: e.target.value }))}
@@ -232,14 +269,17 @@ export default function Contact() {
               </div>
 
               <div style={{ marginBottom: 28 }}>
-                <label style={{
+                <label htmlFor="contact-subscribe" style={{
                   display: "flex",
                   alignItems: "center",
                   gap: 12,
                   cursor: "pointer",
                 }}>
                   <input
+                    id="contact-subscribe"
+                    name="subscribe"
                     type="checkbox"
+                    autoComplete="off"
                     checked={formData.subscribe}
                     onChange={(e) => setFormData((prev) => ({ ...prev, subscribe: e.target.checked }))}
                     style={{
@@ -260,6 +300,24 @@ export default function Contact() {
                   </span>
                 </label>
               </div>
+
+              <p style={{
+                fontFamily: fonts.body,
+                fontSize: 13,
+                color: colors.milk,
+                opacity: 0.55,
+                lineHeight: 1.5,
+                margin: "0 0 16px",
+              }}>
+                Used only to reply to you (and for updates, if you tick the box above). See our{" "}
+                <a
+                  href="/privacy"
+                  style={{ color: colors.goldenHour, textDecoration: "underline", textUnderlineOffset: 3 }}
+                >
+                  privacy page
+                </a>{" "}
+                for details.
+              </p>
 
               <button
                 type="submit"
@@ -306,7 +364,7 @@ export default function Contact() {
               <p style={detailTextStyle}>9 Gumland Drive</p>
               <p style={detailTextStyle}>Witta QLD 4552</p>
               <p style={{ ...detailTextStyle, opacity: 0.5, fontSize: 14, marginTop: 8 }}>
-                10 minutes from Maleny, in the Sunshine Coast Hinterland
+                Near Maleny, in the Sunshine Coast Hinterland
               </p>
             </div>
           </FadeIn>
@@ -341,9 +399,20 @@ export default function Contact() {
           <FadeIn delay={0.3}>
             <div>
               <h3 style={detailLabelStyle}>VISITS</h3>
-              <p style={detailTextStyle}>Not open for casual drop-ins yet.</p>
+              <p style={detailTextStyle}>
+                You do not need to book to come and have a look while we find our feet.
+                Most weekends the pizza oven is on: Friday 3pm to 8pm with a community
+                movie night, Saturday 12pm to 8pm, Sunday 12pm to 6pm. Weeks can vary,
+                and dates land with members first.
+              </p>
               <p style={{ ...detailTextStyle, opacity: 0.5, fontSize: 14, marginTop: 8 }}>
-                Join the member list for community-day details, or send a message to arrange a visit.
+                Members hear about open days and events first.{" "}
+                <a
+                  href="/membership"
+                  style={{ color: colors.shed, textDecoration: "underline", textUnderlineOffset: 3 }}
+                >
+                  Membership is free
+                </a>.
               </p>
             </div>
           </FadeIn>
@@ -391,6 +460,7 @@ export default function Contact() {
       </section>
 
       {/* ─── FOOTER ─── */}
+      <VisitStrip />
       <SiteFooter />
     </div>
   );
