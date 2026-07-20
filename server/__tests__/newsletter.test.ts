@@ -325,7 +325,6 @@ describe("Go High Level Newsletter Integration", () => {
         name: "Mira Stone",
         email: "quiz@example.com",
         persona: "maker",
-        ghlTags: ["quiz-maker"],
       });
 
       const upsertCall = mockFetch.mock.calls.find(([url]) =>
@@ -335,6 +334,14 @@ describe("Go High Level Newsletter Integration", () => {
       const upsertBody = JSON.parse(upsertCall![1].body);
       expect(upsertBody.firstName).toBe("Mira");
       expect(upsertBody.lastName).toBe("Stone");
+      const tagCall = mockFetch.mock.calls.find(([url]) =>
+        String(url).endsWith("/contacts/contact-123/tags")
+      );
+      expect(JSON.parse(tagCall![1].body).tags).toEqual(expect.arrayContaining([
+        "quiz-maker",
+        "workshop-interested",
+        "hands-on-learner",
+      ]));
     });
 
     it("stores a member question as a note and triggers the member question workflow", async () => {
@@ -353,11 +360,14 @@ describe("Go High Level Newsletter Integration", () => {
       );
       expect(JSON.parse(tagCall![1].body).tags).toEqual(expect.arrayContaining([
         "project:act-hv",
+        "tier:curious",
+        "member-question",
+        "harvest-inbox",
+      ]));
+      expect(JSON.parse(tagCall![1].body).tags).not.toEqual(expect.arrayContaining([
         "tier:member",
         "comms:harvest-newsletter",
         "interest:membership",
-        "member-question",
-        "harvest-inbox",
       ]));
 
       const noteCall = mockFetch.mock.calls.find(([url]) =>
@@ -406,13 +416,15 @@ describe("Go High Level Newsletter Integration", () => {
       });
     });
 
-    it("tags June 20 phone-only RSVP with the gathering and event attendee tags", async () => {
+    it("tags a pizza RSVP with its occurrence date and no historical launch tag", async () => {
       const caller = appRouter.createCaller(ctx);
 
       await caller.eoi.submit({
         name: "Phone Guest",
         phone: "0400000000",
-        source: "Garden Launch page",
+        occurrenceDate: "2026-07-25",
+        session: "saturday",
+        source: "What's On page",
       });
 
       const upsertCall = mockFetch.mock.calls.find(([url]) =>
@@ -427,11 +439,14 @@ describe("Go High Level Newsletter Integration", () => {
         String(url).endsWith("/contacts/contact-123/tags")
       );
       expect(JSON.parse(tagCall![1].body).tags).toEqual(expect.arrayContaining([
-        "witta-gathering-2026-06-20",
+        "event:witta-pizza",
+        "event:witta-pizza:2026-07-25",
+        "rsvp:pizza",
         "harvest-event-attendee",
         "harvest-website",
         "harvest-inbox",
       ]));
+      expect(JSON.parse(tagCall![1].body).tags).not.toContain("witta-gathering-2026-06-20");
 
       const opportunityCall = mockFetch.mock.calls.find(([url]) =>
         String(url).endsWith("/opportunities/upsert")
@@ -439,9 +454,27 @@ describe("Go High Level Newsletter Integration", () => {
       expect(opportunityCall).toBeDefined();
       expect(JSON.parse(opportunityCall![1].body)).toMatchObject({
         contactId: "contact-123",
-        name: "Phone Guest - RSVP 2026-06-20",
-        source: "Harvest | RSVP 2026-06-20",
+        name: "Phone Guest - RSVP Witta Pizza 2026-07-25",
+        source: "Harvest | RSVP Witta Pizza 2026-07-25",
       });
+    });
+
+    it("rejects pizza RSVPs for invalid weekdays or mismatched sessions", async () => {
+      const caller = appRouter.createCaller(ctx);
+
+      await expect(caller.eoi.submit({
+        name: "Wrong Weekday",
+        phone: "0400000000",
+        occurrenceDate: "2026-07-27",
+        session: "unsure",
+      })).rejects.toThrow("Choose a Friday, Saturday or Sunday pizza date.");
+
+      await expect(caller.eoi.submit({
+        name: "Wrong Session",
+        phone: "0400000000",
+        occurrenceDate: "2026-07-25",
+        session: "friday",
+      })).rejects.toThrow("The session does not match the date you selected.");
     });
 
     it("creates a Universal Inquiry card for workshop bookings", async () => {
@@ -476,7 +509,10 @@ describe("Go High Level Newsletter Integration", () => {
     });
 
     it("creates a Universal Inquiry card for photo wall responses", async () => {
-      const caller = appRouter.createCaller(ctx);
+      const caller = appRouter.createCaller({
+        ...ctx,
+        user: { role: "admin" },
+      } as TrpcContext);
 
       await caller.photoWall.submit({
         firstName: "Mira",

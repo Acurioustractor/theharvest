@@ -178,7 +178,7 @@ async function startServer() {
           title: business.name,
           summary: business.description || undefined,
           image_url: business.imageUrl || undefined,
-          canonical_url: `${baseUrl}/local-enterprises`,
+          canonical_url: `${baseUrl}/enterprises`,
           tags: business.category ? [business.category] : undefined,
           status: "published",
           published_at: toIsoString(business.createdAt),

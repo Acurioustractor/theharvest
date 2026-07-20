@@ -138,6 +138,9 @@ export default function BauhausFooter({ isMobile }: BauhausFooterProps) {
             }}>
               <input
                 type="text"
+                name="bauhaus-footer-name"
+                autoComplete="name"
+                aria-label="Your name"
                 placeholder="Your name"
                 value={nlName}
                 onChange={e => setNlName(e.target.value)}
@@ -151,6 +154,9 @@ export default function BauhausFooter({ isMobile }: BauhausFooterProps) {
               />
               <input
                 type="email"
+                name="bauhaus-footer-email"
+                autoComplete="email"
+                aria-label="Your email"
                 placeholder="Your email"
                 value={nlEmail}
                 onChange={e => setNlEmail(e.target.value)}
@@ -256,10 +262,8 @@ export default function BauhausFooter({ isMobile }: BauhausFooterProps) {
         <Link href="/what-is-the-harvest" style={linkStyle}>WHAT IS THE HARVEST?</Link>
         <Link href="/works" style={linkStyle}>WORKS</Link>
         <Link href="/membership" style={linkStyle}>MEMBERSHIP</Link>
-        <Link href="/people" style={linkStyle}>PEOPLE</Link>
-        <Link href="/blog" style={linkStyle}>JOURNAL</Link>
+        <Link href="/whats-on" style={linkStyle}>WHAT'S ON</Link>
         <Link href="/contact" style={linkStyle}>CONTACT</Link>
-        <Link href="/social" style={linkStyle}>FOLLOW</Link>
       </div>
     </footer>
   );

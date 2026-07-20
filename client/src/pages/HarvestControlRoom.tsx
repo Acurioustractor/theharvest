@@ -630,7 +630,11 @@ export default function HarvestControlRoom() {
         <SignalCard
           label="Pizza headcount"
           value={businessSetup?.launch.tags.pizza.count ?? rsvpCountQuery.data?.count ?? "Check"}
-          detail="Contacts carrying rsvp-pizza-dinner. This is the dough and turnout signal."
+          detail={
+            businessSetup?.launch.tags.pizza.occurrenceDate
+              ? `${businessSetup.launch.tags.pizza.rsvpCount} RSVP(s) for ${businessSetup.launch.tags.pizza.occurrenceDate}. This is the dough and turnout signal.`
+              : "Upcoming stored RSVP people count."
+          }
           icon={CalendarDays}
           tone={(businessSetup?.launch.tags.pizza.count ?? 0) > 0 ? "good" : "blocked"}
           loading={businessSetupQuery.isLoading || rsvpCountQuery.isLoading}
@@ -701,7 +705,7 @@ export default function HarvestControlRoom() {
                     <p className="font-semibold">Public RSVP form</p>
                     <p className="mt-1 text-sm">
                       Embedded at {businessSetup.launch.publicRsvp.route}. Writes{" "}
-                      {businessSetup.launch.publicRsvp.tags.join(" + ")}.
+                      {businessSetup.launch.publicRsvp.tags.join(" + ")} and a durable website RSVP row.
                     </p>
                   </div>
                   <div className={`rounded-lg border p-4 ${businessSetup.crm.tagsOk ? statusClasses.good : statusClasses.watch}`}>

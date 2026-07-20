@@ -40,6 +40,7 @@ import {
 // Blog posts are now fetched from Empathy Ledger Content Hub API
 // See server/empathyLedgerClient.ts for the integration
 import { ENV } from "./_core/env.js";
+import { mirrorHarvestImage } from "./harvestImageStorage.js";
 
 let _db: ReturnType<typeof drizzle> | null = null;
 let _client: ReturnType<typeof postgres> | null = null;
@@ -323,6 +324,11 @@ export async function getAllUsers() {
 }
 
 // Event queries
+export type PublicEvent = Pick<
+  Event,
+  "id" | "title" | "date" | "time" | "location" | "category" | "description" | "updatedAt"
+>;
+
 export async function createEvent(event: InsertEvent): Promise<Event | undefined> {
   const db = await getDb();
   if (!db) {
@@ -341,7 +347,7 @@ export async function createEvent(event: InsertEvent): Promise<Event | undefined
   }
 }
 
-export async function getApprovedEvents(): Promise<Event[]> {
+export async function getApprovedEvents(): Promise<PublicEvent[]> {
   const db = await getDb();
   if (!db) {
     console.warn("[Database] Cannot get events: database not available");
@@ -349,7 +355,16 @@ export async function getApprovedEvents(): Promise<Event[]> {
   }
 
   try {
-    const result = await db.select().from(events)
+    const result = await db.select({
+      id: events.id,
+      title: events.title,
+      date: events.date,
+      time: events.time,
+      location: events.location,
+      category: events.category,
+      description: events.description,
+      updatedAt: events.updatedAt,
+    }).from(events)
       .where(eq(events.status, "approved"))
       .orderBy(events.date);
     return result;
@@ -397,6 +412,23 @@ export async function updateEventStatus(eventId: number, status: "approved" | "r
 }
 
 // Business queries
+export type PublicBusiness = Pick<
+  Business,
+  | "id"
+  | "name"
+  | "category"
+  | "description"
+  | "address"
+  | "phone"
+  | "email"
+  | "website"
+  | "facebook"
+  | "instagram"
+  | "imageUrl"
+  | "createdAt"
+  | "updatedAt"
+>;
+
 export async function createBusiness(business: InsertBusiness): Promise<Business | undefined> {
   const db = await getDb();
   if (!db) {
@@ -414,7 +446,7 @@ export async function createBusiness(business: InsertBusiness): Promise<Business
   }
 }
 
-export async function getApprovedBusinesses(): Promise<Business[]> {
+export async function getApprovedBusinesses(): Promise<PublicBusiness[]> {
   const db = await getDb();
   if (!db) {
     console.warn("[Database] Cannot get businesses: database not available");
@@ -422,7 +454,21 @@ export async function getApprovedBusinesses(): Promise<Business[]> {
   }
 
   try {
-    const result = await db.select().from(businesses)
+    const result = await db.select({
+      id: businesses.id,
+      name: businesses.name,
+      category: businesses.category,
+      description: businesses.description,
+      address: businesses.address,
+      phone: businesses.phone,
+      email: businesses.email,
+      website: businesses.website,
+      facebook: businesses.facebook,
+      instagram: businesses.instagram,
+      imageUrl: businesses.imageUrl,
+      createdAt: businesses.createdAt,
+      updatedAt: businesses.updatedAt,
+    }).from(businesses)
       .where(eq(businesses.status, "approved"))
       .orderBy(businesses.name);
     return result;
@@ -1011,13 +1057,25 @@ export async function createWittaContribution(
   }
 }
 
-export async function getApprovedWittaContributions(): Promise<WittaContribution[]> {
+export type PublicWittaContribution = Pick<
+  WittaContribution,
+  "id" | "authorName" | "yearOrEra" | "memory" | "photoUrl" | "approvedAt"
+>;
+
+export async function getApprovedWittaContributions(): Promise<PublicWittaContribution[]> {
   const db = await getDb();
   if (!db) return [];
 
   try {
     return await db
-      .select()
+      .select({
+        id: wittaContributions.id,
+        authorName: wittaContributions.authorName,
+        yearOrEra: wittaContributions.yearOrEra,
+        memory: wittaContributions.memory,
+        photoUrl: wittaContributions.photoUrl,
+        approvedAt: wittaContributions.approvedAt,
+      })
       .from(wittaContributions)
       .where(eq(wittaContributions.status, "approved"))
       .orderBy(desc(wittaContributions.approvedAt));
@@ -1082,7 +1140,7 @@ export async function getImageOverride(
   const db = await getDb();
   if (!db) {
     const rows = await fetchImageOverridesFromRest({ page, slot, limit: 1 });
-    return rows[0];
+    return rows[0] ? { ...rows[0], src: await mirrorHarvestImage(rows[0].mediaAssetId, rows[0].src) } : undefined;
   }
   try {
     const rows = await db
@@ -1090,13 +1148,13 @@ export async function getImageOverride(
       .from(imageOverrides)
       .where(and(eq(imageOverrides.page, page), eq(imageOverrides.slot, slot)))
       .limit(1);
-    return rows[0];
+    return rows[0] ? { ...rows[0], src: await mirrorHarvestImage(rows[0].mediaAssetId, rows[0].src) } : undefined;
   } catch (error) {
     console.error("[Database] Failed to get image override:", error);
     markPostgresTemporarilyUnavailable(error);
     try {
       const rows = await fetchImageOverridesFromRest({ page, slot, limit: 1 });
-      return rows[0];
+      return rows[0] ? { ...rows[0], src: await mirrorHarvestImage(rows[0].mediaAssetId, rows[0].src) } : undefined;
     } catch (restError) {
       console.error("[Database] Failed to get image override via Supabase REST:", restError);
       return undefined;

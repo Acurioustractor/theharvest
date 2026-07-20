@@ -1,36 +1,39 @@
-import { useState, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Search, MapPin, Phone, Mail, Globe, ExternalLink, Facebook, Instagram, Clock, Loader2 } from "lucide-react";
+import { Search, MapPin, Phone, Mail, Globe, Facebook, Instagram, Loader2 } from "lucide-react";
 import { LazyImage } from "@/components/LazyImage";
-import enterpriseData from "@/data/enterprises.json";
-import staticEventsData from "@/data/events.json";
-import { EventSubmissionDialog } from "@/components/EventSubmissionDialog";
 import BusinessRegistrationDialog from "@/components/BusinessRegistrationDialog";
-import { listApprovedEvents } from "@/lib/api";
 import { SiteFooter, SiteNav } from "./HarvestReviewTest";
-import { useQuery } from "@tanstack/react-query";
+import { trpc } from "@/lib/trpc";
+import { setPageSeo } from "@/lib/seo";
 
 // Category images mapping
 const categoryImages: Record<string, string> = {
-  "Markets & Retail": "/images/category-market.jpg",
-  "Arts & Crafts": "/images/category-arts.jpg",
-  "Accommodation": "/images/accommodation/directory-hero.jpg",
-  "Services & Trades": "/images/category-services.jpg",
-  "Community & Sports": "/images/category-community.jpg",
-  "Local Business": "/images/enterprises-hero.jpg"
+  markets: "/images/category-market.jpg",
+  arts: "/images/category-arts.jpg",
+  accommodation: "/images/accommodation/directory-hero.jpg",
+  services: "/images/category-services.jpg",
+  food: "/images/category-market.jpg",
+  wellness: "/images/category-community.jpg",
+  retail: "/images/category-market.jpg",
+  other: "/images/enterprises-hero.jpg",
 };
 
-// Category image mapping for events
-const eventCategoryImages: Record<string, string> = {
-  market: "/images/category-market.jpg",
-  community: "/images/category-community.jpg",
-  arts: "/images/category-arts.jpg",
-  workshop: "/images/category-services.jpg",
-  music: "/images/enterprises-hero.jpg",
+const categoryLabels: Record<string, string> = {
+  markets: "Markets & Farm Stalls",
+  arts: "Arts & Crafts",
+  accommodation: "Accommodation",
+  services: "Services",
+  food: "Food & Beverage",
+  wellness: "Wellness & Health",
+  retail: "Retail",
+  other: "Other",
 };
+
+const PAGE_SIZE = 12;
 
 export default function LocalEnterprises() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -38,48 +41,42 @@ export default function LocalEnterprises() {
     ? new URLSearchParams(window.location.search).get("category")
     : null;
   const [selectedCategory, setSelectedCategory] = useState<string | null>(initialCategory);
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
-  // Fetch approved events from API
-  const { data: apiEvents, isLoading: eventsLoading, refetch: refetchEvents } = useQuery({
-    queryKey: ["events", "approved"],
-    queryFn: listApprovedEvents,
-  });
+  const {
+    data: approvedBusinesses,
+    isError,
+    isLoading,
+    error,
+    refetch,
+  } = trpc.businesses.list.useQuery();
 
-  const categories = Array.from(new Set(enterpriseData.enterprises.map(e => e.category)));
+  useEffect(() => {
+    setPageSeo({
+      title: "Local Enterprises · The Harvest Witta",
+      description:
+        "A reviewed directory of local businesses, makers and growers around Witta and Maleny.",
+      path: "/enterprises",
+    });
+  }, []);
 
-  const filteredEnterprises = enterpriseData.enterprises.filter(enterprise => {
+  const categories = useMemo(
+    () => Array.from(new Set((approvedBusinesses ?? []).map((business) => business.category))),
+    [approvedBusinesses],
+  );
+
+  const filteredEnterprises = useMemo(() => (approvedBusinesses ?? []).filter((enterprise) => {
     const matchesSearch = enterprise.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                           enterprise.description.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = selectedCategory ? enterprise.category === selectedCategory : true;
     return matchesSearch && matchesCategory;
-  });
+  }), [approvedBusinesses, searchTerm, selectedCategory]);
 
-  // Combine API events with static events, prioritizing API events
-  const allEvents = useMemo(() => {
-    const now = new Date();
-    
-    // Transform API events
-    const transformedApiEvents = (apiEvents || []).map(event => ({
-      id: `api-${event.id}`,
-      title: event.title,
-      date: new Date(event.date).toISOString().split('T')[0],
-      time: event.time,
-      location: event.location,
-      category: event.category.charAt(0).toUpperCase() + event.category.slice(1),
-      description: event.description,
-      image: eventCategoryImages[event.category] || "/images/enterprises-hero.jpg",
-      isFromApi: true,
-    }));
+  const visibleEnterprises = filteredEnterprises.slice(0, visibleCount);
 
-    // Filter static events
-    const staticEvents = staticEventsData.events
-      .filter(e => new Date(e.date) >= now)
-      .map(e => ({ ...e, isFromApi: false }));
-
-    // Combine and sort by date
-    return [...transformedApiEvents, ...staticEvents]
-      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-  }, [apiEvents]);
+  useEffect(() => {
+    setVisibleCount(PAGE_SIZE);
+  }, [searchTerm, selectedCategory]);
 
   return (
     <>
@@ -104,8 +101,8 @@ export default function LocalEnterprises() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
             <BusinessRegistrationDialog
               trigger={
-                <Button size="lg" className="bg-[#c17c54] hover:bg-[#a06543] text-white border-none">
-                  Join The Harvest
+                <Button size="lg" className="bg-[#8B4A2A] hover:bg-[#6f3820] text-white border-none">
+                  List your business
                 </Button>
               }
             />
@@ -121,6 +118,9 @@ export default function LocalEnterprises() {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Search businesses..."
+                type="search"
+                name="business-search"
+                aria-label="Search local businesses"
                 className="pl-10 bg-white border-[#e0e0e0]"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -141,19 +141,40 @@ export default function LocalEnterprises() {
                   onClick={() => setSelectedCategory(category)}
                   className={selectedCategory === category ? "bg-[#2c4c3b] text-white" : "border-[#2c4c3b] text-[#2c4c3b]"}
                 >
-                  {category}
+                  {categoryLabels[category] ?? category}
                 </Button>
               ))}
             </div>
           </div>
 
           {/* Grid */}
+          {isLoading ? (
+            <div className="flex items-center justify-center gap-3 py-20 text-stone-600" role="status">
+              <Loader2 className="h-6 w-6 animate-spin" aria-hidden="true" />
+              Loading reviewed businesses...
+            </div>
+          ) : isError ? (
+            <div className="border border-red-200 bg-red-50 p-6 text-center text-red-900">
+              <p className="text-lg font-semibold">The directory did not load.</p>
+              <p className="mt-2 text-sm">
+                {error?.message || "Please try again in a moment."}
+              </p>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => refetch()}
+                className="mt-4 border-red-700 text-red-800 hover:bg-red-100"
+              >
+                Try again
+              </Button>
+            </div>
+          ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredEnterprises.map((enterprise) => (
+            {visibleEnterprises.map((enterprise) => (
               <Card key={enterprise.id} className="flex flex-col h-full border-none shadow-md hover:shadow-lg transition-shadow overflow-hidden">
                 <div className="h-48 overflow-hidden">
                   <LazyImage
-                    src={enterprise.image || categoryImages[enterprise.category] || "/images/enterprises-hero.jpg"}
+                    src={enterprise.imageUrl || categoryImages[enterprise.category] || "/images/enterprises-hero.jpg"}
                     alt={enterprise.name}
                     className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
                   />
@@ -162,7 +183,7 @@ export default function LocalEnterprises() {
                   <div className="flex justify-between items-start gap-2">
                     <CardTitle className="font-serif text-xl text-[#2c4c3b]">{enterprise.name}</CardTitle>
                     <Badge variant="secondary" className="bg-[#2c4c3b]/10 text-[#2c4c3b] shrink-0">
-                      {enterprise.category}
+                      {categoryLabels[enterprise.category] ?? enterprise.category}
                     </Badge>
                   </div>
                   <CardDescription className="text-sm text-muted-foreground line-clamp-3">
@@ -170,44 +191,44 @@ export default function LocalEnterprises() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-2 text-sm text-gray-600">
-                  {((enterprise as any).location || (enterprise as any).address) && (
+                  {enterprise.address && (
                     <div className="flex items-center gap-2">
                       <MapPin className="h-4 w-4 text-[#c17c54] shrink-0" />
-                      <span className="truncate">{(enterprise as any).location || (enterprise as any).address}</span>
+                      <span className="truncate">{enterprise.address}</span>
                     </div>
                   )}
-                  {enterprise.contact.phone && (
+                  {enterprise.phone && (
                     <div className="flex items-center gap-2">
                       <Phone className="h-4 w-4 text-[#c17c54] shrink-0" />
-                      <span>{enterprise.contact.phone}</span>
+                      <a href={`tel:${enterprise.phone}`} className="hover:underline">{enterprise.phone}</a>
                     </div>
                   )}
-                  {enterprise.contact.email && (
+                  {enterprise.email && (
                     <div className="flex items-center gap-2">
                       <Mail className="h-4 w-4 text-[#c17c54] shrink-0" />
-                      <span className="truncate">{enterprise.contact.email}</span>
+                      <a href={`mailto:${enterprise.email}`} className="truncate hover:underline">{enterprise.email}</a>
                     </div>
                   )}
                 </CardContent>
                 <CardFooter className="mt-auto pt-4 flex gap-2">
-                  {enterprise.contact.website && (
+                  {enterprise.website && (
                     <Button asChild variant="outline" className="flex-1 border-[#2c4c3b] text-[#2c4c3b] hover:bg-[#2c4c3b] hover:text-white">
-                      <a href={enterprise.contact.website} target="_blank" rel="noopener noreferrer">
+                      <a href={enterprise.website} target="_blank" rel="noopener noreferrer">
                         <Globe className="h-4 w-4 mr-2" />
                         Website
                       </a>
                     </Button>
                   )}
-                  {enterprise.contact.facebook && (
+                  {enterprise.facebook && (
                     <Button asChild size="icon" variant="outline" className="border-[#1877F2] text-[#1877F2] hover:bg-[#1877F2] hover:text-white">
-                      <a href={enterprise.contact.facebook} target="_blank" rel="noopener noreferrer">
+                      <a href={enterprise.facebook} target="_blank" rel="noopener noreferrer" aria-label={`${enterprise.name} on Facebook`}>
                         <Facebook className="h-4 w-4" />
                       </a>
                     </Button>
                   )}
-                  {enterprise.contact.instagram && (
+                  {enterprise.instagram && (
                     <Button asChild size="icon" variant="outline" className="border-[#E4405F] text-[#E4405F] hover:bg-[#E4405F] hover:text-white">
-                      <a href={enterprise.contact.instagram} target="_blank" rel="noopener noreferrer">
+                      <a href={enterprise.instagram} target="_blank" rel="noopener noreferrer" aria-label={`${enterprise.name} on Instagram`}>
                         <Instagram className="h-4 w-4" />
                       </a>
                     </Button>
@@ -216,90 +237,39 @@ export default function LocalEnterprises() {
               </Card>
             ))}
           </div>
-
-          {filteredEnterprises.length === 0 && (
-            <div className="text-center py-20">
-              <p className="text-xl text-muted-foreground">No businesses found matching your search.</p>
-              <Button 
-                variant="link" 
-                onClick={() => {setSearchTerm(""); setSelectedCategory(null);}}
-                className="mt-2 text-[#c17c54]"
-              >
-                Clear filters
-              </Button>
-            </div>
           )}
-        </div>
-      </section>
 
-      {/* Community Events Section */}
-      <section className="py-16 bg-white">
-        <div className="container px-4">
-          <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
-            <div className="text-left">
-              <h2 className="text-3xl md:text-4xl font-serif font-bold text-[#2c4c3b] mb-4">Community Events</h2>
-              <p className="text-lg text-muted-foreground max-w-2xl">
-                Upcoming gatherings around Witta and Maleny, shared by your neighbours.
+          {!isLoading && !isError && filteredEnterprises.length === 0 && (
+            <div className="text-center py-20">
+              <p className="text-xl text-muted-foreground">
+                {searchTerm || selectedCategory
+                  ? "No reviewed businesses match those filters."
+                  : "The reviewed local directory is being built."}
               </p>
-            </div>
-            <EventSubmissionDialog onEventSubmitted={() => refetchEvents()} />
-          </div>
-
-          {eventsLoading ? (
-            <div className="flex justify-center items-center py-20">
-              <Loader2 className="h-8 w-8 animate-spin text-[#2c4c3b]" />
-              <span className="ml-3 text-muted-foreground">Loading events...</span>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {allEvents.map((event) => (
-                <Card key={event.id} className="flex flex-col h-full border-none shadow-md hover:shadow-lg transition-shadow">
-                  <div className="h-48 overflow-hidden relative">
-                    <LazyImage
-                      src={event.image}
-                      alt={event.title}
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute top-4 left-4 bg-white/90 text-[#2c4c3b] px-3 py-1 rounded-md font-bold text-center shadow-sm">
-                      <div className="text-xs uppercase tracking-wider">{new Date(event.date).toLocaleString('default', { month: 'short' })}</div>
-                      <div className="text-xl leading-none">{new Date(event.date).getDate()}</div>
-                    </div>
-                    <Badge className="absolute top-4 right-4 bg-[#c17c54] hover:bg-[#a06543]">
-                      {event.category}
-                    </Badge>
-                    {event.isFromApi && (
-                      <Badge className="absolute bottom-4 right-4 bg-green-600 hover:bg-green-700 text-xs">
-                        Community Submitted
-                      </Badge>
-                    )}
-                  </div>
-                  <CardHeader>
-                    <CardTitle className="font-serif text-xl text-[#2c4c3b]">{event.title}</CardTitle>
-                    <div className="flex flex-col gap-2 mt-2 text-sm text-muted-foreground">
-                      <div className="flex items-center gap-2">
-                        <Clock className="h-4 w-4 text-[#c17c54]" />
-                        <span>{event.time}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <MapPin className="h-4 w-4 text-[#c17c54]" />
-                        <span>{event.location}</span>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-gray-600 line-clamp-3">
-                      {event.description}
-                    </p>
-                  </CardContent>
-                </Card>
-              ))}
+              {searchTerm || selectedCategory ? (
+                <Button
+                  variant="link"
+                  onClick={() => {setSearchTerm(""); setSelectedCategory(null);}}
+                  className="mt-2 text-[#c17c54]"
+                >
+                  Clear filters
+                </Button>
+              ) : (
+                <div className="mt-5">
+                  <BusinessRegistrationDialog />
+                </div>
+              )}
             </div>
           )}
-
-          {!eventsLoading && allEvents.length === 0 && (
-            <div className="text-center py-20">
-              <p className="text-xl text-muted-foreground">No upcoming events at the moment.</p>
-              <p className="text-sm text-muted-foreground mt-2">Be the first to submit an event!</p>
+          {visibleCount < filteredEnterprises.length && (
+            <div className="mt-10 text-center">
+              <Button
+                variant="outline"
+                onClick={() => setVisibleCount((count) => count + PAGE_SIZE)}
+                className="border-[#2c4c3b] text-[#2c4c3b]"
+              >
+                Show more businesses
+              </Button>
             </div>
           )}
         </div>
@@ -308,7 +278,7 @@ export default function LocalEnterprises() {
       {/* Call to Action */}
       <section className="py-16 bg-[#2c4c3b] text-white text-center">
         <div className="container px-4">
-          <h2 className="text-3xl md:text-4xl font-serif font-bold mb-6">Be Part of The Harvest</h2>
+          <h2 className="text-3xl md:text-4xl font-serif font-bold mb-6">Add a local business</h2>
           <p className="text-lg max-w-2xl mx-auto mb-8 text-white/80">
             Are you a local business owner, maker, or grower? Register your business and we'll add you to the directory.
           </p>

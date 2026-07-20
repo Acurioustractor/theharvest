@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useId, useState } from "react";
 import { Link } from "wouter";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -11,9 +11,24 @@ import { PlusCircle, Loader2 } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 
 export function EventSubmissionDialog({ onEventSubmitted }: { onEventSubmitted?: () => void }) {
+  const idPrefix = useId();
   const [open, setOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [category, setCategory] = useState<string>("");
+  const [categoryError, setCategoryError] = useState<string | null>(null);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const ids = {
+    title: `${idPrefix}-event-title`,
+    date: `${idPrefix}-event-date`,
+    time: `${idPrefix}-event-time`,
+    location: `${idPrefix}-event-location`,
+    category: `${idPrefix}-event-category`,
+    categoryError: `${idPrefix}-event-category-error`,
+    description: `${idPrefix}-event-description`,
+    contact: `${idPrefix}-event-contact`,
+    submittedBy: `${idPrefix}-event-submitted-by`,
+    submitError: `${idPrefix}-event-submit-error`,
+  };
 
   const submitEventMutation = trpc.events.submit.useMutation({
     onSuccess: () => {
@@ -24,6 +39,7 @@ export function EventSubmissionDialog({ onEventSubmitted }: { onEventSubmitted?:
       onEventSubmitted?.();
     },
     onError: (error) => {
+      setSubmitError(error.message || "Please try again later.");
       toast.error("Failed to submit event", {
         description: error.message || "Please try again later."
       });
@@ -32,6 +48,14 @@ export function EventSubmissionDialog({ onEventSubmitted }: { onEventSubmitted?:
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (!category) {
+      setCategoryError("Please select a category");
+      return;
+    }
+
+    setCategoryError(null);
+    setSubmitError(null);
     setIsSubmitting(true);
 
     const formData = new FormData(e.currentTarget);
@@ -52,47 +76,79 @@ export function EventSubmissionDialog({ onEventSubmitted }: { onEventSubmitted?:
     }
   };
 
+  const handleOpenChange = (newOpen: boolean) => {
+    setOpen(newOpen);
+    if (!newOpen) {
+      setCategoryError(null);
+      setSubmitError(null);
+    }
+  };
+
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
-        <Button className="bg-[#c17c54] hover:bg-[#a06543] text-white gap-2">
+        <Button className="bg-[#8B4A2A] hover:bg-[#6f3820] text-white gap-2">
           <PlusCircle className="h-4 w-4" />
           Submit Event
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle>Submit Community Event</DialogTitle>
           <DialogDescription>
             Share your upcoming event with the Witta and Maleny community. All submissions are reviewed before publishing.
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4 py-4">
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-4 py-4"
+          aria-busy={isSubmitting}
+          aria-describedby={submitError ? ids.submitError : undefined}
+        >
           <div className="grid gap-2">
-            <Label htmlFor="title">Event Title</Label>
-            <Input id="title" name="title" required placeholder="e.g., Witta Spring Fair" />
+            <Label htmlFor={ids.title}>Event Title</Label>
+            <Input
+              id={ids.title}
+              name="title"
+              autoComplete="off"
+              required
+              placeholder="e.g., Witta Spring Fair"
+            />
           </div>
           
           <div className="grid grid-cols-2 gap-4">
             <div className="grid gap-2">
-              <Label htmlFor="date">Date</Label>
-              <Input id="date" name="date" type="date" required />
+              <Label htmlFor={ids.date}>Date</Label>
+              <Input id={ids.date} name="date" type="date" autoComplete="off" required />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="time">Time</Label>
-              <Input id="time" name="time" placeholder="e.g., 9:00 AM - 2:00 PM" required />
+              <Label htmlFor={ids.time}>Time</Label>
+              <Input id={ids.time} name="time" autoComplete="off" placeholder="e.g., 9:00 AM - 2:00 PM" required />
             </div>
           </div>
 
           <div className="grid gap-2">
-            <Label htmlFor="location">Location</Label>
-            <Input id="location" name="location" placeholder="e.g., Witta Recreational Club" required />
+            <Label htmlFor={ids.location}>Location</Label>
+            <Input id={ids.location} name="location" autoComplete="off" placeholder="e.g., Witta Recreational Club" required />
           </div>
 
           <div className="grid gap-2">
-            <Label htmlFor="category">Category</Label>
-            <Select required value={category} onValueChange={setCategory}>
-              <SelectTrigger>
+            <Label htmlFor={ids.category}>Category</Label>
+            <Select
+              name="category"
+              value={category}
+              onValueChange={(value) => {
+                setCategory(value);
+                setCategoryError(null);
+              }}
+            >
+              <SelectTrigger
+                id={ids.category}
+                aria-required="true"
+                aria-invalid={Boolean(categoryError)}
+                aria-describedby={categoryError ? ids.categoryError : undefined}
+                className={categoryError ? "border-red-500" : undefined}
+              >
                 <SelectValue placeholder="Select category" />
               </SelectTrigger>
               <SelectContent>
@@ -103,13 +159,19 @@ export function EventSubmissionDialog({ onEventSubmitted }: { onEventSubmitted?:
                 <SelectItem value="music">Live Music</SelectItem>
               </SelectContent>
             </Select>
+            {categoryError && (
+              <p id={ids.categoryError} role="alert" className="text-sm text-red-600">
+                {categoryError}
+              </p>
+            )}
           </div>
 
           <div className="grid gap-2">
-            <Label htmlFor="description">Description</Label>
+            <Label htmlFor={ids.description}>Description</Label>
             <Textarea 
-              id="description" 
+              id={ids.description}
               name="description"
+              autoComplete="off"
               placeholder="Tell us about your event..." 
               className="h-24" 
               required 
@@ -117,16 +179,30 @@ export function EventSubmissionDialog({ onEventSubmitted }: { onEventSubmitted?:
           </div>
 
           <div className="grid gap-2">
-            <Label htmlFor="contact">Contact Email</Label>
-            <Input id="contact" name="contact" type="email" placeholder="your@email.com" required />
+            <Label htmlFor={ids.contact}>Contact Email</Label>
+            <Input
+              id={ids.contact}
+              name="contact"
+              type="email"
+              inputMode="email"
+              autoComplete="email"
+              placeholder="your@email.com"
+              required
+            />
           </div>
 
           <div className="grid gap-2">
-            <Label htmlFor="submittedBy">Your Name</Label>
-            <Input id="submittedBy" name="submittedBy" placeholder="Your name or organization" required />
+            <Label htmlFor={ids.submittedBy}>Your Name</Label>
+            <Input
+              id={ids.submittedBy}
+              name="submittedBy"
+              autoComplete="name"
+              placeholder="Your name or organization"
+              required
+            />
           </div>
 
-          <p className="text-xs text-stone-500">
+          <p className="text-xs text-stone-600">
             Used only to review and get in touch about this event. See our{" "}
             <Link href="/privacy" className="underline hover:text-stone-700">
               privacy page
@@ -134,11 +210,17 @@ export function EventSubmissionDialog({ onEventSubmitted }: { onEventSubmitted?:
             for details.
           </p>
 
+          {submitError && (
+            <p id={ids.submitError} role="alert" className="text-sm text-red-600">
+              We couldn't submit your event. {submitError}
+            </p>
+          )}
+
           <DialogFooter>
-            <Button type="submit" disabled={isSubmitting || !category} className="w-full bg-[#2c4c3b] hover:bg-[#1a3326]">
+            <Button type="submit" disabled={isSubmitting} className="w-full bg-[#2c4c3b] hover:bg-[#1a3326]">
               {isSubmitting ? (
                 <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />
                   Submitting...
                 </>
               ) : (

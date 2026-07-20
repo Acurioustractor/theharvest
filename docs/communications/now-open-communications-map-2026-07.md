@@ -75,7 +75,7 @@ a "not yet" (do not say until the blocking fact clears).
 | Surface | Job | Source of truth |
 | --- | --- | --- |
 | Website | Evergreen truth: what this is, what you can do, the three doors | This doc drives page copy; pages live in the repo |
-| GHL email (Harvest Notes) | The pulse: Note 04 "The gate is open" is next | `docs/communications/post-opening-newsletter-2026-07.md` runbook + `scripts/draft-post-opening-newsletter-ghl.ts` |
+| GHL email (Harvest Notes) | Note 04 "A few weeks in" asks members to complete the community pulse | `docs/communications/post-opening-newsletter-2026-07.md` runbook + `scripts/draft-post-opening-newsletter-ghl.ts` |
 | Mighty members page | Conversation, RSVPs, events land here first | Mighty itself; mirror decisions back to GHL tags per the producer doc rules |
 | Socials | The after-story: photos once collected, honest in-progress framing | Posting queue in Notion; never post attendance claims |
 | Enquiry replies | Ben's verified formula: no booking needed while we find our feet, join the members page | GHL Harvest Inbox pipeline; replies can take a few days |
@@ -104,12 +104,15 @@ stays as shipped.
 7. **Sending domain**: Harvest Notes currently send from hi@act.place. Decide whether
    to move to a Harvest domain sender before Note 04 or accept it for now.
 
-## Newsletter Note 04 (staged, human-sent)
+## Harvest Note 04 (staged, human-sent)
 
-- Audience: 147 contacts, tag `comms:harvest-newsletter` (plus one legacy
-  `harvest-newsletter`), excluding `benjamin+` and `@act.place` test records.
-  0 DND, 0 duplicates, verified 2026-07-02. One send covers members and followers;
-  followers get the become-a-member door.
+- Audience: members only. On 2026-07-10 the paired `tier:member` and
+  `interest:membership` tags held the same 197 contacts. Six staff/test records stay
+  out. There are 189 clear members plus Phil Thamm and Serge for source-overwrite
+  review, giving a final campaign count of 189 or 191, with 0 email DND.
+- Primary action: the three-minute community pulse at `/pulse`.
+- Secondary action: join the Mighty members page if the member is not already active
+  there. GHL currently has 111 members without `platform:mighty-active`.
 - Staging: `npx tsx scripts/draft-post-opening-newsletter-ghl.ts` (dry run) then
   `--apply` to create the GHL template. A human sends via the GHL campaign UI after a
   test-send. Never automated. Full runbook:

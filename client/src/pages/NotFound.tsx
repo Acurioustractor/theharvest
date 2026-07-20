@@ -1,10 +1,21 @@
+import { useEffect } from "react";
 import { Link } from "wouter";
 import { colors, fonts, rootStyle } from "@/styles/brand";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import BauhausFooter from "@/components/BauhausFooter";
+import { setPageSeo } from "@/lib/seo";
 
 export default function NotFound() {
   const isMobile = useMediaQuery("(max-width: 768px)");
+
+  useEffect(() => {
+    setPageSeo({
+      title: "Page not found · The Harvest Witta",
+      description: "That page could not be found. Return to The Harvest Witta.",
+      path: window.location.pathname,
+      robots: "noindex, nofollow",
+    });
+  }, []);
 
   return (
     <div style={rootStyle}>

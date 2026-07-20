@@ -77,11 +77,14 @@ export function ShopInterestSection({
           <form onSubmit={submit} className="border border-stone-300 bg-[#F5F0E8] p-5 md:p-7">
             <div className="grid gap-4">
               <div className="grid gap-4 sm:grid-cols-2">
-                <label className="block">
+                <label htmlFor={`${id}-name`} className="block">
                   <span className="mb-2 block font-mono text-[11px] uppercase tracking-[0.16em] text-stone-500">
                     Name
                   </span>
                   <input
+                    id={`${id}-name`}
+                    name="name"
+                    autoComplete="name"
                     value={name}
                     onChange={(event) => setName(event.target.value)}
                     required
@@ -90,11 +93,14 @@ export function ShopInterestSection({
                     placeholder="Your name"
                   />
                 </label>
-                <label className="block">
+                <label htmlFor={`${id}-email`} className="block">
                   <span className="mb-2 block font-mono text-[11px] uppercase tracking-[0.16em] text-stone-500">
                     Email
                   </span>
                   <input
+                    id={`${id}-email`}
+                    name="email"
+                    autoComplete="email"
                     type="email"
                     value={email}
                     onChange={(event) => setEmail(event.target.value)}
@@ -106,11 +112,14 @@ export function ShopInterestSection({
               </div>
 
               <div className="grid gap-4 sm:grid-cols-2">
-                <label className="block">
+                <label htmlFor={`${id}-phone`} className="block">
                   <span className="mb-2 block font-mono text-[11px] uppercase tracking-[0.16em] text-stone-500">
                     Phone, optional
                   </span>
                   <input
+                    id={`${id}-phone`}
+                    name="phone"
+                    autoComplete="tel"
                     type="tel"
                     value={phone}
                     onChange={(event) => setPhone(event.target.value)}
@@ -119,11 +128,14 @@ export function ShopInterestSection({
                     placeholder="For a call or text back"
                   />
                 </label>
-                <label className="block">
+                <label htmlFor={`${id}-offer-type`} className="block">
                   <span className="mb-2 block font-mono text-[11px] uppercase tracking-[0.16em] text-stone-500">
                     What fits best?
                   </span>
                   <select
+                    id={`${id}-offer-type`}
+                    name="offerType"
+                    autoComplete="off"
                     value={offerType}
                     onChange={(event) => setOfferType(event.target.value as typeof offerType)}
                     className="h-12 w-full rounded-none border border-stone-300 bg-white px-3 text-stone-900"
@@ -137,11 +149,14 @@ export function ShopInterestSection({
                 </label>
               </div>
 
-              <label className="block">
+              <label htmlFor={`${id}-description`} className="block">
                 <span className="mb-2 block font-mono text-[11px] uppercase tracking-[0.16em] text-stone-500">
                   What could go on the shelf, optional
                 </span>
                 <textarea
+                  id={`${id}-description`}
+                  name="description"
+                  autoComplete="off"
                   value={description}
                   onChange={(event) => setDescription(event.target.value)}
                   maxLength={2000}

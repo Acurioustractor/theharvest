@@ -2,6 +2,41 @@
 
 Status: draft, not sent, not posted.
 
+## Re-audit update - 2026-07-10
+
+This supersedes the earlier audience counts in this file.
+
+- GHL contacts scanned: 3,278.
+- Harvest-scoped contacts: 355.
+- `tier:member`: 197.
+- `interest:membership`: 197, exactly the same contact set as `tier:member`.
+- Every member carries `project:act-hv` and `comms:harvest-newsletter`.
+- Email DND among members: 0.
+- Obvious staff/test member records: 6.
+- Clear members-only campaign audience: 189.
+- Source-overwrite records for Ben to review: Phil Thamm and Serge.
+- Expected campaign audience if both are confirmed: 191.
+- Membership provenance: 119 current member signups, 48 Mighty member sweep
+  records, 17 curated Harvest member-list records, 2 member-question records, and
+  11 older or later-updated sources reviewed individually.
+- Mighty: 91 member records. Dry-run shows one existing GHL contact needing the
+  Mighty-active tag and three Mighty members missing from GHL. No sync was applied.
+- Gmail re-check still finds no sent reply for Asha Hay, Mari Lloyd, Serge, or Jan
+  Maguire. The early member-comment emails still do not have matching Gmail threads.
+- The live `/pulse` page returns 200 and reaches its final optional name/email and
+  submit step. No new production response was submitted in this pass.
+- GHL template created: `Harvest Note 04 - A few weeks in - member pulse`, ID
+  `6a5046464ea233224da7913e`. Hosted preview contains the current headline, pulse
+  link, Mighty link, and canonical logo.
+- Eleven aligned one-to-one Gmail drafts were created on 2026-07-10 for the open
+  Harvest reply cards. Each matching GHL contact now has a `Gmail draft created
+  2026-07-10, not sent` note with the Gmail message ID.
+- No campaign was created, test-sent, scheduled, or sent.
+
+Current send runbook and final copy:
+
+- `docs/communications/post-opening-newsletter-2026-07.md`
+
 Generated people view:
 
 - `research/data/harvest-member-audience-review-2026-07-08.json`
@@ -110,9 +145,27 @@ Gmail was checked before any broadcast. The broad Harvest Gmail search found 35 
 | Grant Luff | Gmail shows Nic replied on 29 June. |
 | Leca / Witta Sports sponsorship | Gmail shows Nic replied on 6 July. |
 
-## Draft direct replies
+## Direct reply drafting history
 
-These are draft copy only. They have not been created in Gmail and have not been sent.
+The copy below was the staging source. Eleven aligned Gmail drafts were created on
+2026-07-10. The live Gmail drafts are now the review source of truth and remain unsent.
+They use the current language: the gate opened on 20 June, the place is still taking
+shape, and ongoing practical conversation moves to the Harvest members page in Mighty
+Networks.
+
+| Person | Gmail status | GHL status |
+| --- | --- | --- |
+| Asha Hay | Draft created, not sent | Note added; card remains open in `New` |
+| Mari Lloyd | Draft created, not sent | Note added; card remains open in `New` |
+| Serge | Draft created, not sent | Note added; card remains open in `New` |
+| Jo Pike | Draft created, not sent | Note added; card remains open in `New` |
+| Jan Maguire | Threaded draft created, not sent | Note added; card remains open in `New` |
+| Hazel Newman | Draft created, not sent | Note added; card remains open in `New` |
+| Eugenie Tamplon | Draft created, not sent | Note added; card remains open in `New` |
+| Eugenie Schwartz | Draft created, not sent | Note added; card remains open in `New` |
+| Lesley Gillett | Draft created, not sent | Note added; card remains open in `New` |
+| Catherine Mobbs | Draft created, not sent | Note added; card remains open in `New` |
+| Pen Hassmann | Draft created, not sent | Note added; card remains open in `New` |
 
 ### Asha Hay
 
@@ -371,8 +424,8 @@ What was written:
 
 - 11 open Harvest Inbox opportunity cards.
 - 11 contact notes headed `Harvest reply audit 2026-07-08`.
+- 11 Gmail drafts created on 2026-07-10 and recorded back to GHL notes.
 - No emails sent.
-- No Gmail drafts created.
 - No GHL tags changed.
 - No GHL workflows changed.
 

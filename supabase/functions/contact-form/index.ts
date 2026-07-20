@@ -12,6 +12,15 @@ const corsHeaders = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
+function escapeHtml(value: unknown) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
 function jsonResponse(body: Record<string, unknown>, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
@@ -140,17 +149,24 @@ Deno.serve(async req => {
   if (!name || !email || !message) {
     return jsonResponse({ success: false, error: "Name, email and message are required" }, 400);
   }
+  if (
+    typeof name !== "string" || name.trim().length > 120 ||
+    typeof email !== "string" || email.length > 320 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ||
+    typeof message !== "string" || message.length > 10_000 ||
+    (subject != null && (typeof subject !== "string" || subject.length > 200))
+  ) {
+    return jsonResponse({ success: false, error: "Enter a valid name, email and message." }, 400);
+  }
 
   // Parse name into first/last
   const nameParts = String(name).trim().split(/\s+/).filter(Boolean);
   const firstName = nameParts[0] || undefined;
   const lastName = nameParts.slice(1).join(" ") || undefined;
   const tags = [
-    "contact-form",
+    "project:act-hv",
     "harvest-website",
     "harvest-inbox",
     "act-inquiry", // ACT-wide inquiry marker the shared notification workflow triggers on
-    "project:act-hv",
     ...(subscribe ? ["comms:harvest-newsletter"] : []),
   ];
 
@@ -236,7 +252,7 @@ Deno.serve(async req => {
         contactId,
         fromEmail: String(email),
         subject: subject ? `Contact form: ${subject}` : `Contact form message from ${String(name).trim()}`,
-        html: `<p><strong>Website contact form</strong></p><p>${String(message).replace(/\n/g, "<br>")}</p>`,
+        html: `<p><strong>Website contact form</strong></p><p>${escapeHtml(message).replace(/\n/g, "<br>")}</p>`,
       });
     } catch (error) {
       console.error("inbox message failed (contact form):", error);

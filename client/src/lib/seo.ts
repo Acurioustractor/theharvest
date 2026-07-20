@@ -9,6 +9,7 @@ type PageSeo = {
   type?: "website" | "article";
   image?: string;
   imageAlt?: string;
+  robots?: "index, follow" | "noindex, nofollow";
 };
 
 function absoluteUrl(value: string) {
@@ -49,6 +50,7 @@ export function setPageSeo({
   type = "website",
   image = DEFAULT_IMAGE,
   imageAlt = DEFAULT_IMAGE_ALT,
+  robots = "index, follow",
 }: PageSeo) {
   const url = pageUrl(path);
   const imageUrl = absoluteUrl(image);
@@ -57,6 +59,7 @@ export function setPageSeo({
   setCanonical(url);
   setMeta("name", "title", title);
   setMeta("name", "description", description);
+  setMeta("name", "robots", robots);
   setMeta("property", "og:type", type);
   setMeta("property", "og:url", url);
   setMeta("property", "og:title", title);

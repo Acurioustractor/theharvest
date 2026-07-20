@@ -47,6 +47,7 @@ export default function WorkDetail({ slug }: { slug: string }) {
   useEffect(() => {
     if (!work) {
       document.title = "Work not found · The Harvest";
+      setMeta("name", "robots", "noindex, nofollow");
       return;
     }
     document.title = `${work.title} · The Collection · The Harvest`;
@@ -55,6 +56,7 @@ export default function WorkDetail({ slug }: { slug: string }) {
     const image = work.heroImage.startsWith("http") ? work.heroImage : `${SITE_URL}${work.heroImage}`;
 
     setMeta("name", "description", work.blurb);
+    setMeta("name", "robots", "index, follow");
     setMeta("property", "og:type", "article");
     setMeta("property", "og:url", url);
     setMeta("property", "og:title", title);

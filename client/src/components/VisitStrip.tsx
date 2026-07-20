@@ -1,6 +1,5 @@
 import { Link } from "wouter";
 import { EditableText } from "@/components/EditableText";
-import { MEMBERS_PAGE_URL } from "@/lib/links";
 
 /**
  * Shared visit-basics strip: answers "can I just turn up, and when?" on every
@@ -33,20 +32,18 @@ export function VisitStrip() {
         />
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
           <a
-            href={MEMBERS_PAGE_URL}
-            target="_blank"
-            rel="noopener noreferrer"
+            href="/whats-on#pizza-rsvp"
             className="inline-flex items-center justify-center rounded-md bg-amber-500 px-6 py-3 font-semibold text-black transition-colors hover:bg-amber-600"
           >
-            Dates on the members page
+            See dates and RSVP
           </a>
           <p className="text-sm text-stone-500">
-            Membership is free.{" "}
+            No booking needed. Membership is free.{" "}
             <Link
-              href="/whats-on"
+              href="/membership"
               className="text-amber-700 underline underline-offset-4 hover:text-amber-800"
             >
-              More about visiting
+              Become a member
             </Link>
           </p>
         </div>

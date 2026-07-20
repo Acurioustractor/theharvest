@@ -6,23 +6,71 @@ import path from "path";
 import { defineConfig } from "vite";
 import { vitePluginManusRuntime } from "vite-plugin-manus-runtime";
 
+const repoRoot = import.meta.dirname;
+const publicSourceDir = path.resolve(repoRoot, "client", "public");
+const publicOutDir = path.resolve(repoRoot, "dist", "public");
 
-const plugins = [react(), tailwindcss(), jsxLocPlugin(), vitePluginManusRuntime()];
+function copyPublicAsset(relativePath: string) {
+  const source = path.join(publicSourceDir, relativePath);
+  const target = path.join(publicOutDir, relativePath);
+  if (!fs.existsSync(source)) return;
+  fs.mkdirSync(path.dirname(target), { recursive: true });
+  fs.copyFileSync(source, target);
+}
 
-export default defineConfig({
-  plugins,
+function prunePublicBuildAssetsPlugin() {
+  return {
+    name: "harvest-prune-public-build-assets",
+    closeBundle() {
+      const removePaths = [
+        "TheHarvestConcept.pdf",
+        "align-tool.html",
+        "community-explorer.html",
+        "image-gallery.html",
+        "point-alignment-tool.html",
+        "photo-wall-card.html",
+        "sketch-studio.html",
+        "zone-editor.html",
+        "images/email-icons",
+        "images/growing-h",
+        "images/logo-stages",
+        "images/plans",
+        "images/site-plan",
+        "images/sketches",
+      ];
+
+      for (const relativePath of removePaths) {
+        fs.rmSync(path.join(publicOutDir, relativePath), { recursive: true, force: true });
+      }
+
+      // Keep current public-route assets that live inside larger planning folders.
+      copyPublicAsset("images/plans/site-plan-colour-labelled.jpeg");
+      copyPublicAsset("images/site-plan/layers/photos/00-base-photo.png");
+    },
+  };
+}
+
+export default defineConfig(({ mode }) => ({
+  plugins: [
+    react(),
+    tailwindcss(),
+    prunePublicBuildAssetsPlugin(),
+    ...(mode === "development"
+      ? [jsxLocPlugin(), vitePluginManusRuntime()]
+      : []),
+  ],
   resolve: {
     alias: {
-      "@": path.resolve(import.meta.dirname, "client", "src"),
-      "@shared": path.resolve(import.meta.dirname, "shared"),
-      "@assets": path.resolve(import.meta.dirname, "attached_assets"),
+      "@": path.resolve(repoRoot, "client", "src"),
+      "@shared": path.resolve(repoRoot, "shared"),
+      "@assets": path.resolve(repoRoot, "attached_assets"),
     },
   },
-  envDir: path.resolve(import.meta.dirname),
-  root: path.resolve(import.meta.dirname, "client"),
-  publicDir: path.resolve(import.meta.dirname, "client", "public"),
+  envDir: path.resolve(repoRoot),
+  root: path.resolve(repoRoot, "client"),
+  publicDir: publicSourceDir,
   build: {
-    outDir: path.resolve(import.meta.dirname, "dist/public"),
+    outDir: publicOutDir,
     emptyOutDir: true,
   },
   server: {
@@ -41,4 +89,4 @@ export default defineConfig({
       deny: ["**/.*"],
     },
   },
-});
+}));

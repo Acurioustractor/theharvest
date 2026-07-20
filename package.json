@@ -34,6 +34,7 @@
     "report:launch-gates:ghl": "tsx scripts/report-ghl-launch-gates.ts",
     "report:mighty": "tsx scripts/report-mighty.ts",
     "audit:contacts:ghl": "tsx scripts/audit-ghl-contacts.ts",
+    "report:member-audience:ghl": "tsx scripts/export-ghl-member-audience.ts",
     "desk:ghl": "tsx scripts/report-ghl-harvest-desk.ts",
     "check:member-welcome:ghl": "tsx scripts/check-ghl-member-welcome.ts",
     "send:member-welcome:ghl": "tsx scripts/send-ghl-member-welcome-catchup.ts",

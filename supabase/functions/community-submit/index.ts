@@ -9,6 +9,15 @@ const corsHeaders = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
+function escapeHtml(value: unknown) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
 function jsonResponse(body: Record<string, unknown>, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
@@ -107,14 +116,16 @@ async function addInboundFormMessage(input: {
   }
 }
 
-// Tag mappings for each submission type
+// Canonical ACT GHL namespaces only. Community submissions remain in the
+// community lane and never grant a communications consent tag.
 const TYPE_TAGS: Record<string, string[]> = {
-  idea: ["community-idea", "harvest-website"],
-  residency: ["residency-applicant", "harvest-website"],
-  "business-interest": ["business-interest", "harvest-website"],
-  "workshop-suggestion": ["workshop-suggestion", "harvest-website"],
-  "story-feature": ["story-feature", "harvest-website"],
-  "venue-enquiry": ["venue-enquiry", "harvest-website"],
+  volunteer: ["interest:volunteer", "role:volunteer"],
+  idea: ["interest:community"],
+  residency: ["role:resident", "interest:community"],
+  "business-interest": ["role:supplier", "interest:markets"],
+  "workshop-suggestion": ["interest:workshops"],
+  "story-feature": ["role:storyteller", "interest:community"],
+  "venue-enquiry": ["interest:venue"],
 };
 
 Deno.serve(async (req) => {
@@ -133,8 +144,19 @@ Deno.serve(async (req) => {
   const payload = await req.json();
   const { type, email, name, ...fields } = payload;
 
-  if (!type || !email || !name) {
+  if (
+    typeof type !== "string" ||
+    !Object.hasOwn(TYPE_TAGS, type) ||
+    !email ||
+    !name
+  ) {
     return jsonResponse({ success: false, error: "Type, name and email are required." }, 400);
+  }
+  if (
+    typeof name !== "string" || name.trim().length > 120 ||
+    typeof email !== "string" || email.length > 320 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+  ) {
+    return jsonResponse({ success: false, error: "Enter a valid name and email." }, 400);
   }
 
   // 1. Store in Supabase FIRST so a GHL outage can never lose the message.
@@ -172,10 +194,16 @@ Deno.serve(async (req) => {
   // 2. Upsert contact in GHL
   let ghlContactId: string | null = null;
   if (apiKey && locationId) {
-    const tags = [...(TYPE_TAGS[type] ?? ["harvest-website"]), "harvest-inbox"];
-    if (fields.residencyType) tags.push(`residency-${fields.residencyType}`);
-    if (fields.ideaType) tags.push(`idea-${fields.ideaType}`);
-    if (fields.interestType) tags.push(`biz-${fields.interestType}`);
+    const tags = [
+      "project:act-hv",
+      "lane:community",
+      ...(TYPE_TAGS[type] ?? []),
+      "harvest-website",
+      "harvest-inbox",
+    ];
+    if (fields.helpType) tags.push(`pod:${String(fields.helpType).replace(/[^a-z0-9]+/gi, "-").toLowerCase()}`);
+    if (fields.sourceCampaign) tags.push(`source:campaign:${String(fields.sourceCampaign).replace(/[^a-z0-9]+/gi, "-").toLowerCase()}`);
+    if (fields.sourceContent) tags.push(`source:content:${String(fields.sourceContent).replace(/[^a-z0-9]+/gi, "-").toLowerCase()}`);
 
     const nameParts = String(name).trim().split(/\s+/).filter(Boolean);
     const firstName = nameParts[0] || undefined;
@@ -232,6 +260,10 @@ Deno.serve(async (req) => {
       if (fields.businessName) noteLines.push(`**Business:** ${fields.businessName}`);
       if (fields.portfolioUrl) noteLines.push(`**Portfolio:** ${fields.portfolioUrl}`);
       if (fields.durationWeeks) noteLines.push(`**Duration:** ${fields.durationWeeks} weeks`);
+      if (fields.eventType) noteLines.push(`**Event type:** ${fields.eventType}`);
+      const preferredDate = fields.eventDate ?? fields.date;
+      if (preferredDate) noteLines.push(`**Preferred date:** ${preferredDate}`);
+      if (fields.guests) noteLines.push(`**Expected guests:** ${fields.guests}`);
 
       try {
         await fetch(`${GHL_API_BASE}/contacts/${ghlContactId}/notes`, {
@@ -268,12 +300,15 @@ Deno.serve(async (req) => {
           fromEmail: String(email),
           subject: `${type} submission from ${String(name).trim()}`,
           html: [
-            `<p><strong>${type.toUpperCase()} submission (website)</strong></p>`,
-            fields.title ? `<p>Title: ${fields.title}</p>` : "",
-            fields.businessName ? `<p>Business: ${fields.businessName}</p>` : "",
-            fields.description ? `<p>${String(fields.description).replace(/\n/g, "<br>")}</p>` : "",
-            fields.message ? `<p>${String(fields.message).replace(/\n/g, "<br>")}</p>` : "",
-            fields.portfolioUrl ? `<p>Portfolio: ${fields.portfolioUrl}</p>` : "",
+            `<p><strong>${escapeHtml(String(type).toUpperCase())} submission (website)</strong></p>`,
+            fields.title ? `<p>Title: ${escapeHtml(fields.title)}</p>` : "",
+            fields.businessName ? `<p>Business: ${escapeHtml(fields.businessName)}</p>` : "",
+            fields.eventType ? `<p>Event type: ${escapeHtml(fields.eventType)}</p>` : "",
+            preferredDate ? `<p>Preferred date: ${escapeHtml(preferredDate)}</p>` : "",
+            fields.guests ? `<p>Expected guests: ${escapeHtml(fields.guests)}</p>` : "",
+            fields.description ? `<p>${escapeHtml(fields.description).replace(/\n/g, "<br>")}</p>` : "",
+            fields.message ? `<p>${escapeHtml(fields.message).replace(/\n/g, "<br>")}</p>` : "",
+            fields.portfolioUrl ? `<p>Portfolio: ${escapeHtml(fields.portfolioUrl)}</p>` : "",
           ].join(""),
         });
       } catch (err) {

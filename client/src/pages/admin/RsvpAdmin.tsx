@@ -8,6 +8,8 @@ import { useAuth } from "@/_core/hooks/useAuth";
 
 type RsvpPayload = {
   event?: string | null;
+  occurrenceDate?: string | null;
+  session?: "friday" | "saturday" | "sunday" | "unsure" | null;
   day?: string | null;
   people?: number | null;
   message?: string | null;
@@ -23,8 +25,30 @@ type RsvpRow = {
   createdAt: Date;
 };
 
-function dayLabel(day: string | null | undefined): string {
-  return day && day.trim() ? day : "No session picked";
+function sessionLabel(payload: RsvpPayload): string {
+  if (!payload.occurrenceDate) {
+    return payload.day?.trim() || "Legacy RSVP without a date";
+  }
+
+  const date = new Date(`${payload.occurrenceDate}T12:00:00+10:00`).toLocaleDateString("en-AU", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+  const session = payload.day?.trim() || payload.session || "Session not picked";
+  return `${date} · ${session}`;
+}
+
+function groupKey(payload: RsvpPayload): string {
+  if (payload.occurrenceDate) {
+    return `${payload.occurrenceDate}:${payload.session || payload.day || "unknown"}`;
+  }
+  return `legacy:${payload.day?.trim() || "unknown"}`;
+}
+
+function groupSortKey(payload: RsvpPayload): string {
+  return payload.occurrenceDate ? `${payload.occurrenceDate}:0` : "9999-99-99:legacy";
 }
 
 export default function RsvpAdmin() {
@@ -38,14 +62,20 @@ export default function RsvpAdmin() {
   const rows = (query.data ?? []) as RsvpRow[];
 
   const groups = useMemo(() => {
-    const byDay = new Map<string, RsvpRow[]>();
+    const byDay = new Map<string, { key: string; label: string; sortKey: string; rows: RsvpRow[] }>();
     for (const row of rows) {
-      const key = dayLabel(row.payload?.day);
-      const existing = byDay.get(key) ?? [];
-      existing.push(row);
+      const payload = row.payload ?? {};
+      const key = groupKey(payload);
+      const existing = byDay.get(key) ?? {
+        key,
+        label: sessionLabel(payload),
+        sortKey: groupSortKey(payload),
+        rows: [],
+      };
+      existing.rows.push(row);
       byDay.set(key, existing);
     }
-    return Array.from(byDay.entries()).sort((a, b) => b[1].length - a[1].length);
+    return Array.from(byDay.values()).sort((a, b) => a.sortKey.localeCompare(b.sortKey));
   }, [rows]);
 
   const totalPeople = rows.reduce((sum, row) => sum + (row.payload?.people || 1), 0);
@@ -109,7 +139,7 @@ export default function RsvpAdmin() {
               <p className="font-mono text-xs uppercase tracking-[0.22em] text-[#C4922A]">who's coming</p>
               <h1 className="mt-3 text-4xl font-black leading-none md:text-5xl">Pizza night RSVPs</h1>
               <p className="mt-3 max-w-xl text-white/72">
-                Everyone who left their details on the RSVP form, grouped by the session they picked.
+                Everyone who left their details on the RSVP form, grouped by occurrence and session.
               </p>
             </div>
             <Button variant="outline" onClick={() => query.refetch()} disabled={query.isFetching}>
@@ -142,18 +172,18 @@ export default function RsvpAdmin() {
           </div>
         ) : (
           <div className="space-y-6">
-            {groups.map(([day, groupRows]) => {
-              const dayTotal = groupRows.reduce((sum, row) => sum + (row.payload?.people || 1), 0);
+            {groups.map((group) => {
+              const dayTotal = group.rows.reduce((sum, row) => sum + (row.payload?.people || 1), 0);
               return (
-                <div key={day} className="border border-stone-300 bg-white">
+                <div key={group.key} className="border border-stone-300 bg-white">
                   <div className="flex items-center justify-between border-b border-stone-200 bg-stone-50 px-5 py-3">
-                    <h2 className="text-lg font-bold">{day}</h2>
+                    <h2 className="text-lg font-bold">{group.label}</h2>
                     <span className="font-mono text-sm text-stone-600">
-                      {dayTotal} people &middot; {groupRows.length} RSVP{groupRows.length === 1 ? "" : "s"}
+                      {dayTotal} people &middot; {group.rows.length} RSVP{group.rows.length === 1 ? "" : "s"}
                     </span>
                   </div>
                   <div className="divide-y divide-stone-100">
-                    {groupRows.map((row) => (
+                    {group.rows.map((row) => (
                       <div key={row.id} className="flex flex-wrap items-center justify-between gap-2 px-5 py-3">
                         <div>
                           <p className="font-semibold text-stone-900">{row.name}</p>

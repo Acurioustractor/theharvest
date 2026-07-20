@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Loader2, ImageOff } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -8,22 +8,27 @@ interface LazyImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   className?: string;
 }
 
-export function LazyImage({ src, alt, className, ...props }: LazyImageProps) {
-  const [isLoading, setIsLoading] = useState(true);
-  const [hasError, setHasError] = useState(false);
+export function LazyImage({
+  src,
+  alt,
+  className,
+  loading,
+  decoding,
+  fetchPriority,
+  onLoad,
+  onError,
+  ...props
+}: LazyImageProps) {
+  const [imageState, setImageState] = useState<{
+    src: string;
+    status: "loading" | "loaded" | "error";
+  }>({ src, status: "loading" });
 
-  useEffect(() => {
-    const img = new Image();
-    img.src = src;
-    img.onload = () => {
-      setIsLoading(false);
-      setHasError(false);
-    };
-    img.onerror = () => {
-      setIsLoading(false);
-      setHasError(true);
-    };
-  }, [src]);
+  const status = imageState.src === src ? imageState.status : "loading";
+  const isLoading = status === "loading";
+  const hasError = status === "error";
+  const resolvedLoading = loading ?? (fetchPriority === "high" ? "eager" : "lazy");
+  const resolvedFetchPriority = fetchPriority ?? (resolvedLoading === "eager" ? "high" : "auto");
 
   if (hasError) {
     return (
@@ -44,10 +49,21 @@ export function LazyImage({ src, alt, className, ...props }: LazyImageProps) {
       <img
         src={src}
         alt={alt}
+        loading={resolvedLoading}
+        decoding={decoding ?? "async"}
+        fetchPriority={resolvedFetchPriority}
         className={cn(
           "w-full h-full object-cover transition-opacity duration-300",
           isLoading ? "opacity-0" : "opacity-100"
         )}
+        onLoad={(event) => {
+          setImageState({ src, status: "loaded" });
+          onLoad?.(event);
+        }}
+        onError={(event) => {
+          setImageState({ src, status: "error" });
+          onError?.(event);
+        }}
         {...props}
       />
     </div>

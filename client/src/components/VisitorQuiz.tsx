@@ -46,8 +46,10 @@ interface QuizQuestion {
   multiSelect?: boolean;
 }
 
+type PersonaId = "regular" | "maker" | "gatherer" | "grower" | "explorer";
+
 interface PersonaResult {
-  id: string;
+  id: PersonaId;
   title: string;
   tagline: string;
   description: string;
@@ -153,7 +155,7 @@ const quizQuestions: QuizQuestion[] = [
   },
 ];
 
-const personaResults: Record<string, PersonaResult> = {
+const personaResults: Record<PersonaId, PersonaResult> = {
   regular: {
     id: "regular",
     title: "The Regular",
@@ -327,7 +329,6 @@ export function VisitorQuiz({ trigger, onComplete }: VisitorQuizProps) {
         name: name.trim(),
         email: email.trim(),
         persona: persona.id,
-        ghlTags: persona.ghlTags,
         motivation: answers.motivation as string | undefined,
         frequency: answers.frequency as string | undefined,
         interests: (answers.interests as string[]) || undefined,

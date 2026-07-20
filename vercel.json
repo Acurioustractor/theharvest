@@ -1,6 +1,7 @@
 {
   "buildCommand": "pnpm exec vite build && pnpm exec tsx scripts/build-sitemap.ts",
   "outputDirectory": "dist/public",
+  "trailingSlash": false,
   "redirects": [
     { "source": "/about", "destination": "/what-is-the-harvest", "permanent": true },
     { "source": "/witta", "destination": "/what-is-the-harvest", "permanent": true },
@@ -18,6 +19,15 @@
     { "source": "/blog/:path*", "destination": "/whats-on", "permanent": true },
     { "source": "/photo-wall", "destination": "/whats-on", "permanent": true },
     { "source": "/photo-wall/:path*", "destination": "/whats-on", "permanent": true },
+    { "source": "/site-plan", "destination": "/what-is-the-harvest", "permanent": true },
+    { "source": "/compendium", "destination": "/what-is-the-harvest", "permanent": true },
+    { "source": "/brand-guide", "destination": "/what-is-the-harvest", "permanent": true },
+    { "source": "/brand-development", "destination": "/what-is-the-harvest", "permanent": true },
+    { "source": "/logo-story", "destination": "/what-is-the-harvest", "permanent": true },
+    { "source": "/components", "destination": "/what-is-the-harvest", "permanent": true },
+    { "source": "/launch-redesign", "destination": "/what-is-the-harvest", "permanent": true },
+    { "source": "/social", "destination": "/whats-on", "permanent": true },
+    { "source": "/partner-portal", "destination": "/", "permanent": true },
     { "source": "/garden-launch", "destination": "/whats-on", "permanent": true },
     { "source": "/june-20", "destination": "/whats-on", "permanent": true },
     { "source": "/bauhaus", "destination": "/", "permanent": true },

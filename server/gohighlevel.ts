@@ -1170,15 +1170,14 @@ export async function createGHLEmailTemplate(input: {
       },
       body: JSON.stringify({
         locationId,
+        title: input.name,
         name: input.name,
         type: "html",
         updatedBy: "api",
         builderVersion: "2",
-        templateData: {
-          html: input.html,
-          subject: input.subject || input.name,
-          preheader: input.preheader || "",
-        },
+        isPlainText: false,
+        subjectLine: input.subject || input.name,
+        previewText: input.preheader || "",
       }),
     });
 
@@ -1197,11 +1196,14 @@ export async function createGHLEmailTemplate(input: {
         },
         body: JSON.stringify({
           locationId,
+          title: input.name,
           name: input.name,
           type: "html",
-          html: input.html,
-          subject: input.subject || input.name,
-          preheader: input.preheader || "",
+          updatedBy: "api",
+          builderVersion: "2",
+          isPlainText: false,
+          subjectLine: input.subject || input.name,
+          previewText: input.preheader || "",
         }),
       });
       if (!response2.ok) {
