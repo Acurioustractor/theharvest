@@ -52,6 +52,7 @@ async function upsertHarvestInboxOpportunity(input: {
 // (community-idea, residency-applicant, business-interest, workshop-suggestion,
 // story-feature, venue-enquiry, residency-*/idea-*/biz-*) are dropped.
 const TYPE_TAGS: Record<string, string[]> = {
+  volunteer: ["role:volunteer", "interest:volunteer"],
   idea: ["interest:community"],
   residency: ["role:resident", "interest:community"],
   "business-interest": ["role:supplier", "interest:markets"],
@@ -94,6 +95,9 @@ Deno.serve(async (req) => {
     "harvest-website",
     "harvest-inbox",
   ];
+  if (fields.helpType) tags.push(`pod:${String(fields.helpType).replace(/[^a-z0-9]+/gi, "-").toLowerCase()}`);
+  if (fields.sourceCampaign) tags.push(`source:campaign:${String(fields.sourceCampaign).replace(/[^a-z0-9]+/gi, "-").toLowerCase()}`);
+  if (fields.sourceContent) tags.push(`source:content:${String(fields.sourceContent).replace(/[^a-z0-9]+/gi, "-").toLowerCase()}`);
 
   // Parse name
   const nameParts = String(name).trim().split(/\s+/).filter(Boolean);
