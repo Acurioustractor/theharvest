@@ -36,6 +36,7 @@ import Membership from "./pages/Membership";
 import Shop from "./pages/Shop";
 import Stories from "./pages/Stories";
 import GetInvolved from "./pages/GetInvolved";
+import StartHere from "./pages/StartHere";
 import Journey from "./pages/Journey";
 import People from "./pages/People";
 import SitePlan from "./pages/SitePlan";
@@ -131,6 +132,7 @@ function Router() {
   if (location === "/shop") return <Shop />;
   if (location === "/stories") return <Stories />;
   if (location === "/get-involved") return <GetInvolved />;
+  if (location === "/start" || location === "/start-here") return <StartHere />;
   if (location === "/story") return <Journey />;
   if (location === "/people") return <People />;
   if (location.startsWith("/people/")) {
