@@ -227,7 +227,6 @@ const ideaGroups: IdeaGroup[] = [
 ];
 
 const pageNavLinks = [
-  { label: "Start Here", href: "/start" },
   { label: "About", href: "/what-is-the-harvest" },
   { label: "Works", href: "/works" },
   { label: "Shop", href: "/shop" },
@@ -236,7 +235,6 @@ const pageNavLinks = [
 ];
 
 const footerLinks = [
-  { label: "Start Here", href: "/start" },
   { label: "About", href: "/what-is-the-harvest" },
   { label: "Works", href: "/works" },
   { label: "Shop", href: "/shop" },

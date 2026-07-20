@@ -191,24 +191,3 @@ export async function subscribeNewsletter(payload: Record<string, unknown>) {
 export async function communitySubmit(payload: Record<string, unknown>) {
   return callFunction<{ success: boolean; error?: string; contactId?: string }>("community-submit", payload);
 }
-
-export interface HarvestPublicSocialPost {
-  id: string;
-  platform: string;
-  account_name: string | null;
-  post_type: string | null;
-  message: string | null;
-  permalink: string | null;
-  published_at: string;
-  media: unknown[];
-}
-
-export async function fetchHarvestPublicSocialPosts(limit = 6): Promise<HarvestPublicSocialPost[]> {
-  const { data, error } = await supabase
-    .from("v_harvest_public_social_posts")
-    .select("id, platform, account_name, post_type, message, permalink, published_at, media")
-    .order("published_at", { ascending: false })
-    .limit(limit);
-  if (error) throw error;
-  return (data || []) as HarvestPublicSocialPost[];
-}

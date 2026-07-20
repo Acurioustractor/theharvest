@@ -15,7 +15,6 @@ import {
   Loader2,
 } from "lucide-react";
 import { communitySubmit } from "@/lib/api";
-import { currentAttribution } from "@/lib/tracking";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
@@ -82,7 +81,6 @@ export default function VenueHire() {
       const result = await communitySubmit({
         type: "venue-enquiry",
         ...formData,
-        ...currentAttribution(),
       });
       if (result.success) {
         setStatus("success");

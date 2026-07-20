@@ -1,6 +1,5 @@
 import { useState, FormEvent } from "react";
 import { communitySubmit } from "@/lib/api";
-import { currentAttribution } from "@/lib/tracking";
 import { cn } from "@/lib/utils";
 import {
   Palette,
@@ -14,7 +13,7 @@ import {
   CheckCircle2,
 } from "lucide-react";
 
-type FormType = "volunteer" | "residency" | "idea" | "business-interest" | "workshop-suggestion" | "story-feature";
+type FormType = "residency" | "idea" | "business-interest" | "workshop-suggestion" | "story-feature";
 
 interface FormConfig {
   id: FormType;
@@ -34,33 +33,6 @@ interface FieldDef {
 }
 
 const FORMS: FormConfig[] = [
-  {
-    id: "volunteer",
-    label: "Lend a Hand",
-    icon: Hammer,
-    tagline: "Garden jobs, working days and practical help. Start with what you can do.",
-    fields: [
-      { name: "name", label: "Your name", type: "text", required: true },
-      { name: "email", label: "Email", type: "email", required: true },
-      { name: "phone", label: "Phone", type: "text" },
-      {
-        name: "helpType",
-        label: "Where could you help?",
-        type: "select",
-        required: true,
-        options: [
-          { value: "garden", label: "Garden and growing" },
-          { value: "making", label: "Building, repair or making" },
-          { value: "events", label: "Events and shared meals" },
-          { value: "shop", label: "Shop and local goods" },
-          { value: "stories", label: "Photos, stories or communications" },
-          { value: "anything-useful", label: "Whatever is useful" },
-        ],
-      },
-      { name: "availability", label: "When are you usually available?", type: "text", placeholder: "Weekends, weekdays, occasionally" },
-      { name: "message", label: "Anything we should know?", type: "textarea", placeholder: "Skills, tools, accessibility needs, or the kind of job you enjoy" },
-    ],
-  },
   {
     id: "residency",
     label: "Residencies",
@@ -191,7 +163,7 @@ export default function GetInvolved() {
     e.preventDefault();
     setStatus("loading");
     try {
-      const result = await communitySubmit({ type: activeForm, ...formData, ...currentAttribution() });
+      const result = await communitySubmit({ type: activeForm, ...formData });
       if (result.success) {
         setStatus("success");
       } else {

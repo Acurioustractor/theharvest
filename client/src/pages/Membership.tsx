@@ -18,7 +18,6 @@ import { HarvestPhotoPicker, type PickedPhoto } from "@/components/HarvestPhotoP
 import { useAuth } from "@/_core/hooks/useAuth";
 import { optimize } from "@/lib/imageOptimize";
 import { trpc } from "@/lib/trpc";
-import { currentAttribution } from "@/lib/tracking";
 import { harvestButtonClasses, SiteFooter, SiteNav } from "./HarvestReviewTest";
 
 const lanes = [
@@ -146,14 +145,13 @@ export default function Membership() {
     event.preventDefault();
     const { firstName, lastName } = splitName(name);
     const taggedInterests = Array.from(new Set<Interest>(["membership", ...interests]));
-    const attribution = currentAttribution();
 
     joinMutation.mutate({
       email: email.trim(),
       phone: phone.trim() || undefined,
       firstName,
       lastName,
-      source: attribution.sourceContent ? `Harvest | Member Signup | ${attribution.sourceContent}` : "Harvest | Member Signup",
+      source: "Harvest | Member Signup",
       interests: taggedInterests,
       member: true,
       notes: comments.trim() || undefined,
@@ -163,13 +161,12 @@ export default function Membership() {
 
   function handleQuestionSubmit(event: React.FormEvent) {
     event.preventDefault();
-    const attribution = currentAttribution();
     questionMutation.mutate({
       name: questionName.trim(),
       email: questionEmail.trim(),
       phone: questionPhone.trim() || null,
       question: question.trim(),
-      source: attribution.sourceContent ? `Harvest | Member Question | ${attribution.sourceContent}` : "Harvest | Member Question",
+      source: "Harvest | Member Question",
     });
   }
 
