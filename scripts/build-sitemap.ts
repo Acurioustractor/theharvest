@@ -29,6 +29,7 @@ type Entry = {
 
 const STATIC_ROUTES: Entry[] = [
   { loc: "/", priority: "1.0", changefreq: "weekly" },
+  { loc: "/start", priority: "0.95", changefreq: "weekly" },
   { loc: "/membership", priority: "0.9", changefreq: "weekly" },
   { loc: "/whats-on", priority: "0.9", changefreq: "weekly" },
   { loc: "/witta-pizza", priority: "0.85", changefreq: "weekly" },
@@ -38,6 +39,7 @@ const STATIC_ROUTES: Entry[] = [
   { loc: "/get-involved", priority: "0.7", changefreq: "monthly" },
   { loc: "/venue-hire", priority: "0.6", changefreq: "monthly" },
   { loc: "/contact", priority: "0.6", changefreq: "yearly" },
+  { loc: "/media", priority: "0.5", changefreq: "monthly" },
   { loc: "/pulse", priority: "0.5", changefreq: "monthly" },
 ];
 
