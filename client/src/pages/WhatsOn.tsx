@@ -17,16 +17,14 @@ import {
   Music,
   Filter,
 } from "lucide-react";
-import { listApprovedEvents } from "@/lib/api";
 import { EventSubmissionDialog } from "@/components/EventSubmissionDialog";
 import { SiteFooter, SiteNav } from "./HarvestReviewTest";
 import { HarvestImage } from "@/components/HarvestImage";
 import { trpc } from "@/lib/trpc";
 import { EditableText } from "@/components/EditableText";
-import { MEMBERS_PAGE_URL } from "@/lib/links";
 import { clearJsonLd, setJsonLd, setPageSeo } from "@/lib/seo";
 import eventsData from "@/data/events.json";
-import { useQuery } from "@tanstack/react-query";
+import { currentAttribution } from "@/lib/tracking";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
@@ -111,16 +109,6 @@ interface StaticEvent {
   image: string;
 }
 
-interface DBEvent {
-  id: number;
-  title: string;
-  date: string;
-  time: string | null;
-  location: string;
-  category: string;
-  description: string | null;
-}
-
 function RegularSessions() {
   const sessions = [
     { slot: "session-friday", title: "Friday", detail: "DIY pizza and community movie night, 3pm to 8pm" },
@@ -129,9 +117,9 @@ function RegularSessions() {
   ];
 
   return (
-    <section className="py-12 bg-white border-b border-stone-200">
+    <section id="regular-sessions" className="scroll-mt-24 py-12 bg-white border-b border-stone-200">
       <div className="container max-w-4xl">
-        <p className="text-amber-600 font-medium tracking-wide uppercase text-sm mb-2">
+        <p className="text-amber-800 font-medium tracking-wide uppercase text-sm mb-2">
           The regular rhythm
         </p>
         <EditableText
@@ -171,19 +159,17 @@ function RegularSessions() {
           ))}
         </div>
         <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-          <a
-            href={MEMBERS_PAGE_URL}
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            href="/membership"
             className="inline-flex items-center justify-center bg-amber-500 hover:bg-amber-600 text-black font-semibold px-8 py-3 rounded-md transition-colors"
           >
             Become a member
-          </a>
-          <p className="text-sm text-stone-500">
+          </Link>
+          <p className="text-sm text-stone-600">
             Weeks can vary. The members page has this week's dates first, and membership is free.
           </p>
         </div>
-        <p className="mt-6 text-sm text-stone-500">
+        <p className="mt-6 text-sm text-stone-600">
           Find us at 9 Gumland Drive, Witta, on Jinibara Country.
         </p>
       </div>
@@ -202,7 +188,7 @@ function PizzaGallery() {
   return (
     <section className="py-16 bg-white border-b border-stone-200">
       <div className="container max-w-5xl">
-        <p className="text-amber-600 font-medium tracking-wide uppercase text-sm mb-2">
+        <p className="text-amber-800 font-medium tracking-wide uppercase text-sm mb-2">
           How it works
         </p>
         <EditableText
@@ -288,7 +274,7 @@ function PizzaSearchBlock() {
   return (
     <section className="border-b border-stone-200 bg-stone-50 py-12">
       <div className="container max-w-4xl">
-        <p className="mb-2 text-sm font-medium uppercase tracking-wide text-amber-600">
+        <p className="mb-2 text-sm font-medium uppercase tracking-wide text-amber-800">
           Pizza in Witta
         </p>
         <h2 className="mb-4 font-serif text-3xl font-bold text-stone-800 md:text-4xl">
@@ -326,7 +312,7 @@ function PizzaProofArticle() {
   return (
     <section className="border-b border-stone-200 bg-white py-16">
       <article className="container max-w-4xl">
-        <p className="mb-2 text-sm font-medium uppercase tracking-wide text-amber-600">
+        <p className="mb-2 text-sm font-medium uppercase tracking-wide text-amber-800">
           First public rhythm
         </p>
         <h2 className="mb-5 font-serif text-3xl font-bold text-stone-800 md:text-4xl">
@@ -411,7 +397,7 @@ function PizzaFaqBlock() {
   return (
     <section className="border-b border-stone-200 bg-stone-50 py-14">
       <div className="container max-w-4xl">
-        <p className="mb-2 text-sm font-medium uppercase tracking-wide text-amber-600">
+        <p className="mb-2 text-sm font-medium uppercase tracking-wide text-amber-800">
           Plan the visit
         </p>
         <h2 className="mb-8 font-serif text-3xl font-bold text-stone-800 md:text-4xl">
@@ -465,14 +451,14 @@ function MembershipInvite() {
         <EditableText
           page="whats-on"
           slot="membership-heading"
-          defaultContent="Become a member, see it all first."
+          defaultContent="Get the next dates first."
           as="h2"
           className="text-3xl md:text-4xl font-serif font-bold text-stone-800 mb-3"
         />
         <EditableText
           page="whats-on"
           slot="membership-intro"
-          defaultContent="Membership is free. It's the simplest way to stay close to The Harvest while it's still being made."
+          defaultContent="Membership is free. Get event dates, work-day calls and invitations before they are shared more widely."
           as="p"
           className="text-stone-600 mb-8 max-w-2xl"
           multiline
@@ -498,14 +484,12 @@ function MembershipInvite() {
             </div>
           ))}
         </div>
-        <a
-          href={MEMBERS_PAGE_URL}
-          target="_blank"
-          rel="noopener noreferrer"
+        <Link
+          href="/membership"
           className="inline-flex items-center justify-center bg-amber-500 hover:bg-amber-600 text-black font-semibold px-8 py-3 rounded-md transition-colors"
         >
           Become a member
-        </a>
+        </Link>
       </div>
     </section>
   );
@@ -539,7 +523,7 @@ function RoadmapStrip() {
   return (
     <section className="py-12 bg-stone-50 border-t border-stone-200">
       <div className="container max-w-4xl">
-        <p className="text-amber-600 font-medium tracking-wide uppercase text-sm mb-2">
+        <p className="text-amber-800 font-medium tracking-wide uppercase text-sm mb-2">
           Elsewhere on site
         </p>
         <EditableText
@@ -605,22 +589,79 @@ function FeedbackBand() {
   );
 }
 
+type PizzaSession = "friday" | "saturday" | "sunday" | "unsure";
+
+const pizzaSessionLabels: Record<PizzaSession, string> = {
+  friday: "Friday, pizza and movie, 3pm to 8pm",
+  saturday: "Saturday, 12pm to 8pm",
+  sunday: "Sunday, 12pm to 6pm",
+  unsure: "Not sure yet",
+};
+
+const pizzaSessionByDay: Record<number, Exclude<PizzaSession, "unsure">> = {
+  5: "friday",
+  6: "saturday",
+  0: "sunday",
+};
+
+function todayInBrisbane() {
+  const parts = new Intl.DateTimeFormat("en-AU", {
+    timeZone: "Australia/Brisbane",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(new Date());
+  const value = Object.fromEntries(parts.map((part) => [part.type, part.value]));
+  return `${value.year}-${value.month}-${value.day}`;
+}
+
+function expectedPizzaSessionForDate(value: string): Exclude<PizzaSession, "unsure"> | null {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return null;
+  const [year, month, day] = value.split("-").map(Number);
+  return pizzaSessionByDay[new Date(Date.UTC(year, month - 1, day)).getUTCDay()] ?? null;
+}
+
 function PizzaRsvpBlock() {
-  const [form, setForm] = useState({ name: "", email: "", day: "", people: "2" });
+  const [form, setForm] = useState<{
+    name: string;
+    email: string;
+    occurrenceDate: string;
+    session: PizzaSession | "";
+    people: string;
+  }>({ name: "", email: "", occurrenceDate: "", session: "", people: "2" });
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
   const submitRsvp = trpc.eoi.submit.useMutation();
+  const expectedSession = expectedPizzaSessionForDate(form.occurrenceDate);
+  const sessionOptions: PizzaSession[] = expectedSession ? [expectedSession, "unsure"] : ["unsure"];
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (!form.occurrenceDate || !form.session) {
+      setErrorMsg("Choose the date and session you are planning to attend.");
+      setStatus("error");
+      return;
+    }
+    if (!expectedSession) {
+      setErrorMsg("Choose a Friday, Saturday or Sunday pizza date.");
+      setStatus("error");
+      return;
+    }
+    if (form.session !== "unsure" && form.session !== expectedSession) {
+      setErrorMsg("The session does not match the date you selected.");
+      setStatus("error");
+      return;
+    }
     setStatus("loading");
     try {
+      const attribution = currentAttribution();
       await submitRsvp.mutateAsync({
         name: form.name,
         email: form.email,
-        day: form.day || undefined,
+        occurrenceDate: form.occurrenceDate,
+        session: form.session,
         people: form.people ? Number(form.people) : undefined,
-        source: "whats-on",
+        source: attribution.sourceContent ? `whats-on:${attribution.sourceContent}` : "whats-on",
       });
       setStatus("success");
     } catch (err) {
@@ -630,27 +671,16 @@ function PizzaRsvpBlock() {
   }
 
   return (
-    <section className="py-12 bg-amber-50 border-y border-amber-200">
+    <section id="pizza-rsvp" className="scroll-mt-24 py-12 bg-amber-50 border-y border-amber-200">
       <div className="container max-w-3xl">
         <h2 className="text-2xl md:text-3xl font-serif font-bold text-stone-800 mb-2">
           Coming along? Let us know
         </h2>
-        <p className="text-stone-600 mb-4">
-          The best place to RSVP is the members page. You can see this week's dates,
-          message us directly, and hear about new dates first. Membership is free.
+        <p className="text-stone-600 mb-2">
+          Choose the date and session you are planning to attend. An RSVP is not required,
+          but it helps us plan dough, toppings and space.
         </p>
-        <a
-          href={MEMBERS_PAGE_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center justify-center bg-stone-800 hover:bg-stone-900 text-white font-semibold px-8 py-3 rounded-md transition-colors mb-6"
-        >
-          RSVP on the members page
-        </a>
-        <p className="text-stone-500 text-sm mb-2">
-          Or leave your details here and we'll count you in.
-        </p>
-        <p className="text-stone-500 text-xs mb-6">
+        <p className="text-stone-600 text-xs mb-6">
           Used only to plan numbers and get in touch about this RSVP. See our{" "}
           <Link href="/privacy" className="underline hover:text-stone-700">
             privacy page
@@ -661,56 +691,101 @@ function PizzaRsvpBlock() {
           <div className="bg-white border border-amber-300 rounded-lg p-6">
             <p className="font-semibold text-stone-800">You're on the list.</p>
             <p className="text-stone-600 mt-1">
-              We'll plan for you. For this week's dates and anything else,{" "}
-              <a
-                href={MEMBERS_PAGE_URL}
-                target="_blank"
-                rel="noopener noreferrer"
+              We'll plan for you. To hear when dates change,{" "}
+              <Link
+                href="/membership"
                 className="text-amber-700 underline hover:text-amber-800"
               >
-                join us on the members page
-              </a>
+                become a free member
+              </Link>
               .
             </p>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="grid gap-4 sm:grid-cols-2">
-            <input
-              type="text"
-              required
-              placeholder="Your name"
-              value={form.name}
-              onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
-              className="rounded-md border border-stone-300 bg-white px-4 py-3 text-stone-800"
-            />
-            <input
-              type="email"
-              required
-              placeholder="Email"
-              value={form.email}
-              onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
-              className="rounded-md border border-stone-300 bg-white px-4 py-3 text-stone-800"
-            />
-            <select
-              value={form.day}
-              onChange={(e) => setForm((f) => ({ ...f, day: e.target.value }))}
-              className="rounded-md border border-stone-300 bg-white px-4 py-3 text-stone-800"
-            >
-              <option value="">Which session suits?</option>
-              <option value="Friday evening (pizza + movie)">Friday, pizza and movie, 3pm to 8pm</option>
-              <option value="Saturday (12-8pm)">Saturday, 12pm to 8pm</option>
-              <option value="Sunday (12-6pm)">Sunday, 12pm to 6pm</option>
-              <option value="Not sure yet">Not sure yet</option>
-            </select>
-            <input
-              type="number"
-              min={1}
-              max={30}
-              placeholder="How many people?"
-              value={form.people}
-              onChange={(e) => setForm((f) => ({ ...f, people: e.target.value }))}
-              className="rounded-md border border-stone-300 bg-white px-4 py-3 text-stone-800"
-            />
+            <label className="grid gap-1 text-sm font-medium text-stone-700" htmlFor="pizza-rsvp-name">
+              Your name
+              <input
+                id="pizza-rsvp-name"
+                name="name"
+                autoComplete="name"
+                type="text"
+                required
+                value={form.name}
+                onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
+                className="rounded-md border border-stone-300 bg-white px-4 py-3 text-stone-800"
+              />
+            </label>
+            <label className="grid gap-1 text-sm font-medium text-stone-700" htmlFor="pizza-rsvp-email">
+              Email
+              <input
+                id="pizza-rsvp-email"
+                name="email"
+                autoComplete="email"
+                type="email"
+                required
+                value={form.email}
+                onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
+                className="rounded-md border border-stone-300 bg-white px-4 py-3 text-stone-800"
+              />
+            </label>
+            <label className="grid gap-1 text-sm font-medium text-stone-700" htmlFor="pizza-rsvp-date">
+              Date you plan to come
+              <input
+                id="pizza-rsvp-date"
+                name="occurrenceDate"
+                type="date"
+                min={todayInBrisbane()}
+                required
+                value={form.occurrenceDate}
+                onChange={(e) => {
+                  const occurrenceDate = e.target.value;
+                  const nextSession = expectedPizzaSessionForDate(occurrenceDate);
+                  setForm((f) => ({
+                    ...f,
+                    occurrenceDate,
+                    session: nextSession ?? "",
+                  }));
+                }}
+                className="rounded-md border border-stone-300 bg-white px-4 py-3 text-stone-800"
+              />
+              {form.occurrenceDate && !expectedSession && (
+                <span className="text-xs font-normal text-red-700">
+                  Pizza RSVPs are for Fridays, Saturdays and Sundays.
+                </span>
+              )}
+            </label>
+            <label className="grid gap-1 text-sm font-medium text-stone-700" htmlFor="pizza-rsvp-session">
+              Session
+              <select
+                id="pizza-rsvp-session"
+                name="session"
+                required
+                value={form.session}
+                onChange={(e) => setForm((f) => ({ ...f, session: e.target.value as PizzaSession | "" }))}
+                className="rounded-md border border-stone-300 bg-white px-4 py-3 text-stone-800"
+              >
+                <option value="">Choose a session</option>
+                {sessionOptions.map((session) => (
+                  <option key={session} value={session}>
+                    {pizzaSessionLabels[session]}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="grid gap-1 text-sm font-medium text-stone-700 sm:col-span-2" htmlFor="pizza-rsvp-people">
+              Number of people
+              <input
+                id="pizza-rsvp-people"
+                name="people"
+                type="number"
+                min={1}
+                max={30}
+                value={form.people}
+                onChange={(e) => setForm((f) => ({ ...f, people: e.target.value }))}
+                className="rounded-md border border-stone-300 bg-white px-4 py-3 text-stone-800 sm:max-w-48"
+              />
+            </label>
             {status === "error" && (
               <p className="sm:col-span-2 text-sm text-red-700">{errorMsg}</p>
             )}
@@ -804,10 +879,7 @@ export default function WhatsOn() {
   }, [isPizzaPage]);
 
   // Fetch approved events from database
-  const { data: dbEvents, refetch } = useQuery({
-    queryKey: ["events", "approved"],
-    queryFn: listApprovedEvents,
-  });
+  const { data: dbEvents, refetch } = trpc.events.list.useQuery();
 
   // Combine static and database events
   const allEvents = useMemo(() => {
@@ -821,14 +893,14 @@ export default function WhatsOn() {
       description: e.description,
     }));
 
-    const approvedEvents: Event[] = ((dbEvents || []) as DBEvent[]).map((e) => ({
+    const approvedEvents: Event[] = (dbEvents || []).map((e) => ({
       id: e.id,
       title: e.title,
-      date: e.date,
-      time: e.time || undefined,
+      date: e.date instanceof Date ? e.date.toISOString().slice(0, 10) : e.date,
+      time: e.time,
       location: e.location,
       category: e.category.toLowerCase(),
-      description: e.description || "",
+      description: e.description,
     }));
 
     return [...staticEvents, ...approvedEvents].sort(
@@ -903,27 +975,24 @@ export default function WhatsOn() {
                 ? "Make your own pizza at The Harvest, 9 Gumland Drive, Witta. Most weekends the oven is on Friday, Saturday and Sunday. Weeks can vary, and new dates land on the members page first."
                 : "Weekend pizza sessions, work days and gatherings at The Harvest, a community garden and creative gathering place in Witta, on Jinibara Country. New dates land on the members page first."}
             </p>
-            <div className="flex justify-center">
-              <EventSubmissionDialog onEventSubmitted={() => refetch()} />
+            <div className="flex flex-wrap justify-center gap-3">
+              <a
+                href={isPizzaPage ? "#pizza-rsvp" : "#regular-sessions"}
+                className="inline-flex min-h-11 items-center justify-center rounded-md bg-amber-500 px-6 py-3 font-semibold text-black transition hover:bg-amber-400"
+              >
+                {isPizzaPage ? "RSVP for pizza" : "See this weekend"}
+              </a>
+              {!isPizzaPage && <EventSubmissionDialog onEventSubmitted={() => refetch()} />}
             </div>
           </motion.div>
         </div>
       </section>
 
+      {/* The weekend rhythm is the thing that actually runs every week, so it
+          leads the page. The submitted-events stream sits below it: when that
+          stream is empty, an empty list must not be the first thing a visitor
+          reads on the page that answers "what is happening?". */}
       <RegularSessions />
-
-      <PizzaGallery />
-
-      <PizzaSearchBlock />
-
-      {isPizzaPage && <PizzaProofArticle />}
-
-      {isPizzaPage && <PizzaFaqBlock />}
-
-      <MembershipInvite />
-
-      <RoadmapStrip />
-
       <PizzaRsvpBlock />
 
       {/* Filter Section: only worth showing once there are events to filter */}
@@ -953,8 +1022,20 @@ export default function WhatsOn() {
       )}
 
       {/* Events Content */}
-      <section className="py-16 bg-white">
+      <section id="upcoming-events" className="scroll-mt-24 py-16 bg-white">
         <div className="container">
+          <div className="mb-8 max-w-3xl">
+            <p className="text-amber-800 font-medium tracking-wide uppercase text-sm mb-2">
+              One-off events
+            </p>
+            <h2 className="text-3xl md:text-4xl font-serif font-bold text-stone-900">
+              Workshops, markets and gatherings
+            </h2>
+            <p className="mt-3 text-stone-600 leading-relaxed">
+              Community events at The Harvest, alongside the weekend rhythm above. Anyone can put one
+              forward.
+            </p>
+          </div>
           <Tabs defaultValue="upcoming" className="w-full">
             <TabsList className="mb-8">
               <TabsTrigger value="upcoming">Upcoming Events ({upcomingEvents.length})</TabsTrigger>
@@ -966,17 +1047,15 @@ export default function WhatsOn() {
                 <div className="text-center py-16">
                   <Calendar className="h-16 w-16 text-stone-300 mx-auto mb-4" />
                   <h3 className="text-xl font-semibold text-stone-600 mb-2">Nothing listed just yet</h3>
-                  <p className="text-stone-500 mb-6">
-                    The pizza weekend rhythm above runs most weeks. New dates land on the{" "}
+                  <p className="text-stone-600 mb-6">
+                    The pizza weekend rhythm above runs most weeks. You can{" "}
                     <a
-                      href={MEMBERS_PAGE_URL}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-amber-600 underline hover:text-amber-700"
+                      href="#pizza-rsvp"
+                      className="text-amber-800 underline hover:text-amber-700"
                     >
-                      members page
+                      leave an RSVP
                     </a>{" "}
-                    first. You can also submit your own community event.
+                    or submit your own community event.
                   </p>
                   <EventSubmissionDialog onEventSubmitted={() => refetch()} />
                 </div>
@@ -1022,7 +1101,7 @@ export default function WhatsOn() {
                                       {event.title}
                                     </h3>
                                     <p className="text-stone-600 mb-4">{event.description}</p>
-                                    <div className="flex flex-wrap gap-4 text-sm text-stone-500">
+                                    <div className="flex flex-wrap gap-4 text-sm text-stone-600">
                                       {event.time && (
                                         <span className="flex items-center gap-1">
                                           <Clock className="h-4 w-4" />
@@ -1075,7 +1154,7 @@ export default function WhatsOn() {
                               >
                                 <IconComponent className="h-5 w-5" />
                               </div>
-                              <Badge variant="outline" className="border-stone-300 text-stone-500">
+                              <Badge variant="outline" className="border-stone-300 text-stone-600">
                                 Past Event
                               </Badge>
                             </div>
@@ -1083,7 +1162,7 @@ export default function WhatsOn() {
                               {event.title}
                             </h3>
                             <p className="text-stone-600 text-sm mb-4 line-clamp-2">{event.description}</p>
-                            <div className="space-y-2 text-sm text-stone-500">
+                            <div className="space-y-2 text-sm text-stone-600">
                               <span className="flex items-center gap-2">
                                 <Calendar className="h-4 w-4" />
                                 {dateInfo.weekday}, {dateInfo.day} {dateInfo.month}
@@ -1104,6 +1183,18 @@ export default function WhatsOn() {
           </Tabs>
         </div>
       </section>
+
+      <PizzaGallery />
+
+      <PizzaSearchBlock />
+
+      {isPizzaPage && <PizzaProofArticle />}
+
+      {isPizzaPage && <PizzaFaqBlock />}
+
+      <MembershipInvite />
+
+      <RoadmapStrip />
 
       <FeedbackBand />
 

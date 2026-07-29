@@ -97,9 +97,9 @@ const statusClasses: Record<StatusTone, string> = {
 
 const publicPages: ControlLink[] = [
   {
-    label: "Launch redesign",
-    href: "/launch-redesign",
-    note: "Main prototype surface for Garden, Kitchen, Art Space.",
+    label: "Home page",
+    href: "/",
+    note: "The live public home page.",
     kind: "page",
   },
   {
@@ -256,13 +256,13 @@ const annotationTargets: WorkItem[] = [
     title: "Hero",
     detail: "Does the first viewport show the real place and name the three rooms fast enough?",
     tone: "watch",
-    owner: "/launch-redesign",
+    owner: "/",
   },
   {
     title: "Rooms",
     detail: "Check that Garden, Kitchen, and Art Space each have one job, not three explanations.",
     tone: "good",
-    owner: "/launch-redesign",
+    owner: "/",
   },
   {
     title: "Proof",
@@ -594,9 +594,9 @@ export default function HarvestControlRoom() {
           <div className="flex flex-wrap gap-3">
             <Button
               className="bg-[#C4922A] text-[#1C1917] hover:bg-[#d8a943]"
-              onClick={() => window.open("/launch-redesign", "_blank")}
+              onClick={() => window.open("/", "_blank")}
             >
-              Review launch page
+              Review home page
               <ArrowRight className="h-4 w-4" />
             </Button>
             <Button
@@ -630,7 +630,11 @@ export default function HarvestControlRoom() {
         <SignalCard
           label="Pizza headcount"
           value={businessSetup?.launch.tags.pizza.count ?? rsvpCountQuery.data?.count ?? "Check"}
-          detail="Contacts carrying rsvp-pizza-dinner. This is the dough and turnout signal."
+          detail={
+            businessSetup?.launch.tags.pizza.occurrenceDate
+              ? `${businessSetup.launch.tags.pizza.rsvpCount} RSVP(s) for ${businessSetup.launch.tags.pizza.occurrenceDate}. This is the dough and turnout signal.`
+              : "Upcoming stored RSVP people count."
+          }
           icon={CalendarDays}
           tone={(businessSetup?.launch.tags.pizza.count ?? 0) > 0 ? "good" : "blocked"}
           loading={businessSetupQuery.isLoading || rsvpCountQuery.isLoading}
@@ -701,7 +705,7 @@ export default function HarvestControlRoom() {
                     <p className="font-semibold">Public RSVP form</p>
                     <p className="mt-1 text-sm">
                       Embedded at {businessSetup.launch.publicRsvp.route}. Writes{" "}
-                      {businessSetup.launch.publicRsvp.tags.join(" + ")}.
+                      {businessSetup.launch.publicRsvp.tags.join(" + ")} and a durable website RSVP row.
                     </p>
                   </div>
                   <div className={`rounded-lg border p-4 ${businessSetup.crm.tagsOk ? statusClasses.good : statusClasses.watch}`}>
