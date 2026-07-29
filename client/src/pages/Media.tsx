@@ -285,8 +285,9 @@ export default function Media() {
               Everything you need to write about The Harvest, without emailing us first.
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-relaxed text-[#F5F0E8]/75">
-              Logos, colours, photographs and copy you can use. Take what you need. If you need something
-              that is not here, ask and we will get it to you.
+              Logos, colours, photographs and copy you can use. Free for editorial use, just credit us.
+              If you need something that is not here, or you are using it commercially, ask and we will
+              sort it out.
             </p>
 
             <div className="mt-10 flex flex-wrap items-center gap-4">
@@ -577,7 +578,7 @@ export default function Media() {
               id="photos"
               eyebrow="Photographs"
               title="Real photographs of the real place"
-              intro="Every picture here was taken on site with a camera. There are not many of them yet, and that is the honest position: the place has only been open since June. Full resolution, no watermark. Credit The Harvest."
+              intro="Every picture here was taken on site with a camera. There are not many of them yet, and that is the honest position: the place has only been open since June. Full resolution, no watermark. Free for editorial use, credit The Harvest."
             />
 
             <p className="mt-6 max-w-3xl border-l-4 border-[#8B4A2A] bg-[#8B4A2A]/8 p-5 text-sm leading-relaxed text-stone-700">
@@ -738,14 +739,21 @@ export default function Media() {
               style={{ scrollMarginTop: 108 }}
               className="mt-3 max-w-3xl text-3xl font-black leading-tight md:text-4xl"
             >
-              Yes, you can use this. Here is the short version.
+              Free for editorial. Ask us for commercial.
             </h2>
 
             <div className="mt-8 grid max-w-5xl gap-6 md:grid-cols-2">
               <ul className="space-y-4 text-base leading-relaxed text-[#F5F0E8]/80">
                 <li>
-                  Use these assets to write about The Harvest, to promote an event you are running with
-                  us, or to show you are a partner. No permission needed.
+                  <span className="font-semibold text-[#C4922A]">Editorial use is free.</span> Writing
+                  an article, a listing, a programme note, a newsletter, a community post, or promoting
+                  an event you are running with us. Take what you need and credit The Harvest. No
+                  permission needed.
+                </li>
+                <li>
+                  <span className="font-semibold text-[#C4922A]">Commercial use, email us first.</span>{" "}
+                  If the assets appear on something being sold, on packaging, on merchandise, or in paid
+                  advertising, we want a quick conversation before it runs. The answer is usually yes.
                 </li>
                 <li>
                   Do not use the logo in a way that suggests we endorse a product, a candidate or a
