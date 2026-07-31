@@ -112,6 +112,19 @@ switching against that is a real risk of losing someone's work. Revisit once the
   exists at The Harvest today), while WCR Act s11 says they are not workers and the fix is
   non-profit-only. Two calls needed: broker and Standard Ledger.
 
+- [Effort as currency](issues/06-effort-as-currency.md) — effort is a **door, not a rate**. The
+  unit is a booked shift, hours never convert to dollars, and nothing in the scheme needs a number
+  attached. **The buyout dissolved rather than being answered**: under ticket 15 money and time are
+  both legal tender, so someone who cannot make a shift is contributing in the other currency
+  rather than defaulting, and there is no debt to buy out of. **Enforcement is lapse**, and lapse
+  is soft here because it returns someone to the permanent free tier rather than removing them.
+  What counts is settled by one test: **if it can be booked on a roster in advance it is a shift;
+  if it needs valuing it is money** — so teaching, hosting and a booked tradesperson all count,
+  while donated materials go down the money route as an in-kind gift. Teaching an hour and weeding
+  an hour count the same, deliberately. Self-substitution (find your own replacement) is the
+  recommended practice against the real resentment risk, which ticket 16 showed is reliable members
+  resenting unreliable ones rather than payers resenting workers.
+
 ## Not yet specified
 
 - Insurance and liability once members have access to a sauna, and whether that changes the

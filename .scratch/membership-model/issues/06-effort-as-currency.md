@@ -1,7 +1,9 @@
 # Effort as currency
 
 Type: grilling
-Status: open
+Status: resolved
+Assignee: Ben (claimed 2026-07-31, resumed after research)
+Resolved: 2026-07-31
 Blocked by: 03, 15
 
 ## Question
@@ -91,3 +93,95 @@ lets anyone opt out of community with money, which is the thing the scheme exist
 the volunteer-association carve-out fails once you employ anyone. The Harvest employs and already
 runs work days, so this duty exists **today**, whatever this map decides. Carried to the insurance
 call sheet. It is a fixed cost of having people work on site, not a variable this ticket can trade.
+
+## Resolution (2026-07-31, grilled with Ben after research landed)
+
+**Effort is a door, not a rate. The unit is a booked shift. Enforcement is lapse. There is no
+buyout, and nothing in the scheme ever needs a number attached.**
+
+### 1. Door, not rate
+
+Hours never convert to dollars. There is no balance, no accrual, no ledger, and therefore nobody
+who has to hold one. This matters most in the six weeks a year Ben is away, which the ticket
+itself named as the failure condition.
+
+Grounded in ticket 16: every Australian scheme found books shifts rather than counting hours, and
+an hourly exchange rate would reinstall on labour exactly the transactional ledger that ticket 15
+deliberately removed from money.
+
+### 2. The buyout question dissolved rather than being answered
+
+When this ticket paused, the live option was a door with a published buyout rate, on the Stearns
+model, so that a missed shift had an answer other than an awkward conversation.
+
+**It is not needed, and the reason comes from ticket 15 rather than from the research.** Money and
+time are both legal tender. Someone on the time route who cannot make a shift is not defaulting;
+they are contributing in the other currency, which was always allowed. There is no debt, so there
+is nothing to buy out of.
+
+The research independently points the same way. The nearest Australian comparable, Food Co-op
+Canberra, gates its buyout behind *written board approval* weighing "family circumstances, equity
+and capacity". The Harvest has no board. A gated buyout needs a gatekeeper, which is the admin cost
+being designed out, and a self-serve tariff would need one anyway to stop it becoming the default
+door.
+
+### 3. Enforcement is lapse, and lapse is soft here
+
+Stop turning up and membership falls back to the **free tier**, which ticket 03 made permanent.
+
+No chasing. Ticket 16 found not one Australian scheme that chases a no-show; enforcement is
+universally by lapse, renewal surcharge, eligibility gate, or self-substitution.
+
+The property worth noticing: in most schemes lapsing is a punishment. Here it returns someone to
+something The Harvest has publicly called real and permanent. That lets the time route be generous
+without needing teeth, and it means no one is ever removed from the place for being unable to keep
+up.
+
+### 4. What counts: the bookable test
+
+> **If it can be booked on a roster in advance, it is a shift. If it needs valuing, it is money.**
+
+| Counts | Does not count |
+|---|---|
+| A work day | Donated materials |
+| Teaching a workshop | A load of timber |
+| Hosting an event | Someone's old tools |
+| A tradesperson booked to fix something | Anything needing a valuation |
+
+Donated goods are not refused. They go down the money route as an in-kind gift and are handled
+separately, because accepting them into the effort scheme would require deciding whether a trailer
+of mulch equals three hours. That is the ledger, rebuilt.
+
+**Teaching an hour and weeding an hour count the same.** Ben confirmed this is acceptable. It is a
+deliberate simplification and some people will notice it, since teaching is worth more to The
+Harvest. The alternative is a rate card, which is the thing this ticket exists to avoid.
+
+### 5. What effort buys is inherited, not decided here
+
+Ticket 03 already settled it: effort is a route into the paid tier, same entitlements, different
+currency. So whatever [What sits behind the paywall](05-what-sits-behind-the-paywall.md) decides
+flows through automatically. This ticket briefly paused expecting to wait for 05; that was
+unnecessary and the pause was lifted in the same session.
+
+### 6. Recommended practice, from research rather than grilled
+
+**Self-substitution: if you book a shift and cannot make it, you find your own replacement.**
+
+Not a values decision, so it was not put to Ben, but it is the one mechanism that addresses the
+real resentment risk ticket 16 identified. The danger is not payers resenting workers, as this
+ticket originally assumed. It is reliable members resenting unreliable ones. Park Slope doubles its
+make-up penalty precisely because "attendance was often bad enough to cause those who did show up
+to quit because of the unfair burden placed on them."
+
+Lapse handles membership but is too slow to protect the people who turned up on a short-handed
+Saturday. Self-substitution does, and it costs no admin because the member does the work of
+finding cover.
+
+### 7. Outside this ticket's reach, recorded so it is not mistaken for settled
+
+Queensland WHS Act s7(1)(h) makes volunteers workers, and the volunteer-association carve-out fails
+once an organisation employs anyone. The Harvest employs and already runs work days, so that duty
+of care exists today regardless of what this ticket decided. It is a fixed cost of having people
+work on site, not a variable this scheme can trade. Carried to
+`thoughts/wiki/operations/insurance-call-sheet-2026-07-31.md` with four broker questions, plus a
+Fair Work / ATO question for Standard Ledger.
