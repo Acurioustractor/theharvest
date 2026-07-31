@@ -98,6 +98,20 @@ switching against that is a real risk of losing someone's work. Revisit once the
   the whole perceived-value-versus-cost analysis drops to second order. Decides the shape and
   the values, not any number, not what is gated, and not what an hour buys.
 
+- [How sweat equity actually works in practice](issues/16-how-sweat-equity-actually-works.md) —
+  research. Twelve Australian organisations. **Alfalfa House is the Australian walk-back and it
+  happened twice**: compulsory member hours were dropped before the co-op turned the corner, then
+  the 20% volunteer discount was cut under COVID trading pressure, so a work-for-discount promise
+  is exactly what gets withdrawn in a bad month. **Australian buyout rates are $3.13 to $17/hr**,
+  far below the Stearns figure, and the nearest comparable (Food Co-op Canberra) gates its buyout
+  behind written board approval rather than publishing a self-serve tariff. **Nobody chases
+  anyone**: enforcement is by lapse, renewal surcharge, eligibility gate or self-substitution.
+  **The resentment runs the opposite way to what ticket 06 assumed** — reliable members resent
+  unreliable ones, not payers resenting workers. And the legal position is unresolved: Qld WHS Act
+  s7(1)(h) makes volunteers workers with the carve-out failing once you employ anyone (so this duty
+  exists at The Harvest today), while WCR Act s11 says they are not workers and the fix is
+  non-profit-only. Two calls needed: broker and Standard Ledger.
+
 ## Not yet specified
 
 - Insurance and liability once members have access to a sauna, and whether that changes the
