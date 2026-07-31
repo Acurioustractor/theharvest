@@ -113,3 +113,34 @@ The same grilling produced the answer that became
 this ticket. Read it first: under band-labelling, perks stop being the product, so the
 acquisition-hook framing above is downgraded from "the basis of the offer" to "what to include".
 The perceived-value-to-cost ratios still hold and are still useful. They are no longer the spine.
+
+### 4. High-ratio perk candidates (2026-07-31, ideas session, NOT decided)
+
+The ratio work above says to look for perks where felt value hugely exceeds cost. These are
+candidates nobody had listed. All near-zero marginal cost, so all survivable under ticket 03's
+rule even at scale.
+
+- **Cuttings and seed from the garden.** The site was The Green Harvest nursery for decades.
+  Near-zero cost, genuinely valuable to a gardener, and it makes membership carry the lineage
+  rather than just reference it. Strongest candidate on this list and it appears in no other
+  document.
+- **First refusal on surplus produce.** Costs nothing by definition; it is otherwise waste.
+- **Being asked.** Members get asked what happens next, for real rather than a suggestion box.
+  In a place whose ethos is that kids build the kids area, this may be the actual product.
+- **Bring someone who has never been.** Costs goods only if the guest buys, and it is an
+  acquisition engine wearing a perk's clothes.
+- **Your name on the thing you helped build.** Costs a chisel.
+- **A key: after-hours garden access.** Costs nothing, feels enormous. **Do not say this out
+  loud before the insurance conversation** — carried to
+  `thoughts/wiki/operations/insurance-call-sheet-2026-07-31.md`.
+
+### 5. The contrarian position, recorded so the perk list does not grow by default
+
+**No perks at all.** You fund this place; here is what it did this year. Some of the strongest
+community models carry literally no member benefits, and it is the purest reading of ticket 15:
+if bands are labelled by what the money does, what the member gets is the place existing.
+
+Not a recommendation. Recorded because it is the honest end of the logic, and because a perk
+list with nothing pushing back on it grows every time someone has a good idea. If ticket 13
+comes back showing people do come weekly, a tangible hook may well earn its place. If it comes
+back showing they do not, this position gets much stronger.
