@@ -2,7 +2,7 @@
 
 Type: grilling
 Status: open
-Blocked by: 03, 04
+Blocked by: 03, 04, 13, 15
 
 ## Question
 
@@ -96,3 +96,20 @@ on purpose, or whether that line goes.
 Note it is nearly free to give (information has no marginal cost), which under ticket 03's rule
 makes it a strong paid-tier candidate — one of the few perks that costs nothing and still feels
 like something.
+
+### 3. Why this ticket was claimed on 2026-07-31 and then released
+
+Worked, and deliberately not resolved. The grilling reached the food-discount question and
+stopped there, because every option on the table (keep the 15%, drop it, monthly free pizza,
+weekly free pizza) is priced off **visit frequency**, and asked directly, Ben answered that
+neither the underlying numbers nor how many of the 188 come weekly are known.
+
+Four options priced off an unknown are not four strategies. Deciding between them would have
+produced something that looked settled and was not. Hence the new blocker on
+[Can member visits be measured](13-can-member-visits-be-measured.md).
+
+The same grilling produced the answer that became
+[Contribution scaled to capacity](15-contribution-scaled-to-capacity.md), which now also blocks
+this ticket. Read it first: under band-labelling, perks stop being the product, so the
+acquisition-hook framing above is downgraded from "the basis of the offer" to "what to include".
+The perceived-value-to-cost ratios still hold and are still useful. They are no longer the spine.
