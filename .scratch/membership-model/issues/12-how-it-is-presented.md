@@ -32,3 +32,23 @@ stealing is School Farm CSA's sliding scale — four prices, identical product, 
 by what the money lets the farm do, not what the buyer gets. Self-assessed, no means test, no
 resentment. Pair it with the CERES pattern of keeping the free-access line in the header of the
 pricing page itself.
+
+From [What stays free forever](04-what-stays-free-forever.md): this ticket inherits a **hard
+requirement, not a preference.**
+
+The free-access floor comes from Ben and Nicholas's own line, not from the lease and not from
+DGR. That is the weakest source on paper, so **publication is what makes it bind**. A promise
+on the site that any neighbour can quote back holds; a private intention does not. If the floor
+is not published, it is not a floor.
+
+What has to appear, and where:
+
+1. **The grounds are free and open to anyone during opening hours.** CERES pattern: in the
+   header of every page, including the pricing page, not buried on an about page.
+2. **There is always one free recurring session.** Swansea pattern: stated on the pricing page
+   itself. Word it so the *commitment* is the promise and the *instance* can change, e.g.
+   "there is always a free way in, and right now it's Friday", never "Friday movie night
+   forever".
+
+Voice check before shipping either line: no em-dashes, no AI vocabulary, and per the map's
+standing constraints no price named until this map closes.
