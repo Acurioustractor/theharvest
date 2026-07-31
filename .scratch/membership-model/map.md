@@ -89,6 +89,15 @@ switching against that is a real risk of losing someone's work. Revisit once the
   rather than the lease or DGR, so **publication is what makes it bind** — a hard requirement
   on 12.
 
+- [Contribution scaled to capacity](issues/15-contribution-scaled-to-capacity.md) — open for
+  all; contribute what you can, in money or in time; **bands are labelled by what the money lets
+  The Harvest do, not by what the member gets**. Self-declared, no means testing (Northey Street
+  pattern); four prices for an identical product explained by purpose (School Farm pattern);
+  time is legal tender alongside money rather than a side door. This is a spine decision: under
+  band-labelling, perks stop being the product, so there is no acquisition hook to design and
+  the whole perceived-value-versus-cost analysis drops to second order. Decides the shape and
+  the values, not any number, not what is gated, and not what an hour buys.
+
 ## Not yet specified
 
 - Insurance and liability once members have access to a sauna, and whether that changes the
