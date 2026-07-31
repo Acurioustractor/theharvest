@@ -56,3 +56,46 @@ this ticket is free to use bands without reopening the tier count.
 
 Note this is now also blocked by [Can member visits be measured](13-can-member-visits-be-measured.md):
 the floor is expressed in visits per year, and visit frequency has never been measured.
+
+## Draft band labels (2026-07-31, ideas session, NOT decided)
+
+Working material for when this ticket runs. From
+[Contribution scaled to capacity](15-contribution-scaled-to-capacity.md): bands are labelled by
+what the money lets The Harvest do, not by what the member gets. These are drafts. Every one
+needs the `act-voice` check and a `/ground` pass before it goes anywhere public, and no number
+attaches to any of them until this ticket resolves.
+
+> **Keeps the gate open.** Pays for the things that never cost anything: the grounds, the
+> garden, the Friday night.
+>
+> **Keeps the garden growing.** Seed, soil, tools, and the beds themselves.
+>
+> **Pays someone to teach.** Denis at the oven, and whoever is running the workshop.
+>
+> **Says yes to someone who can't pay.** Covers another household's year here.
+>
+> **Builds the next thing.** The sauna, the kids area, the inside of the building.
+
+**Why these and not others.** Each maps to a real line in `.scratch/harvest-financial-model/model.ts`,
+so the labels are reportable rather than decorative. Staff really is 72% of the cost base, so
+"pays someone to teach" is the truest sentence available.
+
+Two properties worth keeping if the wording changes:
+
+- **The lowest band funds the floor.** "Keeps the gate open" pays for what ticket 04 committed
+  to giving away. That makes the cheapest band the most principled one rather than the
+  embarrassing one, which is the usual failure of a sliding scale.
+- **The top band covers a person, not a perk.** "Says yes to someone who can't pay" turns the
+  high end from "I get more" into "I cover someone". That is the only version of a top band
+  that does not create the two-classes-of-member problem flagged in
+  [Effort as currency](06-effort-as-currency.md).
+
+### The obligation this creates
+
+**Labelling bands by purpose is a promise to report.** School Farm can say "here is what the
+money let us do" because they publish it. Label and never report, and within a year it reads as
+marketing and does more damage than a plain price would have.
+
+Budget the reporting when budgeting the bands. This is a recurring commitment for two founders,
+one of whom is overseas for part of the year, so decide the cadence (annual is probably enough)
+before committing to the labels.
