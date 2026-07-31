@@ -51,3 +51,48 @@ The live question this ticket must now answer: **does the paid tier carry a food
 discount at all?** It is the most expensive perk per use, it is the one that inverts against
 frequent members, and dropping it would move the price floor from ~$256/yr to close to
 nothing. That is a real option, not a rhetorical one.
+
+From [What stays free forever](04-what-stays-free-forever.md): the public pays for pizza, and
+it is open to all. What members get is this ticket's call. Three things arrived here from that
+grilling.
+
+### 1. FREE member pizza — Ben's idea, 2026-07-31, live and worth taking seriously
+
+A free pizza is not a discount, it is a sign flip: no revenue, and the goods still bought.
+
+| | contribution |
+|---|---|
+| full price | +$18.79 |
+| 15% member price | +$14.77 |
+| **free** | **-$8.00** |
+
+Swing of **$26.79** per pizza, roughly six and a half times the 15% discount. A weekly member
+taking one a week costs ~**$1,393/yr**, implying a fee near **$28/week** just to stand still.
+
+**That lands almost exactly on the parked $30/wk figure.** Ticket 07 already suspects the
+parked weekly numbers were pricing something other than the membership. This suggests they may
+have been pricing *the food*, and that the reasoning was simply never written down.
+
+Three traps if it goes ahead:
+- **Unbounded consumption.** A household on one membership eating four a week. Ticket 01's
+  finding is the fix: a bounded allowance where the cap IS the product.
+- **Adverse selection.** Only heavy users buy a meal plan, so the average member becomes the
+  weekly regular. That destroys `member-model.md`'s logic that infrequent members subsidise
+  frequent ones.
+- **Capacity.** Free-for-members only works while the oven has slack. Pizza is 74% of Base
+  contribution; once the oven binds, every free member pizza displaces a paying $18.79 one.
+
+And it changes what membership IS: from belonging-with-perks to a **meal plan**. Different
+churn. A meal plan churns on usage; belonging churns on feeling, and feeling is far more
+forgiving of a quiet hinterland winter.
+
+### 2. "Info lands with members first" is already shipped
+
+The home page (`editable_content`, page=home, slot=this-week-detail) already says events "can
+vary, info lands with members first". That is a live member-first practice sitting directly
+beside an unconditionally-public claim. Decide here whether early information is a member perk
+on purpose, or whether that line goes.
+
+Note it is nearly free to give (information has no marginal cost), which under ticket 03's rule
+makes it a strong paid-tier candidate — one of the few perks that costs nothing and still feels
+like something.

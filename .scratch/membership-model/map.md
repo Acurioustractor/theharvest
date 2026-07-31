@@ -78,6 +78,17 @@ switching against that is a real risk of losing someone's work. Revisit once the
   offer costs $4.72 to $7.86 per member visit, which puts the price floor near $256/yr against a
   weekly regular. Structure and cutting principle only; contents are 04 and 05.
 
+- [What stays free forever](issues/04-what-stays-free-forever.md) — the floor is two lines: the
+  grounds are free and open to anyone during opening hours, and there is always one named
+  recurring session that costs nothing to attend (currently the Friday movie night). Public
+  access is bounded by hours and hazard supervision, never by payment; nothing is carved out of
+  the grounds. Pizza is paid and open to all, because it carries ~$8/pizza of real goods and is
+  74% of Base contribution. **The commitment is fixed, the instance is swappable**: which
+  session it is can change with notice, but it can never be dropped without replacement, and
+  only both founders together can move it. The boundary comes from Ben and Nicholas's own line
+  rather than the lease or DGR, so **publication is what makes it bind** — a hard requirement
+  on 12.
+
 ## Not yet specified
 
 - Insurance and liability once members have access to a sauna, and whether that changes the
