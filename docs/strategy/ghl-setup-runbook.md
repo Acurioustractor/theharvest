@@ -46,7 +46,7 @@ npm run setup:june-sprint-calendars:ghl
 Use `-- --apply` only when you intend to create missing calendars.
 
 In `Settings -> Calendars` (or the `Calendars` nav). First, **connect Google Calendar with
-2-way sync** for Susie + Joey + Ben so GHL respects real availability and writes bookings back.
+2-way sync** for Susie + Joey + Ben + Nic so GHL respects real availability and writes bookings back.
 That shared sync is what stops double-booking. Then build two:
 
 **A. "Book a chat about the shop"** --- a regular booking calendar, owned by Susie/Joey (or
@@ -72,7 +72,7 @@ Order matters. Do the Google sync first, then the two 20 June events, then the s
 About 45 minutes. The three booking links are the goal: they unblock the launch emails.
 
 **Step 0. Google 2-way sync (once each).**
-- [ ] Susie, Joey, and Ben each connect their own Google Calendar in GHL (your user profile,
+- [ ] Susie, Joey, Ben, and Nic each connect their own Google Calendar in GHL (your user profile,
       then Calendar Connections, then Google, allow 2-way). Done when each shows "2-way".
 - Why: GHL then reads real availability and writes bookings back, so nobody double-books.
 

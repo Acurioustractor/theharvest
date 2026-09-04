@@ -2,13 +2,14 @@ import { useEffect } from "react";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
-import { works, LIFECYCLE_VOCAB, sortLifecycleTags } from "@/data/works";
+import { works, LIFECYCLE_VOCAB, sortLifecycleTags, resolveWorkStatus, type LifecycleTag } from "@/data/works";
 import { EditableText } from "@/components/EditableText";
 import { HarvestImage } from "@/components/HarvestImage";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { setPageSeo } from "@/lib/seo";
 import { harvestButtonClasses, SiteFooter, SiteNav } from "./HarvestReviewTest";
 import { VisitStrip } from "@/components/VisitStrip";
+import { trpc } from "@/lib/trpc";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
@@ -16,6 +17,41 @@ const fadeInUp = {
   viewport: { once: true, margin: "-50px" },
   transition: { duration: 0.6 },
 };
+
+function WorkLifecycleBadges({ work, isAdmin }: {
+  work: { slug: string; lifecycleTags: LifecycleTag[] };
+  isAdmin: boolean;
+}) {
+  const { data: savedContent } = trpc.content.get.useQuery({
+    page: "works",
+    slot: `${work.slug}-lifecycleTags`,
+  });
+  let activeTags = work.lifecycleTags;
+  if (savedContent?.content) {
+    try {
+      const parsed: unknown = JSON.parse(savedContent.content);
+      if (Array.isArray(parsed) && parsed.every(
+        (tag): tag is LifecycleTag => typeof tag === "string" && Object.hasOwn(LIFECYCLE_VOCAB, tag),
+      )) {
+        activeTags = parsed;
+      }
+    } catch {
+      // Keep the default tags when an override cannot be read.
+    }
+  }
+
+  const badges = isAdmin
+    ? sortLifecycleTags(activeTags).map((tag) => LIFECYCLE_VOCAB[tag])
+    : [resolveWorkStatus(activeTags)];
+  return badges.map((meta) => (
+    <span
+      key={meta.label}
+      className={`inline-flex items-center px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider rounded-full ${meta.badgeClass}`}
+    >
+      {meta.label}
+    </span>
+  ));
+}
 
 
 export default function Works() {
@@ -65,7 +101,6 @@ export default function Works() {
         <div className="container">
           <div className="max-w-6xl mx-auto grid gap-10 md:gap-14 md:grid-cols-2">
             {works.map((work, i) => {
-              const lifecycleTags = sortLifecycleTags(work.lifecycleTags);
               const number = String(i + 1).padStart(2, "0");
 
               return (
@@ -88,17 +123,7 @@ export default function Works() {
                       imgClassName="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                     />
                     <div className="absolute top-4 left-4 flex flex-wrap gap-1.5">
-                      {lifecycleTags.map((tag) => {
-                        const meta = LIFECYCLE_VOCAB[tag];
-                        return (
-                          <span
-                            key={tag}
-                            className={`inline-flex items-center px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider rounded-full ${meta.badgeClass}`}
-                          >
-                            {meta.label}
-                          </span>
-                        );
-                      })}
+                      <WorkLifecycleBadges work={work} isAdmin={isAdmin} />
                     </div>
                     {!isAdmin && (
                       <Link

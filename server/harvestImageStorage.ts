@@ -75,10 +75,19 @@ async function mirrorHarvestImageOnce(assetId: string, sourceUrl: string): Promi
 
   const safeId = assetId.replace(/[^a-zA-Z0-9_-]/g, "_");
   const basePath = `${MIRROR_PREFIX}/${safeId}`;
-  const { data } = await supabase.storage.from(BUCKET).download(basePath);
-  if (data) return supabase.storage.from(BUCKET).getPublicUrl(basePath).data.publicUrl;
 
   try {
+    // Check metadata without transferring the cached image back to the server.
+    const { data, error: lookupError } = await supabase.storage.from(BUCKET).info(basePath);
+    if (data) return supabase.storage.from(BUCKET).getPublicUrl(basePath).data.publicUrl;
+    if (lookupError) {
+      const status = "statusCode" in lookupError
+        ? String(lookupError.statusCode)
+        : "status" in lookupError ? String(lookupError.status) : undefined;
+      // Storage can report a missing object as HTTP 400 with statusCode 404.
+      if (status !== "404") throw lookupError;
+    }
+
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 10_000);
     const response = await fetch(resolvedSourceUrl, { signal: controller.signal });

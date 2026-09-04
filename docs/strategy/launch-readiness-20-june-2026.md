@@ -96,7 +96,7 @@ Built per `ghl-setup-runbook.md` Part 0. Three calendars are live:
   Link: `https://api.leadconnectorhq.com/widget/bookings/harvest-shop-chat`.
   Move this to Susie/Joey after their GHL users exist. This serves thread 3.
 
-Connect Google Calendar 2-way for Susie + Joey + Ben first, so availability is real and
+Connect Google Calendar 2-way for Susie + Joey + Ben + Nic first, so availability is real and
 bookings write back. Keep both 20 June links members-first; never on the public site.
 
 Then build one calendar tag workflow per calendar:

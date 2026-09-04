@@ -126,6 +126,7 @@ interface FetchArticlesOptions {
   destination?: string;
   after?: string;
   before?: string;
+  throwOnError?: boolean;
 }
 
 const DEFAULT_BASE_URL =
@@ -237,6 +238,7 @@ class EmpathyLedgerClient {
       };
     } catch (error) {
       console.error("[EmpathyLedger] Failed to fetch articles:", error);
+      if (options.throwOnError) throw error;
       // Return empty response on error
       return { articles: [], pagination: { page: 1, limit: 20, total: 0, hasMore: false } };
     }
@@ -294,7 +296,7 @@ class EmpathyLedgerClient {
    * Fetch storytellers from the content-hub.
    * Public, no auth needed. Filter by project slug to scope to one site.
    */
-  async fetchStorytellers(options: { project?: string; limit?: number; page?: number } = {}): Promise<ELStorytellersResponse> {
+  async fetchStorytellers(options: { project?: string; limit?: number; page?: number; throwOnError?: boolean } = {}): Promise<ELStorytellersResponse> {
     const params = new URLSearchParams();
     if (options.project) params.append("project", options.project);
     if (options.limit) params.append("limit", options.limit.toString());
@@ -307,6 +309,7 @@ class EmpathyLedgerClient {
       return await this.fetch<ELStorytellersResponse>(endpoint);
     } catch (error) {
       console.error("[EmpathyLedger] Failed to fetch storytellers:", error);
+      if (options.throwOnError) throw error;
       return { storytellers: [], pagination: { page: 1, limit: 20, total: 0, hasMore: false } };
     }
   }
@@ -484,6 +487,9 @@ class EmpathyLedgerClient {
     // larger requested limits (the photo picker asks for 100), loop pages.
     const EL_PAGE_SIZE = 50;
     const startPage = options.page ?? 1;
+    const requestedOffset = (startPage - 1) * requestedLimit;
+    const upstreamStartPage = Math.floor(requestedOffset / EL_PAGE_SIZE) + 1;
+    const skipWithinPage = requestedOffset % EL_PAGE_SIZE;
 
     type RawMedia = {
       id: string;
@@ -499,10 +505,11 @@ class EmpathyLedgerClient {
 
     const collected: RawMedia[] = [];
     let pagination: ELPagination = { page: startPage, limit: EL_PAGE_SIZE, total: 0, hasMore: false };
+    let upstreamHasMore = false;
 
     try {
-      let cursor = startPage;
-      while (collected.length < requestedLimit) {
+      let cursor = upstreamStartPage;
+      while (collected.length < skipWithinPage + requestedLimit) {
         const params = new URLSearchParams();
         params.append("project", "the-harvest");
         params.append("limit", EL_PAGE_SIZE.toString());
@@ -512,10 +519,11 @@ class EmpathyLedgerClient {
           `/api/v1/content-hub/media?${params.toString()}`,
         );
         pagination = raw.pagination;
+        upstreamHasMore = raw.media.length > 0 && raw.pagination.hasMore;
 
         collected.push(...raw.media);
 
-        if (!raw.pagination.hasMore || raw.media.length === 0) break;
+        if (!upstreamHasMore) break;
         cursor += 1;
       }
     } catch (error) {
@@ -525,7 +533,7 @@ class EmpathyLedgerClient {
 
     // Map the broader content-hub schema onto the gallery schema the website
     // consumes. Untagged photos get empty arrays so the UI keeps working.
-    const sliced = collected.slice(0, requestedLimit);
+    const sliced = collected.slice(skipWithinPage, skipWithinPage + requestedLimit);
 
     // Resolve each item's proxy link to its real storage URL, in
     // concurrency-limited batches so we don't fire hundreds of requests at
@@ -566,7 +574,9 @@ class EmpathyLedgerClient {
         page: startPage,
         limit: requestedLimit,
         total: pagination.total,
-        hasMore: pagination.total > collected.length,
+        hasMore: sliced.length > 0 && (
+          upstreamHasMore || collected.length > skipWithinPage + requestedLimit
+        ),
       },
     };
   }

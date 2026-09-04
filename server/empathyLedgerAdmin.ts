@@ -5,7 +5,7 @@ import { randomUUID } from "node:crypto";
 import { readdir, readFile, stat, unlink } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { basename, extname, join, relative } from "node:path";
-import { empathyLedgerClient } from "./empathyLedgerClient.js";
+import { empathyLedgerClient, type ELArticle, type ELStoryteller } from "./empathyLedgerClient.js";
 
 dotenv.config({
   path: ".env.local",
@@ -1552,26 +1552,54 @@ function slugifyDisplayName(name: string): string {
     .slice(0, 80);
 }
 
+async function fetchAllPublicHarvestStorytellers(): Promise<ELStoryteller[]> {
+  const storytellers: ELStoryteller[] = [];
+  for (let page = 1; ; page += 1) {
+    const response = await empathyLedgerClient.fetchStorytellers({
+      project: "the-harvest",
+      limit: 200,
+      page,
+      throwOnError: true,
+    });
+    if (response.pagination.page !== page || (response.pagination.hasMore && !response.storytellers.length)) {
+      throw new Error(`Invalid public storyteller pagination on page ${page}`);
+    }
+    storytellers.push(...response.storytellers);
+    if (!response.pagination.hasMore) return storytellers;
+  }
+}
+
+async function fetchAllPublicHarvestArticles(): Promise<ELArticle[]> {
+  const articles: ELArticle[] = [];
+  for (let page = 1; ; page += 1) {
+    const response = await empathyLedgerClient.fetchArticles({
+      project: "the-harvest",
+      limit: 200,
+      page,
+      throwOnError: true,
+    });
+    if (response.pagination.page !== page || (response.pagination.hasMore && !response.articles.length)) {
+      throw new Error(`Invalid public article pagination on page ${page}`);
+    }
+    articles.push(...response.articles);
+    if (!response.pagination.hasMore) return articles;
+  }
+}
+
 export async function listPublicHarvestStorytellers(): Promise<PublicHarvestStoryteller[]> {
   // Refactored 2026-05-13: was hitting EL's Supabase via service-role keys, which
   // requires EMPATHY_LEDGER_SUPABASE_URL/SERVICE_ROLE_KEY env vars not set in Vercel
   // prod. Now uses EL's public content-hub API (same pattern as fetchArticles +
   // photo picker). No service-role keys needed anywhere on the public path.
-  const tellersRes = await empathyLedgerClient.fetchStorytellers({
-    project: "the-harvest",
-    limit: 200,
-  });
+  const storytellers = await fetchAllPublicHarvestStorytellers();
 
-  // For article counts: fetch the project's articles once and group by storyteller.
+  // For article counts: fetch every project article page and group by storyteller.
   // EL's storyteller list doesn't include counts. Stories/transcripts not exposed
   // in a way we can attribute here yet (see PR notes), so leave those at 0.
   type ArticleWithStoryteller = { storyteller?: { id?: string } | null };
-  const articlesRes = await empathyLedgerClient.fetchArticles({
-    project: "the-harvest",
-    limit: 200,
-  });
+  const allArticles = await fetchAllPublicHarvestArticles();
   const articleCounts = new Map<string, { total: number; published: number }>();
-  for (const a of (articlesRes.articles ?? []) as ArticleWithStoryteller[]) {
+  for (const a of allArticles as ArticleWithStoryteller[]) {
     const id = a.storyteller?.id;
     if (!id) continue;
     const cur = articleCounts.get(id) ?? { total: 0, published: 0 };
@@ -1595,7 +1623,7 @@ export async function listPublicHarvestStorytellers(): Promise<PublicHarvestStor
       is_active: boolean | null;
     } | null;
   };
-  const rows: LinkRow[] = tellersRes.storytellers.map((t) => ({
+  const rows: LinkRow[] = storytellers.map((t) => ({
     role: null, // public API doesn't expose per-project role yet
     status: "active",
     storytellers: {
@@ -1612,7 +1640,7 @@ export async function listPublicHarvestStorytellers(): Promise<PublicHarvestStor
   // Transcript counts and EL-provided slugs come straight from the storyteller API.
   const transcriptCountByTeller = new Map<string, number>();
   const apiSlugByTeller = new Map<string, string>();
-  for (const t of tellersRes.storytellers) {
+  for (const t of storytellers) {
     if (typeof t.transcriptCount === "number") transcriptCountByTeller.set(t.id, t.transcriptCount);
     if (t.slug) apiSlugByTeller.set(t.id, t.slug);
   }
@@ -1738,11 +1766,8 @@ export async function getPublicHarvestStorytellerBySlug(
     primaryProject?: string | null;
     storyteller?: { id?: string } | null;
   };
-  const articlesRes = await empathyLedgerClient.fetchArticles({
-    project: "the-harvest",
-    limit: 200,
-  });
-  const ownArticles = (articlesRes.articles as unknown as ArticleWithStoryteller[]).filter(
+  const allArticles = await fetchAllPublicHarvestArticles();
+  const ownArticles = (allArticles as unknown as ArticleWithStoryteller[]).filter(
     (a) => a.storyteller?.id === single.id,
   );
 
