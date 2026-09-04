@@ -51,48 +51,6 @@ export async function fetchAppUser(openId: string) {
   return data;
 }
 
-export async function listApprovedEvents() {
-  const { data, error } = await supabase
-    .from("harvest_events")
-    .select("*")
-    .eq("status", "approved")
-    .order("date", { ascending: true });
-
-  if (error) throw error;
-  return data ?? [];
-}
-
-export async function submitEvent(input: Record<string, unknown>) {
-  const { data, error } = await supabase.from("harvest_events").insert({
-    ...input,
-    status: "pending",
-  }).select().maybeSingle();
-
-  if (error) throw error;
-  return data;
-}
-
-export async function listApprovedBusinesses() {
-  const { data, error } = await supabase
-    .from("harvest_businesses")
-    .select("*")
-    .eq("status", "approved")
-    .order("name", { ascending: true });
-
-  if (error) throw error;
-  return data ?? [];
-}
-
-export async function submitBusiness(input: Record<string, unknown>) {
-  const { data, error } = await supabase.from("harvest_businesses").insert({
-    ...input,
-    status: "pending",
-  }).select().maybeSingle();
-
-  if (error) throw error;
-  return data;
-}
-
 export interface HarvestPendingEvent {
   id: number;
   title: string;
@@ -190,4 +148,25 @@ export async function subscribeNewsletter(payload: Record<string, unknown>) {
 
 export async function communitySubmit(payload: Record<string, unknown>) {
   return callFunction<{ success: boolean; error?: string; contactId?: string }>("community-submit", payload);
+}
+
+export interface HarvestPublicSocialPost {
+  id: string;
+  platform: string;
+  account_name: string | null;
+  post_type: string | null;
+  message: string | null;
+  permalink: string | null;
+  published_at: string;
+  media: unknown[];
+}
+
+export async function fetchHarvestPublicSocialPosts(limit = 6): Promise<HarvestPublicSocialPost[]> {
+  const { data, error } = await supabase
+    .from("v_harvest_public_social_posts")
+    .select("id, platform, account_name, post_type, message, permalink, published_at, media")
+    .order("published_at", { ascending: false })
+    .limit(limit);
+  if (error) throw error;
+  return (data || []) as HarvestPublicSocialPost[];
 }

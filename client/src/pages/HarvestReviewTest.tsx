@@ -225,14 +225,14 @@ function ThisWeekStrip() {
           <EditableText
             page="home"
             slot="this-week-title"
-            defaultContent="Open most weekends for DIY pizza"
+            defaultContent="DIY pizza on Friday and Saturday"
             as="p"
             className="text-lg font-black leading-tight md:text-xl"
           />
           <EditableText
             page="home"
             slot="this-week-detail"
-            defaultContent="Friday pizza and movie night 3pm to 8pm. Saturday 12pm to 8pm. Sunday 12pm to 6pm. Turn up, no booking needed. Dennis, our resident pizza teacher, shows you how. Weeks can vary, dates land with members first."
+            defaultContent="Friday pizza and movie night 3pm to 8pm. Saturday 12pm to 8pm. Turn up, no booking needed. Dennis, our resident pizza teacher, shows you how. Weeks can vary, dates land with members first."
             as="p"
             className="mt-1 text-sm leading-relaxed text-[#1C1917]/80"
             multiline
@@ -694,7 +694,7 @@ function WorkNotes() {
               multiline
             />
             <p className="mt-3 text-lg leading-relaxed text-stone-700">
-              Most of it is easiest to see in person, on a Friday, Saturday or Sunday pizza session.{" "}
+              Most of it is easiest to see in person, at a Friday or Saturday pizza session.{" "}
               <Link
                 href="/whats-on"
                 className="font-semibold text-[#8B4A2A] underline underline-offset-4 hover:text-[#1C1917]"

@@ -12,10 +12,44 @@ const corsHeaders = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
+function escapeHtml(value: unknown) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
 function jsonResponse(body: Record<string, unknown>, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
     headers: { ...corsHeaders, "Content-Type": "application/json" },
+  });
+}
+
+async function storeSubmission(input: { name: string; email: string; subject?: string; message: string; subscribe: boolean }) {
+  const supabaseUrl = Deno.env.get("SUPABASE_URL");
+  const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+  if (!supabaseUrl || !serviceRoleKey) throw new Error("Submission storage is not configured");
+  const response = await fetch(`${supabaseUrl}/rest/v1/community_submissions`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", apikey: serviceRoleKey, Authorization: `Bearer ${serviceRoleKey}`, Prefer: "return=representation" },
+    body: JSON.stringify({ type: "contact", name: input.name.trim(), email: input.email.trim().toLowerCase(), payload: { subject: input.subject || "", message: input.message, subscribe: input.subscribe } }),
+  });
+  if (!response.ok) throw new Error(`Submission storage failed: ${response.status}`);
+  const rows = await response.json();
+  return rows?.[0]?.id as string | undefined;
+}
+
+async function markSubmissionForRetry(submissionId: string, error: string) {
+  const supabaseUrl = Deno.env.get("SUPABASE_URL");
+  const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+  if (!supabaseUrl || !serviceRoleKey) return;
+  await fetch(`${supabaseUrl}/rest/v1/community_submissions?id=eq.${submissionId}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json", apikey: serviceRoleKey, Authorization: `Bearer ${serviceRoleKey}` },
+    body: JSON.stringify({ delivery_status: "retry", delivery_attempts: 1, last_delivery_attempt_at: new Date().toISOString(), last_delivery_error: error }),
   });
 }
 
@@ -125,20 +159,35 @@ Deno.serve(async req => {
     return new Response("Method not allowed", { status: 405, headers: corsHeaders });
   }
 
-  const apiKey = Deno.env.get("GHL_API_KEY") ?? Deno.env.get("GHL_TOKEN");
-  const locationId = Deno.env.get("GHL_LOCATION_ID");
-  if (!apiKey || !locationId) {
-    return jsonResponse({
-      success: false,
-      error: "Contact service is not configured.",
-    }, 500);
-  }
-
   const payload = await req.json();
   const { name, email, subject, message, subscribe } = payload;
 
   if (!name || !email || !message) {
     return jsonResponse({ success: false, error: "Name, email and message are required" }, 400);
+  }
+  if (
+    typeof name !== "string" || name.trim().length > 120 ||
+    typeof email !== "string" || email.length > 320 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ||
+    typeof message !== "string" || message.length > 10_000 ||
+    (subject != null && (typeof subject !== "string" || subject.length > 200))
+  ) {
+    return jsonResponse({ success: false, error: "Enter a valid name, email and message." }, 400);
+  }
+
+  let submissionId: string | undefined;
+  try {
+    submissionId = await storeSubmission({ name, email, subject, message, subscribe: subscribe === true });
+    if (!submissionId) throw new Error("Submission storage did not return an ID");
+  } catch (error) {
+    console.error("contact-form: durable storage failed", error);
+    return jsonResponse({ success: false, error: "We could not save your message just now. Please try again." }, 503);
+  }
+
+  const apiKey = Deno.env.get("GHL_API_KEY") ?? Deno.env.get("GHL_TOKEN");
+  const locationId = Deno.env.get("GHL_LOCATION_ID");
+  if (!apiKey || !locationId) {
+    await markSubmissionForRetry(submissionId, "GHL is not configured");
+    return jsonResponse({ success: true, submissionId, deliveryQueued: true });
   }
 
   // Parse name into first/last
@@ -191,7 +240,8 @@ Deno.serve(async req => {
     } catch {
       // ignore
     }
-    return jsonResponse({ success: false, error: errorMessage }, contactResponse.status);
+    await markSubmissionForRetry(submissionId, errorMessage);
+    return jsonResponse({ success: true, submissionId, deliveryQueued: true });
   }
 
   const contactData = await contactResponse.json();
@@ -236,7 +286,7 @@ Deno.serve(async req => {
         contactId,
         fromEmail: String(email),
         subject: subject ? `Contact form: ${subject}` : `Contact form message from ${String(name).trim()}`,
-        html: `<p><strong>Website contact form</strong></p><p>${String(message).replace(/\n/g, "<br>")}</p>`,
+        html: `<p><strong>Website contact form</strong></p><p>${escapeHtml(message).replace(/\n/g, "<br>")}</p>`,
       });
     } catch (error) {
       console.error("inbox message failed (contact form):", error);
@@ -292,6 +342,7 @@ Deno.serve(async req => {
 
   return jsonResponse({
     success: true,
+    submissionId,
     contactId,
     opportunityCreated,
     workflowTriggered,

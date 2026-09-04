@@ -74,7 +74,7 @@ const pizzaFaqs = [
   {
     question: "When is DIY pizza on?",
     answer:
-      "The regular rhythm is Friday 3pm to 8pm with a community movie night, Saturday 12pm to 8pm, and Sunday 12pm to 6pm. Weeks can vary, so check the members page first.",
+      "The regular rhythm is Friday 3pm to 8pm with a community movie night, and Saturday 12pm to 8pm. Weeks can vary, so check the members page first.",
   },
   {
     question: "Is The Harvest a restaurant?",
@@ -84,7 +84,7 @@ const pizzaFaqs = [
   {
     question: "Can families come?",
     answer:
-      "Yes. Sunday has the easiest pace for families. Children need to be supervised around the oven, garden paths, tools, and works in progress.",
+      "Yes. Families are welcome on Friday and Saturday. Children need to be supervised around the oven, garden paths, tools, and works in progress.",
   },
 ];
 
@@ -113,7 +113,6 @@ function RegularSessions() {
   const sessions = [
     { slot: "session-friday", title: "Friday", detail: "DIY pizza and community movie night, 3pm to 8pm" },
     { slot: "session-saturday", title: "Saturday", detail: "DIY pizza making, 12pm to 8pm" },
-    { slot: "session-sunday", title: "Sunday", detail: "DIY pizza making, 12pm to 6pm. An easier pace, good for families" },
   ];
 
   return (
@@ -125,7 +124,7 @@ function RegularSessions() {
         <EditableText
           page="whats-on"
           slot="sessions-heading"
-          defaultContent="Open most weekends for DIY pizza"
+          defaultContent="DIY pizza on Friday and Saturday"
           as="h2"
           className="text-3xl md:text-4xl font-serif font-bold text-stone-800 mb-3"
         />
@@ -137,7 +136,7 @@ function RegularSessions() {
           className="text-stone-600 mb-8 max-w-2xl"
           multiline
         />
-        <div className="grid gap-4 sm:grid-cols-3 mb-8">
+        <div className="grid gap-4 sm:grid-cols-2 mb-8">
           {sessions.map((s) => (
             <div key={s.slot} className="rounded-lg border border-stone-200 bg-stone-50 p-5">
               <EditableText
@@ -288,9 +287,9 @@ function PizzaSearchBlock() {
               what is taking shape around the shed.
             </p>
             <p>
-              Most weeks the rhythm is Friday 3pm to 8pm with a community movie
-              night, Saturday 12pm to 8pm, and Sunday 12pm to 6pm. Weeks can
-              vary, so the members page carries this week's dates first.
+              The rhythm is Friday 3pm to 8pm with a community movie night, and
+              Saturday 12pm to 8pm. Weeks can vary, so the members page carries
+              this week's dates first.
             </p>
           </div>
           <div className="rounded-lg border border-stone-200 bg-white p-5 text-sm text-stone-600">
@@ -589,19 +588,17 @@ function FeedbackBand() {
   );
 }
 
-type PizzaSession = "friday" | "saturday" | "sunday" | "unsure";
+type PizzaSession = "friday" | "saturday" | "unsure";
 
 const pizzaSessionLabels: Record<PizzaSession, string> = {
   friday: "Friday, pizza and movie, 3pm to 8pm",
   saturday: "Saturday, 12pm to 8pm",
-  sunday: "Sunday, 12pm to 6pm",
   unsure: "Not sure yet",
 };
 
 const pizzaSessionByDay: Record<number, Exclude<PizzaSession, "unsure">> = {
   5: "friday",
   6: "saturday",
-  0: "sunday",
 };
 
 function todayInBrisbane() {
@@ -643,7 +640,7 @@ function PizzaRsvpBlock() {
       return;
     }
     if (!expectedSession) {
-      setErrorMsg("Choose a Friday, Saturday or Sunday pizza date.");
+      setErrorMsg("Choose a Friday or Saturday pizza date.");
       setStatus("error");
       return;
     }
@@ -751,7 +748,7 @@ function PizzaRsvpBlock() {
               />
               {form.occurrenceDate && !expectedSession && (
                 <span className="text-xs font-normal text-red-700">
-                  Pizza RSVPs are for Fridays, Saturdays and Sundays.
+                  Pizza RSVPs are for Fridays and Saturdays.
                 </span>
               )}
             </label>
@@ -814,7 +811,7 @@ export default function WhatsOn() {
     setPageSeo({
       title: isPizzaPage ? "DIY Pizza in Witta · The Harvest" : "What's On · The Harvest Witta",
       description: isPizzaPage
-        ? "Make your own pizza at The Harvest, 9 Gumland Drive, Witta. Weekend DIY pizza sessions most Fridays, Saturdays and Sundays, with dates confirmed on the members page."
+        ? "Make your own pizza at The Harvest, 9 Gumland Drive, Witta. DIY pizza runs Friday 3pm to 8pm and Saturday 12pm to 8pm, with dates confirmed on the members page."
         : "DIY pizza weekends, community days, work days and events at The Harvest, 9 Gumland Drive, Witta on Jinibara Country.",
       path: isPizzaPage ? "/witta-pizza" : "/whats-on",
       image: "/images/optimized/community-gathering-1000.webp",
@@ -847,6 +844,22 @@ export default function WhatsOn() {
       areaServed: ["Witta", "Maleny", "Sunshine Coast Hinterland"],
       servesCuisine: isPizzaPage ? "Pizza" : undefined,
       telephone: "+61422883943",
+      openingHoursSpecification: isPizzaPage
+        ? [
+            {
+              "@type": "OpeningHoursSpecification",
+              dayOfWeek: "https://schema.org/Friday",
+              opens: "15:00",
+              closes: "20:00",
+            },
+            {
+              "@type": "OpeningHoursSpecification",
+              dayOfWeek: "https://schema.org/Saturday",
+              opens: "12:00",
+              closes: "20:00",
+            },
+          ]
+        : undefined,
       makesOffer: isPizzaPage
         ? {
             "@type": "Offer",
@@ -972,7 +985,7 @@ export default function WhatsOn() {
             </h1>
             <p className="text-xl text-white/80 leading-relaxed mb-8">
               {isPizzaPage
-                ? "Make your own pizza at The Harvest, 9 Gumland Drive, Witta. Most weekends the oven is on Friday, Saturday and Sunday. Weeks can vary, and new dates land on the members page first."
+                ? "Make your own pizza at The Harvest, 9 Gumland Drive, Witta. The oven is on Friday and Saturday. Weeks can vary, and new dates land on the members page first."
                 : "Weekend pizza sessions, work days and gatherings at The Harvest, a community garden and creative gathering place in Witta, on Jinibara Country. New dates land on the members page first."}
             </p>
             <div className="flex flex-wrap justify-center gap-3">

@@ -180,6 +180,7 @@ export default function Contact() {
               .
             </p>
             <button
+              type="button"
               onClick={() => setSubmitted(false)}
               style={{
                 fontFamily: fonts.body,
@@ -208,10 +209,12 @@ export default function Contact() {
                 marginBottom: 20,
               }}>
                 <div>
-                  <label style={formLabelStyle} htmlFor="name">Your Name</label>
+                  <label style={formLabelStyle} htmlFor="contact-name">Your Name</label>
                   <input
-                    id="name"
+                    id="contact-name"
+                    name="name"
                     type="text"
+                    autoComplete="name"
                     placeholder="Jane Smith"
                     value={formData.name}
                     onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
@@ -220,10 +223,12 @@ export default function Contact() {
                   />
                 </div>
                 <div>
-                  <label style={formLabelStyle} htmlFor="email">Email Address</label>
+                  <label style={formLabelStyle} htmlFor="contact-email">Email Address</label>
                   <input
-                    id="email"
+                    id="contact-email"
+                    name="email"
                     type="email"
+                    autoComplete="email"
                     placeholder="jane@example.com"
                     value={formData.email}
                     onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
@@ -234,10 +239,12 @@ export default function Contact() {
               </div>
 
               <div style={{ marginBottom: 20 }}>
-                <label style={formLabelStyle} htmlFor="subject">Subject</label>
+                <label style={formLabelStyle} htmlFor="contact-subject">Subject</label>
                 <input
-                  id="subject"
+                  id="contact-subject"
+                  name="subject"
                   type="text"
+                  autoComplete="off"
                   placeholder="What's this about?"
                   value={formData.subject}
                   onChange={(e) => setFormData((prev) => ({ ...prev, subject: e.target.value }))}
@@ -247,9 +254,11 @@ export default function Contact() {
               </div>
 
               <div style={{ marginBottom: 20 }}>
-                <label style={formLabelStyle} htmlFor="message">Message</label>
+                <label style={formLabelStyle} htmlFor="contact-message">Message</label>
                 <textarea
-                  id="message"
+                  id="contact-message"
+                  name="message"
+                  autoComplete="off"
                   placeholder="Tell us what's on your mind..."
                   value={formData.message}
                   onChange={(e) => setFormData((prev) => ({ ...prev, message: e.target.value }))}
@@ -260,14 +269,17 @@ export default function Contact() {
               </div>
 
               <div style={{ marginBottom: 28 }}>
-                <label style={{
+                <label htmlFor="contact-subscribe" style={{
                   display: "flex",
                   alignItems: "center",
                   gap: 12,
                   cursor: "pointer",
                 }}>
                   <input
+                    id="contact-subscribe"
+                    name="subscribe"
                     type="checkbox"
+                    autoComplete="off"
                     checked={formData.subscribe}
                     onChange={(e) => setFormData((prev) => ({ ...prev, subscribe: e.target.checked }))}
                     style={{
@@ -389,9 +401,9 @@ export default function Contact() {
               <h3 style={detailLabelStyle}>VISITS</h3>
               <p style={detailTextStyle}>
                 You do not need to book to come and have a look while we find our feet.
-                Most weekends the pizza oven is on: Friday 3pm to 8pm with a community
-                movie night, Saturday 12pm to 8pm, Sunday 12pm to 6pm. Weeks can vary,
-                and dates land with members first.
+                The pizza oven is on Friday 3pm to 8pm with a community movie night,
+                and Saturday 12pm to 8pm. Weeks can vary, and dates land with members
+                first.
               </p>
               <p style={{ ...detailTextStyle, opacity: 0.5, fontSize: 14, marginTop: 8 }}>
                 Members hear about open days and events first.{" "}
