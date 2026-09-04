@@ -112,6 +112,8 @@ type GhlConversation = {
   lastMessageDate?: number;
   lastMessageDirection?: "inbound" | "outbound";
   lastOutboundMessageAction?: "manual" | "automated";
+  /** Epoch ms of the last message a person typed. Absent if nobody ever has. */
+  lastManualMessageDate?: number;
   opportunities?: { id: string; pipelineId: string; pipelineStageId: string; status: string }[];
   sort?: number[];
 };
@@ -180,7 +182,9 @@ async function listConversations(query: Record<string, string>): Promise<GhlConv
   return all;
 }
 
-async function firstInboundMessage(conversationId: string): Promise<GhlMessage | undefined> {
+// The most recent thing they wrote, not the first: a person can be answered and
+// then ask again in the same thread, and the current question is the one waiting.
+async function latestInboundMessage(conversationId: string): Promise<GhlMessage | undefined> {
   const data = await ghl<{ messages?: { messages?: GhlMessage[] } | GhlMessage[] }>(
     `/conversations/${conversationId}/messages?limit=50`,
     CONVERSATIONS_API_VERSION,
@@ -188,7 +192,7 @@ async function firstInboundMessage(conversationId: string): Promise<GhlMessage |
   const messages = Array.isArray(data.messages) ? data.messages : (data.messages?.messages ?? []);
   return messages
     .filter((m) => m.direction === "inbound" && m.messageType !== "TYPE_ACTIVITY_OPPORTUNITY")
-    .sort((a, b) => Date.parse(a.dateAdded ?? "") - Date.parse(b.dateAdded ?? ""))[0];
+    .sort((a, b) => Date.parse(b.dateAdded ?? "") - Date.parse(a.dateAdded ?? ""))[0];
 }
 
 async function storedFormMessage(contactId: string): Promise<string> {
@@ -254,8 +258,12 @@ async function waitingFor(project: Project, inbound: GhlConversation[], robotAns
 
   const waiting: Waiting[] = [];
   for (const c of candidates) {
-    const inboundMessage = await firstInboundMessage(c.id);
+    const inboundMessage = await latestInboundMessage(c.id);
     const since = inboundMessage?.dateAdded ? new Date(inboundMessage.dateAdded) : new Date(c.dateAdded ?? Date.now());
+    // A person already answered since they last wrote: not waiting. act-inquiry
+    // stays on the contact, so without this a later automated email (newsletter,
+    // nurture) would put an answered enquiry straight back on the list.
+    if (c.lastManualMessageDate && c.lastManualMessageDate >= since.getTime()) continue;
     const card = project.inboxPipelineId
       ? (c.opportunities ?? []).find((o) => o.pipelineId === project.inboxPipelineId && o.status === "open")
       : undefined;
