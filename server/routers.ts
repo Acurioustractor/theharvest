@@ -891,6 +891,8 @@ export const appRouter = router({
           phone: input.phone || undefined,
           source: input.source || "Harvest | Newsletter",
           tags: allTags,
+          // Submitting this dedicated signup action is the newsletter opt-in.
+          newsletterConsent: true,
         });
 
         if (!result.success) {

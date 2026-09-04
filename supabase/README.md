@@ -21,8 +21,12 @@ supabase functions deploy admin-businesses
 supabase functions deploy business-claim
 supabase functions deploy business-update
 supabase functions deploy contact-form
-supabase functions deploy newsletter-subscribe
 ```
+
+Newsletter and membership signups use `trpc.newsletter.subscribe` in `server/routers.ts`.
+The legacy `newsletter-subscribe` Edge Function is archived and must not be redeployed
+as part of this setup. Its deployed copy was deleted on 5 September 2026; see
+the [retirement record](../_archive/2026-07-06-newsletter-subscribe-edge-fn/RESTORE.md).
 
 ## 3) Set Edge Function secrets
 

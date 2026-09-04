@@ -43,7 +43,10 @@ function notionObjectNotFound(error: unknown): boolean {
 }
 
 function editorialDataSourceCandidates(): string[] {
-  return Array.from(new Set([getDataSourceId(), getDbId()].filter(Boolean)));
+  const candidates = [getDataSourceId()];
+  const databaseId = process.env.NOTION_EDITORIAL_DB_ID;
+  if (databaseId) candidates.push(databaseId);
+  return Array.from(new Set(candidates));
 }
 
 async function queryEditorialDataSource(notion: Client, query: Omit<Parameters<Client["dataSources"]["query"]>[0], "data_source_id">) {

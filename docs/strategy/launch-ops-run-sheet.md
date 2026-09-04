@@ -1,5 +1,7 @@
 # Launch Ops Run Sheet: 20 June Members' Day
 
+> **Historical plan, superseded on 3 June 2026.** The [reconciled public open-day decision](RECONCILED-20-june-public-open-day-2026-06-03.md) replaces this private members' event model. The BYO proposal below is not evidence of clearance: the [council and insurance call brief](../communications/launch-calls-brief.md) describes an event with no alcohol. Confirm the recorded clearance before reusing any alcohol provision.
+
 > Created 2026-05-29. The operational layer under `launch-readiness-20-june-2026.md`
 > (which sequences the threads and names the gates). This doc is the day-of detail:
 > locked decisions, role roster, run sheet, open/serve/close checklist, signage, stock,
@@ -19,8 +21,8 @@
   Defaults set 29 May; change either number and the RSVP calendars follow.
 - **Pizza: three types.** Margherita; roast veg + feta; salami. Make-your-own bar on set
   bases. Gluten-free base option and a dairy-free cheese option.
-- **Drinks.** Water, tea and coffee, a few soft drinks. BYO alcohol (no liquor licence needed
-  if nothing is sold; confirm on the council call).
+- **Drinks.** Water, tea and coffee, a few soft drinks. BYO was proposed in this draft,
+  but council and insurance clearance for it is not recorded here. The call brief says no alcohol.
 - **Host: Nic.** Stock ordering owner: Susie (Joey backs up). Confirm if wrong.
 
 ## Role roster
@@ -79,7 +81,7 @@ Holland contact).
 
 Gate "The Harvest, welcome" plus arrow; parking; welcome / check-in point; the three zones
 (garden, maker session, gathering); toilets; handwashing; pizza bar plus allergens; kids
-area; fire and oven keep-clear; BYO and free-night note; exit. Use the graphite-pencil brand
+area; fire and oven keep-clear; free-night note; exit. Use the graphite-pencil brand
 look where printed; simple and clear over polished.
 
 ## Stock + supplier list (estimate, confirm headcount first)
@@ -109,7 +111,7 @@ against each line before the shop run.
 
 Before the day, every helper gets: their role and window (from the roster), the safety basics
 (fire and oven keep-clear, first-aid and incident process, who the host is), the free-night
-rule (nothing is sold, BYO alcohol), the consent rule for photos, and the close checklist if
+rule (nothing is sold; this draft does not confirm BYO approval), the consent rule for photos, and the close checklist if
 they are on pack-down. Keep it to one page; send it with the crew brief on 19 June.
 
 ## Pre-launch scripts (ready to use)
