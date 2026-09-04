@@ -106,9 +106,9 @@ const statusClasses: Record<StatusTone, string> = {
 
 const publicPages: ControlLink[] = [
   {
-    label: "Launch redesign",
-    href: "/launch-redesign",
-    note: "Main prototype surface for Garden, Kitchen, Art Space.",
+    label: "Home page",
+    href: "/",
+    note: "The live public home page.",
     kind: "page",
   },
   {
@@ -265,13 +265,13 @@ const annotationTargets: WorkItem[] = [
     title: "Hero",
     detail: "Does the first viewport show the real place and name the three rooms fast enough?",
     tone: "watch",
-    owner: "/launch-redesign",
+    owner: "/",
   },
   {
     title: "Rooms",
     detail: "Check that Garden, Kitchen, and Art Space each have one job, not three explanations.",
     tone: "good",
-    owner: "/launch-redesign",
+    owner: "/",
   },
   {
     title: "Proof",
@@ -614,9 +614,9 @@ export default function HarvestControlRoom() {
           <div className="flex flex-wrap gap-3">
             <Button
               className="bg-[#C4922A] text-[#1C1917] hover:bg-[#d8a943]"
-              onClick={() => window.open("/launch-redesign", "_blank")}
+              onClick={() => window.open("/", "_blank")}
             >
-              Review launch page
+              Review home page
               <ArrowRight className="h-4 w-4" />
             </Button>
             <Button

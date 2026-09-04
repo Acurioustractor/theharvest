@@ -20,6 +20,7 @@ import { optimize } from "@/lib/imageOptimize";
 import { MEMBERS_PAGE_URL } from "@/lib/links";
 import { setPageSeo } from "@/lib/seo";
 import { trpc } from "@/lib/trpc";
+import { currentAttribution } from "@/lib/tracking";
 import { harvestButtonClasses, SiteFooter, SiteNav } from "./HarvestReviewTest";
 import { VisitStrip } from "@/components/VisitStrip";
 
@@ -40,7 +41,7 @@ const lanes = [
     slug: "gather",
     title: "Gather.",
     tagline: "First call for community days and meals.",
-    body: "Upcoming events land with members first. Most weekends the pizza oven runs: Friday 3pm to 8pm with a community movie night, Saturday 12pm to 8pm, Sunday 12pm to 6pm. Weeks can vary, and dates reach the member list before they go public, with a way to RSVP and message us directly.",
+    body: "Upcoming events land with members first. The pizza oven runs on Friday from 3pm to 8pm with a community movie night, and Saturday from 12pm to 8pm. Weeks can vary, and dates reach the member list before they go public, with a way to RSVP and message us directly.",
   },
 ];
 
@@ -144,13 +145,14 @@ export default function Membership() {
     event.preventDefault();
     const { firstName, lastName } = splitName(name);
     const taggedInterests = Array.from(new Set<Interest>(["membership", ...interests]));
+    const attribution = currentAttribution();
 
     joinMutation.mutate({
       email: email.trim(),
       phone: phone.trim() || undefined,
       firstName,
       lastName,
-      source: "Harvest | Member Signup",
+      source: attribution.sourceContent ? `Harvest | Member Signup | ${attribution.sourceContent}` : "Harvest | Member Signup",
       interests: taggedInterests,
       member: true,
       notes: comments.trim() || undefined,
@@ -160,12 +162,13 @@ export default function Membership() {
 
   function handleQuestionSubmit(event: React.FormEvent) {
     event.preventDefault();
+    const attribution = currentAttribution();
     questionMutation.mutate({
       name: questionName.trim(),
       email: questionEmail.trim(),
       phone: questionPhone.trim() || null,
       question: question.trim(),
-      source: "Harvest | Member Question",
+      source: attribution.sourceContent ? `Harvest | Member Question | ${attribution.sourceContent}` : "Harvest | Member Question",
     });
   }
 
@@ -210,11 +213,28 @@ export default function Membership() {
               <EditableText
                 page="membership"
                 slot="hero-body"
-                defaultContent="Membership is free, and it means this: your name is on the Harvest list. You get the letters, invitations, first calls, and early opportunities as the place finds its feet. Use the comments box for ideas."
+                defaultContent="Membership is free. Get event dates, work-day calls and invitations before they are shared more widely. Name and email are enough."
                 as="p"
                 className="mt-7 max-w-2xl text-xl leading-relaxed text-white/80 md:text-2xl"
                 multiline
               />
+              <a
+                href="#join"
+                className={`mt-8 ${harvestButtonClasses.primary}`}
+              >
+                Join the member list
+                <ArrowRight aria-hidden="true" className="h-4 w-4" />
+              </a>
+              <p className="mt-4 text-sm text-white/64">
+                <a
+                  href={MEMBERS_PAGE_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline underline-offset-4 transition hover:text-white"
+                >
+                  Already a member? Open the member community
+                </a>
+              </p>
             </div>
 
             <div className="border border-white/14 bg-white/[0.08] p-6 backdrop-blur-sm">
@@ -307,7 +327,7 @@ export default function Membership() {
         </div>
       </section>
 
-      <section id="join" className="border-y border-stone-300/70 bg-[#FFFDF7] py-14 md:py-20">
+      <section id="join" className="scroll-mt-24 border-y border-stone-300/70 bg-[#FFFDF7] py-14 md:py-20">
         <div className="mx-auto grid max-w-6xl gap-10 px-5 md:grid-cols-[0.82fr_1fr] md:px-8">
           <div>
             <EditableText
@@ -327,7 +347,7 @@ export default function Membership() {
             <EditableText
               page="membership"
               slot="join-body"
-              defaultContent="Free. Just your name, an email, a few interests, and any comments or ideas. We'll send the welcome note straight after."
+              defaultContent="Free. Add your name and email. We'll send the welcome note straight after."
               as="p"
               className="mt-6 max-w-xl text-lg leading-relaxed text-stone-700"
               multiline
@@ -337,10 +357,13 @@ export default function Membership() {
           <form onSubmit={handleSubmit} className="border border-stone-300 bg-[#F5F0E8] p-5 md:p-7">
             <div className="grid gap-4">
               <div>
-                <label className="mb-2 block font-mono text-[11px] uppercase tracking-[0.16em] text-stone-500">
+                <label htmlFor="membership-name" className="mb-2 block font-mono text-[11px] uppercase tracking-[0.16em] text-stone-500">
                   Name
                 </label>
                 <Input
+                  id="membership-name"
+                  name="name"
+                  autoComplete="name"
                   value={name}
                   onChange={(event) => setName(event.target.value)}
                   placeholder="Your name"
@@ -349,11 +372,14 @@ export default function Membership() {
                 />
               </div>
               <div>
-                <label className="mb-2 block font-mono text-[11px] uppercase tracking-[0.16em] text-stone-500">
+                <label htmlFor="membership-email" className="mb-2 block font-mono text-[11px] uppercase tracking-[0.16em] text-stone-500">
                   Email
                 </label>
                 <Input
+                  id="membership-email"
+                  name="email"
                   type="email"
+                  autoComplete="email"
                   required
                   value={email}
                   onChange={(event) => setEmail(event.target.value)}
@@ -361,12 +387,20 @@ export default function Membership() {
                   className="h-12 rounded-none border-stone-300 bg-white"
                 />
               </div>
+              <details className="border-y border-stone-300 py-1">
+                <summary className="cursor-pointer py-3 text-sm font-semibold text-[#8B4A2A] focus:outline-none focus:ring-2 focus:ring-[#C4922A]">
+                  Add interests, phone or an idea (optional)
+                </summary>
+                <div className="grid gap-4 pb-4 pt-2">
               <div>
-                <label className="mb-2 block font-mono text-[11px] uppercase tracking-[0.16em] text-stone-500">
+                <label htmlFor="membership-phone" className="mb-2 block font-mono text-[11px] uppercase tracking-[0.16em] text-stone-500">
                   Phone, optional
                 </label>
                 <Input
+                  id="membership-phone"
+                  name="phone"
                   type="tel"
+                  autoComplete="tel"
                   value={phone}
                   onChange={(event) => setPhone(event.target.value)}
                   placeholder="For text updates"
@@ -374,7 +408,12 @@ export default function Membership() {
                 />
               </div>
 
-              <InterestSelector selected={interests} onChange={setInterests} />
+              <InterestSelector
+                id="membership-interests"
+                name="interests"
+                selected={interests}
+                onChange={setInterests}
+              />
 
               <div>
                 <label htmlFor="membership-heard-about" className="mb-2 block font-mono text-[11px] uppercase tracking-[0.16em] text-stone-500">
@@ -382,6 +421,8 @@ export default function Membership() {
                 </label>
                 <select
                   id="membership-heard-about"
+                  name="heardAbout"
+                  autoComplete="off"
                   value={heardAbout}
                   onChange={(event) => setHeardAbout(event.target.value as HeardAbout)}
                   className="h-12 w-full rounded-none border border-stone-300 bg-white px-3 text-stone-900 focus:border-[#C4922A] focus:outline-none"
@@ -397,17 +438,21 @@ export default function Membership() {
 
               <div>
                 <label htmlFor="membership-comments" className="mb-2 block font-mono text-[11px] uppercase tracking-[0.16em] text-stone-500">
-                  Comments or ideas, optional
+                  Comments or ideas
                 </label>
                 <Textarea
                   id="membership-comments"
+                  name="comments"
+                  autoComplete="off"
                   value={comments}
                   onChange={(event) => setComments(event.target.value)}
-                  placeholder="What should we know? What would help? What would you like to see?"
+                  placeholder="What should we know? What would you like to see?"
                   className="min-h-28 rounded-none border-stone-300 bg-white"
                   maxLength={2000}
                 />
               </div>
+                </div>
+              </details>
 
               <p className="text-xs text-stone-500">
                 Used only for Harvest updates and to reply if you write in. See our{" "}
@@ -422,7 +467,7 @@ export default function Membership() {
                 disabled={joinMutation.isPending}
                 className="mt-2 h-12 rounded-none bg-[#C4922A] font-semibold text-stone-950 hover:bg-[#E0AD43]"
               >
-                {joinMutation.isPending ? "Joining..." : "Join the member list"}
+                {joinMutation.isPending ? "Joining..." : "Become a member"}
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </div>
@@ -467,10 +512,13 @@ export default function Membership() {
             <div className="grid gap-4">
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
-                  <label className="mb-2 block font-mono text-[11px] uppercase tracking-[0.16em] text-stone-500">
+                  <label htmlFor="membership-question-name" className="mb-2 block font-mono text-[11px] uppercase tracking-[0.16em] text-stone-500">
                     Name
                   </label>
                   <Input
+                    id="membership-question-name"
+                    name="name"
+                    autoComplete="name"
                     value={questionName}
                     onChange={(event) => setQuestionName(event.target.value)}
                     placeholder="Your name"
@@ -480,11 +528,14 @@ export default function Membership() {
                   />
                 </div>
                 <div>
-                  <label className="mb-2 block font-mono text-[11px] uppercase tracking-[0.16em] text-stone-500">
+                  <label htmlFor="membership-question-email" className="mb-2 block font-mono text-[11px] uppercase tracking-[0.16em] text-stone-500">
                     Email
                   </label>
                   <Input
+                    id="membership-question-email"
+                    name="email"
                     type="email"
+                    autoComplete="email"
                     value={questionEmail}
                     onChange={(event) => setQuestionEmail(event.target.value)}
                     placeholder="you@example.com"
@@ -496,11 +547,14 @@ export default function Membership() {
               </div>
 
               <div>
-                <label className="mb-2 block font-mono text-[11px] uppercase tracking-[0.16em] text-stone-500">
+                <label htmlFor="membership-question-phone" className="mb-2 block font-mono text-[11px] uppercase tracking-[0.16em] text-stone-500">
                   Phone, optional
                 </label>
                 <Input
+                  id="membership-question-phone"
+                  name="phone"
                   type="tel"
+                  autoComplete="tel"
                   value={questionPhone}
                   onChange={(event) => setQuestionPhone(event.target.value)}
                   placeholder="For a call or text back"
@@ -510,10 +564,13 @@ export default function Membership() {
               </div>
 
               <div>
-                <label className="mb-2 block font-mono text-[11px] uppercase tracking-[0.16em] text-stone-500">
+                <label htmlFor="membership-question-message" className="mb-2 block font-mono text-[11px] uppercase tracking-[0.16em] text-stone-500">
                   Question
                 </label>
                 <Textarea
+                  id="membership-question-message"
+                  name="question"
+                  autoComplete="off"
                   value={question}
                   onChange={(event) => setQuestion(event.target.value)}
                   placeholder="What would you like to ask?"

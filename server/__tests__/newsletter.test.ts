@@ -39,6 +39,7 @@ describe("Go High Level Newsletter Integration", () => {
       GHL_MEMBER_QUESTION_WORKFLOW_ID: "member-question-workflow",
       GHL_GATHERING_RSVP_WORKFLOW_ID: "gathering-rsvp-workflow",
       GHL_CONTACT_FORM_WORKFLOW_ID: "contact-form-workflow",
+      GHL_CONVERSATION_UNREAD_DELAY_MS: "0",
     };
   });
 
@@ -263,9 +264,33 @@ describe("Go High Level Newsletter Integration", () => {
         String(url).endsWith("/contacts/contact-123/workflow/member-welcome-workflow")
       );
       expect(workflowCall).toBeDefined();
+
+      const inboxMessageCall = mockFetch.mock.calls.find(([url]) =>
+        String(url).endsWith("/conversations/messages/inbound")
+      );
+      expect(inboxMessageCall).toBeUndefined();
     });
 
     it("creates a Universal Inquiry card when a member signup includes a comment", async () => {
+      mockFetch.mockImplementation(async (url) => {
+        if (String(url).includes("/conversations/search?")) {
+          return {
+            ok: true,
+            json: async () => ({ conversations: [{ id: "conversation-123" }] }),
+          };
+        }
+        return {
+          ok: true,
+          json: async () => ({
+            contact: {
+              id: "contact-123",
+              email: "member-comment@example.com",
+              locationId: "test-location-id",
+            },
+          }),
+        };
+      });
+
       const caller = appRouter.createCaller(ctx);
 
       await caller.newsletter.subscribe({
@@ -296,6 +321,26 @@ describe("Go High Level Newsletter Integration", () => {
         String(url).endsWith("/opportunities/upsert")
       );
       expect(opportunityCall).toBeUndefined();
+
+      const inboxMessageCall = mockFetch.mock.calls.find(([url]) =>
+        String(url).endsWith("/conversations/messages/inbound")
+      );
+      expect(inboxMessageCall).toBeDefined();
+      expect(JSON.parse(inboxMessageCall![1].body)).toMatchObject({
+        conversationId: "conversation-123",
+        type: "Email",
+        emailFrom: "member-comment@example.com",
+        subject: "Member comment from Mira Stone",
+      });
+      expect(JSON.parse(inboxMessageCall![1].body).html).toContain(
+        "I can help with planting days.",
+      );
+
+      const unreadCall = mockFetch.mock.calls.find(([url, init]) =>
+        String(url).endsWith("/conversations/conversation-123") && init?.method === "PUT"
+      );
+      expect(unreadCall).toBeDefined();
+      expect(JSON.parse(unreadCall![1].body)).toEqual({ unreadCount: 1 });
     });
 
     it("does not sync pulse survey submissions to GHL without a name", async () => {
@@ -465,12 +510,37 @@ describe("Go High Level Newsletter Integration", () => {
         phone: "0400000000",
         occurrenceDate: isoDateOfNextWeekday(1),
         session: "unsure",
-      })).rejects.toThrow("Choose a Friday, Saturday or Sunday pizza date.");
+      })).rejects.toThrow("Choose a Friday or Saturday pizza date.");
 
       await expect(caller.eoi.submit({
         name: "Wrong Session",
         phone: "0400000000",
         occurrenceDate: isoDateOfNextWeekday(6),
+        session: "friday",
+      })).rejects.toThrow("The session does not match the date you selected.");
+    });
+
+    it("rejects pizza RSVPs for invalid weekdays or mismatched sessions", async () => {
+      const caller = appRouter.createCaller(ctx);
+
+      await expect(caller.eoi.submit({
+        name: "Wrong Weekday",
+        phone: "0400000000",
+        occurrenceDate: "2099-07-20",
+        session: "unsure",
+      })).rejects.toThrow("Choose a Friday or Saturday pizza date.");
+
+      await expect(caller.eoi.submit({
+        name: "Sunday Guest",
+        phone: "0400000000",
+        occurrenceDate: "2099-07-19",
+        session: "unsure",
+      })).rejects.toThrow("Choose a Friday or Saturday pizza date.");
+
+      await expect(caller.eoi.submit({
+        name: "Wrong Session",
+        phone: "0400000000",
+        occurrenceDate: "2099-07-18",
         session: "friday",
       })).rejects.toThrow("The session does not match the date you selected.");
     });

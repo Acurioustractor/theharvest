@@ -11,6 +11,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { communitySubmit } from "@/lib/api";
+import { currentAttribution } from "@/lib/tracking";
 import { setPageSeo } from "@/lib/seo";
 import { SiteFooter, SiteNav } from "./HarvestReviewTest";
 import { VisitStrip } from "@/components/VisitStrip";
@@ -41,6 +42,7 @@ export default function VenueHire() {
       const result = await communitySubmit({
         type: "venue-enquiry",
         ...formData,
+        ...currentAttribution(),
       });
       if (result.success) {
         setStatus("success");
@@ -105,7 +107,7 @@ export default function VenueHire() {
       </section>
 
       {/* Enquiry Form Section */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white overflow-hidden">
         <div className="container">
           <div className="grid lg:grid-cols-2 gap-12">
             {/* Form */}
@@ -130,6 +132,7 @@ export default function VenueHire() {
                       <h3 className="font-serif text-xl text-stone-800">Thanks for your enquiry</h3>
                       <p className="text-stone-600">We'll get back to you within a few days.</p>
                       <button
+                        type="button"
                         onClick={() => { setStatus("idle"); setFormData({}); }}
                         className="mt-4 px-6 py-2 rounded-lg bg-stone-800 text-stone-200 text-sm font-medium hover:bg-stone-700 transition-colors"
                       >
@@ -140,11 +143,14 @@ export default function VenueHire() {
                     <form onSubmit={handleSubmit} className="space-y-5">
                       <div className="grid sm:grid-cols-2 gap-4">
                         <div>
-                          <label className="block text-sm font-medium text-stone-700 mb-1">
-                            Your name <span className="text-red-500">*</span>
+                          <label htmlFor="venue-name" className="block text-sm font-medium text-stone-700 mb-1">
+                            Your name <span aria-hidden="true" className="text-red-500">*</span>
                           </label>
                           <input
+                            id="venue-name"
+                            name="name"
                             type="text"
+                            autoComplete="name"
                             required
                             value={formData.name || ""}
                             onChange={(e) => updateField("name", e.target.value)}
@@ -152,11 +158,14 @@ export default function VenueHire() {
                           />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-stone-700 mb-1">
-                            Email <span className="text-red-500">*</span>
+                          <label htmlFor="venue-email" className="block text-sm font-medium text-stone-700 mb-1">
+                            Email <span aria-hidden="true" className="text-red-500">*</span>
                           </label>
                           <input
+                            id="venue-email"
+                            name="email"
                             type="email"
+                            autoComplete="email"
                             required
                             value={formData.email || ""}
                             onChange={(e) => updateField("email", e.target.value)}
@@ -167,9 +176,12 @@ export default function VenueHire() {
 
                       <div className="grid sm:grid-cols-2 gap-4">
                         <div>
-                          <label className="block text-sm font-medium text-stone-700 mb-1">Phone</label>
+                          <label htmlFor="venue-phone" className="block text-sm font-medium text-stone-700 mb-1">Phone</label>
                           <input
-                            type="text"
+                            id="venue-phone"
+                            name="phone"
+                            type="tel"
+                            autoComplete="tel"
                             value={formData.phone || ""}
                             onChange={(e) => updateField("phone", e.target.value)}
                             placeholder="0400 000 000"
@@ -177,10 +189,13 @@ export default function VenueHire() {
                           />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-stone-700 mb-1">
-                            Event type <span className="text-red-500">*</span>
+                          <label htmlFor="venue-event-type" className="block text-sm font-medium text-stone-700 mb-1">
+                            Event type <span aria-hidden="true" className="text-red-500">*</span>
                           </label>
                           <select
+                            id="venue-event-type"
+                            name="eventType"
+                            autoComplete="off"
                             required
                             value={formData.eventType || ""}
                             onChange={(e) => updateField("eventType", e.target.value)}
@@ -199,18 +214,24 @@ export default function VenueHire() {
 
                       <div className="grid sm:grid-cols-2 gap-4">
                         <div>
-                          <label className="block text-sm font-medium text-stone-700 mb-1">Preferred date</label>
+                          <label htmlFor="venue-date" className="block text-sm font-medium text-stone-700 mb-1">Preferred date</label>
                           <input
+                            id="venue-date"
+                            name="date"
                             type="date"
+                            autoComplete="off"
                             value={formData.date || ""}
                             onChange={(e) => updateField("date", e.target.value)}
                             className="w-full px-4 py-2.5 rounded-lg border border-stone-300 bg-white text-stone-800 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
                           />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-stone-700 mb-1">Expected guests</label>
+                          <label htmlFor="venue-guests" className="block text-sm font-medium text-stone-700 mb-1">Expected guests</label>
                           <input
+                            id="venue-guests"
+                            name="guests"
                             type="number"
+                            autoComplete="off"
                             min="1"
                             placeholder="e.g. 30"
                             value={formData.guests || ""}
@@ -221,10 +242,13 @@ export default function VenueHire() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-stone-700 mb-1">
-                          Tell us about your event <span className="text-red-500">*</span>
+                        <label htmlFor="venue-message" className="block text-sm font-medium text-stone-700 mb-1">
+                          Tell us about your event <span aria-hidden="true" className="text-red-500">*</span>
                         </label>
                         <textarea
+                          id="venue-message"
+                          name="message"
+                          autoComplete="off"
                           required
                           rows={4}
                           placeholder="What are you planning? Any special requirements?"
@@ -235,7 +259,7 @@ export default function VenueHire() {
                       </div>
 
                       {status === "error" && (
-                        <p className="text-red-600 text-sm">{errorMsg}</p>
+                        <p role="alert" className="text-red-600 text-sm">{errorMsg}</p>
                       )}
 
                       <p className="text-xs text-stone-500">

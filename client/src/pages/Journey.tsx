@@ -134,7 +134,7 @@ const roadmapAreas: RoadmapArea[] = [
   {
     id: "gatherings",
     title: "Gatherings",
-    now: "Gatherings and shared meals are how the place works. DIY pizza runs most weekends: Friday 3pm to 8pm with a community movie night, Saturday 12pm to 8pm, Sunday 12pm to 6pm. Weeks can vary, and new dates land on the members page first.",
+    now: "Gatherings and shared meals are how the place works. DIY pizza runs on Friday from 3pm to 8pm with a community movie night, and Saturday from 12pm to 8pm. Weeks can vary, and new dates land on the members page first.",
     next: "More work days, more shared meals, and a rhythm that settles as we find our feet.",
     doorLabel: "See what's on",
     doorHref: "/whats-on",

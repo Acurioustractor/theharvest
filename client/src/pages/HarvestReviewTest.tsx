@@ -1,6 +1,5 @@
 import { useEffect, useState, type KeyboardEvent, type MouseEvent } from "react";
 import { Link, useLocation } from "wouter";
-import { MEMBERS_PAGE_URL } from "@/lib/links";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
@@ -147,23 +146,25 @@ const workUpdates: WorkUpdate[] = [
 
 
 const pageNavLinks = [
+  { label: "Start Here", href: "/start" },
   { label: "About", href: "/what-is-the-harvest" },
   { label: "What's On", href: "/whats-on" },
   { label: "Works", href: "/works" },
   { label: "Shop", href: "/shop" },
   { label: "Get Involved", href: "/get-involved" },
-  { label: "Membership", href: "/membership" },
   { label: "Contact", href: "/contact" },
 ];
 
 const footerLinks = [
+  { label: "Start Here", href: "/start" },
   { label: "About", href: "/what-is-the-harvest" },
   { label: "What's On", href: "/whats-on" },
   { label: "Works", href: "/works" },
   { label: "Shop", href: "/shop" },
-  { label: "Membership", href: "/membership" },
+  { label: "Become a member", href: "/membership" },
   { label: "Get Involved", href: "/get-involved" },
   { label: "Venue Hire", href: "/venue-hire" },
+  { label: "Media kit", href: "/media" },
   { label: "Contact", href: "/contact" },
   { label: "Feedback", href: "/pulse" },
   { label: "Privacy", href: "/privacy" },
@@ -224,14 +225,14 @@ function ThisWeekStrip() {
           <EditableText
             page="home"
             slot="this-week-title"
-            defaultContent="Open most weekends for DIY pizza"
+            defaultContent="DIY pizza on Friday and Saturday"
             as="p"
             className="text-lg font-black leading-tight md:text-xl"
           />
           <EditableText
             page="home"
             slot="this-week-detail"
-            defaultContent="Friday pizza and movie night 3pm to 8pm. Saturday 12pm to 8pm. Sunday 12pm to 6pm. Turn up, no booking needed. Dennis, our resident pizza teacher, shows you how. Weeks can vary, dates land with members first."
+            defaultContent="Friday pizza and movie night 3pm to 8pm. Saturday 12pm to 8pm. Turn up, no booking needed. Dennis, our resident pizza teacher, shows you how. Weeks can vary, dates land with members first."
             as="p"
             className="mt-1 text-sm leading-relaxed text-[#1C1917]/80"
             multiline
@@ -249,17 +250,15 @@ function ThisWeekStrip() {
         </div>
         <div className="shrink-0">
           <div className="flex flex-wrap gap-3">
-            <a
-              href={MEMBERS_PAGE_URL}
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              href="/whats-on"
               className="inline-flex min-h-11 items-center justify-center border-2 border-[#1C1917] px-5 py-2 text-sm font-bold text-[#1C1917] transition hover:bg-[#1C1917] hover:text-[#F5F0E8]"
             >
-              Become a member
-            </a>
+              See dates and RSVP
+            </Link>
           </div>
           <p className="mt-2 text-xs text-[#1C1917]/70">
-            The members page is free to join.
+            No booking needed. An RSVP helps us plan.
           </p>
         </div>
       </div>
@@ -271,6 +270,15 @@ export function SiteNav() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const closeMenu = () => setMenuOpen(false);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    const closeOnEscape = (event: globalThis.KeyboardEvent) => {
+      if (event.key === "Escape") setMenuOpen(false);
+    };
+    window.addEventListener("keydown", closeOnEscape);
+    return () => window.removeEventListener("keydown", closeOnEscape);
+  }, [menuOpen]);
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 border-b border-stone-900/10 bg-[#F5F0E8]/96 text-[#1C1917] shadow-[0_10px_30px_rgba(28,25,23,0.08)] backdrop-blur-md">
@@ -327,6 +335,7 @@ export function SiteNav() {
           className="inline-flex h-11 w-11 items-center justify-center border border-stone-900/16 text-[#1C1917] transition hover:bg-white/60 lg:hidden"
           aria-label={menuOpen ? "Close menu" : "Open menu"}
           aria-expanded={menuOpen}
+          aria-controls="mobile-site-navigation"
           onClick={() => setMenuOpen((open) => !open)}
         >
           {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -334,7 +343,7 @@ export function SiteNav() {
       </div>
 
       {menuOpen && (
-        <div className="border-t border-stone-900/10 bg-[#F5F0E8] px-5 py-4 lg:hidden">
+        <div id="mobile-site-navigation" className="border-t border-stone-900/10 bg-[#F5F0E8] px-5 py-4 lg:hidden">
           <nav className="mx-auto grid max-w-7xl gap-2" aria-label="Mobile page sections">
             {pageNavLinks.map((link) => (
               link.href.startsWith("#") ? (
@@ -376,6 +385,23 @@ export function SiteNav() {
 export function SiteFooter() {
   return (
     <footer className="border-t border-stone-900/10 bg-[#F5F0E8] text-[#1C1917]">
+      <div className="border-b border-stone-900/10 bg-[#C4922A]">
+        <div className="mx-auto flex max-w-7xl flex-col gap-5 px-5 py-8 sm:flex-row sm:items-center sm:justify-between md:px-8">
+          <div>
+            <p className="text-2xl font-black leading-tight">Want to stay close to The Harvest?</p>
+            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-[#1C1917]/78">
+              Membership is free. Get the dates, work-day calls and invitations first. Name and email are enough.
+            </p>
+          </div>
+          <Link
+            href="/membership#join"
+            className="inline-flex min-h-12 shrink-0 items-center justify-center gap-2 bg-[#1C1917] px-6 py-3 font-semibold text-[#F5F0E8] transition hover:bg-[#3D3832]"
+          >
+            Become a member
+            <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          </Link>
+        </div>
+      </div>
       <div className="mx-auto grid max-w-7xl gap-8 px-5 py-10 md:grid-cols-[1fr_1.4fr] md:px-8 md:py-12">
         <div>
           <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#8B4A2A]">
@@ -668,7 +694,7 @@ function WorkNotes() {
               multiline
             />
             <p className="mt-3 text-lg leading-relaxed text-stone-700">
-              Most of it is easiest to see in person, on a Friday, Saturday or Sunday pizza session.{" "}
+              Most of it is easiest to see in person, at a Friday or Saturday pizza session.{" "}
               <Link
                 href="/whats-on"
                 className="font-semibold text-[#8B4A2A] underline underline-offset-4 hover:text-[#1C1917]"
@@ -788,16 +814,14 @@ function EventCallout() {
             className="mt-3 max-w-xl text-4xl font-black leading-[0.96] md:text-6xl"
           />
           <p className="mt-6 max-w-xl text-lg leading-relaxed text-white/76">
-            Membership is free. It gives you updates, event invites, first-access opportunities and a simple way to ask questions. Upcoming events land on the{" "}
-            <a
-              href={MEMBERS_PAGE_URL}
-              target="_blank"
-              rel="noopener noreferrer"
+            Membership is free. It gives you event dates, work-day calls and invitations before they are shared more widely. Upcoming events land on the{" "}
+            <Link
+              href="/membership"
               className="underline decoration-[#C4922A] underline-offset-4 hover:text-white"
             >
               members page
-            </a>{" "}
-            first, and you can RSVP and message us directly there. Members hear first, every time.
+            </Link>{" "}
+            first, and you can RSVP and message us directly there.
           </p>
         </motion.div>
 
@@ -815,7 +839,7 @@ function EventCallout() {
                 Become a free Harvest member.
               </span>
               <span className="mt-4 block text-sm leading-relaxed text-white/72">
-                Get the weekly member update, community-day invites, first-access opportunities and a simple way to ask questions.
+                Get event dates, community-day invitations and practical calls for a hand.
               </span>
             </span>
             <span className="mt-8 inline-flex items-center gap-2 font-semibold">

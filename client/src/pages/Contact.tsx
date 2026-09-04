@@ -401,9 +401,9 @@ export default function Contact() {
               <h3 style={detailLabelStyle}>VISITS</h3>
               <p style={detailTextStyle}>
                 You do not need to book to come and have a look while we find our feet.
-                Most weekends the pizza oven is on: Friday 3pm to 8pm with a community
-                movie night, Saturday 12pm to 8pm, Sunday 12pm to 6pm. Weeks can vary,
-                and dates land with members first.
+                The pizza oven is on Friday 3pm to 8pm with a community movie night,
+                and Saturday 12pm to 8pm. Weeks can vary, and dates land with members
+                first.
               </p>
               <p style={{ ...detailTextStyle, opacity: 0.5, fontSize: 14, marginTop: 8 }}>
                 Members hear about open days and events first.{" "}

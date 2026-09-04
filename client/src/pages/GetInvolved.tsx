@@ -1,7 +1,7 @@
 import { useEffect, useState, FormEvent } from "react";
 import { VisitStrip } from "@/components/VisitStrip";
-import { MEMBERS_PAGE_URL } from "@/lib/links";
 import { communitySubmit } from "@/lib/api";
+import { currentAttribution } from "@/lib/tracking";
 import { cn } from "@/lib/utils";
 import { setPageSeo } from "@/lib/seo";
 import { SiteFooter, SiteNav } from "./HarvestReviewTest";
@@ -17,7 +17,7 @@ import {
   CheckCircle2,
 } from "lucide-react";
 
-type FormType = "residency" | "idea" | "business-interest" | "workshop-suggestion" | "story-feature";
+type FormType = "volunteer" | "residency" | "idea" | "business-interest" | "workshop-suggestion" | "story-feature";
 
 interface FormConfig {
   id: FormType;
@@ -37,6 +37,33 @@ interface FieldDef {
 }
 
 const FORMS: FormConfig[] = [
+  {
+    id: "volunteer",
+    label: "Lend a Hand",
+    icon: Hammer,
+    tagline: "Garden jobs, work days and practical help. Start with what you can do.",
+    fields: [
+      { name: "name", label: "Your name", type: "text", required: true },
+      { name: "email", label: "Email", type: "email", required: true },
+      { name: "phone", label: "Phone", type: "text" },
+      {
+        name: "helpType",
+        label: "Where could you help?",
+        type: "select",
+        required: true,
+        options: [
+          { value: "garden", label: "Garden and growing" },
+          { value: "making", label: "Building, repair or making" },
+          { value: "events", label: "Events and shared meals" },
+          { value: "shop", label: "Shop and local goods" },
+          { value: "stories", label: "Photos, stories or communications" },
+          { value: "anything-useful", label: "Whatever is useful" },
+        ],
+      },
+      { name: "availability", label: "When are you usually available?", type: "text", placeholder: "Weekends, weekdays, occasionally" },
+      { name: "message", label: "Anything we should know?", type: "textarea", placeholder: "Skills, tools, accessibility needs, or the kind of job you enjoy" },
+    ],
+  },
   {
     id: "residency",
     label: "Residencies",
@@ -147,17 +174,38 @@ const FORMS: FormConfig[] = [
   },
 ];
 
+function getFieldAutoComplete(fieldName: string) {
+  switch (fieldName) {
+    case "name":
+      return "name";
+    case "email":
+      return "email";
+    case "phone":
+      return "tel";
+    case "location":
+      return "address-level2";
+    case "businessName":
+      return "organization";
+    default:
+      return "off";
+  }
+}
+
 export default function GetInvolved() {
-  const [activeForm, setActiveForm] = useState<FormType>(() => {
-    if (typeof window === "undefined") return "residency";
+  // Default to the first option rather than an empty chooser: landing on a
+  // placeholder asking you to pick makes the page look like it has nothing on
+  // it. A ?form= param still wins, so deep links keep working.
+  const [activeForm, setActiveForm] = useState<FormType | null>(() => {
+    const fallback = FORMS[0]?.id ?? null;
+    if (typeof window === "undefined") return fallback;
     const param = new URLSearchParams(window.location.search).get("form");
-    return FORMS.some((f) => f.id === param) ? (param as FormType) : "residency";
+    return FORMS.some((f) => f.id === param) ? (param as FormType) : fallback;
   });
   const [formData, setFormData] = useState<Record<string, string>>({});
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
 
-  const config = FORMS.find((f) => f.id === activeForm)!;
+  const config = activeForm ? FORMS.find((f) => f.id === activeForm) : null;
 
   useEffect(() => {
     setPageSeo({
@@ -175,9 +223,10 @@ export default function GetInvolved() {
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
+    if (!activeForm) return;
     setStatus("loading");
     try {
-      const result = await communitySubmit({ type: activeForm, ...formData });
+      const result = await communitySubmit({ type: activeForm, ...formData, ...currentAttribution() });
       if (result.success) {
         setStatus("success");
       } else {
@@ -207,22 +256,16 @@ export default function GetInvolved() {
             The Harvest is built by the people who show up. There's no single way in, so start where you are.
           </p>
           <p className="text-stone-400 leading-relaxed max-w-xl mx-auto mt-4">
-            We opened with a first members and makers day on 20 June 2026, and from July the
-            place is properly under way. The simplest ways in are the garden's regular work
-            days and{" "}
+            The place is properly under way. The simplest ways in are the garden's regular
+            work days and{" "}
             <a href="/membership" className="text-amber-400 underline hover:text-amber-300">
               free membership
             </a>
-            . Work day dates land on the{" "}
-            <a
-              href={MEMBERS_PAGE_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-amber-400 underline hover:text-amber-300"
-            >
-              members page
+            . Check the{" "}
+            <a href="/whats-on" className="text-amber-400 underline hover:text-amber-300">
+              What's On page
             </a>{" "}
-            first, and no experience is needed. Members hear first, every time.
+            for the current rhythm. No experience is needed.
           </p>
         </div>
       </section>
@@ -230,16 +273,26 @@ export default function GetInvolved() {
       {/* Form selector tabs */}
       <section className="bg-stone-800 border-b border-stone-700">
         <div className="container">
-          <div className="flex overflow-x-auto gap-1 py-3 -mx-4 px-4 sm:mx-0 sm:px-0 sm:justify-center">
+          <div
+            role="group"
+            aria-label="Choose a way to get involved"
+            className="flex overflow-x-auto gap-1 py-3 -mx-4 px-4 sm:mx-0 sm:px-0 sm:justify-center"
+          >
             {FORMS.map((form) => {
               const Icon = form.icon;
               const isActive = activeForm === form.id;
               return (
                 <button
                   key={form.id}
+                  id={`get-involved-form-${form.id}`}
+                  name="formType"
+                  value={form.id}
+                  type="button"
+                  aria-pressed={isActive}
+                  aria-controls="get-involved-form-panel"
                   onClick={() => { setActiveForm(form.id); resetForm(); }}
                   className={cn(
-                    "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors",
+                    "flex shrink-0 items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors",
                     isActive
                       ? "bg-amber-500 text-black"
                       : "text-stone-400 hover:text-stone-200 hover:bg-stone-700"
@@ -255,14 +308,22 @@ export default function GetInvolved() {
       </section>
 
       {/* Form area */}
-      <section className="bg-stone-50 py-12 px-4">
+      <section id="get-involved-form-panel" className="bg-stone-50 py-12 px-4">
         <div className="container max-w-2xl">
-          {status === "success" ? (
+          {!config ? (
+            <div className="py-12 text-center">
+              <h2 className="font-serif text-2xl text-stone-800">Choose a way to get involved</h2>
+              <p className="mx-auto mt-3 max-w-lg text-stone-600">
+                Pick an option above and we will show only the questions needed for that enquiry.
+              </p>
+            </div>
+          ) : status === "success" ? (
             <div className="text-center py-16 space-y-4">
               <CheckCircle2 className="h-12 w-12 text-amber-500 mx-auto" />
               <h2 className="font-serif text-2xl text-stone-800">Thanks for reaching out</h2>
               <p className="text-stone-600">We've got your submission and we'll be in touch. In the meantime, keep an eye on your inbox.</p>
               <button
+                type="button"
                 onClick={resetForm}
                 className="mt-4 px-6 py-2 rounded-lg bg-stone-800 text-stone-200 text-sm font-medium hover:bg-stone-700 transition-colors"
               >
@@ -270,7 +331,7 @@ export default function GetInvolved() {
               </button>
             </div>
           ) : (
-            <>
+            <div>
               <div className="mb-8">
                 <h2 className="font-serif text-2xl text-stone-800 mb-2">{config.label}</h2>
                 <p className="text-stone-500">{config.tagline}</p>
@@ -279,12 +340,18 @@ export default function GetInvolved() {
               <form onSubmit={handleSubmit} className="space-y-5">
                 {config.fields.map((field) => (
                   <div key={field.name}>
-                    <label className="block text-sm font-medium text-stone-700 mb-1">
+                    <label
+                      htmlFor={`get-involved-${activeForm}-${field.name}`}
+                      className="block text-sm font-medium text-stone-700 mb-1"
+                    >
                       {field.label}
-                      {field.required && <span className="text-red-500 ml-0.5">*</span>}
+                      {field.required && <span aria-hidden="true" className="text-red-500 ml-0.5">*</span>}
                     </label>
                     {field.type === "textarea" ? (
                       <textarea
+                        id={`get-involved-${activeForm}-${field.name}`}
+                        name={field.name}
+                        autoComplete={getFieldAutoComplete(field.name)}
                         required={field.required}
                         placeholder={field.placeholder}
                         value={formData[field.name] || ""}
@@ -294,6 +361,9 @@ export default function GetInvolved() {
                       />
                     ) : field.type === "select" ? (
                       <select
+                        id={`get-involved-${activeForm}-${field.name}`}
+                        name={field.name}
+                        autoComplete={getFieldAutoComplete(field.name)}
                         required={field.required}
                         value={formData[field.name] || ""}
                         onChange={(e) => updateField(field.name, e.target.value)}
@@ -306,7 +376,10 @@ export default function GetInvolved() {
                       </select>
                     ) : (
                       <input
-                        type={field.type}
+                        id={`get-involved-${activeForm}-${field.name}`}
+                        name={field.name}
+                        type={field.name === "phone" ? "tel" : field.type}
+                        autoComplete={getFieldAutoComplete(field.name)}
                         required={field.required}
                         placeholder={field.placeholder}
                         value={formData[field.name] || ""}
@@ -318,7 +391,7 @@ export default function GetInvolved() {
                 ))}
 
                 {status === "error" && (
-                  <p className="text-red-600 text-sm">{errorMsg}</p>
+                  <p role="alert" className="text-red-600 text-sm">{errorMsg}</p>
                 )}
 
                 <p className="text-xs text-stone-500">
@@ -342,7 +415,7 @@ export default function GetInvolved() {
                   Submit
                 </button>
               </form>
-            </>
+            </div>
           )}
         </div>
       </section>

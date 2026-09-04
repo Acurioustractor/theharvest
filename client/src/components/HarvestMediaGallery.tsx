@@ -1,6 +1,7 @@
 import { Camera, Film } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { optimize } from "@/lib/imageOptimize";
+import { EMPATHY_LEDGER_FALLBACK_IMAGES } from "@/data/empathyLedgerFallback";
 
 type MediaCategory = "before" | "during" | "after" | "milestone" | "general";
 
@@ -30,6 +31,21 @@ type HarvestMediaGalleryProps = {
   className?: string;
 };
 
+// Keep public galleries useful when Empathy Ledger is unavailable. These are
+// bundled, approved Harvest assets, so the page never depends on EL being up
+// just to render an image grid.
+const LOCAL_FALLBACK_MEDIA: MediaAsset[] = EMPATHY_LEDGER_FALLBACK_IMAGES.map((item) => ({
+  id: `local-${item.id}`,
+  src: item.src,
+  title: item.title,
+  description: item.description,
+  altText: item.title,
+  category: "general",
+  date: null,
+  tags: [],
+  themes: [],
+}));
+
 function isVideoAsset(src: string): boolean {
   return /\.(mp4|mov|m4v|webm)(\?.*)?$/i.test(src);
 }
@@ -57,8 +73,9 @@ export function HarvestMediaGallery({
     },
   );
 
-  const media = (query.data?.media ?? []) as MediaAsset[];
-  const total = query.data?.pagination?.total ?? media.length;
+  const remoteMedia = (query.data?.media ?? []) as MediaAsset[];
+  const media = remoteMedia.length > 0 ? remoteMedia : LOCAL_FALLBACK_MEDIA.slice(0, limit);
+  const total = remoteMedia.length > 0 ? (query.data?.pagination?.total ?? remoteMedia.length) : media.length;
 
   return (
     <article className={`border border-stone-300/80 bg-[#FFFDF7] ${className}`}>
@@ -71,7 +88,7 @@ export function HarvestMediaGallery({
             <h3 className="mt-2 text-2xl font-black leading-tight">{title}</h3>
           </div>
           <span className="border border-stone-300 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.16em] text-stone-600">
-            {query.isLoading ? "loading" : `${total} in EL`}
+            {query.isLoading ? "loading" : remoteMedia.length > 0 ? `${total} in EL` : "bundled fallback"}
           </span>
         </div>
         <p className="mt-4 text-sm leading-relaxed text-stone-700">{description}</p>
@@ -85,17 +102,6 @@ export function HarvestMediaGallery({
           {Array.from({ length: 4 }).map((_, index) => (
             <div key={index} className="aspect-[4/3] animate-pulse bg-stone-200" />
           ))}
-        </div>
-      ) : media.length === 0 ? (
-        <div className="p-5">
-          <div className="flex min-h-[220px] flex-col justify-center border border-dashed border-stone-300 bg-stone-50 p-6 text-center">
-            <Camera className="mx-auto h-8 w-8 text-stone-400" />
-            <p className="mt-3 text-sm font-semibold text-stone-700">No matching media yet.</p>
-            <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-stone-500">
-              Upload or retag assets in Empathy Ledger with {tagHint}. They will appear
-              here through the Harvest gallery API.
-            </p>
-          </div>
         </div>
       ) : (
         <div className="grid gap-3 p-5 sm:grid-cols-2">
@@ -119,6 +125,12 @@ export function HarvestMediaGallery({
                       loading="lazy"
                       decoding="async"
                       className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
+                      onError={(event) => {
+                        const fallback = LOCAL_FALLBACK_MEDIA.find((candidate) => candidate.src !== item.src);
+                        if (fallback && event.currentTarget.src !== window.location.origin + fallback.src) {
+                          event.currentTarget.src = fallback.src;
+                        }
+                      }}
                     />
                   )}
                   <span className="absolute left-2 top-2 inline-flex items-center gap-1 bg-[#1C1917]/80 px-2 py-1 font-mono text-[9px] uppercase tracking-[0.14em] text-[#F5F0E8]">

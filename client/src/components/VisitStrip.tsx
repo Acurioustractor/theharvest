@@ -5,7 +5,7 @@ import { EditableText } from "@/components/EditableText";
  * Shared visit-basics strip: answers "can I just turn up, and when?" on every
  * page that carries it. Copy lives in page="visit-strip" slots, so one admin
  * edit updates every page at once. Keep claims inside the comms map: the
- * weekend pizza rhythm, no booking needed, dates land with members first,
+ * Friday and Saturday pizza rhythm, no booking needed, dates land with members first,
  * membership is free. No prices, no fixed opening hours beyond the rhythm.
  */
 export function VisitStrip() {
@@ -18,14 +18,14 @@ export function VisitStrip() {
         <EditableText
           page="visit-strip"
           slot="title"
-          defaultContent="Open most weekends for DIY pizza"
+          defaultContent="DIY pizza on Friday and Saturday"
           as="h2"
           className="mb-2 font-serif text-2xl font-bold text-stone-800 md:text-3xl"
         />
         <EditableText
           page="visit-strip"
           slot="detail"
-          defaultContent="Friday 3pm to 8pm, pizza and a community movie night. Saturday 12pm to 8pm. Sunday 12pm to 6pm. Turn up, no booking needed. Weeks can vary, and dates land with members first."
+          defaultContent="Friday 3pm to 8pm, pizza and a community movie night. Saturday 12pm to 8pm. Turn up, no booking needed. Weeks can vary, and dates land with members first."
           as="p"
           className="mb-6 max-w-2xl text-stone-600"
           multiline
