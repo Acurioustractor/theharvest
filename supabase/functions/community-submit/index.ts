@@ -1,7 +1,7 @@
 const GHL_API_BASE = "https://services.leadconnectorhq.com";
 const GHL_API_VERSION = "2021-07-28";
-const DEFAULT_HARVEST_INBOX_PIPELINE_ID = "ggQw10DuH0XRji6keimS";
-const DEFAULT_HARVEST_INBOX_NEW_STAGE_ID = "2eded979-7439-407d-89b6-762499b56658";
+const DEFAULT_HARVEST_INBOX_PIPELINE_ID = "5ZqAuFokM4LsNqMCMPmY";
+const DEFAULT_HARVEST_INBOX_NEW_STAGE_ID = "aafc9a01-1ad6-42c8-8c47-69a74cf1141d";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -125,7 +125,7 @@ const TYPE_TAGS: Record<string, string[]> = {
   "business-interest": ["role:supplier", "interest:markets"],
   "workshop-suggestion": ["interest:workshops"],
   "story-feature": ["role:storyteller", "interest:community"],
-  "venue-enquiry": ["interest:venue"],
+  "venue-enquiry": ["interest:venue", "act-inquiry"],
 };
 
 Deno.serve(async (req) => {

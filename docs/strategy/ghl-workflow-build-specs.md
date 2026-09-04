@@ -336,6 +336,50 @@ Notes:
 
 ---
 
+## 8. Harvest - Pizza RSVP Receipt
+
+Added 2026-09-05. The website RSVP (`/whats-on`, `eoi.submit`) tags the contact
+`rsvp:pizza` and `event:witta-pizza:YYYY-MM-DD`, writes the session and head count
+as a note, and posts the RSVP into Conversations. Nobody has been sent a confirmation
+since July because "Harvest - RSVP Pizza Dinner (tag)" was never published.
+
+**Trigger.** Contact tag added: `rsvp:pizza`. That fires on its own when the site
+tags the contact, and needs no env var. (The code also calls the workflow by id if
+`GHL_PIZZA_RSVP_WORKFLOW_ID` is set; use one or the other, not both, or people get
+two emails.)
+
+**Reply-To.** Set it to an inbox a person reads. `hi@act.place` is send-only, so
+"reply to this email" must not go there. Until decision 5 (sending domain,
+hello@theharvestwitta.com.au owner) is made, point Reply-To at benjamin@act.place.
+
+**Do not state** opening hours or the kids-eat-free rule in this email. Both are open
+decisions (hub page, decisions 1 and 4); link to /whats-on, which is edited once.
+
+**Email**
+
+Subject: You're on the list for pizza at The Harvest
+Preview: Thanks for letting us know you're coming.
+
+Hi {{contact.first_name}},
+
+You're on the list for pizza night at The Harvest, 9 Gumland Drive, Witta.
+
+Times for the night, and anything that changes, are on the What's On page:
+https://theharvestwitta.com.au/whats-on
+
+If your plans change, reply to this email and we'll take you off the count. The
+dough is made to the numbers, so it helps.
+
+Afterwards, two minutes here tells us what to do differently next time:
+https://theharvestwitta.com.au/pulse
+
+See you at the oven.
+
+The Harvest
+
+**After publishing:** run `npm run verify:forms:ghl`, then submit one RSVP with a
+test address and confirm one email arrives, not two.
+
 ## One-time cleanup: Harvest - Member Reconfirm
 
 Not a form workflow. A one-time campaign to clean up the 15 contacts tagged `harvest-member`
