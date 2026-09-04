@@ -5,6 +5,8 @@ const DEFAULT_HARVEST_INBOX_NEW_STAGE_ID = "aafc9a01-1ad6-42c8-8c47-69a74cf1141d
 // The existing "Message" custom field (contact.message). Populated so the ACT
 // notification workflow email can render the submitter's message via {{ contact.message }}.
 const DEFAULT_CONTACT_MESSAGE_FIELD_ID = "ceJz9FUf8dE4fmvnPDKd";
+// Existing contact.newsletter_consent single-option field (Yes / No).
+const DEFAULT_NEWSLETTER_CONSENT_FIELD_ID = "aVnqmajnysMtGYhLD0oA";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -161,6 +163,7 @@ Deno.serve(async req => {
 
   const payload = await req.json();
   const { name, email, subject, message, subscribe } = payload;
+  const newsletterConsent = subscribe === true;
 
   if (!name || !email || !message) {
     return jsonResponse({ success: false, error: "Name, email and message are required" }, 400);
@@ -199,7 +202,7 @@ Deno.serve(async req => {
     "harvest-website",
     "harvest-inbox",
     "act-inquiry", // ACT-wide inquiry marker the shared notification workflow triggers on
-    ...(subscribe ? ["comms:harvest-newsletter"] : []),
+    ...(newsletterConsent ? ["comms:harvest-newsletter"] : []),
   ];
 
   // Fold the subject into the message so the single "Message" field carries the
@@ -209,6 +212,13 @@ Deno.serve(async req => {
     : String(message);
   const messageFieldId =
     Deno.env.get("GHL_CONTACT_MESSAGE_FIELD_ID") || DEFAULT_CONTACT_MESSAGE_FIELD_ID;
+  const customFields = [{ id: messageFieldId, fieldValue: messageFieldValue }];
+  if (newsletterConsent) {
+    customFields.push({
+      id: Deno.env.get("GHL_NEWSLETTER_CONSENT_FIELD_ID") || DEFAULT_NEWSLETTER_CONSENT_FIELD_ID,
+      fieldValue: "Yes",
+    });
+  }
 
   // Create/update contact in GHL
   const contactResponse = await fetch(`${GHL_API_BASE}/contacts/upsert`, {
@@ -227,7 +237,7 @@ Deno.serve(async req => {
       source: "Harvest | Contact",
       // Populate contact.message so the ACT notification workflow email can show
       // what the person actually wrote (via {{ contact.message }}), not just their address.
-      customFields: [{ id: messageFieldId, value: messageFieldValue }],
+      customFields,
     }),
   });
 

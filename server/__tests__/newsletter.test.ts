@@ -17,6 +17,7 @@ vi.mock("../db", async (importOriginal) => {
   return {
     ...actual,
     createPulseResponse: vi.fn().mockResolvedValue({ id: 123 }),
+    createCommunitySubmission: vi.fn().mockResolvedValue({ id: 123 }),
   };
 });
 
@@ -40,6 +41,7 @@ describe("Go High Level Newsletter Integration", () => {
       GHL_GATHERING_RSVP_WORKFLOW_ID: "gathering-rsvp-workflow",
       GHL_CONTACT_FORM_WORKFLOW_ID: "contact-form-workflow",
       GHL_CONVERSATION_UNREAD_DELAY_MS: "0",
+      GHL_NEWSLETTER_CONSENT_FIELD_ID: "fixture-newsletter-consent",
     };
   });
 
@@ -138,6 +140,26 @@ describe("Go High Level Newsletter Integration", () => {
   });
 
   describe("upsertGHLContact", () => {
+    it.each([undefined, false, "false", "true", 1, {}, []].map(value => ({ value })))(
+      "does not overwrite newsletter preferences for ordinary upserts with $value consent",
+      async ({ value }) => {
+        mockFetch.mockResolvedValue({
+          ok: true,
+          json: async () => ({ contact: { id: "contact-123" } }),
+        });
+
+        const result = await upsertGHLContact({
+          email: "fixture@example.invalid",
+          tags: ["contact-form"],
+          // Exercise malformed runtime values as well as the typed false/omitted cases.
+          newsletterConsent: value as boolean | undefined,
+        });
+
+        expect(result.success).toBe(true);
+        expect(JSON.parse(mockFetch.mock.calls[0][1].body)).not.toHaveProperty("customFields");
+      },
+    );
+
     it("should return error when API credentials are not configured", async () => {
       process.env.GHL_API_KEY = "";
       process.env.GHL_LOCATION_ID = "";
@@ -212,6 +234,61 @@ describe("Go High Level Newsletter Integration", () => {
           },
         }),
       });
+    });
+
+    it.each([
+      { member: false, fieldId: "fixture-newsletter-consent", configured: true, workflow: "newsletter-workflow" },
+      { member: true, fieldId: "aVnqmajnysMtGYhLD0oA", configured: false, workflow: "member-welcome-workflow" },
+    ])("persists signup consent before tags and the $workflow", async ({ member, fieldId, configured, workflow }) => {
+      if (!configured) delete process.env.GHL_NEWSLETTER_CONSENT_FIELD_ID;
+      let finishUpsert!: (response: unknown) => void;
+      mockFetch.mockImplementationOnce(() => new Promise(resolve => { finishUpsert = resolve; }));
+      const caller = appRouter.createCaller(ctx);
+      const subscription = caller.newsletter.subscribe({
+        email: "fixture@example.invalid",
+        firstName: "Fixture",
+        member,
+      });
+
+      await vi.waitFor(() => expect(mockFetch).toHaveBeenCalledTimes(1));
+      const upsertBody = JSON.parse(mockFetch.mock.calls[0][1].body);
+      finishUpsert({
+        ok: true,
+        json: async () => ({ contact: { id: "contact-123" } }),
+      });
+      await expect(subscription).resolves.toMatchObject({ success: true });
+
+      expect(upsertBody.customFields).toEqual([{ id: fieldId, fieldValue: "Yes" }]);
+      const urls = mockFetch.mock.calls.map(([url]) => String(url));
+      expect(urls[0]).toBe("https://services.leadconnectorhq.com/contacts/upsert");
+      const tagIndex = urls.findIndex(url => url.endsWith("/contacts/contact-123/tags"));
+      const workflowIndex = urls.findIndex(url => url.endsWith(`/contacts/contact-123/workflow/${workflow}`));
+      expect(tagIndex).toBeGreaterThan(0);
+      expect(workflowIndex).toBeGreaterThan(tagIndex);
+      expect(JSON.parse(mockFetch.mock.calls[tagIndex][1].body).tags).toContain("comms:harvest-newsletter");
+    });
+
+    it.each(["http", "network"])("blocks tags and workflow enrollment when consent persistence fails through %s", async (failure) => {
+      if (failure === "network") {
+        mockFetch.mockRejectedValueOnce(new Error("Fixture network failure"));
+      } else {
+        mockFetch.mockResolvedValueOnce({
+          ok: false,
+          status: 422,
+          json: async () => ({ message: "Fixture consent field rejected" }),
+        });
+      }
+      const caller = appRouter.createCaller(ctx);
+
+      await expect(caller.newsletter.subscribe({
+        email: "fixture@example.invalid",
+        firstName: "Fixture",
+      })).rejects.toThrow();
+
+      expect(mockFetch).toHaveBeenCalledTimes(1);
+      expect(JSON.parse(mockFetch.mock.calls[0][1].body).customFields).toEqual([
+        { id: "fixture-newsletter-consent", fieldValue: "Yes" },
+      ]);
     });
 
     it("builds Harvest member tags without losing newsletter compatibility", () => {

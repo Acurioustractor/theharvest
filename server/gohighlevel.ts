@@ -10,6 +10,7 @@ import path from "path";
 
 const GHL_API_BASE = "https://services.leadconnectorhq.com";
 const GHL_API_VERSION = "2021-07-28";
+const DEFAULT_NEWSLETTER_CONSENT_FIELD_ID = "aVnqmajnysMtGYhLD0oA";
 
 interface GHLContactInput {
   email?: string;
@@ -121,7 +122,7 @@ export async function createGHLContact(input: GHLContactInput): Promise<{ succes
  * Upsert a contact in Go High Level (create or update if exists)
  * Useful when you want to update existing contacts instead of failing on duplicates
  */
-export async function upsertGHLContact(input: GHLContactInput): Promise<{ success: boolean; contactId?: string; error?: string }> {
+export async function upsertGHLContact(input: GHLContactInput & { newsletterConsent?: boolean }): Promise<{ success: boolean; contactId?: string; error?: string }> {
   const apiKey = process.env.GHL_API_KEY;
   const locationId = process.env.GHL_LOCATION_ID;
 
@@ -150,6 +151,12 @@ export async function upsertGHLContact(input: GHLContactInput): Promise<{ succes
         phone: input.phone || undefined,
         locationId: locationId,
         source: input.source || "Harvest | Website",
+        // Persist affirmative signup consent before downstream tags or workflows.
+        // Other contact updates leave existing newsletter preferences untouched.
+        customFields: input.newsletterConsent === true ? [{
+          id: process.env.GHL_NEWSLETTER_CONSENT_FIELD_ID || DEFAULT_NEWSLETTER_CONSENT_FIELD_ID,
+          fieldValue: "Yes",
+        }] : undefined,
       }),
     });
 

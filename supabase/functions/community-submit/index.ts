@@ -198,7 +198,7 @@ Deno.serve(async (req) => {
     if (fields.residencyType) tags.push(`residency-${fields.residencyType}`);
     if (fields.ideaType) tags.push(`idea-${fields.ideaType}`);
     if (fields.interestType) tags.push(`biz-${fields.interestType}`);
-    if (fields.helpType) tags.push(`pod:${String(fields.helpType).replace(/[^a-z0-9]+/gi, "-").toLowerCase()}`);
+    // helpType records an offer of help; pod membership is assigned after human review.
     if (fields.sourceCampaign) tags.push(`source:campaign:${String(fields.sourceCampaign).replace(/[^a-z0-9]+/gi, "-").toLowerCase()}`);
     if (fields.sourceContent) tags.push(`source:content:${String(fields.sourceContent).replace(/[^a-z0-9]+/gi, "-").toLowerCase()}`);
 
@@ -254,6 +254,7 @@ Deno.serve(async (req) => {
       if (fields.title) noteLines.push(`**Title:** ${fields.title}`);
       if (fields.description) noteLines.push(`**Description:** ${fields.description}`);
       if (fields.message) noteLines.push(`**Message:** ${fields.message}`);
+      if (fields.helpType) noteLines.push(`**Help preference:** ${fields.helpType}`);
       if (fields.businessName) noteLines.push(`**Business:** ${fields.businessName}`);
       if (fields.portfolioUrl) noteLines.push(`**Portfolio:** ${fields.portfolioUrl}`);
       if (fields.durationWeeks) noteLines.push(`**Duration:** ${fields.durationWeeks} weeks`);
@@ -300,6 +301,7 @@ Deno.serve(async (req) => {
             `<p><strong>${escapeHtml(String(type).toUpperCase())} submission (website)</strong></p>`,
             fields.title ? `<p>Title: ${escapeHtml(fields.title)}</p>` : "",
             fields.businessName ? `<p>Business: ${escapeHtml(fields.businessName)}</p>` : "",
+            fields.helpType ? `<p>Help preference: ${escapeHtml(fields.helpType)}</p>` : "",
             fields.eventType ? `<p>Event type: ${escapeHtml(fields.eventType)}</p>` : "",
             preferredDate ? `<p>Preferred date: ${escapeHtml(preferredDate)}</p>` : "",
             fields.guests ? `<p>Expected guests: ${escapeHtml(fields.guests)}</p>` : "",

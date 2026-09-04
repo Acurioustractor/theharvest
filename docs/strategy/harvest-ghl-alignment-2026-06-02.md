@@ -2,6 +2,8 @@
 
 > 2026-06-02. Verified live via `scripts/list-ghl-workflows-and-tags.ts` (read-only GHL API) + the workflow-list UI. Supersedes the "workflows verified live" claims in the May docs — they are now `draft`. Three problems, one decision, a clicked plan + a code plan.
 
+> Membership tag correction: the website represents membership with `tier:member` only. For the current tag contract, see [Harvest GHL Tag and Automation Map](harvest-ghl-tag-and-automation-map.md). The live-state observations below remain dated 2 June.
+
 ## Verified live state
 
 **Workflows (Harvest-relevant, from 18 in the shared ACT location):**
@@ -39,20 +41,20 @@ One tag per job. Scope + tier + role are the spine; interest/source/consent are 
 |---|---|---|
 | Scope (which list/site) | `harvest-website`, `harvest-newsletter` (the list), `comms:harvest-newsletter` (channel/consent) | — |
 | Journey stage | `tier:curious` → `tier:connected` → `tier:member` | — |
-| Role | `role:member`, `role:buyer`, `role:supplier` (maker/grower), `role:volunteer`, `role:partner` | — |
+| Role | `role:buyer`, `role:supplier` (maker/grower), `role:volunteer`, `role:partner` | — |
 | Interest | `interest:*` (namespaced) | `interest-*` (flat, after code migration) |
 | Source | `source:*` (namespaced) | `source-*` (flat, after code migration) |
 | Consent | `consent:newsletter-yes` | — |
 | Operational (events/shop/quiz) | keep flat: `rsvp-pizza-dinner`, `rsvp-maker-morning`, `shop-call-booked`, `quiz-*`, `witta-gathering-2026-06-20`; use namespaced `interest:markets` + `role:supplier` for shop intent | — |
 
-**The bridge that fixes the orphaned Journey:** whenever someone becomes a member, apply `tier:member` + `role:member` (not just `harvest-member`). Whenever someone follows, apply `tier:connected`. That feeds the Journey pipeline.
+**The bridge that fixes the orphaned Journey:** whenever someone becomes a member, apply `tier:member` (not just `harvest-member`). Membership is a tier; there is no separate member role tag. Whenever someone follows, apply `tier:connected`. That feeds the Journey pipeline.
 
 ## Realignment actions
 
 ### A. GHL UI — Ben clicks, launch-critical, do now (no deploy)
 1. **Publish the 5 draft workflows** (Follow Welcome, Member Welcome, Member Question, Shop Interest Receipt, Shop prospect→card). Test one enrol each — confirm the email fires.
 2. **Feed the Journey (in-workflow, no code):**
-   - Member Welcome → add action *Add Tag* `tier:member` + `role:member`
+   - Member Welcome → add action *Add Tag* `tier:member`
    - Follow Welcome → add action *Add Tag* `tier:connected`
    - Shop Interest Receipt → add action *Add Tag* `role:supplier`
 3. **Build the 3 calendar-tag workflows** per `ghl-calendar-tag-workflows-runbook.md` (7a/b/c). RSVP tags only — no tier change (an RSVP is not a subscribe).
@@ -60,7 +62,7 @@ One tag per job. Scope + tier + role are the spine; interest/source/consent are 
 ### B. Website code — SHIPPED to branch `wip/harvest-launch-fixes-2026-06-02` (not yet deployed)
 All in `server/routers.ts` (no `gohighlevel.ts` change needed — it POSTs tags to `/contacts/{id}/tags`, which merges and preserves colons):
 - `interest:*` / `source:*` are now canonical, **dual-written** with their flat `interest-*` / `source-*` aliases via `withFlatAlias()` so existing smart lists keep receiving contacts (NOT a hard switch — avoids silently dropping new contacts from flat-tag segments mid-launch).
-- Journey bridge applied at submit: member → `tier:member` + `role:member`; follower → `tier:connected`; quiz → `tier:curious`; shop EOI → `role:supplier`. Channel tag `comms:harvest-newsletter` added.
+- Journey bridge applied at submit: member → `tier:member`; follower → `tier:connected`; quiz → `tier:curious`; shop EOI → `role:supplier`. Channel tag `comms:harvest-newsletter` added.
 - Kept `harvest-*` scope tags + bare `newsletter`. 22 tests pass (2 new assertions pin the namespaced/tier output). `tsc` clean.
 - **Note:** because code now applies `tier:`/`role:`, the in-workflow bridge in A2 becomes redundant once this deploys — but tags are idempotent (set membership), so running both is harmless. After deploy, A2 can be dropped.
 
