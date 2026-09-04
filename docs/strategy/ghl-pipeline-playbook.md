@@ -196,13 +196,49 @@ engagement crowd) either way; those are tags, not a money motion. That pipeline,
 
 ## How to get back to people (the follow-up engine)
 
-Tracking is only half of it. The other half is making sure nobody waits on us.
+Rewritten 2026-09-05 after a two-day audit of the live location. What was here before assumed
+the board would be worked by hand. It was not: 43 cards sat in New, eleven of them labelled
+"Reply needed" since a July audit, and the oldest person had waited 112 days.
 
-- Give every pipeline card an **owner** and a **next-action date** in GHL.
-- The **nurture workflow** (shop nurture, spec 6) is the safety net: it follows up a few days
-  later so a card does not go cold while it waits for a human.
-- A simple daily habit beats any automation: open the board, work the left-most stages first,
-  move or date every card you touch.
+**Why the inbox lies.** Every form sends an instant acknowledgment. GHL then treats the thread as
+answered: unread drops to zero, "last message" is outbound, and the person disappears from every
+obvious view while they wait. The one signal GHL keeps that survives this is whether the last
+outbound message was **automated** (a workflow) or **manual** (a person typed it).
+
+**The model, two tags and one question.**
+
+| Tag | Means | Rule |
+| --- | --- | --- |
+| `project:act-XX` | which project this person belongs to | exactly one per contact, applied at capture |
+| `act-inquiry` | a human is expected to reply | applied by every ask-type form, in every project |
+
+*Waiting on a human* = tagged with the project, tagged `act-inquiry`, and the thread's last
+message is either inbound or an automated outbound. The moment someone replies from GHL the thread
+flips to manual and leaves the list on its own. Nothing to drag.
+
+**Where the list lives.** `npm run waiting:ghl` (`scripts/report-ghl-waiting.ts`, read-only)
+prints it with what each person asked; `--project gd` for Goods, `--all` for every project,
+`--md` for Notion. It works from the repo's API key and does not depend on which Conversations
+UI the account has. The same filter can be saved as a Conversations view where the UI allows
+tag plus last-outbound-type filtering; build it there for the daily reply loop, but the script is
+the reference.
+
+**What cannot be automated, and what to do instead.** GHL has no trigger for a manually sent
+message, so a pipeline card cannot move itself when you reply. That is why the board went stale.
+Do not use the Harvest Inbox pipeline as the reply queue; use it only for things that need more
+than a reply (a venue booking, a shop listing). Stop creating cards for RSVPs, newsletter signups
+and member comments, which never need one.
+
+**Blind spot.** Threads that only exist in Gmail (someone writes to benjamin@ or nicholas@
+directly) never reach GHL, so a long wait on the list is worth a Gmail `in:sent` check before
+treating it as real. The "Gmail Email to Contact" workflow misses these.
+
+**Reply from GHL, not Gmail,** so the manual flag is set and the person drops off the list.
+
+**Legacy ask tags** the script still honours until every form applies `act-inquiry`: Harvest
+`contact-form`, `venue-enquiry`, `shop-follow-up`, `shop-prospect`, `member-question`; Goods
+`goods-inquiry`, `goods-general-inquiry`. JusticeHub's contact form applies no ask tag at all and
+needs one before its enquiries can appear anywhere.
 
 ## Build checklist
 

@@ -46,8 +46,8 @@ interface GHLOpportunityInput {
   monetaryValue?: number;
 }
 
-const DEFAULT_HARVEST_INBOX_PIPELINE_ID = "ggQw10DuH0XRji6keimS";
-const DEFAULT_HARVEST_INBOX_NEW_STAGE_ID = "2eded979-7439-407d-89b6-762499b56658";
+const DEFAULT_HARVEST_INBOX_PIPELINE_ID = "5ZqAuFokM4LsNqMCMPmY";
+const DEFAULT_HARVEST_INBOX_NEW_STAGE_ID = "aafc9a01-1ad6-42c8-8c47-69a74cf1141d";
 
 /**
  * Create a contact in Go High Level

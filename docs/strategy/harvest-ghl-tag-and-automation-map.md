@@ -20,6 +20,30 @@ To build the workflows that do not exist in GHL yet, and to see the current env 
 - Do not remove legacy tags such as `act-hv`, `eoi-gathering-march-2026`, or `locals-day-march-2026`. They are historical context, not new trigger tags.
 - Use GHL tags and notes as the source of truth for membership, shop interest, questions, and follow-up.
 
+## The Inbox Axis (verified 2026-09-05)
+
+Two tags decide whether a person appears on the "waiting on a human" list. Everything else in
+this document is segmentation.
+
+| Tag | Means | Live count (2026-09-05) |
+| --- | --- | --- |
+| `project:act-hv` | belongs to The Harvest | 342 |
+| `act-inquiry` | a human is expected to reply | 17 on Harvest, 29 location-wide |
+
+Rules:
+- One `project:act-XX` per contact, applied at capture. The code form (`project:act-hv`) is
+  canonical across ACT. Hyphen forms are strays: `project-harvest` (2 contacts), `project-goods`
+  (14). `act-hv` exists in the tag library with zero contacts and should be deleted.
+- Every form whose submitter expects a reply applies `act-inquiry`. Today only the contact form
+  does. Shop EOI, venue enquiry and member question rely on their own tags
+  (`shop-follow-up`, `venue-enquiry`, `member-question`), which `scripts/report-ghl-waiting.ts`
+  honours as legacy until the handlers are updated.
+- `harvest-website`, `harvest-inbox`, `source:website` are source and state tags. None of them
+  means "asked something", and none of them is a project tag.
+
+The list itself: `npm run waiting:ghl`. See `ghl-pipeline-playbook.md`, "How to get back to
+people", for why the Conversations tab cannot show this on its own.
+
 ## Flow Tags
 
 > Reconciled to website code 2026-05-29. The code (`server/routers.ts` `buildNewsletterTags` + the Supabase edge functions `contact-form` / `community-submit`) is the source of truth for tags; this doc is kept in sync with it.
@@ -213,7 +237,7 @@ Note: the follow-vs-member split is live as of 2026-05-27. The footer "follow al
 - Shop follow-up: trigger on `interest:markets`, then branch by `shop-produce`, `shop-maker`, `shop-food`, or `shop-consignment`.
 - Current event RSVP: trigger on `witta-gathering-2026-06-20` or `harvest-event-attendee`.
 - Photo wall follow-up: trigger on `photo-wall` or `harvest-gathering-photos`; use `photo-wall-ready` to filter contacts with a response ready to display.
-- Contact form: trigger on `contact-form`; ACT notification routing uses `act-inquiry` + `project-harvest`.
+- Contact form: trigger on `contact-form`; ACT notification routing uses `act-inquiry` + `project:act-hv` (the doc previously said `project-harvest`, a stray hyphen tag on 2 contacts).
 - Inbox triage: filter on `harvest-inbox` --- set by event submission, business registration, workshop booking, member question, photo wall response, community submit, and gathering RSVP handler.
 - Community / GetInvolved triage: filter by type tag (`community-idea`, `residency-applicant`, `business-interest`, `workshop-suggestion`, `story-feature`, `venue-enquiry`).
 

@@ -36,6 +36,7 @@
     "audit:contacts:ghl": "tsx scripts/audit-ghl-contacts.ts",
     "report:member-audience:ghl": "tsx scripts/export-ghl-member-audience.ts",
     "desk:ghl": "tsx scripts/report-ghl-harvest-desk.ts",
+    "waiting:ghl": "tsx scripts/report-ghl-waiting.ts",
     "check:member-welcome:ghl": "tsx scripts/check-ghl-member-welcome.ts",
     "send:member-welcome:ghl": "tsx scripts/send-ghl-member-welcome-catchup.ts",
     "check:mighty-tags:ghl": "tsx scripts/ensure-ghl-mighty-tags.ts",

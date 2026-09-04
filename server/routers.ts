@@ -714,11 +714,8 @@ export const appRouter = router({
             ].join(""),
           }).catch(err => console.error("GHL inbox message failed (rsvp):", err));
 
-          await upsertGHLHarvestInboxOpportunity({
-            contactId: result.contactId,
-            name: formatHarvestInboxOpportunityName(input.name, `RSVP ${eventLabel}`),
-            source: `Harvest | RSVP ${eventLabel}`,
-          });
+          // No inbox card: an RSVP needs a confirmation, not a human reply.
+          // See docs/strategy/ghl-pipeline-playbook.md, "How to get back to people".
 
           // Receipt workflow: set GHL_PIZZA_RSVP_WORKFLOW_ID once the
           // "Harvest - RSVP Pizza Dinner (tag)" workflow is published in the
@@ -927,14 +924,8 @@ export const appRouter = router({
               result.contactId,
               `**Harvest member note**\n\n${input.notes}`,
             );
-            await upsertGHLHarvestInboxOpportunity({
-              contactId: result.contactId,
-              name: formatHarvestInboxOpportunityName(
-                [input.firstName, input.lastName].filter(Boolean).join(" "),
-                "Member comment",
-              ),
-              source: input.source || "Harvest | Member Signup",
-            });
+            // No inbox card: a signup comment is read, not replied to. The note
+            // keeps it on the contact. See ghl-pipeline-playbook.md.
           }
           const workflowId = isMember
             ? process.env.GHL_MEMBER_WELCOME_WORKFLOW_ID || process.env.GHL_NEWSLETTER_WORKFLOW_ID
@@ -1050,7 +1041,7 @@ export const appRouter = router({
           lastName: rest.join(" ") || undefined,
           phone: input.phone || undefined,
           source: input.source || "Harvest | Member Question",
-          tags: ["harvest-website", "tier:curious", "member-question", "harvest-inbox"],
+          tags: ["harvest-website", "tier:curious", "member-question", "harvest-inbox", "act-inquiry"],
         });
 
         if (!result.success) {
@@ -1119,6 +1110,7 @@ export const appRouter = router({
           tags: [
             "harvest-website",
             "shop-follow-up",
+            "act-inquiry",
             "shop-stage-1",
             "role:supplier",
             "interest:markets",
@@ -1217,11 +1209,7 @@ export const appRouter = router({
             result.contactId,
             `**Photo Wall — What would you love to see grow here?**\n\n${input.response}`
           ).catch(err => console.error("Photo wall note failed:", err));
-          upsertGHLHarvestInboxOpportunity({
-            contactId: result.contactId,
-            name: formatHarvestInboxOpportunityName(input.firstName, "Photo wall response"),
-            source: "Harvest | Photo Wall",
-          }).catch(err => console.error("GHL opportunity upsert failed (photo wall):", err));
+          // No inbox card: a photo-wall answer is read, not replied to.
         }
 
         // Trigger notification workflow if configured

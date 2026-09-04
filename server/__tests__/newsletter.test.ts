@@ -3,6 +3,15 @@ import { createGHLContact, upsertGHLContact } from "../gohighlevel";
 import { appRouter, buildNewsletterTags } from "../routers";
 import type { TrpcContext } from "../_core/context";
 
+// Pizza RSVP validation rejects past dates, so these tests must use a date
+// ahead of today rather than a fixed one. Weekday is computed in UTC, the same
+// way routers.ts reads an ISO date.
+function isoDateOfNextWeekday(weekday: number): string {
+  const date = new Date();
+  date.setUTCDate(date.getUTCDate() + ((weekday - date.getUTCDay() + 7) % 7 || 7) + 7);
+  return date.toISOString().slice(0, 10);
+}
+
 vi.mock("../db", async (importOriginal) => {
   const actual = await importOriginal<typeof import("../db")>();
   return {
@@ -282,19 +291,11 @@ describe("Go High Level Newsletter Integration", () => {
       );
       expect(JSON.parse(noteCall![1].body).body).toContain("I can help with planting days.");
 
+      // A signup comment is read, not replied to: note only, no inbox card.
       const opportunityCall = mockFetch.mock.calls.find(([url]) =>
         String(url).endsWith("/opportunities/upsert")
       );
-      expect(opportunityCall).toBeDefined();
-      const opportunityBody = JSON.parse(opportunityCall![1].body);
-      expect(opportunityBody).toMatchObject({
-        contactId: "contact-123",
-        name: "Mira Stone - Member comment",
-        source: "Harvest | Member Signup",
-        pipelineId: "ggQw10DuH0XRji6keimS",
-        pipelineStageId: "2eded979-7439-407d-89b6-762499b56658",
-        status: "open",
-      });
+      expect(opportunityCall).toBeUndefined();
     });
 
     it("does not sync pulse survey submissions to GHL without a name", async () => {
@@ -418,11 +419,12 @@ describe("Go High Level Newsletter Integration", () => {
 
     it("tags a pizza RSVP with its occurrence date and no historical launch tag", async () => {
       const caller = appRouter.createCaller(ctx);
+      const nextSaturday = isoDateOfNextWeekday(6);
 
       await caller.eoi.submit({
         name: "Phone Guest",
         phone: "0400000000",
-        occurrenceDate: "2026-07-25",
+        occurrenceDate: nextSaturday,
         session: "saturday",
         source: "What's On page",
       });
@@ -440,7 +442,7 @@ describe("Go High Level Newsletter Integration", () => {
       );
       expect(JSON.parse(tagCall![1].body).tags).toEqual(expect.arrayContaining([
         "event:witta-pizza",
-        "event:witta-pizza:2026-07-25",
+        `event:witta-pizza:${nextSaturday}`,
         "rsvp:pizza",
         "harvest-event-attendee",
         "harvest-website",
@@ -448,15 +450,11 @@ describe("Go High Level Newsletter Integration", () => {
       ]));
       expect(JSON.parse(tagCall![1].body).tags).not.toContain("witta-gathering-2026-06-20");
 
+      // An RSVP needs a confirmation, not a human reply: no inbox card.
       const opportunityCall = mockFetch.mock.calls.find(([url]) =>
         String(url).endsWith("/opportunities/upsert")
       );
-      expect(opportunityCall).toBeDefined();
-      expect(JSON.parse(opportunityCall![1].body)).toMatchObject({
-        contactId: "contact-123",
-        name: "Phone Guest - RSVP Witta Pizza 2026-07-25",
-        source: "Harvest | RSVP Witta Pizza 2026-07-25",
-      });
+      expect(opportunityCall).toBeUndefined();
     });
 
     it("rejects pizza RSVPs for invalid weekdays or mismatched sessions", async () => {
@@ -465,14 +463,14 @@ describe("Go High Level Newsletter Integration", () => {
       await expect(caller.eoi.submit({
         name: "Wrong Weekday",
         phone: "0400000000",
-        occurrenceDate: "2026-07-27",
+        occurrenceDate: isoDateOfNextWeekday(1),
         session: "unsure",
       })).rejects.toThrow("Choose a Friday, Saturday or Sunday pizza date.");
 
       await expect(caller.eoi.submit({
         name: "Wrong Session",
         phone: "0400000000",
-        occurrenceDate: "2026-07-25",
+        occurrenceDate: isoDateOfNextWeekday(6),
         session: "friday",
       })).rejects.toThrow("The session does not match the date you selected.");
     });
@@ -528,15 +526,11 @@ describe("Go High Level Newsletter Integration", () => {
         "harvest-inbox",
       ]));
 
+      // A photo-wall answer is read, not replied to: no inbox card.
       const opportunityCall = mockFetch.mock.calls.find(([url]) =>
         String(url).endsWith("/opportunities/upsert")
       );
-      expect(opportunityCall).toBeDefined();
-      expect(JSON.parse(opportunityCall![1].body)).toMatchObject({
-        contactId: "contact-123",
-        name: "Mira - Photo wall response",
-        source: "Harvest | Photo Wall",
-      });
+      expect(opportunityCall).toBeUndefined();
     });
 
     it("slugifies pulse interest tags before syncing to GHL", async () => {
