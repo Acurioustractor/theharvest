@@ -5,6 +5,7 @@ import { storagePut } from "./storage.js";
 import { getDb } from "./db.js";
 import { pulseResponses } from "../drizzle/schema.js";
 import { eq } from "drizzle-orm";
+import { captureHarvestSubmission } from "./harvestCapture.js";
 import { upsertGHLContact, upsertGHLHarvestInboxOpportunity, addGHLContactNote, addGHLContactTag, addGHLInboundFormMessage, getGHLContact, triggerGHLWorkflow, getGHLContactCountByTag, getGHLSocialAccounts, createGHLSocialPost, getGHLSocialPosts, searchGHLContactsByTag, createGHLEmailTemplate } from "./gohighlevel.js";
 import { getGalleryPhotos, addGalleryPhoto, removeGalleryPhoto } from "./photoWallGallery.js";
 import { empathyLedgerClient } from "./empathyLedgerClient.js";
@@ -677,34 +678,23 @@ export const appRouter = router({
           },
         });
 
-        const { firstName, lastName } = splitPersonName(input.name);
-        const result = await upsertGHLContact({
-          email: input.email || undefined,
-          firstName,
-          lastName,
-          phone: input.phone || undefined,
+        const result = await captureHarvestSubmission({
+          form: "rsvp",
+          name: input.name,
+          email: input.email,
+          phone: input.phone,
           source: `Harvest | RSVP ${eventLabel}`,
-          tags: [
-            "event:witta-pizza",
-            occurrenceTag,
-            "rsvp:pizza",
-            "harvest-event-attendee",
-            "harvest-website",
-            "harvest-inbox",
-          ],
-        });
-
-        if (result.contactId) {
-          const noteLines = [`**RSVP - ${eventLabel}**`];
-          noteLines.push(`**Session:** ${sessionLabel}`);
-          if (input.people) noteLines.push(`**People:** ${input.people}`);
-          if (input.message) noteLines.push(`**Message:** ${input.message}`);
-          noteLines.push(`**Source:** ${input.source || "whats-on"}`);
-          await addGHLContactNote(result.contactId, noteLines.join("\n\n"));
-
-          await addGHLInboundFormMessage({
-            contactId: result.contactId,
-            fromEmail: input.email || undefined,
+          tags: ["event:witta-pizza", occurrenceTag, "rsvp:pizza", "harvest-event-attendee", "harvest-inbox"],
+          // An RSVP needs a confirmation, not a human reply, so no act-inquiry and no card.
+          needsReply: false,
+          note: [
+            `**RSVP - ${eventLabel}**`,
+            `**Session:** ${sessionLabel}`,
+            input.people ? `**People:** ${input.people}` : "",
+            input.message ? `**Message:** ${input.message}` : "",
+            `**Source:** ${input.source || "whats-on"}`,
+          ].filter(Boolean).join("\n\n"),
+          message: {
             subject: `RSVP: ${input.name.trim()} for ${eventLabel} (${sessionLabel})`,
             html: [
               `<p><strong>RSVP for ${eventLabel} (website)</strong></p>`,
@@ -712,21 +702,11 @@ export const appRouter = router({
               input.people ? `<p>People: ${input.people}</p>` : "",
               input.message ? `<p>${escapeHtml(input.message)}</p>` : "",
             ].join(""),
-          }).catch(err => console.error("GHL inbox message failed (rsvp):", err));
-
-          // No inbox card: an RSVP needs a confirmation, not a human reply.
-          // See docs/strategy/ghl-pipeline-playbook.md, "How to get back to people".
-
-          // Receipt workflow: set GHL_PIZZA_RSVP_WORKFLOW_ID once the
-          // "Harvest - RSVP Pizza Dinner (tag)" workflow is published in the
-          // GHL UI (it is DRAFT as of 2026-07-06). Skipped silently until then.
-          const workflowId = process.env.GHL_PIZZA_RSVP_WORKFLOW_ID;
-          if (workflowId) {
-            triggerGHLWorkflow(workflowId, result.contactId).catch(err =>
-              console.error("GHL workflow trigger failed (pizza rsvp):", err)
-            );
-          }
-        }
+          },
+          // "Harvest - RSVP Pizza Dinner" in GHL. Spec 8 in ghl-workflow-build-specs.md.
+          // Logged as missing until the workflow is published and the id is set.
+          receiptWorkflowEnv: "GHL_PIZZA_RSVP_WORKFLOW_ID",
+        });
 
         if (!submission && !result.contactId) {
           throw new Error(
