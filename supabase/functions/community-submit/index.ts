@@ -119,13 +119,13 @@ async function addInboundFormMessage(input: {
 // Canonical ACT GHL namespaces only. Community submissions remain in the
 // community lane and never grant a communications consent tag.
 const TYPE_TAGS: Record<string, string[]> = {
-  volunteer: ["interest:volunteer", "role:volunteer", "harvest-website"],
-  idea: ["community-idea", "harvest-website"],
-  residency: ["residency-applicant", "harvest-website"],
-  "business-interest": ["business-interest", "harvest-website"],
-  "workshop-suggestion": ["workshop-suggestion", "harvest-website"],
-  "story-feature": ["story-feature", "harvest-website"],
-  "venue-enquiry": ["venue-enquiry", "harvest-website", "act-inquiry"],
+  volunteer: ["interest:volunteer", "role:volunteer"],
+  idea: ["interest:community"],
+  residency: ["role:resident", "interest:community"],
+  "business-interest": ["role:supplier", "interest:markets"],
+  "workshop-suggestion": ["interest:workshops"],
+  "story-feature": ["role:storyteller", "interest:community"],
+  "venue-enquiry": ["interest:venue", "act-inquiry"],
 };
 
 Deno.serve(async (req) => {
@@ -194,10 +194,13 @@ Deno.serve(async (req) => {
   // 2. Upsert contact in GHL
   let ghlContactId: string | null = null;
   if (apiKey && locationId) {
-    const tags = [...(TYPE_TAGS[type] ?? ["harvest-website"]), "harvest-inbox", "project:act-hv"];
-    if (fields.residencyType) tags.push(`residency-${fields.residencyType}`);
-    if (fields.ideaType) tags.push(`idea-${fields.ideaType}`);
-    if (fields.interestType) tags.push(`biz-${fields.interestType}`);
+    const tags = [
+      "project:act-hv",
+      "lane:community",
+      ...(TYPE_TAGS[type] ?? []),
+      "harvest-website",
+      "harvest-inbox",
+    ];
     // helpType records an offer of help; pod membership is assigned after human review.
     if (fields.sourceCampaign) tags.push(`source:campaign:${String(fields.sourceCampaign).replace(/[^a-z0-9]+/gi, "-").toLowerCase()}`);
     if (fields.sourceContent) tags.push(`source:content:${String(fields.sourceContent).replace(/[^a-z0-9]+/gi, "-").toLowerCase()}`);
