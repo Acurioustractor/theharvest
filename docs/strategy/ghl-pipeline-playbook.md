@@ -216,12 +216,40 @@ outbound message was **automated** (a workflow) or **manual** (a person typed it
 message is either inbound or an automated outbound. The moment someone replies from GHL the thread
 flips to manual and leaves the list on its own. Nothing to drag.
 
-**Where the list lives.** `npm run waiting:ghl` (`scripts/report-ghl-waiting.ts`, read-only)
-prints it with what each person asked; `--project gd` for Goods, `--all` for every project,
-`--md` for Notion. It works from the repo's API key and does not depend on which Conversations
-UI the account has. The same filter can be saved as a Conversations view where the UI allows
-tag plus last-outbound-type filtering; build it there for the daily reply loop, but the script is
-the reference.
+**Where the list lives: GHL's own SLA timers.** Set up 6 September 2026 under
+Conversations > Settings > SLA Settings, after Ben pushed back on running any of this from a
+scheduled agent. He was right, and this is better than anything in this repo:
+
+| Setting | Value | Why |
+| --- | --- | --- |
+| Type | Common SLA | one target across channels |
+| Due Soon | 8 hours | amber |
+| Overdue | 24 hours | red. Hours are the only unit offered, 24 the maximum, and SLAs run on calendar hours, so red means "nobody answered within a day" rather than a breached promise |
+| Automation messages | **Count none as a valid response** | the whole thing. The auto-ack no longer stops the clock |
+| Conversations AI | Don't count AI replies as valid | same reason |
+| Who can dismiss | Admins only | dismissing clears a red timer without replying, which is the move that hid nine people for three months |
+
+Conversations then carries a timer per thread, a **Filter by SLA Status** (Active / Due Soon /
+Overdue) and **Sort by Longest Overdue**. Nothing has to run for that to be true, which is the
+point: no cron, no cloud agent, no tag to keep fresh.
+
+Two limits worth knowing. GHL's docs say the setting applies to **new incoming messages only**,
+so it does not reach back over a backlog. And SLA breaches could not trigger workflows when this
+was written, though GHL has since shipped a Due Soon / Overdue / Dismissed workflow trigger, so
+check before assuming a notification is impossible.
+
+**The script is the audit, not the system.** `npm run waiting:ghl`
+(`scripts/report-ghl-waiting.ts`) still prints who is waiting and what they asked; `--project gd`
+for Goods, `--all` for every project, `--md` for Notion. Run it when the list feels wrong, not on
+a schedule. It does two things SLA cannot: it reads what each person actually wrote, and it can be
+cross-checked against Gmail sent mail so people answered outside GHL are excluded.
+
+**`needs-reply` is a backlog tag, not a system.** `npm run waiting:sync:ghl:apply` adds it to
+whoever is waiting and removes it from whoever no longer is, scoped to projects where GHL sees all
+the traffic (Harvest alone today). It exists because SLA does not reach back over the nine people
+who were already waiting on 5 September. Work those, then delete the tag and let SLA carry
+everything after. A tag that only stays true when something runs is the failure this section
+exists to prevent.
 
 **What cannot be automated, and what to do instead.** GHL has no trigger for a manually sent
 message, so a pipeline card cannot move itself when you reply. That is why the board went stale.
