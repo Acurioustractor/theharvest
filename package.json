@@ -49,7 +49,6 @@
     "backfill:inbox:ghl": "tsx scripts/backfill-ghl-harvest-inbox.ts",
     "count:rsvps:ghl": "tsx scripts/count-soft-opening-rsvps.ts",
     "verify:forms:ghl": "tsx scripts/verify-form-tests.ts",
-    "smoke:contact-form": "node --import tsx scripts/smoke-contact-form.ts",
     "refresh:contacts:ghl": "tsx scripts/audit-ghl-contacts.ts --apply-tags",
     "prepare:contacts:ghl": "tsx scripts/audit-ghl-contacts.ts --apply-tags --apply-name-backfill --apply-review-tags",
     "refresh:this-week": "tsx scripts/refresh-this-week-ghl-status.ts",
