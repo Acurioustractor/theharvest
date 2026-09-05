@@ -41,6 +41,10 @@ Rules:
 - `harvest-website`, `harvest-inbox`, `source:website` are source and state tags. None of them
   means "asked something", and none of them is a project tag.
 
+`needs-reply` is a third, temporary tag: the backlog of people who were already waiting when SLA
+timers were switched on (6 Sep 2026), maintained by `npm run waiting:sync:ghl:apply`. Delete it
+once that backlog is cleared. From then on GHL's own SLA timers are the queue.
+
 The list itself: `npm run waiting:ghl`. See `ghl-pipeline-playbook.md`, "How to get back to
 people", for why the Conversations tab cannot show this on its own.
 
