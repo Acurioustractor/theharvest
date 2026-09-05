@@ -6,7 +6,7 @@ import { getDb } from "./db.js";
 import { pulseResponses } from "../drizzle/schema.js";
 import { eq } from "drizzle-orm";
 import { captureHarvestSubmission } from "./harvestCapture.js";
-import { upsertGHLContact, upsertGHLHarvestInboxOpportunity, addGHLContactNote, addGHLContactTag, addGHLInboundFormMessage, getGHLContact, triggerGHLWorkflow, getGHLContactCountByTag, getGHLSocialAccounts, createGHLSocialPost, getGHLSocialPosts, searchGHLContactsByTag, createGHLEmailTemplate } from "./gohighlevel.js";
+import { upsertGHLContact, upsertGHLHarvestInboxOpportunity, addGHLContactNote, addGHLContactTag, addGHLInboundFormMessage, markGHLConversationUnread, getGHLContact, triggerGHLWorkflow, getGHLContactCountByTag, getGHLSocialAccounts, createGHLSocialPost, getGHLSocialPosts, searchGHLContactsByTag, createGHLEmailTemplate } from "./gohighlevel.js";
 import { getGalleryPhotos, addGalleryPhoto, removeGalleryPhoto } from "./photoWallGallery.js";
 import { empathyLedgerClient } from "./empathyLedgerClient.js";
 import {
@@ -80,13 +80,11 @@ const PULSE_WOULD_USE_OPTIONS = [
 const PIZZA_SESSION_LABELS = {
   friday: "Friday, pizza and movie, 3pm to 8pm",
   saturday: "Saturday, 12pm to 8pm",
-  sunday: "Sunday, 12pm to 6pm",
   unsure: "Not sure yet",
 } as const;
 const PIZZA_SESSION_BY_DAY: Record<number, keyof typeof PIZZA_SESSION_LABELS> = {
   5: "friday",
   6: "saturday",
-  0: "sunday",
 };
 
 type RsvpPayload = {
@@ -120,7 +118,7 @@ function validatePizzaOccurrence(occurrenceDate: string, session: keyof typeof P
   if (!expectedSession) {
     throw new TRPCError({
       code: "BAD_REQUEST",
-      message: "Choose a Friday, Saturday or Sunday pizza date.",
+      message: "Choose a Friday or Saturday pizza date.",
     });
   }
   if (occurrenceDate < todayInBrisbane()) {
@@ -645,7 +643,7 @@ export const appRouter = router({
         email: z.string().email().nullish(),
         phone: z.string().max(60).nullish(),
         occurrenceDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
-        session: z.enum(["friday", "saturday", "sunday", "unsure"]),
+        session: z.enum(["friday", "saturday", "unsure"]),
         people: z.number().int().min(1).max(30).optional(),
         message: z.string().max(2000).optional(),
         source: z.string().max(100).optional(),
@@ -908,14 +906,33 @@ export const appRouter = router({
             );
             // No inbox card: a signup comment is read, not replied to. The note
             // keeps it on the contact. See ghl-pipeline-playbook.md.
+            await addGHLInboundFormMessage({
+              contactId: result.contactId,
+              fromEmail: input.email,
+              subject: `Member comment from ${[input.firstName, input.lastName].filter(Boolean).join(" ")}`,
+              html: `<p><strong>Member comment (website)</strong></p><p>${escapeHtml(input.notes)}</p>`,
+            }).catch(err => console.error("GHL inbox message failed (member comment):", err));
           }
           const workflowId = isMember
             ? process.env.GHL_MEMBER_WELCOME_WORKFLOW_ID || process.env.GHL_NEWSLETTER_WORKFLOW_ID
             : process.env.GHL_NEWSLETTER_WORKFLOW_ID;
           if (workflowId) {
-            triggerGHLWorkflow(workflowId, result.contactId).catch(err =>
-              console.error("GHL workflow trigger failed (newsletter):", err)
-            );
+            if (input.notes) {
+              const workflowResult = await triggerGHLWorkflow(workflowId, result.contactId);
+              if (!workflowResult.success) {
+                console.error("GHL workflow trigger failed (newsletter):", workflowResult.error);
+              }
+            } else {
+              triggerGHLWorkflow(workflowId, result.contactId).catch(err =>
+                console.error("GHL workflow trigger failed (newsletter):", err)
+              );
+            }
+          }
+          if (input.notes) {
+            const unreadResult = await markGHLConversationUnread(result.contactId);
+            if (!unreadResult.success) {
+              console.error("GHL mark unread failed (member comment):", unreadResult.error);
+            }
           }
         }
 

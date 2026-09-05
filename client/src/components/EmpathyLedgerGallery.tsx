@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { trpc } from "@/lib/trpc";
+import { EMPATHY_LEDGER_FALLBACK_IMAGES } from "@/data/empathyLedgerFallback";
 
 // Media asset returned by Harvest Gallery API
 interface ELMediaAsset {
@@ -27,68 +28,18 @@ interface HarvestGalleryProps {
 // Shown when Empathy Ledger is unreachable or has nothing tagged yet, so a
 // "Photo Gallery" section never renders as an empty placeholder. Reuses
 // real photos already bundled with the site.
-const FALLBACK_PHOTOS: ELMediaAsset[] = [
-  {
-    id: "fallback-2",
-    src: "/images/harvest-grow.jpg",
-    title: "Grow: The Garden",
-    description: "Garden beds growing at The Harvest in Witta.",
-    altText: "The garden at The Harvest",
-    category: "after",
-    date: null,
-    tags: [],
-    themes: [],
-    sortOrder: 1,
-  },
-  {
-    id: "fallback-3",
-    src: "/images/harvest-make.jpg",
-    title: "Make: The Art Space",
-    description: "Space for making and creative work at The Harvest.",
-    altText: "Making space at The Harvest",
-    category: "after",
-    date: null,
-    tags: [],
-    themes: [],
-    sortOrder: 2,
-  },
-  {
-    id: "fallback-4",
-    src: "/images/harvest-gather.jpg",
-    title: "Gather",
-    description: "People coming together on site at The Harvest.",
-    altText: "Community gathering at The Harvest",
-    category: "milestone",
-    date: null,
-    tags: [],
-    themes: [],
-    sortOrder: 3,
-  },
-  {
-    id: "fallback-5",
-    src: "/images/community-gathering.jpg",
-    title: "Community Work Day",
-    description: "Neighbours coming together to turn an overgrown nursery into a community hub.",
-    altText: "Community work day at The Harvest",
-    category: "during",
-    date: null,
-    tags: [],
-    themes: [],
-    sortOrder: 4,
-  },
-  {
-    id: "fallback-6",
-    src: "/images/market-atmosphere.jpg",
-    title: "A Day on Site",
-    description: "Neighbours gathered at The Harvest in Witta.",
-    altText: "People gathered at The Harvest",
-    category: "milestone",
-    date: null,
-    tags: [],
-    themes: [],
-    sortOrder: 5,
-  },
-];
+const FALLBACK_PHOTOS: ELMediaAsset[] = EMPATHY_LEDGER_FALLBACK_IMAGES.map((item, index) => ({
+  id: item.id,
+  src: item.src,
+  title: item.title,
+  description: item.description,
+  altText: item.title,
+  category: "general",
+  date: null,
+  tags: [],
+  themes: [],
+  sortOrder: index,
+}));
 
 /**
  * Transform Supabase storage URL to use image transformation

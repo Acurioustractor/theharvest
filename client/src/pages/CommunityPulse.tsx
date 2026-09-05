@@ -690,10 +690,9 @@ function ThankYou({ isMobile }: { isMobile: boolean }) {
         maxWidth: 480,
         margin: "0 auto 40px",
       }}>
-        Come see the place for yourself. Most weekends we fire the pizza oven:
-        Friday 3pm to 8pm with a community movie night, Saturday 12pm to 8pm,
-        Sunday 12pm to 6pm. No booking needed. Weeks can vary, and members hear
-        the dates first.
+        Come see the place for yourself. We fire the pizza oven on Friday from
+        3pm to 8pm with a community movie night, and Saturday from 12pm to 8pm.
+        No booking needed. Weeks can vary, and members hear the dates first.
       </p>
       <a
         href="/membership"

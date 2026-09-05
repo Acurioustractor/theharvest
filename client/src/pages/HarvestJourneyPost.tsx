@@ -133,7 +133,7 @@ export default function HarvestJourneyPost() {
               <EditableText
                 page="what-is-the-harvest"
                 slot="visiting-basics"
-                defaultContent="Most weekends we fire the pizza oven: Friday 3 to 8pm with a community movie night, Saturday 12 to 8pm, Sunday 12 to 6pm. Weeks can vary, so dates land on the members page first. Dennis, our resident pizza teacher, will show you how to stretch a base. No booking needed."
+                defaultContent="We fire the pizza oven on Friday from 3 to 8pm with a community movie night, and Saturday from 12 to 8pm. Weeks can vary, so dates land on the members page first. Dennis, our resident pizza teacher, will show you how to stretch a base. No booking needed."
                 as="p"
                 multiline
               />

@@ -428,6 +428,57 @@ export async function addGHLInboundFormMessage(input: {
   }
 }
 
+export async function markGHLConversationUnread(
+  contactId: string,
+): Promise<{ success: boolean; error?: string }> {
+  const apiKey = process.env.GHL_API_KEY;
+  const locationId = process.env.GHL_LOCATION_ID;
+  if (!apiKey || !locationId) {
+    return { success: false, error: "GHL credentials not configured." };
+  }
+
+  const delayMs = Number(process.env.GHL_CONVERSATION_UNREAD_DELAY_MS ?? "3000");
+  if (Number.isFinite(delayMs) && delayMs > 0) {
+    await new Promise(resolve => setTimeout(resolve, delayMs));
+  }
+
+  const headers = {
+    "Content-Type": "application/json",
+    Accept: "application/json",
+    Authorization: `Bearer ${apiKey}`,
+    Version: GHL_CONVERSATIONS_API_VERSION,
+  };
+
+  try {
+    const searchRes = await fetch(
+      `${GHL_API_BASE}/conversations/search?locationId=${locationId}&contactId=${contactId}`,
+      { headers },
+    );
+    if (!searchRes.ok) {
+      return { success: false, error: "Could not find the GHL conversation." };
+    }
+    const data = await searchRes.json() as { conversations?: { id: string }[] };
+    const conversationId = data.conversations?.[0]?.id;
+    if (!conversationId) {
+      return { success: false, error: "No GHL conversation available." };
+    }
+
+    const updateRes = await fetch(`${GHL_API_BASE}/conversations/${conversationId}`, {
+      method: "PUT",
+      headers,
+      body: JSON.stringify({ unreadCount: 1 }),
+    });
+    if (!updateRes.ok) {
+      const errorData = await updateRes.json().catch(() => ({})) as GHLErrorResponse;
+      return { success: false, error: errorData.message || "Could not mark the conversation unread." };
+    }
+    return { success: true };
+  } catch (error) {
+    console.error("GHL mark conversation unread failed:", error);
+    return { success: false, error: "Unable to mark the conversation unread." };
+  }
+}
+
 export async function addGHLContactNote(contactId: string, noteBody: string): Promise<{ success: boolean; error?: string }> {
   const apiKey = process.env.GHL_API_KEY;
 

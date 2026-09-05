@@ -1,55 +1,72 @@
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { useEffect } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { Redirect, useLocation } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { SeasonalProvider } from "./contexts/SeasonalContext";
-import BauhausHome from "./pages/BauhausHome";
-import Account from "./pages/Account";
-import BauhausZone from "./pages/BauhausZone";
-import CommunityPulse from "./pages/CommunityPulse";
-import Contact from "./pages/Contact";
-import Compendium from "./pages/Compendium";
-import ComponentShowcase from "./pages/ComponentShowcase";
-import EventFeedback from "./pages/EventFeedback";
-import BrandGuide from "./pages/BrandGuide";
-import BrandDevelopmentWorkbench from "./pages/BrandDevelopmentWorkbench";
-import Financials from "./pages/Financials";
-import LocalEnterprises from "./pages/LocalEnterprises";
-import PartnerPortal from "./pages/PartnerPortal";
-import Proposal from "./pages/Proposal";
-import LeaseDraft from "./pages/LeaseDraft";
-import Social from "./pages/Social";
-import SocialPlanner from "./pages/SocialPlanner";
-import LogoStory from "./pages/LogoStory";
-import Works from "./pages/Works";
-import WorkDetail from "./pages/WorkDetail";
-import HarvestJourneyPost from "./pages/HarvestJourneyPost";
-import Membership from "./pages/Membership";
-import Shop from "./pages/Shop";
-import GetInvolved from "./pages/GetInvolved";
-import SitePlan from "./pages/SitePlan";
-import LaunchRedesign from "./pages/LaunchRedesign";
-import HarvestControlRoom from "./pages/HarvestControlRoom";
-import Privacy from "./pages/Privacy";
-import AdminDashboard from "./pages/AdminDashboard";
-import MediaLibraryAdmin from "./pages/admin/MediaLibraryAdmin";
-import RsvpAdmin from "./pages/admin/RsvpAdmin";
-import PulseAdmin from "./pages/admin/PulseAdmin";
-import EventFeedbackAdmin from "./pages/admin/EventFeedbackAdmin";
-import Login from "./pages/Login";
-import StrategicAnalysis from "./pages/StrategicAnalysis";
-import VenueHire from "./pages/VenueHire";
-import WhatsOn from "./pages/WhatsOn";
-import NotFound from "./pages/NotFound";
+
+const BauhausHome = lazy(() => import("./pages/BauhausHome"));
+const Account = lazy(() => import("./pages/Account"));
+const BauhausZone = lazy(() => import("./pages/BauhausZone"));
+const CommunityPulse = lazy(() => import("./pages/CommunityPulse"));
+const Contact = lazy(() => import("./pages/Contact"));
+const EventFeedback = lazy(() => import("./pages/EventFeedback"));
+const LocalEnterprises = lazy(() => import("./pages/LocalEnterprises"));
+const Works = lazy(() => import("./pages/Works"));
+const WorkDetail = lazy(() => import("./pages/WorkDetail"));
+const HarvestJourneyPost = lazy(() => import("./pages/HarvestJourneyPost"));
+const Membership = lazy(() => import("./pages/Membership"));
+const Shop = lazy(() => import("./pages/Shop"));
+const GetInvolved = lazy(() => import("./pages/GetInvolved"));
+const StartHere = lazy(() => import("./pages/StartHere"));
+const HarvestControlRoom = lazy(() => import("./pages/HarvestControlRoom"));
+const Privacy = lazy(() => import("./pages/Privacy"));
+const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
+const MediaLibraryAdmin = lazy(() => import("./pages/admin/MediaLibraryAdmin"));
+const RsvpAdmin = lazy(() => import("./pages/admin/RsvpAdmin"));
+const PulseAdmin = lazy(() => import("./pages/admin/PulseAdmin"));
+const EventFeedbackAdmin = lazy(() => import("./pages/admin/EventFeedbackAdmin"));
+const Login = lazy(() => import("./pages/Login"));
+const VenueHire = lazy(() => import("./pages/VenueHire"));
+const Media = lazy(() => import("./pages/Media"));
+const WhatsOn = lazy(() => import("./pages/WhatsOn"));
+const NotFound = lazy(() => import("./pages/NotFound"));
 
 function Router() {
-  const [location] = useLocation();
+  const [rawLocation] = useLocation();
+  const location = rawLocation.length > 1 ? rawLocation.replace(/\/+$/, "") : rawLocation;
 
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [location]);
+    const hash = window.location.hash.slice(1);
+    if (!hash) {
+      window.scrollTo(0, 0);
+      return;
+    }
+
+    let frame = 0;
+    let attempts = 0;
+    const targetId = (() => {
+      try {
+        return decodeURIComponent(hash);
+      } catch {
+        return hash;
+      }
+    })();
+    const scrollToTarget = () => {
+      const target = document.getElementById(targetId);
+      if (target) {
+        target.scrollIntoView({ block: "start" });
+        return;
+      }
+      if (attempts < 120) {
+        attempts += 1;
+        frame = window.requestAnimationFrame(scrollToTarget);
+      }
+    };
+    frame = window.requestAnimationFrame(scrollToTarget);
+    return () => window.cancelAnimationFrame(frame);
+  }, [rawLocation]);
 
   // One-click dev admin login: visit any page with ?devAdmin=1 to enable.
   // Only works on localhost. `?devAdmin=0` forces the local opt-out.
@@ -76,9 +93,10 @@ function Router() {
   if (location === "/gather") return <Redirect to="/whats-on" />;
   if (location === "/about") return <Redirect to="/what-is-the-harvest" />;
   if (location === "/contact") return <Contact />;
-  if (location === "/compendium") return <Compendium />;
-  if (location === "/brand-guide") return <BrandGuide />;
-  if (location === "/brand-development") return <BrandDevelopmentWorkbench />;
+  if (location === "/compendium") return <Redirect to="/what-is-the-harvest" />;
+  if (location === "/brand-guide" || location === "/brand-development") {
+    return <Redirect to="/what-is-the-harvest" />;
+  }
   if (location === "/bauhaus" || location === "/bauhaus/") return <Redirect to="/" />;
   if (location.startsWith("/bauhaus/")) {
     const zoneId = location.slice("/bauhaus/".length).split("/")[0];
@@ -88,28 +106,23 @@ function Router() {
   if (location === "/witta-pizza") return <WhatsOn />;
   if (location === "/pizza") return <Redirect to="/witta-pizza" />;
   if (location === "/venue-hire") return <VenueHire />;
+  if (location === "/media" || location === "/press") return <Media />;
   if (location === "/enterprises") return <LocalEnterprises />;
-  if (location === "/site-plan") return <SitePlan />;
-  if (location === "/social") return <Social />;
-  if (location === "/social-planner") return <SocialPlanner />;
+  if (location === "/site-plan") return <Redirect to="/what-is-the-harvest" />;
+  if (location === "/social") return <Redirect to="/whats-on" />;
   if (location === "/pulse") return <CommunityPulse />;
-  if (location === "/logo-story") return <LogoStory />;
+  if (location === "/logo-story") return <Redirect to="/what-is-the-harvest" />;
   if (location === "/photo-wall" || location.startsWith("/photo-wall/")) return <Redirect to="/whats-on" />;
   if (location === "/witta") return <Redirect to="/what-is-the-harvest" />;
   if (location === "/login") return <Login />;
   if (location === "/account") return <Account />;
-  if (location === "/partner-portal") return <PartnerPortal />;
   if (location === "/admin") return <AdminDashboard />;
   if (location === "/admin/control-room") return <HarvestControlRoom />;
   if (location === "/admin/media-library") return <MediaLibraryAdmin />;
   if (location === "/admin/rsvps") return <RsvpAdmin />;
   if (location === "/admin/pulse") return <PulseAdmin />;
   if (location === "/admin/feedback") return <EventFeedbackAdmin />;
-  if (location === "/components") return <ComponentShowcase />;
-  if (location === "/strategic-analysis") return <StrategicAnalysis />;
-  if (location === "/proposal") return <Proposal />;
-  if (location === "/lease-draft") return <LeaseDraft />;
-  if (location === "/financials") return <Financials />;
+  if (location === "/components") return <Redirect to="/what-is-the-harvest" />;
   if (location === "/works") return <Works />;
   if (location.startsWith("/works/")) {
     const slug = location.slice("/works/".length).split("/")[0];
@@ -123,13 +136,18 @@ function Router() {
   if (location === "/blog" || location.startsWith("/blog/")) return <Redirect to="/whats-on" />;
   if (location === "/membership") return <Membership />;
   if (location === "/shop") return <Shop />;
-  if (location === "/stories" || location.startsWith("/stories/")) return <Redirect to="/whats-on" />;
+  if (location === "/stories") return <Works />;
+  if (location.startsWith("/stories/")) {
+    const slug = location.slice("/stories/".length).split("/")[0];
+    return <WorkDetail slug={slug} />;
+  }
   if (location === "/get-involved") return <GetInvolved />;
+  if (location === "/start" || location === "/start-here") return <StartHere />;
   if (location === "/story") return <Redirect to="/whats-on" />;
   if (location === "/people" || location.startsWith("/people/")) return <Redirect to="/whats-on" />;
   if (location === "/garden-launch" || location === "/june-20") return <Redirect to="/whats-on" />;
   if (location === "/privacy") return <Privacy />;
-  if (location === "/launch-redesign") return <LaunchRedesign />;
+  if (location === "/launch-redesign") return <Redirect to="/what-is-the-harvest" />;
   if (location === "/new-look-test" || location === "/review-test") return <Redirect to="/" />;
   if (location.startsWith("/feedback")) {
     const eventId = location.split("/feedback/")[1];
@@ -147,7 +165,17 @@ function App() {
           <TooltipProvider>
             <Toaster />
             <RouteIdentity />
-            <Router />
+            <Suspense
+              fallback={(
+                <div
+                  className="min-h-screen bg-[#F5F0E8]"
+                  role="status"
+                  aria-label="Loading page"
+                />
+              )}
+            >
+              <Router />
+            </Suspense>
           </TooltipProvider>
         </SeasonalProvider>
       </ThemeProvider>

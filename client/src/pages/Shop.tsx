@@ -54,8 +54,8 @@ export default function Shop() {
             Witta hasn't had a shop in a long while.
           </h1>
           <p className="mt-7 max-w-2xl text-xl leading-relaxed text-white/80 md:text-2xl">
-            Around 1,300 people live here, with nowhere to buy a loaf of bread or the thing
-            your neighbour grew. The Shop is a small, slow attempt to put one back: a shared
+            There is nowhere here to buy a loaf of bread or the thing your neighbour grew.
+            The Shop is a small, slow attempt to put one back: a shared
             shelf for the growers and makers who already live around Witta and Maleny. The
             first shelves are being shaped now, and Susie and Joey steward the place day to
             day. Not a supermarket, not a boutique. A shelf with honest signage, kept simple

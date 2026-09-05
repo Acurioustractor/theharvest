@@ -38,8 +38,5 @@
   "rewrites": [
     { "source": "/api/trpc/:path*", "destination": "/api/trpc/[trpc]" },
     { "source": "/((?!api/).*)", "destination": "/index.html" }
-  ],
-  "crons": [
-    { "path": "/api/crons/sync-ready-posts", "schedule": "*/5 * * * *" }
   ]
 }
