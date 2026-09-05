@@ -24,12 +24,19 @@ import "dotenv/config";
  * nicholas@ directly) never reach GHL, so a long wait here is worth a
  * `in:sent` check in Gmail before treating it as real.
  *
- * Read-only. No writes to GHL.
+ * Read-only, unless --sync-tag --apply is passed (see below).
  *
  *   npm run waiting:ghl                    Harvest, plain table
  *   npm run waiting:ghl -- --project gd    Goods
  *   npm run waiting:ghl -- --all           every project
  *   npm run waiting:ghl -- --md            markdown, for pasting into Notion
+ *
+ * To review the same list inside GHL:
+ *   npm run waiting:sync:ghl               what the `needs-reply` tag would change
+ *   npm run waiting:sync:ghl:apply         write it
+ * Then in GHL: Contacts, filter Tags is `needs-reply` (add `project:act-hv` for
+ * one project), Save as a Smart List. That works on every GHL version, unlike
+ * the Conversations tag filter.
  */
 
 const GHL_API_BASE = "https://services.leadconnectorhq.com";
@@ -42,11 +49,30 @@ const BRISBANE_UTC_OFFSET_HOURS = 10;
 // those forms apply today; they can be deleted once the forms are fixed.
 const ASKED_TAG = "act-inquiry";
 
+// The tag this script maintains so the same list is reviewable inside GHL.
+// GHL cannot be asked "who is waiting on a human", because the auto-ack makes
+// every thread look answered; it can be asked "who has this tag". So the tag is
+// the answer: added to whoever is waiting, removed from whoever no longer is,
+// on every --sync-tag --apply run. Never edit it by hand in GHL, the next sync
+// overwrites it. Only projects with syncTag are tagged, see the field comment.
+const NEEDS_REPLY_TAG = "needs-reply";
+
 type Project = {
   code: string;
   name: string;
   projectTag: string;
   legacyAskedTags: string[];
+  /**
+   * Maintain the `needs-reply` tag for this project, so its waiting list is
+   * reviewable inside GHL. Only safe where GHL sees all the traffic. Harvest
+   * arrives through website forms, so it does. Goods, JusticeHub and CONTAINED
+   * run on relationships Ben and Nic carry in Gmail, which GHL never sees, so
+   * tagging them would mark people who were answered days ago. Checked on
+   * 2026-09-05: no existing tag separates the two (`role:partner` covers both
+   * Christine Tylor, never emailed, and people emailed last week). Flip these
+   * on when the "Gmail Email to Contact" workflow reliably files those threads.
+   */
+  syncTag?: boolean;
   /** Pipeline used as a manual worklist, if the project has one. */
   inboxPipelineId?: string;
   inboxStages?: Record<string, string>;
@@ -58,6 +84,7 @@ const PROJECTS: Record<string, Project> = {
     name: "The Harvest",
     projectTag: "project:act-hv",
     legacyAskedTags: ["contact-form", "venue-enquiry", "shop-follow-up", "shop-prospect", "member-question"],
+    syncTag: true,
     inboxPipelineId: process.env.GHL_HARVEST_INBOX_PIPELINE_ID ?? "5ZqAuFokM4LsNqMCMPmY",
     inboxStages: {
       "aafc9a01-1ad6-42c8-8c47-69a74cf1141d": "New",
@@ -134,6 +161,7 @@ type Waiting = {
   message: string;
   card: string;
   conversationId: string;
+  contactId: string;
 };
 
 const apiKey = process.env.GHL_API_KEY;
@@ -281,6 +309,7 @@ async function waitingFor(project: Project, inbound: GhlConversation[], robotAns
           : "no card"
         : "n/a",
       conversationId: c.id,
+      contactId: c.contactId,
     });
   }
   return waiting.sort((a, b) => b.days - a.days);
@@ -306,10 +335,82 @@ function print(project: Project, waiting: Waiting[], markdown: boolean, today: s
   console.log();
 }
 
+async function contactIdsWithTag(tag: string): Promise<Set<string>> {
+  const ids = new Set<string>();
+  let searchAfter: unknown[] | undefined;
+  for (;;) {
+    const body: Record<string, unknown> = {
+      locationId,
+      pageLimit: 100,
+      filters: [{ field: "tags", operator: "eq", value: tag }],
+    };
+    if (searchAfter) body.searchAfter = searchAfter;
+    const res = await fetch(`${GHL_API_BASE}/contacts/search`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        Version: CONTACTS_API_VERSION,
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+    if (!res.ok) throw new Error(`GHL ${res.status} on /contacts/search: ${(await res.text()).slice(0, 200)}`);
+    const page = (await res.json()) as { contacts?: { id: string; searchAfter?: unknown[] }[] };
+    const rows = page.contacts ?? [];
+    rows.forEach((c) => ids.add(c.id));
+    if (rows.length < 100) break;
+    searchAfter = rows.at(-1)?.searchAfter;
+    if (!searchAfter) break;
+  }
+  return ids;
+}
+
+async function editTag(method: "POST" | "DELETE", contactId: string, tag: string): Promise<boolean> {
+  const res = await fetch(`${GHL_API_BASE}/contacts/${contactId}/tags`, {
+    method,
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      Version: CONTACTS_API_VERSION,
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ tags: [tag] }),
+  });
+  if (!res.ok) {
+    console.error(`  ${method} ${tag} on ${contactId} failed: ${res.status} ${(await res.text()).slice(0, 120)}`);
+  }
+  return res.ok;
+}
+
+/** Reconcile NEEDS_REPLY_TAG so GHL's own Contacts filter shows the waiting list. */
+async function syncNeedsReplyTag(waiting: Waiting[], apply: boolean) {
+  const shouldHave = new Map(waiting.map((w) => [w.contactId, w]));
+  const has = await contactIdsWithTag(NEEDS_REPLY_TAG);
+  const toAdd = [...shouldHave.keys()].filter((id) => !has.has(id));
+  const toRemove = [...has].filter((id) => !shouldHave.has(id));
+
+  console.log(`\n${NEEDS_REPLY_TAG}: ${has.size} tagged now, ${shouldHave.size} waiting.`);
+  console.log(`  add ${toAdd.length}, remove ${toRemove.length}${apply ? "" : "   (dry run, pass --apply to write)"}`);
+  for (const id of toAdd) {
+    const w = shouldHave.get(id)!;
+    console.log(`  + ${w.name} <${w.email}> ${w.days}d`);
+  }
+  for (const id of toRemove) console.log(`  - ${id} (answered, or no longer matches)`);
+  if (!apply) return;
+
+  let ok = 0;
+  for (const id of toAdd) if (await editTag("POST", id, NEEDS_REPLY_TAG)) ok++;
+  for (const id of toRemove) if (await editTag("DELETE", id, NEEDS_REPLY_TAG)) ok++;
+  console.log(`  wrote ${ok}/${toAdd.length + toRemove.length}`);
+}
+
 async function main() {
   const args = process.argv.slice(2);
   const markdown = args.includes("--md");
   const all = args.includes("--all");
+  const syncTag = args.includes("--sync-tag");
+  const apply = args.includes("--apply");
   const projectArg = args[args.indexOf("--project") + 1];
   const codes = all ? Object.keys(PROJECTS) : [args.includes("--project") ? projectArg : "hv"];
   const unknown = codes.filter((c) => !PROJECTS[c]);
@@ -327,9 +428,24 @@ async function main() {
   if (!markdown) {
     console.log(`Location-wide: ${inbound.length} threads unanswered, ${robotAnswered.length} robot-answered.\n`);
   }
+  const taggable: Waiting[] = [];
   for (const code of codes) {
     const project = PROJECTS[code];
-    print(project, await waitingFor(project, inbound, robotAnswered), markdown, today);
+    const waiting = await waitingFor(project, inbound, robotAnswered);
+    if (project.syncTag) taggable.push(...waiting);
+    print(project, waiting, markdown, today);
+  }
+
+  if (syncTag) {
+    // Reconcile against the projects actually scanned. With one project it would
+    // strip the tag from every other project's waiting contacts, so refuse.
+    if (!all) {
+      console.error("--sync-tag needs --all, or it would remove the tag from the projects it did not scan.");
+      process.exit(1);
+    }
+    const synced = Object.values(PROJECTS).filter((p) => p.syncTag).map((p) => p.name);
+    console.log(`\nTagging ${synced.join(", ")} only. The rest run on Gmail relationships GHL cannot see.`);
+    await syncNeedsReplyTag([...new Map(taggable.map((w) => [w.contactId, w])).values()], apply);
   }
 }
 
