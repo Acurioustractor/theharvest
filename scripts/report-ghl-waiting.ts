@@ -383,8 +383,12 @@ async function editTag(method: "POST" | "DELETE", contactId: string, tag: string
   return res.ok;
 }
 
-/** Reconcile NEEDS_REPLY_TAG so GHL's own Contacts filter shows the waiting list. */
-async function syncNeedsReplyTag(waiting: Waiting[], apply: boolean) {
+/**
+ * Reconcile NEEDS_REPLY_TAG so GHL's own Contacts filter shows the waiting list.
+ * Returns the number of writes that failed, so a partial reconcile cannot look
+ * like a clean run to a scheduler.
+ */
+async function syncNeedsReplyTag(waiting: Waiting[], apply: boolean): Promise<number> {
   const shouldHave = new Map(waiting.map((w) => [w.contactId, w]));
   const has = await contactIdsWithTag(NEEDS_REPLY_TAG);
   const toAdd = [...shouldHave.keys()].filter((id) => !has.has(id));
@@ -397,12 +401,14 @@ async function syncNeedsReplyTag(waiting: Waiting[], apply: boolean) {
     console.log(`  + ${w.name} <${w.email}> ${w.days}d`);
   }
   for (const id of toRemove) console.log(`  - ${id} (answered, or no longer matches)`);
-  if (!apply) return;
+  if (!apply) return 0;
 
   let ok = 0;
   for (const id of toAdd) if (await editTag("POST", id, NEEDS_REPLY_TAG)) ok++;
   for (const id of toRemove) if (await editTag("DELETE", id, NEEDS_REPLY_TAG)) ok++;
-  console.log(`  wrote ${ok}/${toAdd.length + toRemove.length}`);
+  const attempted = toAdd.length + toRemove.length;
+  console.log(`  wrote ${ok}/${attempted}`);
+  return attempted - ok;
 }
 
 async function main() {
@@ -445,7 +451,13 @@ async function main() {
     }
     const synced = Object.values(PROJECTS).filter((p) => p.syncTag).map((p) => p.name);
     console.log(`\nTagging ${synced.join(", ")} only. The rest run on Gmail relationships GHL cannot see.`);
-    await syncNeedsReplyTag([...new Map(taggable.map((w) => [w.contactId, w])).values()], apply);
+    const failed = await syncNeedsReplyTag([...new Map(taggable.map((w) => [w.contactId, w])).values()], apply);
+    if (failed > 0) {
+      // A partial reconcile leaves the Smart List wrong in a way nobody can see
+      // from GHL. Exit non-zero so a scheduler or a person notices.
+      console.error(`\n${failed} tag write(s) failed: the needs-reply list is only partly reconciled. Re-run.`);
+      process.exit(1);
+    }
   }
 }
 
