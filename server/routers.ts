@@ -6,7 +6,7 @@ import { getDb } from "./db.js";
 import { pulseResponses } from "../drizzle/schema.js";
 import { eq } from "drizzle-orm";
 import { captureHarvestSubmission } from "./harvestCapture.js";
-import { upsertGHLContact, upsertGHLHarvestInboxOpportunity, addGHLContactNote, addGHLContactTag, addGHLInboundFormMessage, markGHLConversationUnread, getGHLContact, triggerGHLWorkflow, getGHLContactCountByTag, getGHLSocialAccounts, createGHLSocialPost, getGHLSocialPosts, searchGHLContactsByTag, createGHLEmailTemplate } from "./gohighlevel.js";
+import { addGHLContactNote, addGHLContactTag, getGHLContact, getGHLContactCountByTag, getGHLSocialAccounts, createGHLSocialPost, getGHLSocialPosts, searchGHLContactsByTag, createGHLEmailTemplate } from "./gohighlevel.js";
 import { getGalleryPhotos, addGalleryPhoto, removeGalleryPhoto } from "./photoWallGallery.js";
 import { empathyLedgerClient } from "./empathyLedgerClient.js";
 import {
@@ -283,17 +283,7 @@ const SHOP_INTEREST_TAGS: Record<ShopInterestOfferType, string> = {
   "help-shape": "shop-help-shape",
 };
 
-function splitPersonName(name: string) {
-  const parts = name.trim().split(/\s+/).filter(Boolean);
-  return {
-    firstName: parts[0],
-    lastName: parts.slice(1).join(" ") || undefined,
-  };
-}
 
-function formatHarvestInboxOpportunityName(name: string, flow: string) {
-  return `${name.trim()} - ${flow}`;
-}
 
 function slugifyTagPart(value: string) {
   return value
@@ -420,41 +410,24 @@ export const appRouter = router({
           status: "pending",
         });
 
-        // Create/update GHL contact with event submission tags
+        // GHL is best-effort here: the event is already saved above.
         try {
-          const { firstName, lastName } = splitPersonName(input.submittedBy);
-          const result = await upsertGHLContact({
+          await captureHarvestSubmission({
+            form: "event-submission",
+            name: input.submittedBy,
             email: input.contactEmail,
-            firstName,
-            lastName,
             source: "Harvest | Event",
-            tags: ["event-submission", "harvest-website", "harvest-inbox"],
-          });
-
-          if (result.contactId) {
-            await addGHLContactNote(result.contactId,
-              `**Event Submission**\n\n**Title:** ${input.title}\n**Date:** ${input.date}\n**Time:** ${input.time}\n**Location:** ${input.location}\n**Category:** ${input.category}\n**Description:** ${input.description}`
-            );
-            await upsertGHLHarvestInboxOpportunity({
-              contactId: result.contactId,
-              name: formatHarvestInboxOpportunityName(input.submittedBy, "Event submission"),
-              source: "Harvest | Event",
-            });
-
-            await addGHLInboundFormMessage({
-              contactId: result.contactId,
-              fromEmail: input.contactEmail,
+            tags: ["event-submission", "harvest-inbox"],
+            // Reviewed and approved by a person; a card tracks that, not a reply.
+            needsReply: false,
+            note: `**Event Submission**\n\n**Title:** ${input.title}\n**Date:** ${input.date}\n**Time:** ${input.time}\n**Location:** ${input.location}\n**Category:** ${input.category}\n**Description:** ${input.description}`,
+            message: {
               subject: `Event submission: ${input.title}`,
               html: `<p><strong>Community event submission (website)</strong></p><p>${escapeHtml(input.title)}, ${escapeHtml(input.date)} ${escapeHtml(input.time)}, ${escapeHtml(input.location)} (${escapeHtml(input.category)})</p><p>${escapeHtml(input.description)}</p>`,
-            }).catch(err => console.error("GHL inbox message failed (event submit):", err));
-
-            const workflowId = process.env.GHL_EVENT_SUBMIT_WORKFLOW_ID;
-            if (workflowId) {
-              triggerGHLWorkflow(workflowId, result.contactId).catch(err =>
-                console.error("GHL workflow trigger failed (event submit):", err)
-              );
-            }
-          }
+            },
+            card: { title: "Event submission" },
+            receiptWorkflowEnv: "GHL_EVENT_SUBMIT_WORKFLOW_ID",
+          });
         } catch (err) {
           console.error("GHL event contact creation failed:", err);
         }
@@ -513,42 +486,24 @@ export const appRouter = router({
           status: "pending",
         });
 
-        // Create/update GHL contact with business registration tags
+        // GHL is best-effort here: the business is already saved above.
         try {
-          const { firstName, lastName } = splitPersonName(input.submittedBy);
-          const result = await upsertGHLContact({
+          await captureHarvestSubmission({
+            form: "business-registration",
+            name: input.submittedBy,
             email: input.submitterEmail,
-            firstName,
-            lastName,
             phone: input.phone,
             source: "Harvest | Business",
-            tags: ["business-registration", "harvest-website", "harvest-inbox"],
-          });
-
-          if (result.contactId) {
-            await addGHLContactNote(result.contactId,
-              `**Business Registration**\n\n**Business Name:** ${input.name}\n**Category:** ${input.category}\n**Description:** ${input.description}\n**Address:** ${input.address || "Not provided"}\n**Website:** ${input.website || "Not provided"}`
-            );
-            await upsertGHLHarvestInboxOpportunity({
-              contactId: result.contactId,
-              name: formatHarvestInboxOpportunityName(input.submittedBy, "Business registration"),
-              source: "Harvest | Business",
-            });
-
-            await addGHLInboundFormMessage({
-              contactId: result.contactId,
-              fromEmail: input.submitterEmail,
+            tags: ["business-registration", "harvest-inbox"],
+            needsReply: false,
+            note: `**Business Registration**\n\n**Business Name:** ${input.name}\n**Category:** ${input.category}\n**Description:** ${input.description}\n**Address:** ${input.address || "Not provided"}\n**Website:** ${input.website || "Not provided"}`,
+            message: {
               subject: `Business registration: ${input.name}`,
               html: `<p><strong>Business registration (website)</strong></p><p>${escapeHtml(input.name)} (${escapeHtml(input.category)})</p><p>${escapeHtml(input.description)}</p>`,
-            }).catch(err => console.error("GHL inbox message failed (business reg):", err));
-
-            const workflowId = process.env.GHL_BUSINESS_REG_WORKFLOW_ID;
-            if (workflowId) {
-              triggerGHLWorkflow(workflowId, result.contactId).catch(err =>
-                console.error("GHL workflow trigger failed (business reg):", err)
-              );
-            }
-          }
+            },
+            card: { title: "Business registration" },
+            receiptWorkflowEnv: "GHL_BUSINESS_REG_WORKFLOW_ID",
+          });
         } catch (err) {
           console.error("GHL business contact creation failed:", err);
         }
@@ -746,35 +701,18 @@ export const appRouter = router({
         specialRequests: z.string().optional(),
       }))
       .mutation(async ({ input }) => {
-        const { firstName, lastName } = splitPersonName(input.name);
-
-        const result = await upsertGHLContact({
+        await captureHarvestSubmission({
+          form: "workshop-booking",
+          name: input.name,
           email: input.email,
-          firstName,
-          lastName,
           phone: input.phone,
           source: "Harvest | Workshop",
-          tags: ["workshop-booking", "harvest-website", "harvest-inbox"],
+          tags: ["workshop-booking", "harvest-inbox"],
+          needsReply: false,
+          note: `**Workshop Booking**\n\n**Workshop:** ${input.workshopTitle}\n**Date:** ${input.workshopDate}\n**Attendees:** ${input.attendees}\n**Dietary:** ${input.dietaryRequirements || "None"}\n**Special Requests:** ${input.specialRequests || "None"}`,
+          card: { title: "Workshop booking" },
+          receiptWorkflowEnv: "GHL_WORKSHOP_WORKFLOW_ID",
         });
-
-        if (result.contactId) {
-          await addGHLContactNote(result.contactId,
-            `**Workshop Booking**\n\n**Workshop:** ${input.workshopTitle}\n**Date:** ${input.workshopDate}\n**Attendees:** ${input.attendees}\n**Dietary:** ${input.dietaryRequirements || "None"}\n**Special Requests:** ${input.specialRequests || "None"}`
-          );
-          await upsertGHLHarvestInboxOpportunity({
-            contactId: result.contactId,
-            name: formatHarvestInboxOpportunityName(input.name, "Workshop booking"),
-            source: "Harvest | Workshop",
-          });
-
-          const workflowId = process.env.GHL_WORKSHOP_WORKFLOW_ID;
-          if (workflowId) {
-            triggerGHLWorkflow(workflowId, result.contactId).catch(err =>
-              console.error("GHL workflow trigger failed (workshop):", err)
-            );
-          }
-        }
-
         return { success: true, message: "Booking request submitted. We'll be in touch to confirm." };
       }),
   }),
@@ -791,30 +729,18 @@ export const appRouter = router({
         interests: z.array(z.string().max(80)).max(12).optional(),
       }))
       .mutation(async ({ input }) => {
-        const { firstName, lastName } = splitPersonName(input.name);
-        const result = await upsertGHLContact({
+        const interestsList = input.interests?.join(", ") || "None selected";
+        await captureHarvestSubmission({
+          form: "quiz",
+          name: input.name,
           email: input.email,
-          firstName,
-          lastName,
           source: "Harvest | Quiz",
           // A quiz-taker is a first touch: tier:curious feeds the top of the Journey.
-          tags: [...QUIZ_PERSONA_TAGS[input.persona], "quiz-completed", "harvest-website", "tier:curious"],
+          tags: [...QUIZ_PERSONA_TAGS[input.persona], "quiz-completed", "tier:curious"],
+          needsReply: false,
+          note: `**Visitor Quiz Result**\n\n**Persona:** ${input.persona}\n**Motivation:** ${input.motivation || "Not specified"}\n**Visit Frequency:** ${input.frequency || "Not specified"}\n**Interests:** ${interestsList}`,
+          receiptWorkflowEnv: "GHL_QUIZ_WORKFLOW_ID",
         });
-
-        if (result.contactId) {
-          const interestsList = input.interests?.join(", ") || "None selected";
-          await addGHLContactNote(result.contactId,
-            `**Visitor Quiz Result**\n\n**Persona:** ${input.persona}\n**Motivation:** ${input.motivation || "Not specified"}\n**Visit Frequency:** ${input.frequency || "Not specified"}\n**Interests:** ${interestsList}`
-          );
-
-          const workflowId = process.env.GHL_QUIZ_WORKFLOW_ID;
-          if (workflowId) {
-            triggerGHLWorkflow(workflowId, result.contactId).catch(err =>
-              console.error("GHL workflow trigger failed (quiz):", err)
-            );
-          }
-        }
-
         return { success: true, message: "Welcome to The Harvest community!" };
       }),
   }),
@@ -882,60 +808,38 @@ export const appRouter = router({
           extraTags,
         });
 
-        const result = await upsertGHLContact({
-          email: input.email,
+        const isMember = Boolean(input.member || interests.includes("membership"));
+        const fullName = [input.firstName, input.lastName].filter(Boolean).join(" ");
+        const result = await captureHarvestSubmission({
+          form: input.notes ? "member-comment" : "newsletter",
+          name: fullName,
           firstName: input.firstName,
           lastName: input.lastName,
-          phone: input.phone || undefined,
+          email: input.email,
+          phone: input.phone,
           source: input.source || "Harvest | Newsletter",
           tags: allTags,
+          // A signup comment is read, not replied to: note and message, no card.
+          needsReply: false,
           // Submitting this dedicated signup action is the newsletter opt-in.
           newsletterConsent: true,
+          ...(input.notes
+            ? {
+                note: `**Harvest member note**\n\n${input.notes}`,
+                message: {
+                  subject: `Member comment from ${fullName}`,
+                  html: `<p><strong>Member comment (website)</strong></p><p>${escapeHtml(input.notes)}</p>`,
+                },
+                markUnread: true,
+              }
+            : {}),
+          receiptWorkflowEnv: isMember
+            ? ["GHL_MEMBER_WELCOME_WORKFLOW_ID", "GHL_NEWSLETTER_WORKFLOW_ID"]
+            : "GHL_NEWSLETTER_WORKFLOW_ID",
         });
-
         if (!result.success) {
           throw new Error(result.error || "Failed to subscribe");
         }
-
-        if (result.contactId) {
-          const isMember = Boolean(input.member || interests.includes("membership"));
-          if (input.notes) {
-            await addGHLContactNote(
-              result.contactId,
-              `**Harvest member note**\n\n${input.notes}`,
-            );
-            // No inbox card: a signup comment is read, not replied to. The note
-            // keeps it on the contact. See ghl-pipeline-playbook.md.
-            await addGHLInboundFormMessage({
-              contactId: result.contactId,
-              fromEmail: input.email,
-              subject: `Member comment from ${[input.firstName, input.lastName].filter(Boolean).join(" ")}`,
-              html: `<p><strong>Member comment (website)</strong></p><p>${escapeHtml(input.notes)}</p>`,
-            }).catch(err => console.error("GHL inbox message failed (member comment):", err));
-          }
-          const workflowId = isMember
-            ? process.env.GHL_MEMBER_WELCOME_WORKFLOW_ID || process.env.GHL_NEWSLETTER_WORKFLOW_ID
-            : process.env.GHL_NEWSLETTER_WORKFLOW_ID;
-          if (workflowId) {
-            if (input.notes) {
-              const workflowResult = await triggerGHLWorkflow(workflowId, result.contactId);
-              if (!workflowResult.success) {
-                console.error("GHL workflow trigger failed (newsletter):", workflowResult.error);
-              }
-            } else {
-              triggerGHLWorkflow(workflowId, result.contactId).catch(err =>
-                console.error("GHL workflow trigger failed (newsletter):", err)
-              );
-            }
-          }
-          if (input.notes) {
-            const unreadResult = await markGHLConversationUnread(result.contactId);
-            if (!unreadResult.success) {
-              console.error("GHL mark unread failed (member comment):", unreadResult.error);
-            }
-          }
-        }
-
         return {
           success: true,
           message: input.member ? "Successfully joined the Harvest member list!" : "Successfully subscribed to the newsletter!",
@@ -964,8 +868,6 @@ export const appRouter = router({
           connect: z.string().trim().max(2000).optional(),
         }))
         .mutation(async ({ input }) => {
-          const [firstName, ...rest] = input.name.trim().split(/\s+/);
-
           const created = await createMemberWallEntry({
             name: input.name.trim(),
             email: input.email,
@@ -983,35 +885,29 @@ export const appRouter = router({
           }
 
           try {
-            const result = await upsertGHLContact({
+            await captureHarvestSubmission({
+              form: "member-wall",
+              name: input.name,
               email: input.email,
-              firstName,
-              lastName: rest.join(" ") || undefined,
-              phone: input.phone || undefined,
+              phone: input.phone,
               source: "Harvest | Member Wall",
               tags: [
                 "tier:member",
                 ...withFlatAlias("interest:membership"),
                 ...withFlatAlias("interest:community"),
                 "member-wall",
-                "harvest-website",
               ],
+              needsReply: false,
+              note: [
+                "**Members wall profile**",
+                "",
+                `**Business / what they do:** ${input.business || "Not specified"}`,
+                `**Location:** ${input.location || "Not specified"}`,
+                `**What they like to do:** ${input.likesToDo || "Not specified"}`,
+                `**What they need:** ${input.needs || "Not specified"}`,
+                `**How they would like to connect:** ${input.connect || "Not specified"}`,
+              ].join("\n"),
             });
-
-            if (result.contactId) {
-              await addGHLContactNote(
-                result.contactId,
-                [
-                  "**Members wall profile**",
-                  "",
-                  `**Business / what they do:** ${input.business || "Not specified"}`,
-                  `**Location:** ${input.location || "Not specified"}`,
-                  `**What they like to do:** ${input.likesToDo || "Not specified"}`,
-                  `**What they need:** ${input.needs || "Not specified"}`,
-                  `**How they would like to connect:** ${input.connect || "Not specified"}`,
-                ].join("\n"),
-              );
-            }
           } catch (error) {
             console.error("GHL sync failed (members wall):", error);
           }
@@ -1033,52 +929,27 @@ export const appRouter = router({
         source: z.string().max(100).optional(),
       }))
       .mutation(async ({ input }) => {
-        const [firstName, ...rest] = input.name.trim().split(/\s+/);
-        const result = await upsertGHLContact({
+        const result = await captureHarvestSubmission({
+          form: "member-question",
+          name: input.name,
           email: input.email,
-          firstName,
-          lastName: rest.join(" ") || undefined,
-          phone: input.phone || undefined,
+          phone: input.phone,
           source: input.source || "Harvest | Member Question",
-          tags: ["harvest-website", "tier:curious", "member-question", "harvest-inbox", "act-inquiry"],
+          tags: ["tier:curious", "member-question", "harvest-inbox"],
+          // A question is the clearest case of a person owing a reply.
+          needsReply: true,
+          note: `**Member question**\n\n**Question:**\n${input.question}\n\n**Source:** ${input.source || "Membership page"}`,
+          requireNote: true,
+          message: {
+            subject: `Member question from ${input.name.trim()}`,
+            html: `<p><strong>Member question (website)</strong></p><p>${escapeHtml(input.question)}</p>`,
+          },
+          card: { title: "Member question" },
+          receiptWorkflowEnv: ["GHL_MEMBER_QUESTION_WORKFLOW_ID", "GHL_CONTACT_FORM_WORKFLOW_ID"],
         });
-
         if (!result.success) {
           throw new Error(result.error || "Failed to send question");
         }
-
-        if (result.contactId) {
-          const noteResult = await addGHLContactNote(
-            result.contactId,
-            `**Member question**\n\n**Question:**\n${input.question}\n\n**Source:** ${input.source || "Membership page"}`
-          );
-
-          if (!noteResult.success) {
-            throw new Error(noteResult.error || "Failed to save question");
-          }
-
-          await upsertGHLHarvestInboxOpportunity({
-            contactId: result.contactId,
-            name: formatHarvestInboxOpportunityName(input.name, "Member question"),
-            source: input.source || "Harvest | Member Question",
-          });
-
-          await addGHLInboundFormMessage({
-            contactId: result.contactId,
-            fromEmail: input.email,
-            subject: `Member question from ${input.name.trim()}`,
-            html: `<p><strong>Member question (website)</strong></p><p>${escapeHtml(input.question)}</p>`,
-          }).catch(err => console.error("GHL inbox message failed (member question):", err));
-
-          const workflowId = process.env.GHL_MEMBER_QUESTION_WORKFLOW_ID || process.env.GHL_CONTACT_FORM_WORKFLOW_ID;
-          if (workflowId) {
-            const workflowResult = await triggerGHLWorkflow(workflowId, result.contactId);
-            if (!workflowResult.success) {
-              console.error("GHL workflow trigger failed (member question):", workflowResult.error);
-            }
-          }
-        }
-
         return { success: true };
       }),
   }),
@@ -1098,53 +969,35 @@ export const appRouter = router({
         readiness: z.string().trim().max(180).optional(),
       }))
       .mutation(async ({ input }) => {
-        const { firstName, lastName } = splitPersonName(input.name);
         const offerTag = SHOP_INTEREST_TAGS[input.offerType];
-        const result = await upsertGHLContact({
+        // Route into the dedicated Shop pipeline once it exists in GHL. Both env vars
+        // must be set together (a stage ID only belongs to its own pipeline); until then
+        // this falls back to the shared Harvest Inbox. See ghl-pipeline-playbook.md.
+        const shopPipelineId = process.env.GHL_SHOP_PIPELINE_ID;
+        const shopStageId = process.env.GHL_SHOP_PIPELINE_NEW_STAGE_ID;
+        const result = await captureHarvestSubmission({
+          form: "shop-interest",
+          name: input.name,
           email: input.email,
-          firstName,
-          lastName,
-          phone: input.phone || undefined,
+          phone: input.phone,
           source: "Harvest | Shop",
-          tags: [
-            "harvest-website",
-            "shop-follow-up",
-            "act-inquiry",
-            "shop-stage-1",
-            "role:supplier",
-            "interest:markets",
-            offerTag,
-          ],
-        });
-
-        if (!result.success) {
-          throw new Error(result.error || "Failed to save shop interest");
-        }
-
-        if (result.contactId) {
-          const noteResult = await addGHLContactNote(
-            result.contactId,
-            [
-              "**Harvest Shop Expression of Interest**",
-              "",
-              `**Offer type:** ${input.offerType}`,
-              ...(input.location ? [`**Location:** ${input.location}`] : []),
-              ...(input.readiness ? [`**Readiness:** ${input.readiness}`] : []),
-              ...(input.description
-                ? ["", "**What they can provide / help with:**", input.description]
-                : []),
-              "",
-              "**Source:** Shop interest form",
-            ].join("\n"),
-          );
-
-          if (!noteResult.success) {
-            throw new Error(noteResult.error || "Failed to save shop interest note");
-          }
-
-          await addGHLInboundFormMessage({
-            contactId: result.contactId,
-            fromEmail: input.email,
+          tags: ["shop-follow-up", "shop-stage-1", "role:supplier", "interest:markets", offerTag],
+          // Someone offering to supply the shop is waiting to hear back.
+          needsReply: true,
+          note: [
+            "**Harvest Shop Expression of Interest**",
+            "",
+            `**Offer type:** ${input.offerType}`,
+            ...(input.location ? [`**Location:** ${input.location}`] : []),
+            ...(input.readiness ? [`**Readiness:** ${input.readiness}`] : []),
+            ...(input.description
+              ? ["", "**What they can provide / help with:**", input.description]
+              : []),
+            "",
+            "**Source:** Shop interest form",
+          ].join("\n"),
+          requireNote: true,
+          message: {
             subject: `Shop interest from ${input.name.trim()} (${input.offerType})`,
             html: [
               "<p><strong>Shop expression of interest (website)</strong></p>",
@@ -1153,31 +1006,16 @@ export const appRouter = router({
               input.readiness ? `<p>Readiness: ${escapeHtml(input.readiness)}</p>` : "",
               input.description ? `<p>${escapeHtml(input.description)}</p>` : "",
             ].join(""),
-          }).catch(err => console.error("GHL inbox message failed (shop interest):", err));
-
-          // Route into the dedicated Shop pipeline once it exists in GHL. Both env vars
-          // must be set together (a stage ID only belongs to its own pipeline); until then
-          // this falls back to the shared Harvest Inbox. See ghl-pipeline-playbook.md.
-          const shopPipelineId = process.env.GHL_SHOP_PIPELINE_ID;
-          const shopStageId = process.env.GHL_SHOP_PIPELINE_NEW_STAGE_ID;
-          await upsertGHLHarvestInboxOpportunity({
-            contactId: result.contactId,
-            name: formatHarvestInboxOpportunityName(input.name, "Shop interest"),
-            source: "Harvest | Shop",
-            ...(shopPipelineId && shopStageId
-              ? { pipelineId: shopPipelineId, pipelineStageId: shopStageId }
-              : {}),
-          });
-
-          const workflowId = process.env.GHL_SHOP_INTEREST_WORKFLOW_ID || process.env.GHL_CONTACT_FORM_WORKFLOW_ID;
-          if (workflowId) {
-            const workflowResult = await triggerGHLWorkflow(workflowId, result.contactId);
-            if (!workflowResult.success) {
-              console.error("GHL workflow trigger failed (shop interest):", workflowResult.error);
-            }
-          }
+          },
+          card: {
+            title: "Shop interest",
+            ...(shopPipelineId && shopStageId ? { pipelineId: shopPipelineId, pipelineStageId: shopStageId } : {}),
+          },
+          receiptWorkflowEnv: ["GHL_SHOP_INTEREST_WORKFLOW_ID", "GHL_CONTACT_FORM_WORKFLOW_ID"],
+        });
+        if (!result.success) {
+          throw new Error(result.error || "Failed to save shop interest");
         }
-
         return { success: true };
       }),
   }),
@@ -1191,34 +1029,24 @@ export const appRouter = router({
         response: z.string().max(1000).optional(),
       }))
       .mutation(async ({ input }) => {
-        const result = await upsertGHLContact({
-          email: input.email,
+        const result = await captureHarvestSubmission({
+          form: "photo-wall",
+          name: input.firstName,
           firstName: input.firstName,
+          email: input.email,
           phone: input.phone,
           source: "Harvest | Photo Wall",
-          tags: ["photo-wall", "harvest-website", "harvest-gathering-photos", ...(input.response ? ["harvest-inbox"] : [])],
+          tags: ["photo-wall", "harvest-gathering-photos", ...(input.response ? ["harvest-inbox"] : [])],
+          // A photo-wall answer is read, not replied to: note only, no card.
+          needsReply: false,
+          ...(input.response
+            ? { note: `**Photo Wall — What would you love to see grow here?**\n\n${input.response}` }
+            : {}),
+          receiptWorkflowEnv: "GHL_PHOTO_WALL_WORKFLOW_ID",
         });
-
         if (!result.success) {
           return { success: false, error: result.error };
         }
-
-        if (result.contactId && input.response) {
-          addGHLContactNote(
-            result.contactId,
-            `**Photo Wall — What would you love to see grow here?**\n\n${input.response}`
-          ).catch(err => console.error("Photo wall note failed:", err));
-          // No inbox card: a photo-wall answer is read, not replied to.
-        }
-
-        // Trigger notification workflow if configured
-        const workflowId = process.env.GHL_PHOTO_WALL_WORKFLOW_ID;
-        if (workflowId && result.contactId) {
-          triggerGHLWorkflow(workflowId, result.contactId).catch(err =>
-            console.error("GHL workflow trigger failed (photo wall):", err)
-          );
-        }
-
         return { success: true, contactId: result.contactId };
       }),
 
@@ -1777,22 +1605,15 @@ export const appRouter = router({
           const interestTags = (input.wouldUse || [])
             .flatMap(u => withFlatAlias(`interest:${slugifyTagPart(u)}`))
             .filter(Boolean);
-          const pulseResult = await upsertGHLContact({
+          await captureHarvestSubmission({
+            form: "pulse",
+            name: cleanName,
             email: cleanEmail,
-            firstName: cleanName.split(" ")[0],
-            lastName: cleanName.split(" ").slice(1).join(" ") || undefined,
             source: "Harvest | Pulse",
-            tags: ["pulse-respondent", "harvest-website", ...interestTags],
+            tags: ["pulse-respondent", ...interestTags],
+            needsReply: false,
+            receiptWorkflowEnv: "GHL_PULSE_WORKFLOW_ID",
           });
-
-          if (pulseResult.contactId) {
-            const workflowId = process.env.GHL_PULSE_WORKFLOW_ID;
-            if (workflowId) {
-              triggerGHLWorkflow(workflowId, pulseResult.contactId).catch(err =>
-                console.error("GHL workflow trigger failed (pulse):", err)
-              );
-            }
-          }
         } else if (cleanEmail && !cleanName) {
           console.warn("[Pulse] Skipping GHL sync because email was provided without a name.");
         }

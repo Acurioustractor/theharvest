@@ -348,7 +348,7 @@ describe("Go High Level Newsletter Integration", () => {
       expect(inboxMessageCall).toBeUndefined();
     });
 
-    it("creates a Universal Inquiry card when a member signup includes a comment", async () => {
+    it("keeps a member comment as a note and a Conversations message, with no inbox card", async () => {
       mockFetch.mockImplementation(async (url) => {
         if (String(url).includes("/conversations/search?")) {
           return {
@@ -653,7 +653,7 @@ describe("Go High Level Newsletter Integration", () => {
       });
     });
 
-    it("creates a Universal Inquiry card for photo wall responses", async () => {
+    it("keeps a photo wall response as a note, with no inbox card", async () => {
       const caller = appRouter.createCaller({
         ...ctx,
         user: { role: "admin" },
