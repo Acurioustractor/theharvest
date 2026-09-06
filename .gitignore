@@ -196,3 +196,8 @@ research/data/witta-market-hitlist.md
 # credential backups (any form)
 .env*.bak*
 .env.local.bak*
+
+# Shared ACT skills, synced from act-global-infrastructure (config/shared-skills.json,
+# scripts/sync-skills.mjs). Tracked so the copy can be checked; edit upstream, not here.
+!.claude/skills/act-brand-alignment/
+!.claude/skills/_archive/
