@@ -92,8 +92,8 @@ one cost a fraction of the effort". Three packages, each a fixed shape:
 
 | Package | Shape | Price unit | Who runs it | Tool |
 |---|---|---|---|---|
-| **Weekend rhythm** | Pizza Fri/Sat, sauna sessions, gate open. Same every week. | Per pizza, per sauna seat | Dennis (or successor) + steward | Square only. No tickets. Free RSVP optional. |
-| **Ticketed night** | Themed dinner, producer showcase, film with food. One a month, cap 2 pre-sub-op. | Per seat, paid up front | Dennis + guest | Humanitix, link in Mighty 48h before public |
+| **Weekend rhythm** | Pizza Fri/Sat, sauna sessions, gate open. Same every week. | Per head, per sauna seat | Ben, Nic and Nic's dad now; community-run sessions tested next; Joey second on the till | Square only. No tickets. Free RSVP optional. |
+| **Ticketed night** | Themed dinner, producer showcase, film with food. One a month, cap 2 pre-sub-op. | Per seat, paid up front | Nic + guest cook | Humanitix, link in Mighty 48h before public |
 | **Hire** | Venue hire, sauna hire, group bookings. Enquiry, quote, deposit. | Per day or per session | Ben/Nic quote, steward hosts | GHL enquiry form to Harvest Inbox pipeline, quote by email, deposit by Square invoice |
 
 **The calendar tool decision.** Three candidates are already in the stack. Pick by what each
@@ -154,27 +154,49 @@ needs is a one-page offer (space, duration, what The Harvest gives, what the art
 and a form into the Harvest Inbox pipeline. Money, if any, is a Square invoice. Do not open it
 until the roster to December is set, because a resident on site needs a named host.
 
-## 5. People on site: Joey, Susie, and the Farm
+## 5. People on site after Dennis: Joey, Susie, the founders, and the Farm
 
-Joey moving in and working across Goods and The Harvest, and Susie renting at the Farm with
-farm duties, are the same problem twice: one person, two projects, rent flowing one way and
-pay the other. The rules that keep this simple:
+**Dennis has left** (7 September, at the end of the 10-week trial). The hospitality lead line in the
+model is now zero. That is not a saving. Pizza nights are run by Ben, Nic and Nic's dad, unpaid,
+and the model understates true cost by the value of that labour until a paid host exists or the
+community runs sessions on its own. Three shapes are in play, in order:
+
+1. **Founder-run (now).** Ben and Nic on the oven, Nic's dad on prep or the door, Joey or Susie
+   second on the till. Rule: the same three people ring the same three items. Heads come from
+   the till, not memory.
+2. **Community-run sessions (test, October).** A named host from the member room takes a
+   Friday: opens, runs the oven with two helpers, closes, counts the tin. The Pizza Playbook is
+   the run sheet; Mighty is where the host is found and the "I'm in" helpers sign up; the
+   calendar row names the host before it is public. Two clean sessions with heads and takings
+   in Square decide whether this is a rhythm or a favour.
+3. **Paid host (later, if the numbers say so).** Re-add the hospitality line to the model when
+   a session is worth paying for. The Saturday of 5 September (57 heads, $1,812) is the
+   benchmark a host has to beat, not the Friday (12 heads).
+
+**Joey as caretaker.** If Joey moves in, caretaker means four things, written down: on site
+overnight, opens and closes the gate, first call for the site, hosts work days and is second on
+the till at pizza. The rules from before still hold, and they matter more now:
 
 1. **Rent is always a real number, paid, and booked as income** to whoever holds the dwelling.
-   Joey's rent is Harvest income (or Harvest Pty's). Susie's is Farm income, never Harvest.
-2. **Rent is never traded for work by handshake.** If the rent is below market because of duties,
-   the difference is pay in kind. It goes on a payslip or it becomes an FBT bill (the June
-   staffing brief put housing FBT near $30K a year if not neutralised) and a Fair Work problem.
-3. **Each person carries one split, written down, reviewed quarterly.** Joey 60/40 Harvest/Goods,
-   Susie 70/30 Harvest/Farm are placeholders in `people-places-entities.ts`. Ben and Nic set
-   the real ones. The Goods share is recharged to Goods on Country's budget, not absorbed.
-4. **Live-in plus set hours is employment**, whatever the contract says. Standard Ledger question
-   before Joey's first night, with the landlord consent for a residential use in the same email.
+   Joey's rent is Harvest income. Susie's is Farm income, never Harvest.
+2. **Rent is never traded for caretaking by handshake.** Below-market rent for duties is pay in
+   kind. It goes on a payslip, or it becomes an FBT bill (the June staffing brief put housing FBT
+   near $30K a year) and a Fair Work problem.
+3. **Each person carries one written split, reviewed quarterly.** Joey 60/40 Harvest/Goods, Susie
+   70/30 Harvest/Farm are placeholders in `people-places-entities.ts`. Ben and Nic set the real
+   ones. The Goods share is recharged to Goods on Country, not absorbed.
+4. **Live-in plus set duties is employment**, whatever the contract says. Standard Ledger question
+   before Joey's first night, with the landlord consent for residential use in the same email.
+   The lease permits subletting without consent; a residential use inside a commercial lease
+   still needs Sonas in writing.
 
-On the money model: once Goods and Farm carry their shares, Harvest's people cost drops from the
-$19,974 in `model.ts` to about $16,034 plus Trina's slice. That is not a saving. It is the same
-cost moved to two projects that then have to afford it, which is exactly what the entity
-structure is for.
+**Nic's dad and any community host are volunteers.** Under Queensland WHS a volunteer is a worker
+once the organisation employs anyone. The broker call sheet already asks this question; the
+answer now covers a family member on a wood-fired oven and, from October, community hosts.
+
+On the money model: with the hospitality line at zero, Harvest's people cost is Joey's and
+Susie's Harvest shares, about $4,800 a month plus Trina's slice, against $19,974 in July's
+model. The difference is founder labour and the missing host, not efficiency.
 
 ## 6. One set of books: the entity map
 
@@ -223,7 +245,7 @@ first audience for every one of the three jobs above.
 
 ## Decisions for Ben and Nic (everything above waits on these)
 
-1. Does Dennis continue past the 1 September trial, and at what weekly rate.
+1. Dennis has left. Who hosts each pizza night to December (founders now, community test in October), and when does a paid host get re-added to the model.
 2. Joey's rent per week, market rent for the dwelling, and the Harvest/Goods split.
 3. Susie's rent at the Farm, what farm duties are, and the Harvest/Farm split.
 4. The weekly rhythm (already decision 1 on the end-of-year hub). Events packaging depends on it.

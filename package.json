@@ -18,6 +18,7 @@
     "square:weekend": "tsx scripts/harvest-square-weekend.ts",
     "square:pull": "tsx scripts/harvest-square-pull.ts",
     "square:items": "tsx scripts/harvest-square-items.ts",
+    "money:week": "tsx scripts/harvest-money-week.ts",
     "smoke:deployment": "tsx scripts/smoke-deployment.ts",
     "format": "prettier --write .",
     "test": "vitest run",
