@@ -79,11 +79,11 @@ const FIXED_COSTS: Line[] = [
 
 const STAFF_COSTS: Line[] = [
   {
-    name: "Dennis (hospitality lead, Wed-Sun ~35h)",
-    monthly: 11224,
-    confidence: "inferred",
-    source: "staffing-model: Option 4 Harvest slice ~$25,900 over 10 weeks",
-    note: "Includes 12% super + ~2.5% WorkCover. Trial only; ongoing rate not yet decided. A $1,650/wk variant saves ~$15-20K/yr.",
+    name: "Hospitality lead (was Dennis; role vacant since the trial ended 1 Sep 2026)",
+    monthly: 0,
+    confidence: "verified",
+    source: "Ben, 7 Sep 2026: Dennis is not there any more. Pizza nights run by Ben, Nic and Nic's dad, unpaid, then community-run sessions are tested",
+    note: "Was $11,224/mo (Option 4 Harvest slice incl. super + WorkCover). Zero is a founder-labour subsidy, not a saving: the model now understates true cost by the value of that labour. Re-add a line when a paid host is hired.",
   },
   {
     name: "Susie + Joey (community stewards)",
