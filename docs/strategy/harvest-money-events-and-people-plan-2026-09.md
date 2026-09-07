@@ -93,7 +93,7 @@ one cost a fraction of the effort". Three packages, each a fixed shape:
 | Package | Shape | Price unit | Who runs it | Tool |
 |---|---|---|---|---|
 | **Weekend rhythm** | Pizza Fri/Sat, sauna sessions, gate open. Same every week. | Per pizza, per sauna seat | Dennis (or successor) + steward | Square only. No tickets. Free RSVP optional. |
-| **Ticketed night** | Themed dinner, producer showcase, film with food. One a month, cap 2 pre-sub-op. | Per seat, paid up front | Dennis + guest | One ticketing tool (below) |
+| **Ticketed night** | Themed dinner, producer showcase, film with food. One a month, cap 2 pre-sub-op. | Per seat, paid up front | Dennis + guest | Humanitix, link in Mighty 48h before public |
 | **Hire** | Venue hire, sauna hire, group bookings. Enquiry, quote, deposit. | Per day or per session | Ben/Nic quote, steward hosts | GHL enquiry form to Harvest Inbox pipeline, quote by email, deposit by Square invoice |
 
 **The calendar tool decision.** Three candidates are already in the stack. Pick by what each
@@ -196,6 +196,30 @@ never overlap instead of one file where everything does.
 
 Sequencing, unchanged from the ledger: insurance, then truth in the books (Square recode, payroll, COGS,
 tracking), then price the facilities, then the entity, then membership.
+
+## Mighty: the inside room, and what it is for next
+
+Decided 11 June 2026 and unchanged: Mighty is the inside room for members, not the system of
+record. GHL holds who is a member, Square takes the money, Humanitix sells the seat. Mighty is
+where members hear first and where belonging by doing gets organised. Three jobs from here:
+
+1. **Members first on every ticketed night.** The Humanitix link, or a member code, goes into
+   Mighty 48 hours before the public post. That is the whole member perk for events: earlier
+   access to capped seats, not a discount. The calendar's Ticketed rows carry this rule.
+2. **Artists in residence run through Mighty.** The call for residents goes to members first.
+   Each resident gets a thread in the Art Space space: what they are making, open-studio times,
+   what they need from the community. The one-page offer and the licence live in the repo; the
+   conversation lives in Mighty. Applications still land in the Harvest Inbox via a GHL form.
+3. **Member opportunities are posted, not broadcast.** Work-day shifts (the effort route into
+   contribution, decided in the membership map), the maker question, the shelf update, a sauna
+   host slot. Each is a post a member can answer with "I'm in". The Monday sweep carries the
+   answers into GHL tags. This is the bookable-shift test the map asked for, run on a tool that
+   already exists.
+
+Rules that keep it honest: no money in Mighty except the paid Supporter plan when it launches;
+no second CRM; nothing sensitive processed there; Mighty posts point out to Humanitix, the GHL
+form or the website, never the other way round. Mighty's ~188 free members (June sweep) are the
+first audience for every one of the three jobs above.
 
 ## Decisions for Ben and Nic (everything above waits on these)
 
