@@ -666,18 +666,20 @@ interface Measured {
 }
 
 const SQUARE_ACTUALS: Record<string, Measured> = {
-  coversPerSession: { value: null, unit: "people", retires: "the 25 / 40 / 60 dial, the biggest swing in the model" },
-  averageTicketGross: { value: null, unit: "$ per transaction", retires: "the $30 per person vs per pizza fork above" },
-  pizzasPerCover: { value: null, unit: "ratio", retires: "the same fork, from the other direction" },
-  drinkAttachRate: { value: null, unit: "drinks per cover", retires: "a whole revenue line nobody has modelled at all" },
-  foodCostPercent: { value: null, unit: "% of net food sales", retires: "the $8.00 DIY pizza goods assumption" },
-  merchantFeeRate: { value: null, unit: "% of gross", retires: "the 1.6% card-fee assumption" },
+  // Measured 2026-09-07 from Square via `npm run square:pull -- --from 2026-09-04 --to 2026-09-06`
+  // (22 completed orders, 22 payments, both Square locations; Sunday 6 Sep had no orders).
+  coversPerSession: { value: 34.5, unit: "people", retires: "the 25 / 40 / 60 dial: Fri 4 Sep 12 covers, Sat 5 Sep 57 covers (All You Can Eat Pizza units = heads). Two sessions only; keep measuring" },
+  averageTicketGross: { value: 100.66, unit: "$ per transaction", retires: "the $30 per person vs per pizza fork: it is $30 PER PERSON (All You Can Eat Pizza, $27.27 net each). One card pays for a table: 22 sales, 69 heads, 3.14 heads per sale" },
+  pizzasPerCover: { value: 1, unit: "ratio", retires: "the same fork: the unit sold is the person, not the pizza. Pizzas eaten per head is not in Square" },
+  drinkAttachRate: { value: 0.41, unit: "drinks per cover", retires: "a whole revenue line nobody has modelled: 28 drinks over 69 heads, $149.38 net, all bought-in cans at $4.55 to $5.91 net" },
+  foodCostPercent: { value: null, unit: "% of net food sales", retires: "the $8.00 DIY pizza goods assumption. Bidfood 2 Sep $897.91 against $1,881.79 net pizza = 48% IF that order fed only this weekend; unverified, likely spans more" },
+  merchantFeeRate: { value: 0.016, unit: "% of gross", retires: "the 1.6% card-fee assumption: measured 1.60% ($35.42 on $2,214.50), and 0% cash" },
 };
 
 console.log("\n" + "=".repeat(74));
 console.log("WHAT SIX WEEKS OF SQUARE DATA WOULD RETIRE");
 console.log("=".repeat(74));
-console.log(`  Open since 20 June. The till has been running. None of it is in this model.
+console.log(`  Open since 20 June. First measured weekend (4 to 6 Sep 2026) is now in the table below.
   The harvest_square_* mirror in docs/strategy/square-supabase-pull-2026-06.md was
   scoped 19 June and never built (verified 2026-07-31: only harvest_businesses and
   harvest_events exist in tednluwflfhxyucgwigh). But the mirror is not needed to
