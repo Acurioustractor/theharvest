@@ -170,6 +170,12 @@ const ENTITY_MAP: EntityRule[] = [
     why: "The green week is only green because staff cost is missing from the file",
   },
   {
+    money: "Goods production facility on the Harvest site (space, power, water)",
+    today: "Nowhere. Goods builds beds at Witta and pays Harvest nothing; Harvest carries the whole rent",
+    next: "Monthly recharge journal: ACT Pty (Goods, ACT-GD) pays Harvest a facility fee by floor area plus metered power. Same journal carries Joey's Goods hours the other way",
+    why: "Goods' R&D claim needs its true cost base, and Harvest's viability needs its true income. One journal fixes both",
+  },
+  {
     money: "Trina, Joey time on beds",
     today: "Unbooked",
     next: "A Curious Tractor Pty Ltd trading as Goods on Country, tracking ACT-GD",

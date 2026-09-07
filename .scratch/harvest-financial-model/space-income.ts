@@ -39,6 +39,8 @@ const SPACES: Space[] = [
     note: "Comparable: commercial kitchen hire in SE Qld runs $30 to $60 an hour. Unverified." },
   { name: "Café licence (sub-operator)", kind: "cafe", weekly: null, count: 1, occupancy: 1, confidence: "unknown", source: "working-capital-plan: $0 to $5K over 4 months; nothing signed",
     note: "Per month or % of sales. The operating model says sub-operator by end October." },
+  { name: "Goods on Country production facility (recharge to A Curious Tractor Pty Ltd)", kind: "office", weekly: null, count: 1, occupancy: 1, confidence: "unknown", source: "Ben, 7 Sep 2026: Goods production is at The Harvest and Joey works across both",
+    note: "Goods on Country (trading name of A Curious Tractor Pty Ltd, tracking ACT-GD) makes Stretch Beds on this site. That is a tenant. Harvest charges it a monthly facility fee for the space, power and water it uses, and recharges Joey's Goods hours. Both sides are ACT, so the fee is a recharge journal, not cash lost; it is what makes Harvest's rent bill honest and Goods' R&D cost base complete. Price: a share of rent and outgoings by floor area, plus metered power if it exists. Floor area used: unknown." },
   { name: "Philanthropy and grants", kind: "gift", weekly: null, count: 1, occupancy: 1, confidence: "unknown", source: "No line in any model. DGR only through The Butterfly Movement",
     note: "Not space income. Listed here because Ben asked; belongs in model.ts as its own stream once a first ask exists." },
 ];
