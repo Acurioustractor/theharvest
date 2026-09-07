@@ -15,8 +15,6 @@
     { "source": "/stories/:path*", "destination": "/whats-on", "permanent": true },
     { "source": "/people", "destination": "/whats-on", "permanent": true },
     { "source": "/people/:path*", "destination": "/whats-on", "permanent": true },
-    { "source": "/blog", "destination": "/whats-on", "permanent": true },
-    { "source": "/blog/:path*", "destination": "/whats-on", "permanent": true },
     { "source": "/photo-wall", "destination": "/whats-on", "permanent": true },
     { "source": "/photo-wall/:path*", "destination": "/whats-on", "permanent": true },
     { "source": "/site-plan", "destination": "/what-is-the-harvest", "permanent": true },

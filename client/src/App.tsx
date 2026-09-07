@@ -31,6 +31,8 @@ const Login = lazy(() => import("./pages/Login"));
 const VenueHire = lazy(() => import("./pages/VenueHire"));
 const Media = lazy(() => import("./pages/Media"));
 const WhatsOn = lazy(() => import("./pages/WhatsOn"));
+const Blog = lazy(() => import("./pages/Blog"));
+const BlogPost = lazy(() => import("./pages/BlogPost"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 function Router() {
@@ -133,7 +135,15 @@ function Router() {
     location === "/blog/what-is-the-harvest" ||
     location === "/blog/the-harvest-journey"
   ) return <HarvestJourneyPost />;
-  if (location === "/blog" || location.startsWith("/blog/")) return <Redirect to="/whats-on" />;
+  // Un-paused 2026-09-07: the content pipeline now exists. Articles come from
+  // Empathy Ledger through server/empathyLedgerClient.ts, scoped to
+  // destination=harvest, and only what the people in them have consented to
+  // this site (syndication_consent) is served. Paused 2026-07-08 in 1b2f494.
+  if (location === "/blog" || location === "/journal") return <Blog />;
+  if (location.startsWith("/blog/")) {
+    const slug = location.slice("/blog/".length).split("/")[0];
+    return slug ? <BlogPost slug={slug} /> : <Blog />;
+  }
   if (location === "/membership") return <Membership />;
   if (location === "/shop") return <Shop />;
   if (location === "/stories") return <Works />;

@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import ShareButtons from "@/components/ShareButtons";
 import BlogCard, { type ELArticle } from "@/components/BlogCard";
+import { SiteFooter, SiteNav } from "./HarvestReviewTest";
 import {
   ArrowLeft,
   Calendar,
@@ -87,6 +88,7 @@ export default function BlogPost({ slug }: { slug: string }) {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-white pt-32">
+      <SiteNav />
         <div className="container max-w-4xl">
           <div className="animate-pulse space-y-8">
             <div className="h-8 bg-stone-200 rounded w-1/4" />
@@ -107,6 +109,7 @@ export default function BlogPost({ slug }: { slug: string }) {
   if (error || !article) {
     return (
       <div className="min-h-screen bg-white pt-32">
+      <SiteNav />
         <div className="container max-w-4xl text-center py-16">
           <h1 className="text-3xl font-serif font-bold text-stone-800 mb-4">
             Article not found
@@ -131,6 +134,7 @@ export default function BlogPost({ slug }: { slug: string }) {
 
   return (
     <div className="min-h-screen bg-white">
+      <SiteNav />
       {/* Hero Section */}
       <section className="pt-32 pb-8">
         <div className="container max-w-4xl">
@@ -410,6 +414,7 @@ export default function BlogPost({ slug }: { slug: string }) {
           </Button>
         </div>
       </section>
+      <SiteFooter />
     </div>
   );
 }

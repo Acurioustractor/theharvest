@@ -8,8 +8,10 @@
  *  - static public routes (hard-coded — matches client/public/sitemap.xml as the floor)
  *  - /works/:slug from client/src/data/works.ts (static)
  *
- * /blog, /stories, /people, /story, /witta, /photo-wall and /gather are
- * paused (redirect to /whats-on or /what-is-the-harvest as of 2026-07)
+ * /stories, /people, /story, /witta, /photo-wall and /gather are paused
+ * (redirect to /whats-on or /what-is-the-harvest as of 2026-07). /blog was
+ * un-paused 2026-09-07: the index plus every Empathy Ledger article the
+ * consent ledger releases to this site (destination=harvest) is listed.
  * and deliberately excluded so search engines don't index redirect chains.
  */
 
@@ -36,6 +38,7 @@ const STATIC_ROUTES: Entry[] = [
   { loc: "/shop", priority: "0.8", changefreq: "weekly" },
   { loc: "/what-is-the-harvest", priority: "0.8", changefreq: "monthly" },
   { loc: "/works", priority: "0.7", changefreq: "weekly" },
+  { loc: "/blog", priority: "0.6", changefreq: "weekly" },
   { loc: "/get-involved", priority: "0.7", changefreq: "monthly" },
   { loc: "/venue-hire", priority: "0.6", changefreq: "monthly" },
   { loc: "/contact", priority: "0.6", changefreq: "yearly" },
@@ -50,6 +53,30 @@ function entryXml(e: Entry): string {
     <changefreq>${e.changefreq}</changefreq>
     <priority>${e.priority}</priority>
   </url>`;
+}
+
+/**
+ * Empathy Ledger articles released to this site. The content-hub route scopes
+ * by destination and, with the site key, by per-site consent, so nothing here
+ * can list an article the ledger would not serve. Empty on any failure: a
+ * sitemap missing articles is recoverable, a build failing on it is not.
+ */
+async function blogEntries(): Promise<Entry[]> {
+  const base = process.env.EMPATHY_LEDGER_API_URL || process.env.VITE_EMPATHY_LEDGER_URL || "https://empathyledger.com";
+  const key = process.env.EMPATHY_LEDGER_API_KEY;
+  try {
+    const res = await fetch(`${base}/api/v1/content-hub/articles?destination=harvest&limit=100`, {
+      headers: key ? { "X-API-Key": key } : {},
+      signal: AbortSignal.timeout(8000),
+    });
+    if (!res.ok) return [];
+    const data = (await res.json()) as { articles?: Array<{ slug: string; publishedAt?: string | null }> };
+    return (data.articles || [])
+      .filter((a) => /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(a.slug))
+      .map((a) => ({ loc: `/blog/${a.slug}`, priority: "0.6", changefreq: "monthly", lastmod: (a.publishedAt || TODAY).slice(0, 10) }));
+  } catch {
+    return [];
+  }
 }
 
 async function workEntries(): Promise<Entry[]> {
@@ -73,7 +100,8 @@ async function main() {
   }
 
   const works = await workEntries();
-  const all = [...STATIC_ROUTES, ...works];
+  const blog = await blogEntries();
+  const all = [...STATIC_ROUTES, ...works, ...blog];
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -84,7 +112,7 @@ ${all.map(entryXml).join("\n")}
   writeFileSync(OUTPUT, xml, "utf8");
   console.log(
     `[sitemap] wrote ${all.length} URLs to ${OUTPUT} ` +
-      `(${STATIC_ROUTES.length} static, ${works.length} works)`,
+      `(${STATIC_ROUTES.length} static, ${works.length} works, ${blog.length} blog)`,
   );
 }
 
