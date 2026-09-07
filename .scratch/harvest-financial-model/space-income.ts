@@ -21,27 +21,28 @@ interface Space {
   weekly: number | null;      // $ per unit per week, incl GST where GST applies
   count: number | null;       // how many units exist
   occupancy: number;          // 0..1, share of weeks let
+  status: "current" | "prospective";  // current = money is actually being paid today
   confidence: Confidence;
   source: string;
   note?: string;
 }
 
 const SPACES: Space[] = [
-  { name: "Front room (Joey, live-in caretaker)", kind: "room", weekly: 400, count: 1, occupancy: 1, confidence: "verified", source: "Ben, 7 Sep 2026",
+  { name: "Front room (Joey, live-in caretaker)", kind: "room", weekly: 400, count: 1, occupancy: 1, status: "prospective", confidence: "verified", source: "Ben, 7 Sep 2026: the price. Joey has not moved in; nothing is paid yet",
     note: "Rent is booked as income to the Harvest tenant entity. If $400 is at or above market for one room in a shared house in Maleny, there is no housing FBT; if below, the gap is pay in kind. Market for the room: unverified." },
-  { name: "Other rooms", kind: "room", weekly: 400, count: 0, occupancy: 0.8, confidence: "verified", source: "Ben, 7 Sep: the front room is the room. No other bedroom.",
+  { name: "Other rooms", kind: "room", weekly: 400, count: 0, occupancy: 0.8, status: "prospective", confidence: "verified", source: "Ben, 7 Sep: the front room is the room. No other bedroom.",
     note: "The '3-bed dwelling' in the June staffing brief is not what the building offers for letting today." },
-  { name: "Back room, the studio (office or residency)", kind: "office", weekly: 600, count: 1, occupancy: 0.7, confidence: "assumption", source: "Ben: back room is the studio; office price $600/wk. One space, one tenant at a time",
+  { name: "Back room, the studio (office or residency)", kind: "office", weekly: 600, count: 1, occupancy: 0.7, status: "prospective", confidence: "assumption", source: "Ben: back room is the studio; office price $600/wk. One space, one tenant at a time",
     note: "Either an office tenant at $600, or a resident at $400 (Ben: residencies priced like the room). Not both. The ladder below uses the office price; a residency is $200/wk less." },
-  { name: "Workshop space", kind: "office", weekly: null, count: 1, occupancy: 0, confidence: "verified", source: "Ben, 7 Sep: the workshop space. This is the Art Space",
+  { name: "Workshop space", kind: "office", weekly: null, count: 1, occupancy: 0, status: "prospective", confidence: "verified", source: "Ben, 7 Sep: the workshop space. This is the Art Space",
     note: "Not for letting by the week. Earns by the session (workshops, work days, makers) and that lives in model.ts as programme income, not here." },
-  { name: "Kitchen for an event or a producer", kind: "kitchen", weekly: null, count: 1, occupancy: 0.3, confidence: "unknown", source: "Not priced. Council food posture gates this",
+  { name: "Kitchen for an event or a producer", kind: "kitchen", weekly: null, count: 1, occupancy: 0.3, status: "prospective", confidence: "unknown", source: "Not priced. Council food posture gates this",
     note: "Comparable: commercial kitchen hire in SE Qld runs $30 to $60 an hour. Unverified." },
-  { name: "Café licence (sub-operator)", kind: "cafe", weekly: null, count: 1, occupancy: 1, confidence: "unknown", source: "working-capital-plan: $0 to $5K over 4 months; nothing signed",
+  { name: "Café licence (sub-operator)", kind: "cafe", weekly: null, count: 1, occupancy: 1, status: "prospective", confidence: "unknown", source: "working-capital-plan: $0 to $5K over 4 months; nothing signed",
     note: "Per month or % of sales. The operating model says sub-operator by end October." },
-  { name: "Goods on Country production facility (recharge to A Curious Tractor Pty Ltd)", kind: "office", weekly: null, count: 1, occupancy: 1, confidence: "unknown", source: "Ben, 7 Sep 2026: Goods production is at The Harvest and Joey works across both",
+  { name: "Goods on Country production facility (recharge to A Curious Tractor Pty Ltd)", kind: "office", weekly: null, count: 1, occupancy: 1, status: "prospective", confidence: "unknown", source: "Ben, 7 Sep 2026: Goods production is at The Harvest and Joey works across both",
     note: "Goods on Country (trading name of A Curious Tractor Pty Ltd, tracking ACT-GD) makes Stretch Beds on this site. That is a tenant. Harvest charges it a monthly facility fee for the space, power and water it uses, and recharges Joey's Goods hours. Both sides are ACT, so the fee is a recharge journal, not cash lost; it is what makes Harvest's rent bill honest and Goods' R&D cost base complete. Price: a share of rent and outgoings by floor area, plus metered power if it exists. Floor area used: unknown." },
-  { name: "Philanthropy and grants", kind: "gift", weekly: null, count: 1, occupancy: 1, confidence: "unknown", source: "No line in any model. DGR only through The Butterfly Movement",
+  { name: "Philanthropy and grants", kind: "gift", weekly: null, count: 1, occupancy: 1, status: "prospective", confidence: "unknown", source: "No line in any model. DGR only through The Butterfly Movement",
     note: "Not space income. Listed here because Ben asked; belongs in model.ts as its own stream once a first ask exists." },
 ];
 
@@ -65,14 +66,14 @@ console.log(`  Paid since 1 July: ${money(RENT.paidSoFar)} (one payment). Rent i
 console.log("\n" + "=".repeat(74));
 console.log("SPACES, priced or not");
 console.log("=".repeat(74));
-let known = 0; const unknown: string[] = [];
+let current = 0, prospective = 0; const unknown: string[] = [];
 for (const s of SPACES) {
   const line = s.weekly !== null && s.count !== null ? s.weekly * s.count * s.occupancy : null;
-  if (line !== null) known += line; else unknown.push(s.name);
-  console.log(`  ${s.name.padEnd(42)} ${s.weekly === null ? "   ?" : ("$" + s.weekly).padStart(5)}/wk x ${s.count === null ? "?" : s.count} @ ${Math.round(s.occupancy * 100)}%  = ${line === null ? "unknown" : money(line) + "/wk"}  [${s.confidence}]`);
+  if (line === null) unknown.push(s.name); else if (s.status === "current") current += line; else prospective += line;
+  console.log(`  ${s.name.padEnd(42)} ${s.weekly === null ? "   ?" : ("$" + s.weekly).padStart(5)}/wk x ${s.count === null ? "?" : s.count} @ ${Math.round(s.occupancy * 100)}%  = ${line === null ? "unknown" : money(line) + "/wk"}  [${s.status}, ${s.confidence}]`);
   if (s.note) console.log(`      ${s.note}`);
 }
-console.log(`\n  Known space income today: ${money(known)}/wk, which is ${Math.round((known / rentWeek) * 100)}% of base rent.`);
+console.log(`\n  Space income being paid today: ${money(current)}/wk. Priced but not yet let: ${money(prospective)}/wk (${Math.round((prospective / rentWeek) * 100)}% of base rent if it all lands).`);
 
 console.log("\n" + "=".repeat(74));
 console.log("THE LADDER: what it takes to cover rent from space alone");
