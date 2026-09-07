@@ -88,17 +88,19 @@ if (error) throw new Error(error.message);
 const rows = (rowsRaw ?? []) as Row[];
 const isHV = (r: Row, li?: Row["line_items"] extends (infer L)[] | null ? L : never) => (li?.tracking?.find((t) => t.Name === "Project Tracking")?.Option ?? "").startsWith("ACT-HV") || r.project_code === "ACT-HV";
 function mirrorWeek(start: string, end: string) {
-  let bidfood = 0, wages = 0, other = 0;
+  let bidfood = 0, wages = 0, other = 0, rent = 0;
   for (const r of rows) {
     if (r.date < start || r.date > end || r.type !== "SPEND") continue;
     if (/^bidfood/i.test(r.contact_name ?? "")) { bidfood += Number(r.total); continue; }
+    // Rent: anything paid to Sonas (the landlord) or coded 469 Rent, whatever project tag the bookkeeper used.
+    if (/sonas/i.test(r.contact_name ?? "") || (r.line_items ?? []).some((li) => li.account_code === "469")) { rent += Number(r.total); continue; }
     for (const li of r.line_items ?? []) {
       if (!isHV(r, li)) continue;
       const amt = Number(li.line_amount ?? 0);
       if (li.account_code === "477" || li.account_code === "478") wages += amt; else other += amt;
     }
   }
-  return { bidfood, wages, other };
+  return { bidfood, wages, other, rent };
 }
 
 // ---- Xero bank balance (ACT OAuth app) ----
@@ -136,7 +138,7 @@ async function upsert(tok: string, w: Record<string, unknown>, title: string) {
     Week: { title: [{ text: { content: title } }] },
     "Week starting": { date: { start: w.start as string } },
     "Square taken": num(w.taken as number), Sales: num(w.sales as number), Heads: num(w.heads as number), "Card fees": num(w.cardFees as number), Cash: num(w.cash as number),
-    "Bidfood out": num(w.bidfood as number), "Wages out": num(w.wages as number), "Other Harvest spend": num(w.other as number), "Net week": num(w.net as number), "Bank balance": num(w.bank as number | null),
+    "Bidfood out": num(w.bidfood as number), "Wages out": num(w.wages as number), "Other Harvest spend": num(w.other as number), "Rent out": num(w.rent as number), "Net week": num(w.net as number), "Bank balance": num(w.bank as number | null),
     Status: { select: { name: w.status as string } },
     Source: { rich_text: [{ text: { content: w.source as string } }] },
   };
@@ -160,16 +162,16 @@ const now = new Date().toISOString().slice(0, 16).replace("T", " ");
 const tok = APPLY ? await notionToken() : null;
 if (APPLY && !tok) { console.error("No Notion token can read the Money, weekly database. Share the database with the integration in Notion (... > Connections), or put a working NOTION_TOKEN in .env."); process.exit(1); }
 console.log(`Money, weekly ${APPLY ? "*** APPLY ***" : "(dry run)"} | ${weeks[0].start} to ${weeks[weeks.length - 1].end}\n`);
-console.log("week (Mon)  taken   sales heads   fees   cash  bidfood  wages  other     net     bank  status");
+console.log("week (Mon)  taken   sales heads   fees   cash  bidfood  wages  other   rent     net     bank  status");
 for (const wk of weeks) {
   const s = await squareWeek(wk.start, wk.end);
   const m = mirrorWeek(wk.start, wk.end);
   const bank = await bankBalance(wk.end);
-  const net = s.taken - s.cardFees - m.bidfood - m.wages - m.other;
+  const net = s.taken - s.cardFees - m.bidfood - m.wages - m.other - m.rent;
   const partial = wk.end >= iso(new Date(Date.now() + 10 * 3600e3 - 3 * 86400e3));
   const status = partial ? "Partial" : net >= 0 ? "Green" : "Red";
-  const w = { ...s, ...m, net, bank, status, start: wk.start, source: `harvest-money-week ${now} AEST: Square API (The Harvest, closed orders + payments), xero_transactions mirror (Bidfood by contact, 477/478 wages, other ACT-HV spend), Xero BankSummary at ${wk.end}, account NJ Marchesi T/as ACT Everyday only. Founder labour not counted.` };
-  console.log(`${wk.start}  ${fmt(s.taken).padStart(7)} ${String(s.sales).padStart(5)} ${String(s.heads).padStart(5)} ${fmt(s.cardFees).padStart(6)} ${fmt(s.cash).padStart(6)} ${fmt(m.bidfood).padStart(8)} ${fmt(m.wages).padStart(6)} ${fmt(m.other).padStart(6)} ${fmt(net).padStart(7)} ${fmt(bank).padStart(8)}  ${status}`);
+  const w = { ...s, ...m, net, bank, status, start: wk.start, source: `harvest-money-week ${now} AEST: Square API (The Harvest, closed orders + payments), xero_transactions mirror (Bidfood by contact, 477/478 wages, other ACT-HV spend, rent = Sonas or account 469), Xero BankSummary at ${wk.end}, account NJ Marchesi T/as ACT Everyday only. Founder labour not counted.` };
+  console.log(`${wk.start}  ${fmt(s.taken).padStart(7)} ${String(s.sales).padStart(5)} ${String(s.heads).padStart(5)} ${fmt(s.cardFees).padStart(6)} ${fmt(s.cash).padStart(6)} ${fmt(m.bidfood).padStart(8)} ${fmt(m.wages).padStart(6)} ${fmt(m.other).padStart(6)} ${fmt(m.rent).padStart(6)} ${fmt(net).padStart(7)} ${fmt(bank).padStart(8)}  ${status}`);
   if (APPLY && tok) console.log(`             -> Notion ${await upsert(tok, w, weekendLabel(wk.start, wk.end))}`);
 }
 if (!APPLY) console.log("\nDry run. Add --apply to write the rows to Notion.");
