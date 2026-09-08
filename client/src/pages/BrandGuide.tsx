@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, type CSSProperties } from "react";
 import { Link } from "wouter";
 import { rootStyle, colors, fonts } from "@/styles/brand";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { AssetDownloads } from "@/components/BrandAssets";
 import { trpc } from "@/lib/trpc";
 import { optimize } from "@/lib/imageOptimize";
 
@@ -13,6 +14,7 @@ const chapters = [
   { id: "current", label: "Current Flow" },
   { id: "content", label: "3-Week Content" },
   { id: "logo", label: "The Mark" },
+  { id: "downloads", label: "Download" },
   { id: "stance", label: "Stance" },
   { id: "threes", label: "Grow Make Gather" },
   { id: "rooms", label: "What It Means" },
@@ -1189,6 +1191,8 @@ export default function BrandGuide() {
           </div>
         </div>
       </section>
+
+      <AssetDownloads isMobile={isMobile} />
 
       {/* ─── STANCE ─── */}
       <section id="stance" style={{

@@ -194,8 +194,8 @@ Use one per piece:
 
 ## Words to keep close
 
-grow, make, gather, garden, table, shed, timber, milk, crate, tool, soil, path, pot, plate, sign, wall, studio, nursery, hands, neighbour, Witta, ridge, working bee, pavilion, local.
+grow, make, gather, garden, table, shed, timber, milk, crate, tool, soil, path, pot, plate, sign, wall, studio, nursery, hands, neighbour, Witta, ridge, work day, pavilion, local.
 
 ## Words to keep out
 
-precinct, destination, offering, activate, ecosystem, stakeholders, vibrant, unique, innovative, world-class, immersive, community-led if no actual community decision is named.
+working bee (say "work day", decided 4 September 2026), precinct, destination, offering, activate, ecosystem, stakeholders, vibrant, unique, innovative, world-class, immersive, community-led if no actual community decision is named.

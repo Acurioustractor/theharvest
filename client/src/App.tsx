@@ -22,6 +22,7 @@ const GetInvolved = lazy(() => import("./pages/GetInvolved"));
 const StartHere = lazy(() => import("./pages/StartHere"));
 const HarvestControlRoom = lazy(() => import("./pages/HarvestControlRoom"));
 const Privacy = lazy(() => import("./pages/Privacy"));
+const Brand = lazy(() => import("./pages/Brand"));
 const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
 const MediaLibraryAdmin = lazy(() => import("./pages/admin/MediaLibraryAdmin"));
 const RsvpAdmin = lazy(() => import("./pages/admin/RsvpAdmin"));
@@ -96,6 +97,7 @@ function Router() {
   if (location === "/about") return <Redirect to="/what-is-the-harvest" />;
   if (location === "/contact") return <Contact />;
   if (location === "/compendium") return <Redirect to="/what-is-the-harvest" />;
+  if (location === "/brand") return <Brand />;
   if (location === "/brand-guide" || location === "/brand-development") {
     return <Redirect to="/what-is-the-harvest" />;
   }
