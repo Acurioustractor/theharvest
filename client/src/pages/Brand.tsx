@@ -3,6 +3,7 @@ import { Link } from "wouter";
 import { ArrowRight } from "lucide-react";
 import { harvestButtonClasses, SiteFooter, SiteNav } from "./HarvestReviewTest";
 import { AssetDownloads } from "@/components/BrandAssets";
+import { WriteLikeThis, PosterKit } from "@/components/BrandMaking";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { setPageSeo } from "@/lib/seo";
 
@@ -54,6 +55,10 @@ export default function Brand() {
       </section>
 
       <AssetDownloads isMobile={isMobile} />
+
+      <WriteLikeThis isMobile={isMobile} />
+
+      <PosterKit isMobile={isMobile} />
 
       <section className="border-y border-stone-300/70 bg-[#FFFDF7] px-5 py-12 md:px-8 md:py-16">
         <div className="mx-auto max-w-4xl">
