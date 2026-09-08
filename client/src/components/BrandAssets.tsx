@@ -180,36 +180,41 @@ export function AssetDownloads({ isMobile }: { isMobile: boolean }) {
           marginTop: 16,
         }}>
           {[
-            { name: "Shed", hex: colors.shed, light: false },
-            { name: "Milk", hex: colors.milk, light: true },
-            { name: "Rammed Earth", hex: colors.rammedEarth, light: true },
-            { name: "Golden Hour", hex: colors.goldenHour, light: false },
-            { name: "Workshirt", hex: colors.workshirt, light: false },
-            { name: "Calendula", hex: colors.calendula, light: false },
-            { name: "Canopy", hex: colors.canopy, light: false },
-            { name: "Hardwood", hex: colors.hardwood, light: false },
-            { name: "Lilly Pilly", hex: colors.lillyPilly, light: false },
-            { name: "Crane", hex: colors.crane, light: false },
+            { name: "Shed", hex: colors.shed },
+            { name: "Milk", hex: colors.milk },
+            { name: "Rammed Earth", hex: colors.rammedEarth },
+            { name: "Golden Hour", hex: colors.goldenHour },
+            { name: "Workshirt", hex: colors.workshirt },
+            { name: "Calendula", hex: colors.calendula },
+            { name: "Canopy", hex: colors.canopy },
+            { name: "Hardwood", hex: colors.hardwood },
+            { name: "Lilly Pilly", hex: colors.lillyPilly },
+            { name: "Crane", hex: colors.crane },
           ].map((c) => (
             <button
               key={c.hex}
               type="button"
               onClick={() => copyHex(c.hex)}
+              aria-label={`Copy ${c.name}, ${c.hex}`}
               style={{
-                backgroundColor: c.hex,
-                color: c.light ? colors.shed : colors.milk,
-                border: `1px solid rgba(26,26,26,0.12)`,
-                padding: "18px 14px",
+                backgroundColor: colors.milk,
+                color: colors.shed,
+                border: `1px solid rgba(26,26,26,0.18)`,
+                padding: 0,
                 textAlign: "left",
                 cursor: "pointer",
                 fontFamily: fonts.display,
+                overflow: "hidden",
               }}
             >
-              <div style={{ fontWeight: 900, fontSize: 11, letterSpacing: "0.12em" }}>
-                {c.name.toUpperCase()}
-              </div>
-              <div style={{ fontFamily: "monospace", fontSize: 12, opacity: 0.75, marginTop: 6 }}>
-                {copied === c.hex ? "copied" : c.hex}
+              <div style={{ height: 56, backgroundColor: c.hex }} />
+              <div style={{ padding: "10px 12px 12px" }}>
+                <div style={{ fontWeight: 900, fontSize: 11, letterSpacing: "0.12em" }}>
+                  {c.name.toUpperCase()}
+                </div>
+                <div style={{ fontFamily: "monospace", fontSize: 12, marginTop: 5 }}>
+                  {copied === c.hex ? "copied" : c.hex}
+                </div>
               </div>
             </button>
           ))}
