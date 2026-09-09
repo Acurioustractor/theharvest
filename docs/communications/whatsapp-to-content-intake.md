@@ -60,7 +60,7 @@ Use it for:
 - weekend notes
 - local offers
 - people sending photos
-- quick voice notes after working bees
+- quick voice notes after work days
 - "I found this thing" messages
 - volunteer questions
 - site updates from Ben, Nic, Susie, Joey, or helpers
@@ -190,7 +190,7 @@ Best channel:
 Raw:
 
 ```text
-When is the next working bee?
+When is the next work day?
 ```
 
 Post angle:

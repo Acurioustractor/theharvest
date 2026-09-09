@@ -251,7 +251,7 @@ The idea got simpler once we stood in the room.
 
 ### Pattern 5: The Next Date
 
-Use when there is a working bee, open day, gathering, or small invitation.
+Use when there is a work day, open day, gathering, or small invitation.
 
 Post types:
 

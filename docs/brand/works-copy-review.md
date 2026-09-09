@@ -965,7 +965,7 @@ Witta thread 1:
 
 ```text
 Year: Today
-Moment: Families, working bees, and open days bring children through the gate.
+Moment: Families, work days, and open days bring children through the gate.
 Thread: The kids area makes room for children as contributors to the place, not just people waiting while adults talk.
 ```
 

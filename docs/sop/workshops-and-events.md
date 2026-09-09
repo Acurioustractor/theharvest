@@ -45,7 +45,7 @@ This is one repeating loop. Every event, the same five steps: create, invite, re
 > - Never send a broadcast that adds a tag (adding a tag fires a workflow and can spam a whole list).
 > - Never use a photo, name, or story of anyone in the community lane (`lane:community` / `role:elder` / `role:storyteller`) without a yes at the time. That work is by hand, with consent, ask Ben or Nic first, always.
 > - Never put the day's organising into new software. Rosters are a printed sheet on the wall plus a photo in WhatsApp. Software only when paper breaks.
-> - No em-dashes, no marketing words (vibrant, tapestry, testament, underscore, pivotal, crucial, seamless, delve). Say "work days", never "working bees". Witta is on Jinibara Country.
+> - No em-dashes, no marketing words (vibrant, tapestry, testament, underscore, pivotal, crucial, seamless, delve). Say "work days", never "work days". Witta is on Jinibara Country.
 > - Never invent a count, a date, an attendance number, or a build claim. If the true thing is not ready, leave the blank.
 
 **When stuck:** ask Ben (the event templates, the broadcasts, the Monday sweep) or Nic (the day itself, the gate). Anything touching elders, storytellers, or the community lane, ask Ben or Nic first, always.

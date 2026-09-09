@@ -62,7 +62,7 @@ Run these against new copy, every time. Full reasoning in the harvest-voice memo
 
 - No em-dashes.
 - None of: vibrant, tapestry, testament, underscore, pivotal, crucial, seamless, delve.
-- "Work days", never "working bees".
+- "Work days", never "work days".
 - No invented counts, dates, attendance, or build claims. If it is not verified, do not
   assert it. Use "taking shape" not "finished".
 - Place names: Witta on Jinibara Country. Colonial names in brackets where needed.

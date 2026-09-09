@@ -34,7 +34,7 @@ Not this:
 1. **No made-up facts.** Never invent counts, dates, attendance numbers, or claims that something is finished. If a build is in progress, say in progress. Verify before writing anything in past tense. (See `feedback-no-fabricated-facts` in project memory.)
 2. **No em-dashes.** Use commas, periods, colons, or parentheses. This is firm across all Harvest writing.
 3. **No AI or marketing vocabulary.** Banned: vibrant, tapestry, testament, underscore, pivotal, crucial, leverage, journey, thrilled, dive in, unlock, elevate, game-changer.
-4. **Say "work days," never "working bees."**
+4. **Say "work days," never "work days."**
 5. **Place names.** Use Indigenous names, with colonial names in brackets where helpful. Witta and Jinibara Country are named, not decoration.
 6. **Consent before publishing people.** Never publish someone's story, photo, or name without their consent. If consent is pending, it stays out.
 7. **One call to action per piece.** If everything is important, nothing is.

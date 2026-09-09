@@ -316,7 +316,7 @@ Caption job:
 
 Keep it light. Make the place feel alive.
 
-### 5. Working Bee Recap
+### 5. Work day Recap
 
 Best for: after people show up.
 

@@ -16,7 +16,7 @@ AI can help with cropping, sequencing, type, captions, slide layout, and social 
 | --- | --- | --- |
 | Current place photos | website hero, deck proof, social progress | `client/public/images/compendium/` |
 | Barry and shed photos | timber, craft, machinery, local story | `client/public/images/compendium/barry/` |
-| Garden crew media | working bees, progress, community proof | `docs/communications/debriefs/_whatsapp-exports/` |
+| Garden crew media | work days, progress, community proof | `docs/communications/debriefs/_whatsapp-exports/` |
 | Floor plans and site drawings | deck structure, website proof, signage | `client/public/images/plans/`, `client/public/images/site-plan/`, `client/public/images/compendium/MASTER FLOOR PLAN*` |
 | Witta history images | timber, dairy, settlement, agriculture | `client/public/images/witta/history/` |
 | Website screenshots | redesign review, supporter proof | `docs/brand/screenshots/` |

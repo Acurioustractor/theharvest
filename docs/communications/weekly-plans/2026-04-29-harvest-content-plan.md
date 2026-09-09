@@ -24,13 +24,13 @@ This week should feel practical, alive, and local. Not polished. Not grand. Show
 Primary action:
 
 ```text
-Message us if you can help with useful outdoor things, garden knowledge, or working bee energy.
+Message us if you can help with useful outdoor things, garden knowledge, or work day energy.
 ```
 
 Secondary action:
 
 ```text
-Join the newsletter for the next working bee, open day, and progress notes.
+Join the newsletter for the next work day, open day, and progress notes.
 ```
 
 ## This Week's Publishing Slate
@@ -69,7 +69,7 @@ CTA: `Message us if you want to help in the garden.`
 
 GHL note: schedule to Instagram and Facebook. Use the reel as the primary asset.
 
-Notion record tags: `Harvest`, `Garden`, `Progress`, `Reel`, `Working Bee`
+Notion record tags: `Harvest`, `Garden`, `Progress`, `Reel`, `Work day`
 
 ### 2. Quick Local Ask
 

@@ -111,7 +111,7 @@ are not double-run.
 
 | # | Idea | Why it waits |
 |---|------|--------------|
-| 28 | A regular work day rhythm | Build a monthly hands-in-the-garden day from the people who said yes on the wall. A next-gather seed, not a 20 June run. Use "work day", never "working bee". |
+| 28 | A regular work day rhythm | Build a monthly hands-in-the-garden day from the people who said yes on the wall. A next-gather seed, not a 20 June run. Use "work day", never "work day". |
 | 29 | A maker day on the shelf | Once the consignment split is settled with Standard Ledger, a day where makers bring a batch and set the shelf together. Held until the percent is confirmed (gate below). |
 | 30 | The Mighty inside room, by human review | After Saturday, a first cohort of 8 to 12 people only, never a bulk invite and never promised on the day. From `01` and `03`. |
 | 31 | An elders' afternoon | A quieter, slower gather for elders and long-time locals to tell the place's history. A seed from how the welcome lands on 20 June. |

@@ -149,7 +149,7 @@ Do not build a full village on day one.
 | Space | Who gets access | Purpose | First posts |
 | --- | --- | --- | --- |
 | Start Here | Everyone invited | How The Harvest works, how to ask, what not to use Mighty for | Welcome, map of rooms, "what are you here to help with?" |
-| Garden Crew | Volunteers and members who want work days | Working bee details, photos, tool asks, safety notes | July work day, what to bring, photo thread |
+| Garden Crew | Volunteers and members who want work days | Work day details, photos, tool asks, safety notes | July work day, what to bring, photo thread |
 | The Shop Makers | Shop EOIs moved to conversation | Shelf process, consignment questions, maker stories, sample-day notes | How the shared shelf works, what we need first |
 | Questions Wall | Members, makers, volunteers | Practical questions and answered-once knowledge | "Ask here", pinned answers, weekly answered list |
 

@@ -262,7 +262,7 @@ Newsletter:
 One corner at a time
 ```
 
-Job: gather the week into the slower list. Include the garden reel, practical ask, and next working bee energy.
+Job: gather the week into the slower list. Include the garden reel, practical ask, and next work day energy.
 
 ## Posts To Build In GHL
 

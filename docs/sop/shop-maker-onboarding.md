@@ -57,7 +57,7 @@ Open hours start small. Weekend or market-day windows only to begin, extended on
 - Never sell or pay a maker through GHL. Square is the till.
 - Never auto-climb a maker up a Membership Journey rung from an RSVP or a form. Rungs are moved by hand in the Monday sweep, earned by a real action.
 - Never sell food before the council EHO call is confirmed in writing.
-- Never use em-dashes, and never use "working bees" (say "work days"). Place names: Witta on Jinibara Country.
+- Never use em-dashes, and never use "work days" (say "work days"). Place names: Witta on Jinibara Country.
 
 ## When stuck
 

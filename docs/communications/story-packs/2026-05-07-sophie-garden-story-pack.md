@@ -49,7 +49,7 @@ Use for:
 
 - Facebook
 - newsletter lead
-- volunteer / working bee bridge
+- volunteer / work day bridge
 
 ### 3. The Garden Is Moving From Clearing To Care
 

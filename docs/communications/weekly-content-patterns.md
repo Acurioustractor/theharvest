@@ -40,7 +40,7 @@ Then pick one practical ask:
 - send a message
 - join the list
 - offer materials
-- come to a working bee
+- come to a work day
 - share a memory
 - tag someone local
 
@@ -143,7 +143,7 @@ Examples:
 - Nic shaping the space
 - Susie and Joey as stewards
 - local growers
-- working bee helpers
+- work day helpers
 - artists and makers
 
 Question:
@@ -179,7 +179,7 @@ Use when the audience needs a next step.
 Examples:
 
 - join the list
-- come to a working bee
+- come to a work day
 - bring tools
 - offer plants
 - share photos
@@ -279,7 +279,7 @@ Before the website, before the posters, before the big plans, there were plants,
 
 Now we are working out what the next layer should be.
 
-Food beds. Native propagation. Compost. Kids digging. Working bees. Quiet mornings with people who know more than us.
+Food beds. Native propagation. Compost. Kids digging. Work days. Quiet mornings with people who know more than us.
 
 If you live nearby, what would you grow first?
 
@@ -308,7 +308,7 @@ The kitchen does not need to start as a restaurant.
 
 It can start as a long table.
 
-Coffee after a working bee. Soup from someone local. A producer telling the story of what they grow. A simple meal after a workshop.
+Coffee after a work day. Soup from someone local. A producer telling the story of what they grow. A simple meal after a workshop.
 
 That feels like the right first step.
 

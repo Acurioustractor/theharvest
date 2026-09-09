@@ -15,7 +15,7 @@ These can be reused or adapted now:
 | Three zones | Gives people a simple mental model | Carousel, newsletter section, website cross-link |
 | Garden / Kitchen / Art Space graphics | Clear and evergreen | Repeatable content pillars |
 | Photo tiles | Real place, better than abstract graphics | Instagram feed, newsletter hero images |
-| Build with us / Come as you are | Good invitation language | Volunteer and working bee posts |
+| Build with us / Come as you are | Good invitation language | Volunteer and work day posts |
 | Photo wall assets | Proven engagement path | Follow-up and community memory |
 
 ### Needs Refreshing
@@ -93,7 +93,7 @@ The nursery is already the heart of the place. Native plants, old paths, shade, 
 
 Now we are listening for what the garden wants to become next.
 
-Food beds. Native propagation. Kids digging. Compost. A few practical working bees.
+Food beds. Native propagation. Kids digging. Compost. A few practical work days.
 
 If you live nearby, what would you want to help grow?
 
@@ -133,7 +133,7 @@ We are looking for:
 - shade cloth
 - people who know plants
 - people who know kitchens
-- people who can help at a working bee
+- people who can help at a work day
 
 If you have something useful, or a few hours to offer, send us a message or reply below.
 

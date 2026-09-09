@@ -143,7 +143,7 @@ Use for garden, kitchen, art space, or site progress.
 
 ### 4. Event Recap, 60 Seconds
 
-Use after gatherings or working bees.
+Use after gatherings or work days.
 
 ```text
 0-5s: best human moment
