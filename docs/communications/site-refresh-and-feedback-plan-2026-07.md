@@ -15,7 +15,7 @@ So "refresh the site with a recap of what has happened" is mostly a **surfacing 
 ## Hard constraints (do not break)
 
 - **No fabricated facts.** We do not have attendance numbers, and no 20 June opening photos exist anywhere yet. The recap uses "it is open, it is still being made" framing, not claims about crowd size or finished builds.
-- **Voice.** No em-dashes, no marketing words (vibrant, tapestry, testament, pivotal). Work days, not working bees.
+- **Voice.** No em-dashes, no marketing words (vibrant, tapestry, testament, pivotal). Work days, not work days.
 - **Photos we actually have (15):** aerial, seed-house front, community-gathering, gathering-recap-crowd, member-welcome-crates, local-produce, harvest-eat, barry x2, team-garden-selfie. That is the whole real library. Anything beyond this needs Ben to supply files.
 
 ## Privacy note to clear first

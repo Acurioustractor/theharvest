@@ -48,7 +48,7 @@ No photo of a person, and no story in someone's words, goes anywhere (the shelf,
 
 - No em-dashes. Use commas, periods, or brackets.
 - Do not use: vibrant, tapestry, testament, underscore, pivotal, crucial, seamless, delve.
-- Say "work days", never "working bees".
+- Say "work days", never "work days".
 - Place names: Witta on Jinibara Country, colonial names in brackets.
 - No invented counts, dates, names, or attendance. If the true thing is not ready, leave the blank.
 

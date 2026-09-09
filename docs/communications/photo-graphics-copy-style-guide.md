@@ -103,7 +103,7 @@ Garden:
 - soil
 - native plants
 - growing food
-- working bees
+- work days
 - seasonal care
 
 Kitchen:

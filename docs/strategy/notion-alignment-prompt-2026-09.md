@@ -50,4 +50,4 @@ Write one page called "How The Harvest runs: Notion map (September 2026)" under 
 - Plain words. No em-dashes. Short sentences. No praise for the existing setup, no filler.
 - Every claim about money, dates or counts must come from a page you read or be marked "unverified".
 - Where two pages disagree (the website hours, the venue signs and the calendar disagree today), say so and name both pages rather than picking one.
-- Australian spelling. "Work days", never "working bees". Jinibara Country, Witta.
+- Australian spelling. "Work days", never "work days". Jinibara Country, Witta.

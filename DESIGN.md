@@ -39,7 +39,7 @@ The brand is not a generic cafe, retreat venue, community centre, farm shop, or 
 
 | Public word | Meaning now | Regional memory |
 | --- | --- | --- |
-| Grow | garden opening, old nursery, seedlings, beds, soil, kids, working bees | nursery, ridge gardens, practical care |
+| Grow | garden opening, old nursery, seedlings, beds, soil, kids, work days | nursery, ridge gardens, practical care |
 | Make | creative build, timber, tools, signs, repair, art, hands on the place | timber, tools, Barry's shed, local craft |
 | Gather | neighbours, open days, food, tables, music, stories, questions | dairy, milk crates, co-op tables, shared meals |
 
@@ -168,7 +168,7 @@ The Harvest brand is photo-led and history-led.
 Approved source material:
 
 - original site photos and video
-- Barry, shed, machinery, timber, garden, kitchen, and working bee images
+- Barry, shed, machinery, timber, garden, kitchen, and work day images
 - floor plans, sketches, scans, and site drawings
 - historical Witta, Teutoburg, Blackall Range, dairy, timber, and co-op images with clear source and rights notes
 - book and archive story notes, used as researched context rather than copied text

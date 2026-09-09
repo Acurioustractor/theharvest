@@ -53,7 +53,7 @@
 - Never automate anything to the community lane (Jinibara, elders, storytellers). That is by hand, with consent, always. Ask Ben or Nic first.
 - Never use a name, story, or photo of a community person without a consent check first, and it can be withdrawn anytime.
 - Never put a wrong count, an unconsented photo, or an invented claim in a send. In a town of about 1,296 it costs trust you cannot rebuild. When the true thing is not ready, leave the blank.
-- Voice gate before any send: no em-dashes. None of vibrant, tapestry, testament, underscore, pivotal, crucial, seamless, delve. Say "work days", never "working bees". Witta on Jinibara Country, colonial names in brackets.
+- Voice gate before any send: no em-dashes. None of vibrant, tapestry, testament, underscore, pivotal, crucial, seamless, delve. Say "work days", never "work days". Witta on Jinibara Country, colonial names in brackets.
 - Susie and Joey: never send broadcasts, never edit workflows, never touch tags. Your menu hides those on purpose.
 
 ## Charging for membership

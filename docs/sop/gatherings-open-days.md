@@ -30,7 +30,7 @@ A gathering or open day is the same five steps every time. Make the event, invit
 - Never use a community-lane person (elder, storyteller, Jinibara) in any automation, list, or drip. By hand, with consent, always. Ask Ben or Nic first.
 - Never post a photo of a person who has not said yes.
 - Never invent a headcount, a date, attendance, or a build claim. In a town of about 1,296, a wrong figure or an unconsented photo costs trust you cannot rebuild. If the true thing is not ready, leave the blank.
-- Voice gate before any send: no em-dashes. None of these words: vibrant, tapestry, testament, underscore, pivotal, crucial, seamless, delve. Say "work days", never "working bees". Place names are Witta on Jinibara Country, colonial names in brackets.
+- Voice gate before any send: no em-dashes. None of these words: vibrant, tapestry, testament, underscore, pivotal, crucial, seamless, delve. Say "work days", never "work days". Place names are Witta on Jinibara Country, colonial names in brackets.
 
 ## When stuck
 

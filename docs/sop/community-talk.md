@@ -62,7 +62,7 @@ We are not adding a community platform or app. WhatsApp is a sixth-grade-simple 
 > - Never post a photo of a person without their okay first.
 > - Never send anything automated into the community lane (`lane:community`, `role:elder`, `role:storyteller`). Those people are worked by hand, with consent, always. Elder authority is a veto, not a preference.
 > - Never let a `pod:` tag control the group. The tag mirrors the group, never the other way around.
-> - Never use em-dashes. Use commas, periods, or brackets. Avoid these words: vibrant, tapestry, testament, underscore, pivotal, crucial, seamless, delve. Say "work days", never "working bees".
+> - Never use em-dashes. Use commas, periods, or brackets. Avoid these words: vibrant, tapestry, testament, underscore, pivotal, crucial, seamless, delve. Say "work days", never "work days".
 > - Never invent a count, a date, an attendance number, or a build claim. If the true thing is not ready, leave the blank.
 > - Never add a fifth tool. The system is four screens plus paper. WhatsApp only earns a replacement if it demonstrably breaks (no threads, ideas getting lost, mess across three or more groups). Even then, reopening is Ben's call on a named pain, not on ambition.
 

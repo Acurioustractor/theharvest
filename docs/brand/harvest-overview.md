@@ -14,7 +14,7 @@ The Harvest is a community garden and creative gathering place.
 
 A former nursery is opening first through the garden, then deepening through what people grow, make, and gather around:
 
-- Grow: garden beds, seedlings, soil, old nursery memory, kids' projects, working bees, and practical care.
+- Grow: garden beds, seedlings, soil, old nursery memory, kids' projects, work days, and practical care.
 - Make: timber, tools, signs, art, repair, workshops, and the creative build of the place.
 - Gather: neighbours, shared tables, food, music, questions, local stories, and people coming through the gate.
 
@@ -128,7 +128,7 @@ It should show the real place first, then make the structure clear:
 3. The current work: what changed on site this week.
 4. The supporting story: timber, dairy, milk crates, shared tables, and local making.
 5. The works: pavilion, garden, timber, shed, plans, table.
-6. The community use: events, working bees, meals, music, workshops, play.
+6. The community use: events, work days, meals, music, workshops, play.
 7. The collection: photos, objects, memories, source notes, local records.
 8. The ask: what people can bring or do next.
 

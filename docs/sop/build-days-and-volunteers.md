@@ -1,7 +1,7 @@
 # SOP: Build days, work days and volunteers
 
 > A first-week steward should be able to run a work day from this page alone.
-> We say "work days", never "working bees".
+> We say "work days", never "work days".
 
 **Who does this:** Susie or Joey on the day, with Nic on the room. Ben builds the event and sends any email. A volunteer can tap names at the gate.
 

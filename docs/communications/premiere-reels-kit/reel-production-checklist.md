@@ -31,7 +31,7 @@ The nursery is already the heart.
 ```
 
 ```text
-Working bee this Saturday.
+Work day this Saturday.
 ```
 
 Avoid:

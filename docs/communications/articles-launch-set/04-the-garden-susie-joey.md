@@ -29,7 +29,7 @@ This draft uses the soft "in-progress / taking-shape" framing per memory `feedba
 
 ## Body — paste into the article editor
 
-> Voice rules applied: no em-dashes; concrete over abstract; Witta and Jinibara Country named; Curtis method (specific, plain). No "embark on a journey", no "we're excited to", no "working bees" (use "work days" or "Wednesday crew"). In-progress / taking-shape framing throughout.
+> Voice rules applied: no em-dashes; concrete over abstract; Witta and Jinibara Country named; Curtis method (specific, plain). No "embark on a journey", no "we're excited to", no "work days" (use "work days" or "Wednesday crew"). In-progress / taking-shape framing throughout.
 
 ---
 

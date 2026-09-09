@@ -302,7 +302,7 @@ A community garden and creative gathering place taking shape in Witta.
 
 The public words are:
 
-- Grow: garden opening, old nursery, seedlings, beds, soil, kids, working bees
+- Grow: garden opening, old nursery, seedlings, beds, soil, kids, work days
 - Make: creative build, timber, tools, signs, repair, art, workshops
 - Gather: neighbours, shared tables, food, music, questions, local stories
 

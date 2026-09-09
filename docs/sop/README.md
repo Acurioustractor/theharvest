@@ -14,7 +14,7 @@ Plain-language standard operating procedures for running the place. Each one is 
 
 | SOP | What it covers |
 | --- | --- |
-| [build-days-and-volunteers.md](build-days-and-volunteers.md) | Run a work day and look after volunteers from this page alone (we say "work days", never "working bees"). |
+| [build-days-and-volunteers.md](build-days-and-volunteers.md) | Run a work day and look after volunteers from this page alone (we say "work days", never "work days"). |
 | [community-talk.md](community-talk.md) | The WhatsApp Community and crews: the day-to-day talking surface and who admins each group. |
 | [enquiries-and-ideas.md](enquiries-and-ideas.md) | Handle anything that comes in the front door that is not a shop EOI, a ticket, or a membership join. Reply, sort, never let it go cold. |
 | [gatherings-open-days.md](gatherings-open-days.md) | The five-step run pattern for a gathering or open day: make it, invite, remind, run, close the loop. |

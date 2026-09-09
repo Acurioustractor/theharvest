@@ -155,7 +155,7 @@ Choose assets that do one job:
 - make a practical local ask
 - make the work feel human
 - explain one piece of the place
-- set up the next working bee or newsletter
+- set up the next work day or newsletter
 
 Do not post a whole dump. One post needs one job.
 

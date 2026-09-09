@@ -209,7 +209,7 @@ Short draft:
 - Did the watering ask get a clearer response than the broad quick local ask?
 - Did Instagram respond better to garden detail or community art detail?
 - Is there new WhatsApp media for another weekly debrief?
-- Do we need a working bee post, or only quiet ongoing help?
+- Do we need a work day post, or only quiet ongoing help?
 
 ## Manual Engagement Capture
 

@@ -163,7 +163,7 @@ per audience type. "Flags" are problems in existing copy, not the new work.
 - [small] Add one maker/helper door line under the WorkNotes intro, after 'the first shop shelves and the Milk Man at the gate': 'Grow, make, or have two spare hours? Tell us on the Get Involved page.' with the link to /get-involved. (why: maker-grower-artist and helper-hands currently have no on-page path; every work card raises an ask ('Sawmill leads, timber hands') with nowhere to answer it.)
 - [small] Defuse the members-page wall: relabel the strip button 'Dates on the members page' and add 'free to join' microcopy beside both MEMBERS_PAGE_URL links (strip and EventCallout). (why: Non-members clicking 'This week's dates' land on Mighty unwarned; one word of framing turns a suspected paywall into the intended free membership funnel.)
 **Flags:**
-- No banned words, em-dashes, 'working bees', prices, or invented dates/attendance found in the rendered copy; unverified claims are correctly hedged ('a St Mary's Cathedral story we are still tracing', 'A working interest, not a legal claim yet').
+- No banned words, em-dashes, 'work days', prices, or invented dates/attendance found in the rendered copy; unverified claims are correctly hedged ('a St Mary's Cathedral story we are still tracing', 'A working interest, not a legal claim yet').
 - Mild privacy note: a community member is named in image alt text, 'Barry beside old machinery at The Harvest' (used twice, Threads Timber card and The Garden Paths card); confirm Barry is happy being named on the home page.
 - Slight image/copy mismatch that could read as a fabricated scene: the Kids' Area card (about kids co-designing a play area) uses alt 'Harvest garden crew gathered at the old nursery site', a team selfie, not kids designing anything.
 
@@ -272,7 +272,7 @@ per audience type. "Flags" are problems in existing copy, not the new work.
 **Flags:**
 - Stale/insider default copy: 'The legal structure comes later.' (hero-note-title default) is governance-speak aimed at insiders, currently hidden only by a live empty-string override rather than fixed in code.
 - Soft unverifiable commitment: 'we’ll invite public profiles later by email' (hero body) promises a future feature with no path; not a fabricated fact but a forward claim nothing backs up on the site.
-- Voice is otherwise clean: no banned words, no em-dashes, 'work days' used correctly (never 'working bees'), no invented counts, dates, or attendance figures; 'Ben or Nic will reply' is a deliberate, accurate use of real first names.
+- Voice is otherwise clean: no banned words, no em-dashes, 'work days' used correctly (never 'work days'), no invented counts, dates, or attendance figures; 'Ben or Nic will reply' is a deliberate, accurate use of real first names.
 
 ## /get-involved
 **Role:** The proposal door of the site: five typed forms (residency, idea, local business, workshop suggestion, story feature) that turn "I want to do something here" into a submission, with a soft hero push toward free membership and work days.
@@ -325,7 +325,7 @@ per audience type. "Flags" are problems in existing copy, not the new work.
 **Flags:**
 - Unverified hard figure stated as fact: 'Around 1,300 people live here, with nowhere to buy a loaf of bread' — no source cited; verify against census data or soften to a non-numeric line per the no-fabricated-facts rule.
 - Historical claim worth a source check: 'Witta hasn't had a shop in a generation.' (h1 and repeated in the meta description) — plausible given the Green Harvest nursery lineage, but it is a checkable factual claim about the village, not a framing line.
-- Voice: clean — no banned words, no em-dashes, no 'working bees'; tone matches plain field notes. Naming Susie and Joey as day-to-day stewards is consistent with their public-facing Community Steward roles, no privacy concern.
+- Voice: clean — no banned words, no em-dashes, no 'work days'; tone matches plain field notes. Naming Susie and Joey as day-to-day stewards is consistent with their public-facing Community Steward roles, no privacy concern.
 
 ## /works
 **Role:** Museum-style index of the six works (Garden, Milk Crate Pavilion, Garden Paths, Shop, Kids' Area, Milk Man) that shows what is built, growing or forthcoming and routes readers into each work's detail page.
@@ -483,7 +483,7 @@ per audience type. "Flags" are problems in existing copy, not the new work.
 - [small] Add one members-page line at the foot of the new CTA block: 'Membership is free. Pizza dates and open weekends land on the members page first.' with a link to the members page (MEMBERS_PAGE_URL via client/src/lib/links.ts). (why: The page has no stay-in-the-loop door at all, and its readers (hinterland locals invested enough to read 3,000 words of history) are the highest-intent membership audience on the site.)
 **Flags:**
 - Privacy: the memory form name placeholder uses a real person's full name — placeholder="e.g. Barry Rodgerig" (line ~933). Swap for a generic name unless Barry explicitly okayed being example copy; his name also appears implicitly across 12 gallery captions ('Barry at the nursery site'), which is fine only if consent covers this page.
-- Voice (mild): 'Come Experience Witta' and 'feel why this corner of the hinterland is so special' lean marketing-speak against the plain field-notes voice; no banned words or em-dashes found, no 'working bees'.
+- Voice (mild): 'Come Experience Witta' and 'feel why this corner of the hinterland is so special' lean marketing-speak against the plain field-notes voice; no banned words or em-dashes found, no 'work days'.
 - Fact consistency worth verifying: Notable Places card says the school was 'renamed Teutoberg in 1893, then Witta in 1926' while the timeline says the settlement was 'renamed Witta' on 18 May 1916 and spells it 'Teutoburg' everywhere else — the 1926/1916 split and the Teutoberg/Teutoburg spelling difference may both be historically correct (school names lagged) but read as errors without a note.
 - No fabricated Harvest claims found: no attendance numbers, no invented events, hedged phrasing used where sources are thin ('reportedly still in a London museum', 'believed to come from a local word').
 

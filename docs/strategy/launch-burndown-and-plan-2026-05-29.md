@@ -675,7 +675,7 @@ Risk: slips under launch-week load, or the date leaks. Early sign: no banked pho
 Ideation: run a fixed checklist as the last step before scheduling each broadcast, plus a quick grep for banned tokens on the source doc. The failure mode is cheap to catch and expensive to send.
 Steps:
 1. For each email, grep/scan the body for em-dashes and AI vocab (vibrant, tapestry, testament, underscore, pivotal, crucial, elevate, leverage).
-2. Confirm no "we're excited to" and no "working bees" (must read "work days").
+2. Confirm no "we're excited to" and no "work days" (must read "work days").
 3. Confirm no fabricated counts, dates, attendance or origins; only sourced facts.
 4. Confirm Jinibara Country and Witta are named where the copy calls for them.
 5. Confirm reply-to is hello@theharvestwitta.com.au and the From is correct.
@@ -1139,7 +1139,7 @@ After, Sun 21 Jun on, through the 30 Jun cutover. This is where the public final
 
 Through cutover. All after-story comms complete before Ben departs 27 Jun and the 30 Jun sole-trader to Pty cutover; Nic is on-deck Maleny 20 Jun to 1 Jul. Anything not sent by 26 Jun has no on-site sender once Ben is overseas, so the after-story window is hard-bounded by 26 Jun.
 
-Every-send gate (recurring, over all emails). Last step before scheduling any broadcast: grep/scan for em-dashes and AI vocab (vibrant, tapestry, testament, pivotal, crucial, elevate); confirm no "working bees" (must read "work days"); no fabricated counts/dates/attendance; Jinibara Country and Witta named where the copy calls for it; reply-to hello@theharvestwitta.com.au and correct From; photo permissions cleared. Every broadcast goes to one named smart list, never adds a tag on send.
+Every-send gate (recurring, over all emails). Last step before scheduling any broadcast: grep/scan for em-dashes and AI vocab (vibrant, tapestry, testament, pivotal, crucial, elevate); confirm no "work days" (must read "work days"); no fabricated counts/dates/attendance; Jinibara Country and Witta named where the copy calls for it; reply-to hello@theharvestwitta.com.au and correct From; photo permissions cleared. Every broadcast goes to one named smart list, never adds a tag on send.
 
 ## Running the venue on the day
 

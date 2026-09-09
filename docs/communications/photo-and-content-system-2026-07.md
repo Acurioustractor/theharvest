@@ -90,6 +90,6 @@ the pulse. Nothing is written in two places.
 ## Standing constraints (from the copy contract)
 
 No attendance figures, no invented hours or dates, no prices, "work days" never
-"working bees", no em-dashes, kitchen is future sublicenced until the sub-op is public,
+"work days", no em-dashes, kitchen is future sublicenced until the sub-op is public,
 and anything not traceable to a source gets cut. The full contract lives in the commit
 message of `96f51f0` and in `now-open-communications-map-2026-07.md`.

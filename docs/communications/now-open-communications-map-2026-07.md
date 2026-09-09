@@ -46,7 +46,7 @@ a "not yet" (do not say until the blocking fact clears).
   makers. See the producer re-engagement doc for the one-producer smart list.)
 
 ### Garden
-- **Now:** growing through regular work days. Always "work days", never "working bees".
+- **Now:** growing through regular work days. Always "work days", never "work days".
 - **Next:** seasonal planting, the kids area shaped by kids, more hands on the place.
 - **Not yet:** a fixed weekly schedule or open hours. Nothing is published anywhere.
 

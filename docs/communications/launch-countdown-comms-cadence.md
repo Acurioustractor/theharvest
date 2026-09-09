@@ -304,7 +304,7 @@ Every send goes through these checks before scheduling:
 - [ ] No em-dashes (`grep -- "—"` on the draft)
 - [ ] No AI vocab (vibrant, tapestry, testament, underscore, pivotal, crucial)
 - [ ] No "we're excited to", "we're thrilled", "embark on a journey"
-- [ ] No "working bees" (use "work days" or "Wednesday crew")
+- [ ] No "work days" (use "work days" or "Wednesday crew")
 - [ ] No fabricated counts, dates, or material origins
 - [ ] Jinibara Country named explicitly
 - [ ] Witta named explicitly (not "the hinterland" as a substitute)

@@ -77,7 +77,7 @@ Paper for anything that came in by phone or on a sheet. Nothing else.
 - No em-dashes. Use commas, periods, brackets.
 - None of these words: vibrant, tapestry, testament, underscore, pivotal, crucial, seamless,
   delve.
-- "Work days", never "working bees".
+- "Work days", never "work days".
 - Place names: Witta on Jinibara Country, colonial names in brackets where needed.
 
 ## When stuck

@@ -37,7 +37,7 @@ Learn about The Harvest
 
 | Word | Meaning |
 | --- | --- |
-| Grow | garden opening, old nursery, seedlings, beds, soil, kids, working bees |
+| Grow | garden opening, old nursery, seedlings, beds, soil, kids, work days |
 | Make | creative build, timber, tools, signs, repair, art, workshops |
 | Gather | neighbours, shared tables, food, music, questions, local stories |
 

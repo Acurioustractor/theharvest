@@ -45,7 +45,7 @@ Obsidian thinks. GHL publishes. Notion records. WhatsApp feeds ideas.
 - WhatsApp source: [[debriefs/2026-04-27-whatsapp-chat-harvest-garden-crew-debrief-seed|Garden Crew WhatsApp Debrief]]
 - First reel: garden progress
 - First post: garden progress reel
-- Main ask: useful outdoor things, garden knowledge, kitchen knowledge, working bee energy
+- Main ask: useful outdoor things, garden knowledge, kitchen knowledge, work day energy
 - Newsletter: `One corner at a time`
 
 ## Weekly Flow

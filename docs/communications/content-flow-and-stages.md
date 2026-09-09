@@ -38,7 +38,7 @@ Use the Harvest gallery and tag the asset before it becomes a post idea:
 | Sophie / garden story | `the-garden` | `grow`, `gather` | `during` |
 | Drone site progress | `milk-crate-pavilion` or `general-harvest` | `make`, `gather` | `milestone` |
 | WhatsApp garden crew | `the-garden` | `grow` | `during` |
-| Human detail / working bee | relevant work | `gather` plus the work theme | `during` |
+| Human detail / work day | relevant work | `gather` plus the work theme | `during` |
 
 Only after the asset is in Empathy Ledger should it move into Obsidian planning, GHL drafts, or Notion records.
 

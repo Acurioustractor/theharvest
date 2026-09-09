@@ -106,7 +106,7 @@ The first build should carry the memory of the industries that helped hold this 
 
 **The Garden**
 
-Paths, beds, nursery life, working bees, food in the ground.
+Paths, beds, nursery life, work days, food in the ground.
 
 **The Kitchen**
 
